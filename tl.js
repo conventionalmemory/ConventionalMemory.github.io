@@ -105,4 +105,4 @@ function timeline(y){
  main.addEventListener("keydown",function(e){var n=e.target.closest&&e.target.closest("[data-go]");if(n&&(e.key==="Enter"||e.key===" ")){e.preventDefault();jump(n.dataset.go)}});
  main.addEventListener("click",function(e){var gn=e.target.closest("[data-go]");if(gn){e.preventDefault();jump(gn.dataset.go);return}var a=e.target.closest("a[data-y]");if(a){e.preventDefault();setYear(+a.dataset.y);return}
   var h=e.target.closest(".tle-h");if(!h)return;var art=h.parentNode,id=art.dataset.id;TLOPEN[id]=!TLOPEN[id];var x=all[+id];art.outerHTML=tlCard(x,+id,!!TLOPEN[id]);});
- draw()}
+ draw();if(window.TLJUMP){var jt=window.TLJUMP;window.TLJUMP=null;jump(jt)}}

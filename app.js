@@ -92,7 +92,7 @@ var app=document.getElementById("app");
 // Placeholder text left in sample entries ("Sample: ...", "Example: ...") is never shown to visitors.
 function ph(v){return typeof v==="string"&&/^(sample|example)\b/i.test(v.trim())}
 function unex(v){return typeof v==="string"?v.replace(/^(example|sample)( entry)?[:.]\s*/i,""):v}
-function prepItems(){ITEMS.forEach(function(it){if(!it.year&&it.rel)it.year=+String(it.rel).slice(0,4);
+function prepItems(){ITEMS.forEach(function(it){if(!it.cat)it.cat="Other";if(!it.maker)it.maker="Unknown";if(!it.year&&it.rel)it.year=+String(it.rel).slice(0,4);
  ["got","thoughts","cond","acquired"].forEach(function(k){if(ph(it[k])){if(/^(sample|example):/i.test(it[k].trim())&&k!=="thoughts"&&k!=="got"){it[k]=unex(it[k])}else delete it[k]}});
  if(it.text)it.text=unex(it.text);
  if(it.credit&&/replace it with/i.test(it.credit))it.credit="Illustration";
@@ -111,7 +111,8 @@ function safeUrl(u,k){u=String(u==null?"":u).trim();if(!u)return "";
  if(k==="audio"&&/^data:audio\/(wav|x-wav|mpeg|mp3|ogg);base64,[A-Za-z0-9+\/=]+$/i.test(u))return u;
  if(/^[A-Za-z0-9_\-\/.]+$/.test(u)&&u.charAt(0)!=="/"&&u.indexOf("..")<0)return u;
  return ""}
-function pic(it){var u=it.photos&&it.photos.length?safeUrl(it.photos[0],"img"):"";return u?'<img src="'+esc(u)+'" alt="'+esc(it.name)+'" loading="lazy">':prodSvg(it,240,180,"c"+hstr(String(it.id||it.name)).toString(36))}
+function wimg(it){var u=it.wiki&&it.wiki.img;return u&&/^https:\/\/upload\.wikimedia\.org\//.test(u)?safeUrl(u,"img"):""}
+function pic(it){var u=it.photos&&it.photos.length?safeUrl(it.photos[0],"img"):wimg(it);return u?'<img src="'+esc(u)+'" alt="'+esc(it.name)+'" loading="lazy">':prodSvg(it,240,180,"c"+hstr(String(it.id||it.name)).toString(36))}
 function socials(){return '<div class="socials">'+SOCIALS.map(function(s,i){return '<a class="btn'+(i==0?' pri':'')+'" href="'+esc(safeUrl(s.u,"link"))+'" target="_blank" rel="noopener noreferrer">'+esc(s.n)+'</a>'}).join("")+'</div>'}
 function tile(href,big,small,cls){return '<a class="hm-tile '+(cls||"")+'" href="'+href+'"><b>'+big+'</b><span>'+small+'</span></a>'}
 function home(){
@@ -333,6 +334,13 @@ function comp(it){var f=[it.year,it.maker&&it.maker!=="Unknown",it.model,it.msrp
 function specSheet(it){var g=SPEC_TYPES[it.type]||{},sp=it.specs||{},used={},h="";
  Object.keys(g).forEach(function(n){h+=sec(n,tbl(g[n].filter(function(k){return sp[k]}).map(function(k){used[k]=1;return [k,sp[k]]})))});
  return h+sec(Object.keys(g).length?"Other specs":"Specs",tbl(Object.keys(sp).filter(function(k){return !used[k]}).map(function(k){return [k,sp[k]]})))}
+function wikiMore(it){var w=it.wiki;if(!w)return"";var h="",f=w.facts?Object.keys(w.facts):[];
+ if(f.length)h+='<dl class="wfacts">'+f.map(function(k){return'<dt>'+esc(k)+'</dt><dd>'+esc(w.facts[k])+'</dd>'}).join("")+'</dl>';
+ (w.sections||[]).forEach(function(x,i){h+='<details class="wsec"'+(i===0?" open":"")+'><summary>'+esc(x.h)+'</summary>'+String(x.t).split(/\n{2,}/).map(function(p){return'<p>'+esc(p)+'</p>'}).join("")+'</details>'});
+ if((w.see||[]).length)h+='<p class="wsee"><b>See also on Wikipedia:</b> '+w.see.map(function(t){return'<a href="https://en.wikipedia.org/wiki/'+encodeURIComponent(String(t).replace(/ /g,"_"))+'" target="_blank" rel="noopener noreferrer">'+esc(t)+'</a>'}).join(" &middot; ")+'</p>';
+ return h?sec("From the Wikipedia article",h+'<small class="tn">Text from Wikipedia, licensed CC BY-SA 4.0. Condensed from the article, which has the full history and references.</small>'):""}
+function tlMatch(it){var n=String(it.name).toLowerCase(),hit=null;TL.forEach(function(r){if(!hit&&r[2].toLowerCase()===n)hit=r});return hit}
+function connSec(it){var r=tlMatch(it);if(!r||typeof tlLinks!=="function")return"";var l=tlLinks(r[2]);if(!l.length)return"";return sec("Connections on the timeline",'<div class="tle-web">'+tlWeb(r[2],l)+'<p class="tn">Click a box to see it on the timeline.</p></div>')}
 function item(id){
  var it=ITEMS.filter(function(i){return i.id===id})[0];
  if(!it){dlg("Item not found reading drive C.<br>Abort, Retry, Fail?",'<a class="btn" href="#/">Abort</a> <button class="btn" id="rt" type="button">Retry</button> <a class="btn" href="#/catalog">Fail</a>');document.getElementById("rt").onclick=route;return}
@@ -345,13 +353,14 @@ function item(id){
  if(it.links&&it.links.length)media+=sec("Manuals and references",'<p>'+it.links.map(function(l){var u=safeUrl(l.u,"link");return u?'<a href="'+esc(u)+'" target="_blank" rel="noopener noreferrer">'+esc(l.t)+'</a>':esc(l.t)}).join("<br>")+'</p>');
  var t=tier(it.score),sc=it.score!=null?scoreBlock(it.score,t):"";
  var wu=w?safeUrl(w.u,"link"):"";
- var src=w?'<div class="src"><b>From Wikipedia: '+esc(w.t)+'</b>'+(w.summary?'<p>'+esc(w.summary)+'</p>':'')+(wu?'<a href="'+esc(wu)+'" target="_blank" rel="noopener noreferrer">Read the full article</a>':'')+(w.summary?'<small>Summary text from Wikipedia, licensed CC BY-SA.</small>':'')+'</div>':"";
+ var wx=wikiMore(it);var src=w?'<div class="src"><b>From Wikipedia: '+esc(w.t)+'</b>'+(w.summary?'<p>'+esc(w.summary)+'</p>':'')+(wu?'<a href="'+esc(wu)+'" target="_blank" rel="noopener noreferrer">Read the full article</a>':'')+(w.summary?'<small>Summary text from Wikipedia, licensed CC BY-SA.</small>':'')+'</div>':"";
  var ident=tbl([["Maker",it.maker],["Model",it.model],["Part number",it.partno],["Revision",it.rev],["Barcode",it.upc],["Released",(it.rel?fmtDate(it.rel):it.year)+(it.relx?"*":"")],["Discontinued",it.disc],["Original MSRP",it.msrp],["Made in",it.country],["Date code",it.made],["Category",it.cat],["Type",it.type]]);
  var coll=tbl([["Accession",it.acc],["Status",it.status?it.status+(it.qty>1?", quantity "+it.qty:""):""],["Condition",it.cond],["Working",it.works],["Includes",(it.has||[]).join(", ")],["Acquired",it.acquired],["Last changed",logsOf(it)[0]?fmtDate(logsOf(it)[0].d):""],["Where I got it",it.got],["Tags",(it.tags||[]).length?{h:it.tags.map(function(t){return '<a href="#/tag/'+encodeURIComponent(t)+'">'+esc(t)+'</a>'}).join(", ")}:""],["Record complete",comp(it)+"%"]]);
  var picks=adPicks(it);
- app.innerHTML='<section class="itempage">'+pn(it)+adBar(picks)+'<div class="detail"><div class="dl"><div class="ph">'+pic(it)+'</div>'+gal+(it.credit?'<small style="color:var(--mute)">'+esc(it.credit)+'</small>':'')+media+src+'</div><div class="dr"><div class="tb">'+esc(dpath(it))+'</div><h2>'+esc(it.name)+'</h2>'
-  +cmpSel(it)+sc+(it.text?'<p>'+esc(it.text)+'</p>':"")+(it.thoughts?sec("My take",'<p>'+esc(it.thoughts)+'</p>'):"")+sec("Identification and history",ident)+specSheet(it)+sec("Collection record",coll)+exSec(it)+logSec(it)+(it.notes?sec("Repairs and mods",'<p>'+esc(it.notes)+'</p>'):"")+'</div></div>'
+ app.innerHTML='<section class="itempage">'+pn(it)+adBar(picks)+'<div class="detail"><div class="dl"><div class="ph">'+pic(it)+'</div>'+gal+(it.credit?'<small style="color:var(--mute)">'+esc(it.credit)+'</small>':(!(it.photos||[]).length&&wimg(it)?'<small style="color:var(--mute)">Image via Wikipedia. Check the article page for its license.</small>':''))+media+src+'</div><div class="dr"><div class="tb">'+esc(dpath(it))+'</div><h2>'+esc(it.name)+'</h2>'
+  +cmpSel(it)+sc+(it.text?'<p>'+esc(it.text)+'</p>':"")+(it.thoughts?sec("My take",'<p>'+esc(it.thoughts)+'</p>'):"")+sec("Identification and history",ident)+specSheet(it)+wx+connSec(it)+sec("Collection record",coll)+exSec(it)+logSec(it)+(it.notes?sec("Repairs and mods",'<p>'+esc(it.notes)+'</p>'):"")+'</div></div>'
   +adItem(it)+eraSec(it)+related(it)+adShelf(picks)+'</section>';
+ app.querySelectorAll(".tlnode").forEach(function(n){var go=function(){var t=n.dataset.go,r=TL.filter(function(z){return z[2]===t})[0];if(r){window.TLJUMP=t;location.hash="#/timeline/"+dyear(r[0])}};n.onclick=go;n.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();go()}}});
  var cs=document.getElementById("cmp");if(cs)cs.onchange=function(){if(cs.value)location.hash="#/compare/"+it.id+"/"+cs.value};
  var ax=app.querySelector(".adx");if(ax)ax.onclick=function(){try{sessionStorage.setItem("cm-adx","1")}catch(e){}var b=app.querySelector(".cz-bar");if(b)b.remove()};
  app.querySelectorAll(".dl .ph img").forEach(function(im){im.onclick=function(){var d=document.createElement("div");d.className="lb";var i2=document.createElement("img");i2.src=im.src;i2.alt="";d.appendChild(i2);d.onclick=function(){d.remove()};document.body.appendChild(d)}})}

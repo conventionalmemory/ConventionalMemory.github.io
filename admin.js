@@ -148,12 +148,46 @@ function fillFromTL(r){var x=(C.TLX||{})[r[2]]||{},it=collectSoft(),n={};
 function wikiOk(u){return/^https:\/\/en\.wikipedia\.org\/wiki\/[^\s]+$/.test(u||"")}
 function wikiSearch(q){var u="https://en.wikipedia.org/w/api.php?action=opensearch&format=json&origin=*&limit=5&namespace=0&search="+encodeURIComponent(q);
  return fetch(u,{credentials:"omit",referrerPolicy:"no-referrer"}).then(function(r){if(!r.ok)throw new Error("Wikipedia answered "+r.status);return r.json()}).then(function(j){var t=j[1]||[],d=j[2]||[],l=j[3]||[];return t.map(function(x,i){return{t:String(x),d:String(d[i]||""),u:l[i]}}).filter(function(x){return wikiOk(x.u)})})}
-function fillFromWiki(c){var u="https://en.wikipedia.org/api/rest_v1/page/summary/"+encodeURIComponent(c.t.replace(/ /g,"_"));
- fetch(u,{credentials:"omit",referrerPolicy:"no-referrer"}).then(function(r){if(!r.ok)throw new Error("Wikipedia answered "+r.status);return r.json()}).then(function(j){
-  var it=collectSoft();var page=j.content_urls&&j.content_urls.desktop&&j.content_urls.desktop.page;if(!wikiOk(page))page=c.u;
-  it.wiki={t:String(j.title||c.t),u:page,summary:String(j.extract||"").slice(0,1200)};if(!it.name)it.name=String(j.title||c.t);
-  var yr=/\b(19[7-9]\d|20[01]\d)\b/.exec(j.extract||"");if(!it.year&&yr)it.year=+yr[1];
-  editing.it=it;editing.lookupNote="Attached the Wikipedia summary for \""+it.wiki.t+"\" (CC BY-SA). Check it.";render()}).catch(function(e){editing.lookupNote="Could not reach Wikipedia: "+e.message;render()})}
+var WSKIP=/^(references|external links|see also|notes|further reading|footnotes|bibliography|sources|citations|gallery)$/i,WPREF=["overview","description","history","design","hardware","specifications","features","gameplay","development","release","reception","legacy","sales","software","models","variants","versions"];
+var WMAP={"manufacturer":"maker","publisher":"maker","publishers":"maker","developer":"dev","developers":"dev","designer":"maker","operating system":"OS shipped","cpu":"CPU","processor":"CPU","memory":"RAM installed","ram":"RAM installed","storage":"Storage","display":"Display","graphics":"Graphics","sound":"Sound","mass":"Weight","weight":"Weight","dimensions":"Dimensions","power":"Power supply","battery":"Battery","connectivity":"Ports","ports":"Ports","genre":"Genre","genres":"Genre","mode":"Players","modes":"Players","platform":"Platform","platforms":"Platform","media":"Format","input":"Input support","bus":"Bus","chipset":"Chipset","resolution":"Resolution","polyphony":"Polyphony","synthesis":"Synthesis"};
+function wclean(el){el.querySelectorAll("sup,style,script,.reference,.noprint,.mw-ref,.hlist-separator").forEach(function(n){n.remove()});el.querySelectorAll("br").forEach(function(n){n.replaceWith("; ")});el.querySelectorAll("li").forEach(function(n){n.append("; ")});
+ return el.textContent.replace(/\[[^\]]*\]/g,"").replace(/\s+/g," ").replace(/(;\s*)+$/,"").replace(/;\s*;/g,";").trim()}
+function wdate(v){var M={january:1,february:2,march:3,april:4,may:5,june:6,july:7,august:8,september:9,october:10,november:11,december:12},m,y;
+ if((m=/(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})/.exec(v))&&M[m[2].toLowerCase()])return m[3]+"-"+String(M[m[2].toLowerCase()]).padStart(2,"0")+"-"+String(+m[1]).padStart(2,"0");
+ if((m=/([A-Za-z]+)\s+(\d{1,2}),?\s+(\d{4})/.exec(v))&&M[m[1].toLowerCase()])return m[3]+"-"+String(M[m[1].toLowerCase()]).padStart(2,"0")+"-"+String(+m[2]).padStart(2,"0");
+ if((m=/([A-Za-z]+)\s+(\d{4})/.exec(v))&&M[m[1].toLowerCase()])return m[2]+"-"+String(M[m[1].toLowerCase()]).padStart(2,"0");
+ return(y=/\b(19[6-9]\d|20[0-2]\d)\b/.exec(v))?y[1]:""}
+function wparse(html){var doc=new DOMParser().parseFromString(html,"text/html"),box=doc.querySelector("table.infobox"),rows=[];
+ if(box)box.querySelectorAll("tr").forEach(function(tr){var th=tr.querySelector("th"),td=tr.querySelector("td");if(th&&td&&!td.querySelector("table")){var k=wclean(th.cloneNode(true)),v=wclean(td.cloneNode(true));if(k&&v&&k.length<40)rows.push([k,v.slice(0,200)])}});return rows}
+function wsections(text){var parts=String(text||"").split(/\n=+ (.+?) =+\n/),out=[],see=[];
+ for(var i=1;i<parts.length;i+=2){var h=parts[i].trim(),body=(parts[i+1]||"").replace(/\n=+ .+? =+\n[\s\S]*/,"").trim();
+  if(/^see also$/i.test(h)){see=body.split("\n").map(function(x){return x.trim()}).filter(function(x){return x&&x.length<60}).slice(0,8);continue}
+  if(WSKIP.test(h)||body.length<120)continue;
+  var t=body.replace(/\n{2,}/g,"\n\n");if(t.length>1500){t=t.slice(0,1500);var p=Math.max(t.lastIndexOf(". "),t.lastIndexOf(".\n"));if(p>500)t=t.slice(0,p+1)}
+  out.push({h:h,t:t})}
+ out.sort(function(a,b){var x=WPREF.indexOf(a.h.toLowerCase()),y=WPREF.indexOf(b.h.toLowerCase());return(x<0?99:x)-(y<0?99:y)});
+ return{sections:out.slice(0,6),see:see}}
+function fillFromWiki(c){var T=encodeURIComponent(c.t.replace(/ /g,"_")),base="https://en.wikipedia.org/w/api.php?format=json&origin=*&redirects=1&";
+ var get=function(u){return fetch(u,{credentials:"omit",referrerPolicy:"no-referrer"}).then(function(r){if(!r.ok)throw new Error("Wikipedia answered "+r.status);return r.json()})};
+ editing.lookupNote="Reading the whole Wikipedia article...";render();
+ Promise.all([get(base+"action=parse&prop=text&disablelimitreport=1&disableeditsection=1&page="+T),get(base+"action=query&prop=extracts|pageimages&explaintext=1&exsectionformat=wiki&pithumbsize=640&titles="+T)]).then(function(res){
+  var html=res[0].parse&&res[0].parse.text?res[0].parse.text["*"]:"",rows=wparse(html),pg=res[1].query&&res[1].query.pages?res[1].query.pages[Object.keys(res[1].query.pages)[0]]:{},ex=String(pg.extract||"");
+  var lead=ex.split(/\n=+ /)[0].trim(),ws=wsections(ex),title=String(pg.title||c.t),page="https://en.wikipedia.org/wiki/"+encodeURIComponent(title.replace(/ /g,"_")).replace(/%2F/g,"/").replace(/%3A/g,":");
+  var it=collectSoft(),sp=Object.assign({},it.specs||{}),facts={},nspec=0;
+  rows.forEach(function(r){var k=r[0].toLowerCase(),v=r[1],tg=WMAP[k];
+   if(k==="release date"||k==="released"||k==="introduced"||k==="first release"||k==="initial release"||k==="release"){var d=wdate(v);if(d&&!it.rel){it.rel=d;it.year=+d.slice(0,4)}return}
+   if(/^(introductory|launch|retail|original) ?price$|^price$|^msrp$/.test(k)){if(!it.msrp)it.msrp=v.split(";")[0].slice(0,60);return}
+   if(k==="discontinued"){var y=/\b(19\d\d|20\d\d)\b/.exec(v);if(y&&!it.disc)it.disc=+y[1];return}
+   if(tg==="maker"){if(!it.maker)it.maker=v.split(";")[0].slice(0,60);return}
+   if(tg==="dev"){if(C.SPEC_TYPES[it.type||"Other"]&&(it.type==="Game or software")){if(!sp.Developer){sp.Developer=v.slice(0,120);nspec++}}else if(!it.maker)it.maker=v.split(";")[0].slice(0,60);return}
+   if(tg){if(!sp[tg]){sp[tg]=v.slice(0,160);nspec++}return}
+   if(/^(type|image|caption|logo|website|also known as|codename|units sold|discontinued)$/.test(k))return;
+   if(Object.keys(facts).length<14)facts[r[0]]=v.slice(0,160)});
+  if(!it.name)it.name=title;if(!it.text&&lead)it.text=lead.split("\n")[0].slice(0,600);
+  var img=pg.thumbnail&&/^https:\/\/upload\.wikimedia\.org\//.test(pg.thumbnail.source||"")?pg.thumbnail.source:"";
+  it.specs=sp;it.wiki={t:title,u:page,summary:lead.slice(0,1200)};if(ws.sections.length)it.wiki.sections=ws.sections;if(Object.keys(facts).length)it.wiki.facts=facts;if(ws.see.length)it.wiki.see=ws.see;if(img)it.wiki.img=img;
+  editing.it=it;editing.lookupNote="Imported from Wikipedia: "+nspec+" spec"+(nspec===1?"":"s")+", "+Object.keys(facts).length+" infobox facts, "+ws.sections.length+" article section"+(ws.sections.length===1?"":"s")+(img?", and the lead image":"")+". They show on the item page with credit. Check them, then adjust.";render()
+ }).catch(function(e){editing.lookupNote="Could not reach Wikipedia: "+e.message;render()})}
 function lookupView(){var e=editing,h='<fieldset><legend>Quick fill</legend><p class="tn">Type a name and I will look for it in the timeline first, then on Wikipedia. Nothing is saved until you press the Add button below, so you can change anything.</p><div class="two"><div class="fld"><label for="lq">Name to look up</label><input id="lq" value="'+esc(e.lq||"")+'" placeholder="for example Sound Blaster 16"></div></div><p><button class="btn pri" id="lgo" type="button">Look it up</button></p>';
  if(e.lookupNote)h+='<div class="msg ok" role="status">'+esc(e.lookupNote)+'</div>';
  if(e.lres){h+='<h4>In the timeline</h4>'+(e.lres.tl.length?'<ul class="lk">'+e.lres.tl.map(function(m,i){var x=(C.TLX||{})[m.r[2]]||{};return'<li><button class="btn" data-lt="'+i+'" type="button">Use this</button> <b>'+esc(m.r[2])+'</b> <span class="tn">'+esc(m.r[0])+(m.r[3]?", "+esc(m.r[3]):"")+(x.maker?", "+esc(x.maker):"")+'</span></li>'}).join("")+'</ul>':'<p class="tn">No timeline match.</p>')
@@ -203,7 +237,7 @@ function collect(){var o=clone(editing.it),err=[],num=function(id,lo,hi,label){v
  if(!o.name)err.push("Name is required");
  var id=editing.i<0?slug(val("f_id")||o.name||""):editing.it.id;if(!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(id))err.push("The id needs lowercase letters, numbers and dashes");
  if(S.items.some(function(x,i){return x.id===id&&i!==editing.i}))err.push("Another item already uses the id "+id);
- o.id=id;
+ o.id=id;if(!o.cat)o.cat=(C.SPEC_TYPES[o.type]&&o.type!=="Other"?o.type+"s":"Other");
  LISTS.forEach(function(f){var l=val("f_"+f[0]).split(",").map(function(t){return t.trim()}).filter(Boolean);if(l.length)o[f[0]]=l;else delete o[f[0]]});
  LONG.forEach(function(f){var v=host.querySelector("#f_"+f[0]).value.trim();if(v)o[f[0]]=v;else delete o[f[0]]});
  var cr=val("f_credit");if(cr)o.credit=cr;else delete o.credit;
@@ -213,7 +247,7 @@ function collect(){var o=clone(editing.it),err=[],num=function(id,lo,hi,label){v
  pairs(host.querySelector("#f_other").value,"spec").list.forEach(function(p){sp[p[0]]=p[1]});if(Object.keys(sp).length)o.specs=sp;else delete o.specs;
  var v=pairs(host.querySelector("#f_videos").value,"url");if(v.bad)err.push(v.bad);o.videos=v.list;
  var l=pairs(host.querySelector("#f_links").value,"url");if(l.bad)err.push(l.bad);if(l.list.length)o.links=l.list;else delete o.links;
- var w=val("f_wiki");if(w){var wu=C.safeUrl(w,"link");if(!/^https?:/i.test(wu))err.push("The Wikipedia address must start with https://");else o.wiki={t:decodeURIComponent(wu.split("/").pop()||"").replace(/_/g," ")||"Wikipedia",u:wu,summary:host.querySelector("#f_wsum").value.trim()}}else delete o.wiki;
+ var w=val("f_wiki");if(w){var wu=C.safeUrl(w,"link");if(!/^https?:/i.test(wu))err.push("The Wikipedia address must start with https://");else{var pw=editing.it.wiki&&editing.it.wiki.u===wu?editing.it.wiki:{};o.wiki=Object.assign({},pw,{t:pw.t||decodeURIComponent(wu.split("/").pop()||"").replace(/_/g," ")||"Wikipedia",u:wu,summary:host.querySelector("#f_wsum").value.trim()})}}else delete o.wiki;
  var ex=pairs(host.querySelector("#f_extras").value,"extra");if(ex.list.length)o.extras=ex.list;else delete o.extras;
  var lg=pairs(host.querySelector("#f_log").value,"log");if(lg.bad)err.push(lg.bad);if(lg.list.length)o.log=lg.list;else delete o.log;
  readPriv();
