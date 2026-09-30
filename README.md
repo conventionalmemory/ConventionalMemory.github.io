@@ -9,7 +9,9 @@ A retro DOS-style museum catalog, timeline and trivia game. It is a plain static
 | `index.html` | The page shell, styles and security policy |
 | `app.js` | The site code. Socials, wanted list and settings are at the top |
 | `items.js` | The museum items. Rewritten by the Admin page |
-| `timeline-data.js` | The timeline (about 890 dated entries, 1974 to 2010) |
+| `timeline-data.js` | The timeline (about 1,070 dated entries, 1974 to 2010) |
+| `timeline-extra.js` | Extra detail per timeline entry: maker, specs, description, connections. Used by the timeline, the game and the admin autofill |
+| `catalog.js` | The interactive catalog (chips, score slider, Cards, Shelf, Time machine and DIR views) |
 | `quotes.js` | Quotes |
 | `game.js` | The Memory Maze game (`#/maze`) |
 | `tl.js` | The timeline page (chart, year view, search) |
@@ -32,9 +34,14 @@ Only someone holding a token for this repository can save changes. The token sta
 
 To avoid pasting the token every visit, type a passphrase (8+ characters) in the optional box when you unlock. The token is then stored encrypted (AES-256-GCM, key from your passphrase) in this browser only, and next time you just type the passphrase. "Forget saved token" removes it.
 
+## Quick fill and private fields (Admin page)
+
+- **Quick fill**: on the Add an item form, type a name and press Look it up. It searches the timeline first (name, maker, date, MSRP, specs and description fill in), then Wikipedia (summary and link). Nothing is saved until you press Add, so you can change every field. Wikipedia is the only outside source; other databases need an API key, and a key cannot be kept secret on a static site.
+- **Private fields** (paid, bought from, value, location, serial, private notes): encrypted in the browser with your passphrase (AES-256-GCM, PBKDF2 600,000 rounds) before they are saved. The public site only ever holds scrambled text. Because that text is public, use a long passphrase; anyone can try to guess it offline.
+
 ## Timeline data
 
-Each row is `[date, kind, title, price, note, source]`. An empty source shows an asterisk on the date, meaning unconfirmed.
+Each row is `[date, kind, title, price, note, source]`. An empty source shows an asterisk on the date, meaning unconfirmed. A price ending in `*` is an estimate. `timeline-extra.js` (`TLX`) is keyed by title and holds `maker`, `dev`, `type`, `specs`, `detail`, `links` (`[other title, relation]`) and `conf` (high, med, low).
 
 ## Security notes
 

@@ -9,7 +9,7 @@ var SOCIALS=[
  {n:"Instagram",u:"https://www.instagram.com/ConventionalMemory"},
  {n:"Facebook",u:"https://www.facebook.com/ConventionalMemory"}
 ];
-// Wanted list and current projects. Delete the sample: true flag when you replace these entries.
+// Wanted list and current projects. Entries flagged sample are hidden from visitors.
 var WANTED=[
  {name:"Roland SC-55",type:"Sound or MIDI",priority:"High",note:"Sample entry. Say which revision you want and what condition is acceptable.",sample:true}
 ];
@@ -32,14 +32,34 @@ var PCS=[
 ];
 // Review scale: score 0-640 ("K of conventional memory free"). Each tier starts at "min".
 // n = the joke name from DOS history, l = the plain-English verdict, d = what it means, c = the EGA color used for it.
+var MQ=["Welcome to the museum! Please keep your hands and 5.25 inch floppies inside the cart at all times. Thank you for visiting!",
+ "Please do not blow on the cartridges. We checked, it never worked. Thank you for visiting!",
+ "You have 3 unread messages on AOL. Please stand by while the modem screams.",
+ "Now with 100% more shareware! Register today to unlock the good levels.",
+ "Be kind, rewind. Be kinder, defrag.",
+ "Attention visitors: the Turbo button is not a real button. Please do not press it. Press it anyway.",
+ "Please wait while we load HIMEM.SYS. This may take a moment, or three.",
+ "Best viewed in Netscape Navigator 3.0 at 800 x 600. Bring a snack.",
+ "Our exhibits are totally tubular and certified Y2K compliant!",
+ "Caution: exhibits may contain traces of CRT, dust and pure nostalgia.",
+ "Insert Disk 2 to continue. Insert Disk 3. Insert Disk 4. Insert Disk 5.",
+ "Hot tip: if it does not work, try a different IRQ. If that does not work, try a different IRQ.",
+ "Welcome to the information superhighway. Please keep to the right of the modem.",
+ "Did you save your game? You did not save your game.",
+ "This site has been visited by absolutely dozens of people since 1995 (give or take 31 years).",
+ "No running in the aisles. Also no defragmenting during an earthquake.",
+ "Mind the gap between your RAM and your ambitions.",
+ "Free gift with every visit: one (1) fond memory of a beige box.",
+ "Please keep all hands, feet and joysticks inside the cart at all times.",
+ "Stay tuned, more exhibits are loading at 2400 baud."];
 var SCALE=[
- {min:0,n:"Format C:",l:"Skip it",c:"#aa0000",d:"Broken, unreliable, or just not worth the shelf space. (Are you sure? Y/N)"},
- {min:100,n:"Abort, Retry, Fail?",l:"Meh",c:"#ff5555",d:"It works if you are patient. For completists only."},
- {min:200,n:"Not enough memory",l:"Okay",c:"#aa5500",d:"Does the job, with compromises and quirks. Fine if you find one cheap."},
- {min:300,n:"Runs from a boot disk",l:"Decent",c:"#ffff55",d:"Needs some fiddling, then it is a good time. Worth having."},
- {min:400,n:"Loads high",l:"Good",c:"#55ff55",d:"Well behaved and easy to enjoy. A solid pick."},
- {min:500,n:"Turbo button ON",l:"Great",c:"#00aaaa",d:"Fast, fun and easy to recommend."},
- {min:600,n:"640K free!",l:"Must-have",c:"#55ffff",d:"The best of the collection. Nearly all 640K left for the fun."}
+ {min:0,n:"Format C:",l:"Bogus",c:"#aa0000",d:"Total bummer, dude. Broken, flaky or just not worth the shelf space. Talk to the hand. (Are you sure? Y/N)"},
+ {min:100,n:"Abort, Retry, Fail?",l:"Whack",c:"#ff5555",d:"Not cool. It limps along if you are patient, so it is for completists only. As if!"},
+ {min:200,n:"Not enough memory",l:"Not bad, dude",c:"#aa5500",d:"Does the job with a few quirks. Not exactly all that, but fine if you find one cheap."},
+ {min:300,n:"Runs from a boot disk",l:"Tubular",c:"#ffff55",d:"A little fiddling and then it is a good time. Worth having, no doubt."},
+ {min:400,n:"Loads high",l:"Phat",c:"#55ff55",d:"Smooth, fun and easy to live with. A solid pick, totally money."},
+ {min:500,n:"Turbo button ON",l:"Radical",c:"#00aaaa",d:"Wicked fast and mega fun. Get some. Easy to recommend."},
+ {min:600,n:"640K free!",l:"Da bomb!",c:"#55ffff",d:"All that and a bag of chips. The cream of the collection, with nearly all 640K left for the good stuff."}
 ];
 // Spec sheet template per type, in groups. An item only shows the specs you fill in, so a printer never shows CPU or RAM.
 // Anything you add that is not listed here still appears, under "Other specs".
@@ -88,7 +108,7 @@ function home(){
  var avg=sc.length?Math.round(sc.reduce(function(a,i){return a+i.score},0)/sc.length):0;
  var old=ITEMS.slice().sort(function(a,b){return a.year-b.year})[0],top=sc.slice().sort(function(a,b){return b.score-a.score})[0];
  var decs=[1970,1980,1990,2000].map(function(d){return '<a class="btn" href="#/timeline/'+(d===1970?1977:d+5)+'">'+d+'s</a>'}).join(" ");
- app.innerHTML='<div class="mq"><span>Welcome to the museum! Please keep your hands and 5.25 inch floppies inside the cart at all times. Thank you for visiting!</span></div>'
+ app.innerHTML='<div class="mq"><span>'+esc(MQ[Math.floor(Math.random()*MQ.length)])+'</span></div>'
  +'<div class="hero"><h1>Conventional Memory</h1><p>Vintage computers and the people who kept them running. Watch the videos, then browse every item in the museum, with photos, audio and the story behind each one.</p>'+socials()+'</div>'
  +'<nav class="hm-tiles" aria-label="Start here">'+tile("#/catalog",n+" items","Browse the catalog","pri")+tile("#/timeline",TL.length+"+ entries","Explore the timeline")+tile("#/scale","0K to 640K","How items are rated")+tile("#/wanted","Wanted","Help me find these")+tile("#/random","Surprise me","Load a random item")+tile("#/follow","Follow","Videos on 4 platforms")+'</nav>'
  +daily()
@@ -96,19 +116,8 @@ function home(){
  +'<section><h2>Travel through time</h2><p>'+TL.length+' dated entries from 1974 to 2010: computers, games, movies and the industry, side by side. Jump to a decade or a year.</p><p class="chips">'+decs+' <a class="btn" href="#/timeline">Open the timeline</a></p>'+otdInner()+'</section>'
  +'<section><h2>The museum so far</h2><div class="mem" role="img" aria-label="'+n+' items cataloged"><div class="bar"><i style="width:'+pct+'%"></i></div><small>'+n+'K used, '+(640-n)+'K free. One item cataloged per K.</small></div><div class="stats"><div><b>'+n+'</b>items</div><div><b>'+(sc.length?avg+'K':'none')+'</b>average score</div><div><b>'+(old?old.year:'none')+'</b>oldest item</div>'+(top?'<div><b><a href="#/item/'+top.id+'">'+esc(top.name)+'</a></b>top rated, '+top.score+'K</div>':'')+'</div></section>'
  +recentHtml()+nowHtml()+qodHtml()+contactHtml()}
-function card(it){return '<a class="card" href="#/item/'+it.id+'"><div class="ph">'+pic(it)+'</div><div class="t"><h3>'+esc(it.name)+'</h3><p>'+esc(it.maker)+', '+it.year+(it.score!=null?'<span class="tag">'+it.score+'K</span>':'')+(it.status?'<span class="tag">'+esc(it.status)+'</span>':'')+(it.qty>1?'<span class="tag">x'+it.qty+'</span>':'')+(it.sample?'<span class="tag">sample</span>':'')+'</p></div></a>'}
-function catalog(){
- var cats=[],sts=[];ITEMS.forEach(function(i){if(cats.indexOf(i.cat)<0)cats.push(i.cat);if(i.status&&sts.indexOf(i.status)<0)sts.push(i.status)});
- app.innerHTML='<section><h2>Catalog</h2>'+tagChips()+'<div class="tools"><input id="q" type="search" placeholder="Search items, makers, years" aria-label="Search"><select id="c" aria-label="Category"><option value="">All categories</option>'+cats.map(function(c){return '<option>'+esc(c)+'</option>'}).join("")+'</select><select id="st" aria-label="Status"><option value="">Any status</option>'+sts.map(function(c){return '<option>'+esc(c)+'</option>'}).join("")+'</select><select id="s" aria-label="Sort"><option value="">Catalog order</option><option value="score">Highest score</option><option value="old">Oldest first</option><option value="new">Newest first</option><option value="name">Name A to Z</option></select><button class="btn" id="vw" type="button">DIR view</button></div><div id="g" class="grid"></div></section>';
- var q=document.getElementById("q"),c=document.getElementById("c"),so=document.getElementById("s"),stEl=document.getElementById("st"),g=document.getElementById("g");
- var view="grid",vw=document.getElementById("vw");vw.onclick=function(){view=view==="dir"?"grid":"dir";vw.textContent=view==="dir"?"Grid view":"DIR view";run()};
- function run(){var t=q.value.toLowerCase();var r=ITEMS.filter(function(i){return(!c.value||i.cat===c.value)&&(!stEl.value||i.status===stEl.value)&&(i.name+" "+i.maker+" "+i.year+" "+i.cat+" "+i.acc+" "+(i.tags||[]).join(" ")).toLowerCase().indexOf(t)>=0});
-  if(so.value==="score")r.sort(function(a,b){return(b.score||0)-(a.score||0)});
-  else if(so.value==="old")r.sort(function(a,b){return a.year-b.year});
-  else if(so.value==="new")r.sort(function(a,b){return b.year-a.year});
-  else if(so.value==="name")r.sort(function(a,b){return a.name.localeCompare(b.name)});
-  g.className=view==="dir"?"":"grid";g.innerHTML=!r.length?'<div class="empty">No items match. Clear the search or pick another category.</div>':view==="dir"?dir(r):r.map(card).join("")}
- q.oninput=run;c.onchange=run;stEl.onchange=run;so.onchange=run;run()}
+function cardBack(it){var sp=(typeof pickSpecs==="function"?pickSpecs(it,it.type):[]).slice(0,3);return'<div class="fl-b"><b>'+esc(it.name)+'</b>'+(it.score!=null?'<div class="fl-s"><i style="width:'+(it.score/640*100)+'%;background:'+tier(it.score).c+'"></i></div><small>'+esc(tier(it.score).l)+' &middot; '+it.score+'K</small>':'')+(sp.length?'<dl>'+sp.map(function(x){return'<dt>'+esc(x[0])+'</dt><dd>'+esc(String(x[1]).slice(0,30))+'</dd>'}).join("")+'</dl>':'<p>'+esc((it.text||"").slice(0,110))+'</p>')+'<span class="fl-go">Open exhibit &raquo;</span></div>'}
+function card(it){return '<a class="card fl" href="#/item/'+it.id+'"><div class="fl-in"><div class="fl-f"><div class="ph">'+pic(it)+'</div><div class="t"><h3>'+esc(it.name)+'</h3><p>'+esc(it.maker)+', '+it.year+(it.score!=null?'<span class="tag">'+it.score+'K</span>':'')+(it.status?'<span class="tag">'+esc(it.status)+'</span>':'')+(it.qty>1?'<span class="tag">x'+it.qty+'</span>':'')+'</p></div></div>'+cardBack(it)+'</div></a>'}
 var MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 function fmtDate(d){var p=String(d).split("-");return p.length===3?MON[+p[1]-1]+" "+(+p[2])+", "+p[0]:p.length===2?MON[+p[1]-1]+" "+p[0]:p[0]}
 function dyear(d){return +String(d).slice(0,4)}
@@ -192,7 +201,7 @@ function changes(){
  var r=allLogs(),s=document.getElementById("lt"),ll=document.getElementById("ll");
  function draw(){var l=r.filter(function(e){return !s.value||e.x.t===s.value}),m=null,o="";
   l.forEach(function(e){var mo=String(e.x.d).slice(0,7);if(mo!==m){m=mo;o+='<h3 class="sub">'+esc(fmtDate(mo))+'</h3>'}o+=logRow(e)});
-  ll.innerHTML=o||'<div class="empty">No changes logged yet. Add entries to an item log from the Admin page.</div>'}
+  ll.innerHTML=o||'<div class="empty">No updates yet. Check back soon.</div>'}
  s.onchange=draw;draw()}
 var EXST=["Have","Want","Missing","Optional"];
 var ACC_HINTS={"Computer":["AC adapter","Battery","Manual","Original box","Carrying case","Restore or driver disks","Dock or port replicator","Mouse","Keyboard"],
@@ -248,7 +257,7 @@ function scoreBlock(v,t){t=t||tier(v);return '<div class="score"><div class="sba
 function scale(){var h='<section><h2>The 640K scale</h2><p><b>How it works:</b> back in the DOS days your programs had to squeeze into 640K of "conventional memory". The more of it you had left free, the better your day went. Same idea here: every item gets a score from 0K to 640K, and <b>more free memory means a better item</b>.</p><p><b>Quick translation:</b> divide by 64 to get a score out of 10. So 320K is a 5 out of 10 and a full 640K is a perfect 10.</p><div class="sbar big" role="img" aria-label="The scale from 0K to 640K">'+SCALE.map(function(x,i){var hi=i<SCALE.length-1?SCALE[i+1].min:640;return '<i style="width:'+(hi-x.min)/640*100+'%"><b style="width:100%;background:'+x.c+'"></b></i>'}).join("")+'</div>';
  SCALE.slice().reverse().forEach(function(t){var i=SCALE.indexOf(t),hi=i<SCALE.length-1?SCALE[i+1].min-1:640;var l=ITEMS.filter(function(x){return x.score!=null&&tier(x.score)===t});
   h+='<div class="tier" style="border-left-color:'+t.c+'"><div class="tierh"><span class="verdict" style="background:'+t.c+'">'+esc(t.l)+'</span> <b>'+t.min+'K to '+hi+'K</b> <span class="tn">about '+outOf10(t.min)+' to '+outOf10(hi)+' out of 10</span></div><p><b>"'+esc(t.n)+'"</b> '+esc(t.d)+'</p><small class="tn">'+(l.length?l.map(function(x){return '<a href="#/item/'+esc(x.id)+'">'+esc(x.name)+'</a> ('+x.score+'K)'}).join(", "):"No items yet")+'</small></div>'});
- app.innerHTML=h+'<p class="tn">The joke names are real DOS moments: Format C: wiped a drive, Abort, Retry, Fail? was DOS\'s famously unhelpful error prompt, and LOADHIGH and EMM386 were how you clawed back free memory.</p></section>'}
+ app.innerHTML=h+'<p class="tn">The italic joke names under each verdict are real DOS moments: Format C: wiped a drive, Abort, Retry, Fail? was DOS\'s famously unhelpful error prompt, and LOADHIGH and EMM386 were how you clawed back free memory.</p></section>'}
 function dos(it){return(it.name.toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,8)||"ITEM")+".ITM"}
 function dpath(it){return "C:\\MUSEUM\\"+(it.cat.toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,8)||"MISC")+"\\"+dos(it)}
 function dlg(msg,btns){app.innerHTML='<section><div class="dlg"><div class="tb">Error</div><p>'+msg+'</p><p>'+btns+'</p></div></section>'}
@@ -297,9 +306,9 @@ function check(){var seen={},rows=[],ok=0;
 function contactHtml(){var m="mailto:"+EMAIL;
  return '<section><h2>Contact</h2><div class="ctc"><a class="mb" href="'+m+'?subject=Hello%20from%20ConventionalMemory.io" aria-label="Email me"><svg viewBox="0 0 160 130" role="img" aria-hidden="true"><rect x="70" y="80" width="10" height="50" fill="#7a5a3a" stroke="#333" stroke-width="2"/><path d="M30 82V58Q30 30 75 30Q120 30 120 58V82Z" fill="#c9ced6" stroke="#333" stroke-width="3"/><rect x="42" y="62" width="66" height="8" fill="#333"/><g class="flag"><rect x="118" y="30" width="5" height="36" fill="#d22" stroke="#333" stroke-width="1.5"/><rect x="123" y="30" width="18" height="12" fill="#d22" stroke="#333" stroke-width="1.5"/></g></svg></a>'
  +'<div><p><b>You&rsquo;ve got mail!</b> Click the mailbox to write to me.</p><p><a href="'+m+'?subject=Guestbook">Sign my guestbook</a></p></div></div></section>'}
-function nowHtml(){return NOW.length?'<section><h2>Now working on</h2>'+NOW.map(function(n){return '<div class="src"><b>'+(n.item?'<a href="#/item/'+esc(n.item)+'">'+esc(n.t)+'</a>':esc(n.t))+(n.sample?'<span class="tag">sample</span>':'')+'</b><p>'+esc(n.note)+'</p></div>'}).join("")+'</section>':""}
+function nowHtml(){NOW=NOW.filter(function(n){return!n.sample});return NOW.length?'<section><h2>Now working on</h2>'+NOW.map(function(n){return '<div class="src"><b>'+(n.item?'<a href="#/item/'+esc(n.item)+'">'+esc(n.t)+'</a>':esc(n.t))+'</b><p>'+esc(n.note)+'</p></div>'}).join("")+'</section>':""}
 function wanted(){var h='<section><h2>Wanted</h2><p>Items I am hunting for. If you have one to sell or donate, message me on any of my socials.</p>'+socials();
- h+=WANTED.length?WANTED.map(function(w){return '<div class="src"><b>'+esc(w.name)+'</b><span class="tag">'+esc(w.priority||"Wanted")+'</span>'+(w.sample?'<span class="tag">sample</span>':'')+'<br>'+esc(w.type||"")+'<p>'+esc(w.note||"")+'</p></div>'}).join(""):'<div class="empty">Nothing on the list right now.</div>';
+ h+=WANTED.filter(function(w){return!w.sample}).length?WANTED.filter(function(w){return!w.sample}).map(function(w){return '<div class="src"><b>'+esc(w.name)+'</b><span class="tag">'+esc(w.priority||"Wanted")+'</span>'+'<br>'+esc(w.type||"")+'<p>'+esc(w.note||"")+'</p></div>'}).join(""):'<div class="empty">Nothing on the list right now.</div>';
  var we=wantedExtras();if(we.length)h+='<h3 class="sub">Accessories and parts</h3>'+we.map(function(w){return '<div class="ex"><span class="tag want">'+w.s+'</span> '+esc(w.x.n)+' for <a href="#/item/'+esc(w.it.id)+'">'+esc(w.it.name)+'</a>'+(w.x.note?' <small class="tn">'+esc(w.x.note)+'</small>':'')+'</div>'}).join("");
  app.innerHTML=h+'</section>'}
 function pn(it){var i=ITEMS.indexOf(it),p=ITEMS[i-1],n=ITEMS[i+1];
@@ -329,7 +338,7 @@ function item(id){
  var ident=tbl([["Maker",it.maker],["Model",it.model],["Part number",it.partno],["Revision",it.rev],["Barcode",it.upc],["Released",(it.rel?fmtDate(it.rel):it.year)+(it.relx?"*":"")],["Discontinued",it.disc],["Original MSRP",it.msrp],["Made in",it.country],["Date code",it.made],["Category",it.cat],["Type",it.type]]);
  var coll=tbl([["Accession",it.acc],["Status",it.status?it.status+(it.qty>1?", quantity "+it.qty:""):""],["Condition",it.cond],["Working",it.works],["Includes",(it.has||[]).join(", ")],["Acquired",it.acquired],["Last changed",logsOf(it)[0]?fmtDate(logsOf(it)[0].d):""],["Where I got it",it.got],["Tags",(it.tags||[]).length?{h:it.tags.map(function(t){return '<a href="#/tag/'+encodeURIComponent(t)+'">'+esc(t)+'</a>'}).join(", ")}:""],["Record complete",comp(it)+"%"]]);
  var picks=adPicks(it);
- app.innerHTML='<section class="itempage">'+pn(it)+adBar(picks)+'<div class="detail"><div class="dl"><div class="ph">'+pic(it)+'</div>'+gal+(it.credit?'<small style="color:var(--mute)">'+esc(it.credit)+'</small>':'')+media+src+'</div><div class="dr"><div class="tb">'+esc(dpath(it))+'</div><h2>'+esc(it.name)+(it.sample?'<span class="tag">sample</span>':'')+'</h2>'
+ app.innerHTML='<section class="itempage">'+pn(it)+adBar(picks)+'<div class="detail"><div class="dl"><div class="ph">'+pic(it)+'</div>'+gal+(it.credit?'<small style="color:var(--mute)">'+esc(it.credit)+'</small>':'')+media+src+'</div><div class="dr"><div class="tb">'+esc(dpath(it))+'</div><h2>'+esc(it.name)+'</h2>'
   +cmpSel(it)+sc+(it.text?'<p>'+esc(it.text)+'</p>':"")+(it.thoughts?sec("My take",'<p>'+esc(it.thoughts)+'</p>'):"")+sec("Identification and history",ident)+specSheet(it)+sec("Collection record",coll)+exSec(it)+logSec(it)+(it.notes?sec("Repairs and mods",'<p>'+esc(it.notes)+'</p>'):"")+'</div></div>'
   +adItem(it)+eraSec(it)+related(it)+adShelf(picks)+'</section>';
  var cs=document.getElementById("cmp");if(cs)cs.onchange=function(){if(cs.value)location.hash="#/compare/"+it.id+"/"+cs.value};
@@ -346,11 +355,11 @@ function stats(){
  app.innerHTML='<section><h2>The numbers</h2><div class="stats"><div><b>'+n+'</b>catalog entries</div><div><b>'+q+'</b>total pieces</div><div><b>'+(tot?"$"+Math.round(tot).toLocaleString("en-US"):"none")+'</b>original retail value, in dollars as priced</div><div><b>'+pct(function(i){return(i.photos||[]).length})+'</b>have photos</div><div><b>'+pct(function(i){return i.specs&&Object.keys(i.specs).length})+'</b>have specs</div><div><b>'+pct(function(i){return i.score!=null})+'</b>scored</div><div><b>'+wantedExtras().length+'</b>accessories still wanted</div><div><b>'+ITEMS.filter(function(i){var c=(i.extras||[]).filter(function(x){return exStat(x)!=="Optional"});return c.length&&c.every(function(x){return exStat(x)==="Have"})}).length+'</b>complete sets</div><div><b>'+allLogs().length+'</b>changelog entries</div></div>'
  +sec("By decade",bars(dec,false))+sec("Top makers",bars(mk,true))+sec("By status",bars(st,true))+sec("Working status",bars(wk,true))+sec("Condition",bars(cd,true))+'</section>'}
 function follow(){app.innerHTML='<section><h2>Follow @'+HANDLE+'</h2><p>New items and videos go up on all four platforms.</p>'+socials()+'</section>'+contactHtml()}
-function loadAdmin(){if(window.CMAdmin){window.CMApp={ITEMS:ITEMS,SPEC_TYPES:SPEC_TYPES,ACC_HINTS:ACC_HINTS,EXST:EXST,LOGTYPES:LOGTYPES,REPO:REPO,esc:esc,safeUrl:safeUrl,today:today,prep:prepItems,fmtDate:fmtDate};CMAdmin.mount(app,window.CMApp);return}
- app.innerHTML='<section><h2>Admin</h2><p>Loading the admin tools.</p></section>';var sc=document.createElement("script");sc.src="admin.js";sc.onload=function(){route()};sc.onerror=function(){app.innerHTML='<section><h2>Admin</h2><p class="empty">The admin tools (admin.js) could not be loaded. Make sure admin.js is in the same folder as the site.</p></section>'};document.head.appendChild(sc)}
+function loadAdmin(){if(window.CMAdmin){window.CMApp={TL:TL,TLX:typeof TLX!=="undefined"?TLX:{},ITEMS:ITEMS,SPEC_TYPES:SPEC_TYPES,ACC_HINTS:ACC_HINTS,EXST:EXST,LOGTYPES:LOGTYPES,REPO:REPO,esc:esc,safeUrl:safeUrl,today:today,prep:prepItems,fmtDate:fmtDate};CMAdmin.mount(app,window.CMApp);return}
+ app.innerHTML='<section><h2>Admin</h2><p>Loading the admin tools.</p></section>';var sc=document.createElement("script");sc.src="admin.js";sc.onload=function(){route()};sc.onerror=function(){app.innerHTML='<section><h2>Admin</h2><p class="empty">The admin tools could not be loaded. Try again in a moment.</p></section>'};document.head.appendChild(sc)}
 function route(){if(window.CMAdmin)CMAdmin.unmount();var h=location.hash.replace(/^#\/?/,"").split("/");window.scrollTo(0,0);app.oninput=null;if(window.CMGame)CMGame.unmount();
  if(h[0]==="random"){location.replace("#/item/"+ITEMS[Math.floor(Math.random()*ITEMS.length)].id);return}
- if(h[0]==="maze"&&window.CMGame)CMGame.mount(app,{items:ITEMS,tl:TL,tier:tier,scale:SCALE});else if(h[0]==="compare")compare(h[1],h[2]);else if(h[0]==="tag")tagPage(decodeURIComponent(h.slice(1).join("/")));else if(h[0]==="changes")changes();else if(h[0]==="quotes")quotesPage();else if(h[0]==="stats")stats();else if(h[0]==="wanted")wanted();else if(h[0]==="check")check();else if(h[0]==="mem")mem();else if(h[0]==="admin"||h[0]==="builder")loadAdmin();else if(h[0]==="timeline")timeline(+h[1]||0);else if(h[0]==="scale")scale();else if(h[0]==="catalog")catalog();else if(h[0]==="item")item(h[1]);else if(h[0]==="follow")follow();else home();
+ if(h[0]==="maze"&&window.CMGame)CMGame.mount(app,{items:ITEMS,tl:TL,tlx:typeof TLX!=="undefined"?TLX:{},tier:tier,scale:SCALE});else if(h[0]==="compare")compare(h[1],h[2]);else if(h[0]==="tag")tagPage(decodeURIComponent(h.slice(1).join("/")));else if(h[0]==="changes")changes();else if(h[0]==="quotes")quotesPage();else if(h[0]==="stats")stats();else if(h[0]==="wanted")wanted();else if(h[0]==="check")check();else if(h[0]==="mem")mem();else if(h[0]==="admin"||h[0]==="builder")loadAdmin();else if(h[0]==="timeline")timeline(+h[1]||0);else if(h[0]==="scale")scale();else if(h[0]==="catalog")catalog();else if(h[0]==="item")item(h[1]);else if(h[0]==="follow")follow();else home();
  var qb=document.getElementById("qnew");if(qb)qb.onclick=function(){document.getElementById("qbox").innerHTML=qBlock(QUOTES[Math.floor(Math.random()*QUOTES.length)])};
  var t=app.querySelector("h1,h2"),n=t&&(t.firstChild||t).textContent;document.title=n&&n!=="Conventional Memory"?n+" | Conventional Memory":"Conventional Memory"}
 window.addEventListener("hashchange",route);route();

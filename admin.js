@@ -6,7 +6,7 @@
    The token is kept in memory only. It can also be saved encrypted with a passphrase (see the vault below). */
 (function(){
 "use strict";
-var C,host=null,tok=null,S=null,view="list",editing=null,q="",note=null,idle=0,busy=false;
+var C,host=null,tok=null,PP=null,S=null,view="list",editing=null,q="",note=null,idle=0,busy=false;
 var API="https://api.github.com",FILE="items.js";
 var HEAD="// Museum items. This file is rewritten by the Admin page (#/admin), so edit items there.\n// You can also edit it by hand: keep it valid JSON after \"var ITEMS=\".\n";
 var CORE=[["name","Name",1],["maker","Maker or publisher"],["year","Release year (number)"],["rel","Release date: YYYY, YYYY-MM or YYYY-MM-DD"],["msrp","Original MSRP"],["cat","Category (for example Laptops)"],["model","Model"],["partno","Part number"],["rev","Revision"],["upc","UPC or barcode"],["disc","Discontinued (year)"],["made","Manufactured (date code)"],["country","Country of origin"],["cond","Condition"],["works","Working status (Working, Partly working, Untested, Not working)"],["status","Status (Display, Storage, Repair, Loaned, Sold)"],["qty","Quantity"],["acquired","Acquired (date)"],["got","Where I got it"],["score","Score, 0 to 640"]];
@@ -76,7 +76,7 @@ function unlock(token,remember,pass){tok=token.trim();busy=true;render();
    note=d.created?{t:"ok",m:"Unlocked. items.js is not in the repository yet, so the current page's items are loaded. Save to GitHub to create it."}:{t:"ok",m:"Unlocked. Loaded "+S.items.length+" items from GitHub."};
    view="list";bump()
  }).catch(function(e){tok=null;S=null;note={t:"err",m:String(e.message||e)}}).then(function(){busy=false;render()})}
-function lock(m){tok=null;S=null;editing=null;view="list";clearTimeout(idle);note=m?{t:"ok",m:m}:null;render()}
+function lock(m){tok=null;PP=null;S=null;editing=null;view="list";clearTimeout(idle);note=m?{t:"ok",m:m}:null;render()}
 var hid=0;document.addEventListener("visibilitychange",function(){if(document.hidden){hid=setTimeout(function(){if(tok&&!(S&&S.dirty))lock("Locked after the tab was in the background for 5 minutes.")},5*60*1000)}else clearTimeout(hid)});
 function bump(){clearTimeout(idle);if(tok)idle=setTimeout(function(){if(S&&S.dirty){bump();return}lock("Locked after 20 minutes of no activity.")},20*60*1000)}
 function save(){if(!S||busy)return;busy=true;note={t:"ok",m:"Saving to GitHub..."};render();
@@ -109,6 +109,56 @@ function listView(){var items=S.items,ql=q.toLowerCase(),vis=items.map(function(
  +'<p class="tn">Changes are only saved when you press Save to GitHub. Deleting an item does not delete its photo files from the repository.</p>')}
 function field(id,label,val,extra){return'<div class="fld"><label for="'+id+'">'+esc(label)+'</label><input id="'+id+'" value="'+esc(val==null?"":val)+'" '+(extra||"")+'></div>'}
 function area(id,label,val,h){return'<label for="'+id+'">'+esc(label)+'</label><textarea id="'+id+'" style="min-height:'+(h||80)+'px">'+esc(val||"")+'</textarea>'}
+
+// ---- Private (admin only) fields: encrypted with the admin passphrase, so the public site only ever holds ciphertext ----
+var PRIV=[["paid","What I paid"],["seller","Bought from"],["value","Estimated value now"],["loc","Storage location"],["serial","Serial number"],["pnotes","Private notes"]];
+function paad(){return new TextEncoder().encode("cm-priv|1|"+C.REPO.owner+"/"+C.REPO.repo)}
+function encPriv(obj,pass){var salt=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12));
+ return vKey(pass,salt,ITER).then(function(k){return crypto.subtle.encrypt({name:"AES-GCM",iv:iv,additionalData:paad()},k,new TextEncoder().encode(JSON.stringify(obj)))}).then(function(ct){return{v:1,i:ITER,s:b2s(salt),n:b2s(iv),c:b2s(ct)}})}
+function decPriv(o,pass){if(!o||o.v!==1||o.i<ITER||o.i>5000000)return Promise.reject(new Error("The private data is in an unknown format."));
+ return vKey(pass,s2b(o.s),o.i).then(function(k){return crypto.subtle.decrypt({name:"AES-GCM",iv:s2b(o.n),additionalData:paad()},k,s2b(o.c))}).then(function(pt){return JSON.parse(new TextDecoder().decode(pt))},function(){throw new Error("Wrong passphrase for the private fields.")})}
+function privSection(){var e=editing,it=e.it;
+ if(!e.privOk){return'<fieldset><legend>Private fields (admin only)</legend><p class="tn">These are encrypted with your passphrase before saving. Visitors never see them.</p>'
+  +'<label for="pvp">'+(it.privEnc?'Passphrase to open the private fields':'Passphrase to lock the private fields (use your admin passphrase)')+'</label><input id="pvp" type="password" autocomplete="off"><p><button class="btn" id="pvo" type="button">'+(it.privEnc?"Open private fields":"Start private fields")+'</button></p></fieldset>'}
+ return'<fieldset><legend>Private fields (admin only, encrypted)</legend><p class="tn">Saved encrypted. The public site only ever holds scrambled text for these.</p><div class="two">'+PRIV.filter(function(f){return f[0]!=="pnotes"}).map(function(f){return field("pv_"+f[0],f[1],e.priv[f[0]])}).join("")+'</div>'+area("pv_pnotes","Private notes",e.priv.pnotes,70)+'</fieldset>'}
+function readPriv(){if(!editing||!editing.privOk)return;PRIV.forEach(function(f){var el=host&&host.querySelector("#pv_"+f[0]);if(el){var v=el.value.trim();if(v)editing.priv[f[0]]=v;else delete editing.priv[f[0]]}})}
+function openPriv(pass){var e=editing;if(!pass){e.privMsg="Type the passphrase first.";render();return}
+ if(!e.it.privEnc){var pr=passProblem(pass);if(pr){note={t:"err",m:"Private passphrase: "+pr};render();return}PP=pass;e.priv={};e.privOk=true;render();return}
+ decPriv(e.it.privEnc,pass).then(function(o){PP=pass;e.priv=o||{};e.privOk=true;render()},function(er){note={t:"err",m:er.message};render()})}
+// ---- Autofill: timeline first, then Wikipedia ----
+var CATMAP={"Computer":"Computers","Console or handheld":"Consoles and handhelds","Expansion card":"Expansion cards","Sound or MIDI":"Sound and MIDI","Peripheral":"Peripherals","Storage":"Storage","Monitor":"Monitors","Printer":"Printers","Game or software":"Games and software","Other":"Other"};
+function nk(s){return String(s).toLowerCase().replace(/[^a-z0-9]+/g," ").trim()}
+function tlMatches(q){q=nk(q);if(q.length<2)return[];var w=q.split(" "),out=[];
+ (C.TL||[]).forEach(function(r){if(!/^(hw|sw|gt|gn|gc)$/.test(r[1]))return;var t=nk(r[2]),sc=0;if(t===q)sc=100;else if(t.indexOf(q)>=0)sc=60-Math.min(30,t.length-q.length);else{var hit=w.filter(function(x){return t.indexOf(x)>=0}).length;if(hit===w.length)sc=40;else if(hit&&hit>=Math.ceil(w.length/2)&&w.length>1)sc=15+hit}
+  if(sc)out.push({r:r,sc:sc})});
+ out.sort(function(a,b){return b.sc-a.sc});return out.slice(0,6)}
+function fillFromTL(r){var x=(C.TLX||{})[r[2]]||{},it=collectSoft(),n={};
+ var ty=x.type&&C.SPEC_TYPES[x.type]?x.type:(/^(sw|gt|gn|gc)$/.test(r[1])?"Game or software":"Computer");
+ if(!it.name)it.name=r[2];if(!it.maker&&x.maker)it.maker=x.maker;if(!it.rel){it.rel=r[0];it.year=+r[0].slice(0,4);if(!r[5])it.relx=true}
+ if(!it.msrp&&r[3])it.msrp=r[3].replace(/\*$/," (estimated)");
+ if(!it.cat)it.cat=CATMAP[ty]||"Other";
+ if(!it.text){it.text=[r[4],x.detail].filter(Boolean).join(" ")}
+ var known={};var g=C.SPEC_TYPES[ty]||{};Object.keys(g).forEach(function(k){g[k].forEach(function(f){known[f]=1})});
+ var sp=Object.assign({},it.specs||{});var src=Object.assign({},x.specs||{});
+ if(ty==="Game or software"){if(x.maker&&!src.Publisher)src.Publisher=x.maker;if(x.dev&&!src.Developer)src.Developer=x.dev}
+ Object.keys(src).forEach(function(k){if(!sp[k])sp[k]=String(src[k])});
+ it.specs=sp;it.type=ty;
+ var tg=(it.tags||[]).slice();var dec=String(r[0]).slice(0,3)+"0s";[dec,r[1]==="hw"?"hardware":"software"].forEach(function(t){if(tg.indexOf(t)<0)tg.push(t)});it.tags=tg;
+ editing.it=it;editing.lookupNote="Filled from the timeline entry \""+r[2]+"\". Check every field, then adjust.";render()}
+function wikiOk(u){return/^https:\/\/en\.wikipedia\.org\/wiki\/[^\s]+$/.test(u||"")}
+function wikiSearch(q){var u="https://en.wikipedia.org/w/api.php?action=opensearch&format=json&origin=*&limit=5&namespace=0&search="+encodeURIComponent(q);
+ return fetch(u,{credentials:"omit",referrerPolicy:"no-referrer"}).then(function(r){if(!r.ok)throw new Error("Wikipedia answered "+r.status);return r.json()}).then(function(j){var t=j[1]||[],d=j[2]||[],l=j[3]||[];return t.map(function(x,i){return{t:String(x),d:String(d[i]||""),u:l[i]}}).filter(function(x){return wikiOk(x.u)})})}
+function fillFromWiki(c){var u="https://en.wikipedia.org/api/rest_v1/page/summary/"+encodeURIComponent(c.t.replace(/ /g,"_"));
+ fetch(u,{credentials:"omit",referrerPolicy:"no-referrer"}).then(function(r){if(!r.ok)throw new Error("Wikipedia answered "+r.status);return r.json()}).then(function(j){
+  var it=collectSoft();var page=j.content_urls&&j.content_urls.desktop&&j.content_urls.desktop.page;if(!wikiOk(page))page=c.u;
+  it.wiki={t:String(j.title||c.t),u:page,summary:String(j.extract||"").slice(0,1200)};if(!it.name)it.name=String(j.title||c.t);
+  var yr=/\b(19[7-9]\d|20[01]\d)\b/.exec(j.extract||"");if(!it.year&&yr)it.year=+yr[1];
+  editing.it=it;editing.lookupNote="Attached the Wikipedia summary for \""+it.wiki.t+"\" (CC BY-SA). Check it.";render()}).catch(function(e){editing.lookupNote="Could not reach Wikipedia: "+e.message;render()})}
+function lookupView(){var e=editing,h='<fieldset><legend>Quick fill</legend><p class="tn">Type a name and I will look for it in the timeline first, then on Wikipedia. Nothing is saved until you press the Add button below, so you can change anything.</p><div class="two"><div class="fld"><label for="lq">Name to look up</label><input id="lq" value="'+esc(e.lq||"")+'" placeholder="for example Sound Blaster 16"></div></div><p><button class="btn pri" id="lgo" type="button">Look it up</button></p>';
+ if(e.lookupNote)h+='<div class="msg ok" role="status">'+esc(e.lookupNote)+'</div>';
+ if(e.lres){h+='<h4>In the timeline</h4>'+(e.lres.tl.length?'<ul class="lk">'+e.lres.tl.map(function(m,i){var x=(C.TLX||{})[m.r[2]]||{};return'<li><button class="btn" data-lt="'+i+'" type="button">Use this</button> <b>'+esc(m.r[2])+'</b> <span class="tn">'+esc(m.r[0])+(m.r[3]?", "+esc(m.r[3]):"")+(x.maker?", "+esc(x.maker):"")+'</span></li>'}).join("")+'</ul>':'<p class="tn">No timeline match.</p>')
+  +'<h4>On Wikipedia</h4>'+(e.lres.wk===null?'<p class="tn">Searching...</p>':e.lres.wk.length?'<ul class="lk">'+e.lres.wk.map(function(m,i){return'<li><button class="btn" data-lw="'+i+'" type="button">Use this</button> <b>'+esc(m.t)+'</b> <span class="tn">'+esc(m.d.slice(0,120))+'</span></li>'}).join("")+'</ul>':'<p class="tn">'+esc(e.lres.werr||"No Wikipedia match.")+'</p>')}
+ return h+'</fieldset>'}
 function editView(){var it=editing.it,isNew=editing.i<0,ty=it.type||"Other",sp=it.specs||{};
  var g=C.SPEC_TYPES[ty]||{},known={},specs="";
  Object.keys(g).forEach(function(k){specs+='<h3 class="sub">'+esc(k)+'</h3><div class="two">'+g[k].map(function(f){known[f]=1;return field("sp_"+slug(f),f,sp[f],'data-k="'+esc(f)+'"')}).join("")+'</div>'});
@@ -117,7 +167,7 @@ function editView(){var it=editing.it,isNew=editing.i<0,ty=it.type||"Other",sp=i
  var lg=(it.log||[]).map(function(x){return x.d+" | "+(x.t||"Note")+" | "+(x.n||"")}).join("\n");
  var ph=(it.photos||[]);
  return shell('<p><button class="btn" id="bk" type="button">Back to the list</button></p><h3 class="sub">'+(isNew?"Add an item":"Edit "+esc(it.name))+'</h3>'
- +'<label for="ty">Type</label><select id="ty">'+Object.keys(C.SPEC_TYPES).map(function(k){return'<option'+(k===ty?" selected":"")+'>'+esc(k)+'</option>'}).join("")+'</select>'
+ +lookupView()+'<label for="ty">Type</label><select id="ty">'+Object.keys(C.SPEC_TYPES).map(function(k){return'<option'+(k===ty?" selected":"")+'>'+esc(k)+'</option>'}).join("")+'</select>'
  +'<fieldset><legend>Basics</legend><div class="two">'+CORE.map(function(f){return field("f_"+f[0],f[1],it[f[0]],f[2]?"required":"")}).join("")+field("f_id","Web address name (id). Lowercase letters, numbers and dashes",it.id||"",isNew?"":"readonly")+'</div>'
  +LISTS.map(function(f){return field("f_"+f[0],f[1],(it[f[0]]||[]).join(", "))}).join("")+LONG.map(function(f){return area("f_"+f[0],f[1],it[f[0]])}).join("")
  +'<label><input type="checkbox" id="f_relx" style="width:auto;display:inline"'+(it.relx?" checked":"")+'> The release date is unconfirmed (shows an asterisk)</label>'
@@ -130,7 +180,7 @@ function editView(){var it=editing.it,isNew=editing.i<0,ty=it.type||"Other",sp=i
   +field("f_credit","Photo credit",it.credit)+'</fieldset>'
  +'<fieldset><legend>Links and media</legend>'+area("f_videos","Videos, one per line: Title | https address",(it.videos||[]).map(function(v){return v.t+" | "+v.u}).join("\n"),60)+area("f_links","Manuals and references, one per line: Title | https address",(it.links||[]).map(function(v){return v.t+" | "+v.u}).join("\n"),60)
  +field("f_wiki","Wikipedia address",it.wiki&&it.wiki.u||"")+area("f_wsum","Wikipedia summary (optional, CC BY-SA text)",it.wiki&&it.wiki.summary||"",60)+'</fieldset>'
- +'<fieldset><legend>Accessories and changelog</legend><p class="tn">Ideas: '+esc((C.ACC_HINTS[ty]||[]).join(", "))+'</p>'+area("f_extras","Accessories, one per line: Name | Have, Want, Missing or Optional | note",ex,90)+area("f_log","Changelog, one per line: YYYY-MM-DD | Type | what changed. Types: "+C.LOGTYPES.join(", "),lg,90)+'</fieldset>'
+ +privSection()+'<fieldset><legend>Accessories and changelog</legend><p class="tn">Ideas: '+esc((C.ACC_HINTS[ty]||[]).join(", "))+'</p>'+area("f_extras","Accessories, one per line: Name | Have, Want, Missing or Optional | note",ex,90)+area("f_log","Changelog, one per line: YYYY-MM-DD | Type | what changed. Types: "+C.LOGTYPES.join(", "),lg,90)+'</fieldset>'
  +'<p><button class="btn pri" id="ok" type="button">'+(isNew?"Add to the catalog":"Apply changes")+'</button> <button class="btn" id="cx" type="button">Cancel</button></p><p class="tn">This applies the change here. Press Save to GitHub on the list page to publish it.</p><div id="ferr"></div>')}
 function render(){if(!host)return;host.innerHTML=!tok||!S?lockedView():view==="edit"?editView():listView();wire()}
 function $(id){return host.querySelector("#"+id)}
@@ -166,16 +216,23 @@ function collect(){var o=clone(editing.it),err=[],num=function(id,lo,hi,label){v
  var w=val("f_wiki");if(w){var wu=C.safeUrl(w,"link");if(!/^https?:/i.test(wu))err.push("The Wikipedia address must start with https://");else o.wiki={t:decodeURIComponent(wu.split("/").pop()||"").replace(/_/g," ")||"Wikipedia",u:wu,summary:host.querySelector("#f_wsum").value.trim()}}else delete o.wiki;
  var ex=pairs(host.querySelector("#f_extras").value,"extra");if(ex.list.length)o.extras=ex.list;else delete o.extras;
  var lg=pairs(host.querySelector("#f_log").value,"log");if(lg.bad)err.push(lg.bad);if(lg.list.length)o.log=lg.list;else delete o.log;
+ readPriv();
  o.photos=(editing.it.photos||[]).slice().concat(editing.newPhotos.map(function(p){return p.path}));o.audio=o.audio||[];
  return{o:o,err:err}}
 function shrink(file){return new Promise(function(res,rej){var img=new Image(),u=URL.createObjectURL(file);img.onload=function(){var m=1600,r=Math.min(1,m/Math.max(img.width,img.height)),c=document.createElement("canvas");c.width=Math.max(1,Math.round(img.width*r));c.height=Math.max(1,Math.round(img.height*r));c.getContext("2d").drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(u);res(c.toDataURL("image/jpeg",.85))};img.onerror=function(){URL.revokeObjectURL(u);rej(new Error("That file is not an image the browser can read."))};img.src=u})}
 function wire(){if(!host)return;host.oninput=bump;
- var vg=$("vgo");if(vg){var vp=$("vp");vg.onclick=function(){var p=vp.value;vp.value="";if(!p)return;busy=true;render();vaultOpen(p).then(function(t){busy=false;unlock(t,false)},function(e){busy=false;note={t:"err",m:e.message};render()})};vp.onkeydown=function(e){if(e.key==="Enter")vg.click()};$("vnew").onclick=function(){pasteMode=true;note=null;render()};$("vfg").onclick=function(){if(confirm("Remove the saved token from this browser?")){vaultForget();note={t:"ok",m:"Saved token removed."};render()}};if(!busy)vp.focus();return}
+ var vg=$("vgo");if(vg){var vp=$("vp");vg.onclick=function(){var p=vp.value;vp.value="";if(!p)return;busy=true;render();vaultOpen(p).then(function(t){busy=false;PP=p;unlock(t,false)},function(e){busy=false;note={t:"err",m:e.message};render()})};vp.onkeydown=function(e){if(e.key==="Enter")vg.click()};$("vnew").onclick=function(){pasteMode=true;note=null;render()};$("vfg").onclick=function(){if(confirm("Remove the saved token from this browser?")){vaultForget();note={t:"ok",m:"Saved token removed."};render()}};if(!busy)vp.focus();return}
  var vb=$("vback");if(vb)vb.onclick=function(){pasteMode=false;note=null;render()};
  var gn=$("gen");if(gn)gn.onclick=function(){var p=genPass();$("pp").value=p;$("genout").textContent="Save this in your password manager now: "+p};
- var g=$("go");if(g){var t=$("tk");g.onclick=function(){var pp=$("pp").value,tv=t.value;if(pp){var pr=passProblem(pp);if(pr){note={t:"err",m:pr};render();return}}pasteMode=false;t.value="";unlock(tv,false,pp)};t.onkeydown=function(e){if(e.key==="Enter")g.click()};if(!busy)t.focus();return}
+ var g=$("go");if(g){var t=$("tk");g.onclick=function(){var pp=$("pp").value,tv=t.value;if(pp){var pr=passProblem(pp);if(pr){note={t:"err",m:pr};render();return}}pasteMode=false;t.value="";if(pp)PP=pp;unlock(tv,false,pp)};t.onkeydown=function(e){if(e.key==="Enter")g.click()};if(!busy)t.focus();return}
  if(view==="edit"){
   $("ty").onchange=function(){editing.it=collectSoft();render()};
+  var lg=$("lgo");lg.onclick=function(){var q=val("lq");editing.it=collectSoft();editing.lq=q;editing.lookupNote=null;editing.lres={tl:tlMatches(q),wk:null};render();
+   wikiSearch(q).then(function(l){editing.lres.wk=l},function(er){editing.lres.wk=[];editing.lres.werr="Wikipedia is not reachable right now ("+er.message+"). The timeline results above still work."}).then(function(){if(editing&&view==="edit")render()})};
+  $("lq").onkeydown=function(e){if(e.key==="Enter")lg.click()};
+  host.querySelectorAll("[data-lt]").forEach(function(b){b.onclick=function(){fillFromTL(editing.lres.tl[+b.dataset.lt].r)}});
+  host.querySelectorAll("[data-lw]").forEach(function(b){b.onclick=function(){fillFromWiki(editing.lres.wk[+b.dataset.lw])}});
+  var po=$("pvo");if(po){po.onclick=function(){editing.it=collectSoft();openPriv($("pvp").value)};$("pvp").onkeydown=function(e){if(e.key==="Enter")po.click()}}
   $("bk").onclick=$("cx").onclick=function(){editing=null;view="list";render()};
   host.querySelectorAll("[data-rp]").forEach(function(b){b.onclick=function(){editing.it=collectSoft();editing.it.photos.splice(+b.dataset.rp,1);render()}});
   host.querySelectorAll("[data-rn]").forEach(function(b){b.onclick=function(){editing.it=collectSoft();editing.newPhotos.splice(+b.dataset.rn,1);render()}});
@@ -184,16 +241,18 @@ function wire(){if(!host)return;host.oninput=bump;
    var p=Promise.resolve();files.forEach(function(f,n){p=p.then(function(){return shrink(f).then(function(d){editing.newPhotos.push({data:d,b64:d.split(",")[1],path:"photos/"+id+"-"+Date.now().toString(36)+n+".jpg"})})})});
    p.then(function(){editing.it=keep;render()},function(er){$("ferr").innerHTML='<div class="msg err">'+esc(er.message)+'</div>'})};
   $("ok").onclick=function(){var r=collect();if(r.err.length){$("ferr").innerHTML='<div class="msg err"><b>Fix these first:</b><br>'+r.err.map(esc).join("<br>")+'</div>';return}
-   if(editing.i<0)S.items.push(r.o);else S.items[editing.i]=r.o;
-   editing.newPhotos.forEach(function(p){S.photos.push({path:p.path,b64:p.b64})});
-   S.dirty=true;note={t:"ok",m:(editing.i<0?"Added ":"Updated ")+r.o.name+". Press Save to GitHub to publish."};editing=null;view="list";render()};
+   var fin=function(){if(editing.i<0)S.items.push(r.o);else S.items[editing.i]=r.o;
+    editing.newPhotos.forEach(function(p){S.photos.push({path:p.path,b64:p.b64})});
+    S.dirty=true;note={t:"ok",m:(editing.i<0?"Added ":"Updated ")+r.o.name+". Press Save to GitHub to publish."};editing=null;view="list";render()};
+   if(editing.privOk){var has=Object.keys(editing.priv).length;if(!has){delete r.o.privEnc;fin()}else if(!PP){$("ferr").innerHTML='<div class="msg err">Open the private fields with your passphrase first.</div>'}else{encPriv(editing.priv,PP).then(function(pe){r.o.privEnc=pe;fin()},function(er){$("ferr").innerHTML='<div class="msg err">Could not encrypt the private fields: '+esc(er.message)+'</div>'})}}
+   else fin()};
   return}
  $("lk").onclick=function(){if(S.dirty&&!confirm("You have unsaved changes. Lock anyway and lose them?"))return;lock("Locked.")};
- $("add").onclick=function(){editing={i:-1,it:{type:"Other",photos:[]},newPhotos:[]};view="edit";note=null;render()};
+ $("add").onclick=function(){editing={i:-1,it:{type:"Other",photos:[]},newPhotos:[],priv:{}};if(PP){editing.privOk=true}view="edit";note=null;render()};
  $("sv").onclick=save;
  $("dl").onclick=function(){var b=new Blob([serialize(S.items)],{type:"text/javascript"}),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="items.js";document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(a.href)},2000)};
  var aq=$("aq");aq.oninput=function(){q=aq.value;var pos=aq.selectionStart;render();var n=$("aq");n.focus();try{n.setSelectionRange(pos,pos)}catch(e){}};
- host.querySelectorAll("[data-e]").forEach(function(b){b.onclick=function(){var i=+b.dataset.e;editing={i:i,it:clone(S.items[i]),newPhotos:[]};if(!editing.it.photos)editing.it.photos=[];view="edit";note=null;render();window.scrollTo(0,0)}});
+ host.querySelectorAll("[data-e]").forEach(function(b){b.onclick=function(){var i=+b.dataset.e;editing={i:i,it:clone(S.items[i]),newPhotos:[],priv:{}};if(!editing.it.photos)editing.it.photos=[];view="edit";note=null;render();window.scrollTo(0,0);if(PP&&editing.it.privEnc)decPriv(editing.it.privEnc,PP).then(function(o){editing.priv=o||{};editing.privOk=true;render()},function(){})}});
  host.querySelectorAll("[data-d]").forEach(function(b){b.onclick=function(){var i=+b.dataset.d,it=S.items[i];if(!confirm('Delete "'+it.name+'" from the catalog? You can still bring it back by not saving, or from GitHub history.'))return;S.items.splice(i,1);S.dirty=true;note={t:"ok",m:"Removed "+it.name+". Press Save to GitHub to publish."};render()}})}
 function collectSoft(){var r=null;try{r=collect().o}catch(e){}return r||editing.it}
 function mount(el,ctx){C=ctx;host=el;render();bump()}

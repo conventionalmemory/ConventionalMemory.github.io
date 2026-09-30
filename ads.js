@@ -117,7 +117,7 @@ function adItem(it){var k=prodKind(it),p=priceOf(it),sp=pickSpecs(it,k),head=(AD
   file=[["Status",it.status],["Working",it.works],["Condition",it.cond],["On hand",(it.qty||1)+" in the museum"],["Log entries",lg.length?lg.length+" (latest "+fmtDate(lg[0].d)+")":"none yet"]].filter(function(x){return x[1]}).map(function(x){return'<div><span>'+esc(x[0])+'</span><b>'+esc(shortVal(x[1],46))+'</b></div>'}).join(""),
   sc=it.score!=null?scoreBlock(it.score):"";
  return'<section class="cz cz-item" aria-label="Tribute advertisement for '+esc(it.name)+'">'+czHead(store,czSeason(when),"Computers, software & games"+(when?" · "+fmtDate(when)+(it.relx?"*":""):""))
- +'<div class="cz-main"><div class="cz-figure"><div class="cz-art big">'+art+'</div>'+czFlag(p)+'<span class="cz-new">'+(it.sample?"SAMPLE":"IN THE MUSEUM")+'</span></div>'
+ +'<div class="cz-main"><div class="cz-figure"><div class="cz-art big">'+art+'</div>'+czFlag(p)+'<span class="cz-new">'+("IN THE MUSEUM")+'</span></div>'
  +'<div class="cz-copy"><h3 class="cz-h">'+esc(h)+'</h3><p class="cz-name">'+esc(it.name)+(it.maker&&it.maker!=="Unknown"?' <em>by '+esc(it.maker)+'</em>':"")+'</p>'+(it.text?'<p class="cz-sub2">'+esc(firstSentence(it.text))+'</p>':"")+(feats?'<ul class="cz-feat">'+feats+'</ul>':'<p class="cz-sub2">Specs coming soon.</p>')+'</div></div>'
  +(chips?'<div class="cz-chips">'+chips+'</div>':"")
  +'<div class="cz-cols"><div class="cz-panel"><h4>From the museum file</h4>'+file+(sc?'<div class="cz-sc">'+sc+'</div>':"")+'</div>'

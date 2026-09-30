@@ -77,14 +77,55 @@ function qItem(it){var t=R(),o=[],y=it.year;
  if(t<.5&&y){for(var d=1;o.length<3;d++){var v=y+(o.length%2?d:-d);if(v>=1970&&v!==y&&o.indexOf(v)<0)o.push(v)}return mk('In what year was the "'+it.name+'" released?',String(y),o.map(String),"item")}
  if(it.maker&&it.maker!=="Unknown"){var w=shuf(MAKERS.filter(function(m){return m!==it.maker})).slice(0,3);return mk('Who made the "'+it.name+'"?',it.maker,w,"item")}
  return null}
+
+/* ---- extra question kinds: drawn from the timeline, its detail data, and the museum's own items ---- */
+function tx(r){return(D.x&&D.x[r[2]])||null}
+function cleanPrice(p){return/^\$[\d,.]+( \([^)]*\))?$/.test(p||"")?p:""}
+function qMaker(list){var c=list.filter(function(r){var x=tx(r);return x&&x.maker&&(r[1]==="hw"||r[1]==="sw"||group(r[1])==="g")});if(c.length<6)return null;var r=pick(c),x=tx(r),ms=[];
+ shuf(c).forEach(function(z){var m=tx(z).maker;if(group(z[1])===group(r[1])&&m!==x.maker&&ms.indexOf(m)<0&&ms.length<3)ms.push(m)});if(ms.length<3)return null;
+ return mk((group(r[1])==="g"?'Which company published the game "':'Which company made the "')+nameOf(r)+'"?',x.maker,ms,"maker")}
+function qDev(list){var c=list.filter(function(r){var x=tx(r);return x&&x.dev&&group(r[1])==="g"});if(c.length<6)return null;var r=pick(c),x=tx(r),ms=[];
+ shuf(c).forEach(function(z){var m=tx(z).dev;if(m!==x.dev&&ms.indexOf(m)<0&&ms.length<3)ms.push(m)});if(ms.length<3)return null;
+ return mk('Which studio developed "'+nameOf(r)+'"?',x.dev,ms,"dev")}
+function qSpec(list){var keys=["CPU","RAM installed","Graphics","Sound","Genre","Platform","Format","Players"],c=[];
+ list.forEach(function(r){var x=tx(r);if(x&&x.specs)keys.forEach(function(k){if(x.specs[k]&&String(x.specs[k]).length<40)c.push([r,k])})});if(c.length<8)return null;
+ var p=pick(c),r=p[0],k=p[1],v=String(tx(r).specs[k]),w=[];
+ shuf(c.filter(function(z){return z[1]===k})).forEach(function(z){var u=String(tx(z[0]).specs[k]);if(u!==v&&w.indexOf(u)<0&&w.length<3)w.push(u)});if(w.length<3)return null;
+ var nm=nameOf(r),q=k==="CPU"?'Which processor did the "'+nm+'" use?':k==="RAM installed"?'How much RAM did the "'+nm+'" ship with?':k==="Genre"?'What genre is "'+nm+'"?':k==="Platform"?'Which platform was "'+nm+'" made for?':k==="Format"?'What media did "'+nm+'" ship on?':k==="Players"?'How many players does "'+nm+'" support?':'What '+k.toLowerCase()+' did the "'+nm+'" have?';
+ return mk(q,v,w,"spec")}
+function qSeries(list){var c=[];list.forEach(function(r){var x=tx(r);if(x&&x.links)x.links.forEach(function(l){if((l[1]==="sequel"||l[1]==="successor")&&D.byT[l[0]])c.push([r,D.byT[l[0]]])})});if(c.length<4)return null;
+ var p=pick(c),g=group(p[1][1]),w=[];shuf(D.tl.filter(function(z){return group(z[1])===g&&z[2]!==p[1][2]&&z[2]!==p[0][2]&&Math.abs(yr(z[0])-yr(p[1][0]))<=6})).forEach(function(z){if(w.length<3&&w.indexOf(nameOf(z))<0)w.push(nameOf(z))});if(w.length<3)return null;
+ return mk('Which of these followed "'+nameOf(p[0])+'"?',nameOf(p[1]),w,"series")}
+function pnum(p){var m=String(p).replace(/,/g,"").match(/[\d.]+/);return m?+m[0]||1:1}
+function qPriceX(list){var c=list.filter(function(r){return cleanPrice(r[3])&&(r[1]==="hw"||r[1]==="sw"||group(r[1])==="g")});if(c.length<8)return null;var r=pick(c),w=[];
+ shuf(c.filter(function(z){var a=pnum(z[3]),b=pnum(r[3]);return group(z[1])===group(r[1])&&a>b/5&&a<b*5})).forEach(function(z){if(z[3]!==r[3]&&w.indexOf(z[3])<0&&w.length<3)w.push(z[3])});if(w.length<3)return null;
+ return mk('What was the launch price of "'+nameOf(r)+'"?',r[3],w,"price")}
+function qDetail(list){var c=list.filter(function(r){var x=tx(r);return x&&x.detail&&x.detail.length>50&&x.detail.length<170&&x.conf!=="low"});if(!c.length)return null;var r=pick(c),x=tx(r),w=[];
+ shuf(list.filter(function(z){return z!==r&&group(z[1])===group(r[1])})).forEach(function(z){if(w.length<3)w.push(nameOf(z))});if(w.length<3)return null;
+ return mk('Which one is this? '+x.detail.replace(new RegExp(nameOf(r).replace(/[.*+?^${}()|[\]\\]/g,"\\$&"),"gi"),"(it)"),nameOf(r),w,"who")}
+function qItemX(it){var t=R(),o=[];
+ if(t<.25&&it.score!=null&&deps.scale){var v=deps.tier(it.score).l,w=shuf(deps.scale.map(function(z){return z.l}).filter(function(z){return z!==v})).slice(0,3);return mk('What verdict did the museum give the "'+it.name+'"?',v,w,"item")}
+ if(t<.45&&it.msrp&&cleanPrice(it.msrp)){var w2=D.items.map(function(z){return z.msrp}).filter(function(z){return cleanPrice(z)&&z!==it.msrp});if(w2.length>=3)return mk('What was the original MSRP of the museum\'s "'+it.name+'"?',it.msrp,shuf(w2).slice(0,3),"item")}
+ if(t<.7&&it.specs){var ks=Object.keys(it.specs).filter(function(k){return String(it.specs[k]).length<34}),k=ks.length?pick(ks):null;if(k){var w3=[];D.items.concat().forEach(function(z){if(z.specs&&z.specs[k]&&z.specs[k]!==it.specs[k]&&w3.indexOf(z.specs[k])<0)w3.push(z.specs[k])});D.tl.forEach(function(z){var x=tx(z);if(x&&x.specs&&x.specs[k]&&x.specs[k]!==it.specs[k]&&w3.indexOf(x.specs[k])<0&&w3.length<8)w3.push(x.specs[k])});
+   if(w3.length>=3)return mk('In the museum\'s "'+it.name+'", what is the "'+k+'" spec?',String(it.specs[k]),shuf(w3).slice(0,3).map(String),"item")}}
+ if(it.cat){var cs=[];D.items.forEach(function(z){if(z.cat&&z.cat!==it.cat&&cs.indexOf(z.cat)<0)cs.push(z.cat)});["Laptops","Computers","Sound cards","Games","Peripherals","Monitors"].forEach(function(z){if(z!==it.cat&&cs.indexOf(z)<0)cs.push(z)});return mk('Which catalog category is the "'+it.name+'" filed under?',it.cat,shuf(cs).slice(0,3),"item")}
+ return null}
+function qMuseum(ok){if(!D.items.length||ok.length<3)return null;var it=pick(D.items),w=shuf(ok.filter(function(r){return nameOf(r)!==it.name})).slice(0,3).map(nameOf);if(w.length<3)return null;return mk("Which of these is actually in the museum's collection?",it.name,w,"item")}
 function qStatic(){var s=pick(STATIC);return mk(s[0],s[1],s[2],"dos")}
 function nextQ(era,lvl){
- var ok=D.tl.filter(function(r){return Math.abs(yr(r[0])-era)<=4}),tries=0,q=null;
- while(!q&&tries++<30){var t=R();
-  if(t<.34)q=qStatic();
-  else if(t<.58&&D.items.length)q=qItem(pick(D.items));
-  else if(t<.72&&ok.length>8)q=qFirst(ok);
-  else if(t<.82&&ok.length)q=(function(){var r=pick(ok.filter(function(x){return x[1]==="hw"||x[1]==="sw"}));return r&&/^\$[\d,.]+$/.test(r[3])?qPrice(D.tl,r):null})();
+ var wide=[4,6,9][lvl>=0?Math.min(lvl,2):0]+0,ok=D.tl.filter(function(r){return Math.abs(yr(r[0])-era)<=4}),okw=D.tl.filter(function(r){return Math.abs(yr(r[0])-era)<=9}),tries=0,q=null;
+ while(!q&&tries++<40){var t=R();
+  if(t<.16)q=qStatic();
+  else if(t<.28&&D.items.length)q=qItem(pick(D.items));
+  else if(t<.38&&D.items.length)q=qItemX(pick(D.items));
+  else if(t<.42)q=qMuseum(ok);
+  else if(t<.52&&ok.length>8)q=qFirst(ok);
+  else if(t<.60)q=qPriceX(okw);
+  else if(t<.68)q=qMaker(okw);
+  else if(t<.73)q=qDev(okw);
+  else if(t<.80)q=qSpec(okw);
+  else if(t<.85)q=qSeries(okw);
+  else if(t<.90)q=qDetail(okw);
   else if(ok.length)q=qYear(pick(ok),lvl);
   if(q&&S.used[q.q])q=null}
  if(!q){q=qStatic();var n=0;while(S.used[q.q]&&n++<40)q=qStatic()}
@@ -155,14 +196,16 @@ function moveGremlin(){var path=bfs(S.gr.room,S.room);if(path.length)S.gr.room=p
 function gremlin(){S.mode="q";var q=nextQ(room().era,2);S.q=q;S.door={gremlin:true};showQ("The Memory Gremlin leaps out. \"Answer me, or I take "+S.pen+"K!\"")}
 
 /* ---------- questions UI ---------- */
+function TOPIC(t){return t==="item"?"Museum items":t==="dos"?"DOS lore":"Timeline"}
+function report(){var r=S.rep||{},k=Object.keys(r);return k.length?'<p class="gnote">Trivia report: '+k.map(function(x){return esc(x)+" "+r[x][0]+"/"+r[x][1]}).join(" &middot; ")+'</p>':""}
 function showQ(pre){var box=host.querySelector("#gq"),o="";
  var q=S.q,hide=S.hidden||[];
  q.o.forEach(function(t,i){if(hide.indexOf(i)>=0)return;o+='<button type="button" class="btn" data-a="'+i+'"><b>'+"ABCD"[i]+'</b> '+esc(t)+'</button>'});
- box.innerHTML='<p class="gpre">'+esc(pre||"")+'</p><p><b>'+esc(q.q)+'</b></p><div class="gopts">'+o+'</div><p><button type="button" class="btn" data-h="1">Ask Auntie Autoexec ('+S.hints+' left)</button></p>';
+ box.innerHTML='<p class="gpre">'+esc(pre||"")+'</p><p class="gnote">Topic: '+esc(TOPIC(q.tag))+'</p><p><b>'+esc(q.q)+'</b></p><div class="gopts">'+o+'</div><p><button type="button" class="btn" data-h="1">Ask Auntie Autoexec ('+S.hints+' left)</button></p>';
  box.hidden=false;box.querySelectorAll("[data-a]").forEach(function(b){b.onclick=function(){answer(+b.dataset.a)}});
  var hb=box.querySelector("[data-h]");hb.onclick=useHint;var fb=box.querySelector("[data-a]");if(fb)fb.focus()}
 function useHint(){if(S.hints<1||!S.q||S.mode!=="q")return;S.acts.push("h");S.hints--;var w=[];S.q.o.forEach(function(t,i){if(i!==S.q.c)w.push(i)});S.hidden=shuf(w).slice(0,2);showQ("Auntie Autoexec whispers, \"Not those two, dear.\"");hud()}
-function answer(i){var q=S.q;if(!q||S.mode!=="q"||S.locked)return;if(!(i===0||i===1||i===2||i===3)||i>=q.o.length||(S.hidden||[]).indexOf(i)>=0)return;S.acts.push(String(i));var ok=i===q.c,box=host.querySelector("#gq");S.hidden=null;S.min+=2;
+function answer(i){var q=S.q;if(!q||S.mode!=="q"||S.locked)return;if(!(i===0||i===1||i===2||i===3)||i>=q.o.length||(S.hidden||[]).indexOf(i)>=0)return;S.acts.push(String(i));var ok=i===q.c,box=host.querySelector("#gq");S.hidden=null;S.min+=2;var tp=TOPIC(q.tag),rp=S.rep||(S.rep={});rp[tp]=rp[tp]||[0,0];rp[tp][1]++;if(ok)rp[tp][0]++;
  if(ok){beep(880,.12);box.hidden=true;S.q=null;
   if(S.door&&S.door.gremlin){S.mode="play";S.gr.room=pick(S.rooms.map(function(r){return r.i}).filter(function(x){return x!==S.room&&x!==S.start}));say("The Gremlin shrieks and scuttles away.");hud();return}
   if(S.door&&S.door.finale){win();return}
@@ -196,7 +239,7 @@ function talk(){var rm=room(),n=S.npcs[rm.i];if(S.mode!=="play")return;S.acts.pu
  else say(pick(n==="matt"?MATT_LINES:TONY_LINES));hud()}
 /* ---------- run codes: every finished game can be replayed and checked ---------- */
 function fnv(t){var h=2166136261;for(var i=0;i<t.length;i++){h^=t.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}
-function dataHash(){var a=D.items.map(function(i){return i.id||i.name}).join("|"),t=D.tl;return fnv(a+"#"+t.length+"#"+(t[0]||[])[2]+"#"+(t[t.length-1]||[])[2]).toString(36)}
+function dataHash(){var a=D.items.map(function(i){return i.id||i.name}).join("|"),t=D.tl;return fnv(a+"#"+t.length+"#"+(t[0]||[])[2]+"#"+(t[t.length-1]||[])[2]+"#"+Object.keys(D.x||{}).length).toString(36)}
 function makeCode(){var body="CM1."+S.who.charAt(0)+"."+S.seed0.toString(36)+"."+S.acts.join("")+"."+S.mem+"."+dataHash();return body+"."+fnv(body+"|cm").toString(36)}
 function verify(code){var p=String(code||"").replace(/\s+/g,"").split(".");
  if(p.length!==7||p[0]!=="CM1")return{ok:false,why:"That is not a run code."};
@@ -221,7 +264,7 @@ function win(){S.mode="over";S.win=true;var t=deps.tier(S.mem),lbl=t&&t.n?t.n:""
  var left=MIDNIGHT-S.min;if(S.replay)return;
  finish('<h3>You found the Master Boot Disk!</h3><p>'+clock(S.min)+', with '+left+' minutes to spare.</p><pre class="dir">MEM /C\n\nConventional memory free: '+S.mem+'K of 640K\nExhibits collected:       '+S.taken+' of '+(ROOMS-2)+'\nRank on the 640K scale:   '+esc(lbl)+'</pre><p>'+(S.mem>best?"That is your best run in this browser.":"Your best in this browser: "+best+"K.")+'</p><p class="gnote">Run code (anyone can paste it on the Memory Maze start screen to replay and check your score):</p><textarea class="gcode" readonly rows="3" aria-label="Run code">'+esc(code)+'</textarea>')}
 function end(win,txt){S.mode="over";finish('<h3>Game over</h3><p>'+esc(txt).replace(/\n/g,"<br>")+'</p>')}
-function finish(html){var box=host.querySelector("#gq");box.hidden=false;box.innerHTML=html+'<p><button class="btn pri" type="button" id="gagain">Play again</button> <a class="btn" href="#/">Back to the site</a></p>';
+function finish(html){var box=host.querySelector("#gq");box.hidden=false;box.innerHTML=html+report()+'<p><button class="btn pri" type="button" id="gagain">Play again</button> <a class="btn" href="#/">Back to the site</a></p>';
  box.querySelector("#gagain").onclick=function(){box.hidden=true;select()};hud()}
 
 /* ---------- drawing ---------- */
@@ -323,7 +366,7 @@ function onk(e){if(!S||!host||!document.body.contains(host))return;var k=e.key;
 function onku(e){var k=e.key.length===1?e.key.toLowerCase():e.key;keys[k]=0}
 function mount(el,d){unmount();host=el;deps=d;D.items=(d.items||[]).filter(function(i){return i&&i.name});
  D.tl=(d.tl||[]).filter(function(r){return r[5]&&(String(r[3]||"").indexOf("*")<0||true)&&r[0]&&r[2]});
- patCache={};roomCache={};onKey=onk;onKeyUp=onku;window.addEventListener("keydown",onKey);window.addEventListener("keyup",onKeyUp);select()}
+ D.x=d.tlx||{};D.byT={};D.tl.forEach(function(r){D.byT[r[2]]=r});patCache={};roomCache={};onKey=onk;onKeyUp=onku;window.addEventListener("keydown",onKey);window.addEventListener("keyup",onKeyUp);select()}
 function unmount(){cancelAnimationFrame(raf);raf=0;if(onKey)window.removeEventListener("keydown",onKey);if(onKeyUp)window.removeEventListener("keyup",onKeyUp);onKey=onKeyUp=null;S=null;keys={};host=null;cvs=null}
 window.CMGame=Object.freeze({mount:mount,unmount:unmount});
 })();
