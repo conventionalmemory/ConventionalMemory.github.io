@@ -89,7 +89,18 @@ var SPEC_TYPES={
 // wiki {t:"Article title",u:"url",summary:"snapshot text"}
 // ---- end of editable data ----
 var app=document.getElementById("app");
-function prepItems(){ITEMS.forEach(function(it){if(!it.year&&it.rel)it.year=+String(it.rel).slice(0,4)});
+// Placeholder text left in sample entries ("Sample: ...", "Example: ...") is never shown to visitors.
+function ph(v){return typeof v==="string"&&/^(sample|example)\b/i.test(v.trim())}
+function unex(v){return typeof v==="string"?v.replace(/^(example|sample)( entry)?[:.]\s*/i,""):v}
+function prepItems(){ITEMS.forEach(function(it){if(!it.year&&it.rel)it.year=+String(it.rel).slice(0,4);
+ ["got","thoughts","cond","acquired"].forEach(function(k){if(ph(it[k])){if(/^(sample|example):/i.test(it[k].trim())&&k!=="thoughts"&&k!=="got"){it[k]=unex(it[k])}else delete it[k]}});
+ if(it.text)it.text=unex(it.text);
+ if(it.credit&&/replace it with/i.test(it.credit))it.credit="Illustration";
+ (it.log||[]).forEach(function(l){l.n=unex(l.n)});(it.extras||[]).forEach(function(x){if(x.note)x.note=/^(example|sample)$/i.test(x.note.trim())?"":unex(x.note);if(!x.note)delete x.note});
+ (it.videos||[]).forEach(function(v){v.t=unex(v.t).replace(/\s*\(opens the [^)]*\)/i,"")});
+ it.audio=(it.audio||[]).filter(function(a){return!/placeholder/i.test(a.t||"")});
+ if(it.log)it.log.forEach(function(l){});
+});
  ITEMS.forEach(function(it,i){if(!it.acc)it.acc="CM-"+String(i+1).padStart(4,"0")})}
 prepItems();
 function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
