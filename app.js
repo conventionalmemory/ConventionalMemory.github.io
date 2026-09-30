@@ -1,0 +1,391 @@
+// ---- EDIT HERE: your socials and your catalog ----
+var HANDLE="ConventionalMemory";
+var EMAIL="conventionalmemory@gmail.com"; // your contact address, used by the mailbox
+var REPO={owner:"conventionalmemory",repo:"ConventionalMemory.github.io",branch:"main"}; // where the Admin page saves changes
+var UPDATED="09/30/2026"; // shown in the footer; change it when you update the site
+var SOCIALS=[
+ {n:"YouTube",u:"https://www.youtube.com/@ConventionalMemory"},
+ {n:"TikTok",u:"https://www.tiktok.com/@ConventionalMemory"},
+ {n:"Instagram",u:"https://www.instagram.com/ConventionalMemory"},
+ {n:"Facebook",u:"https://www.facebook.com/ConventionalMemory"}
+];
+// Wanted list and current projects. Delete the sample: true flag when you replace these entries.
+var WANTED=[
+ {name:"Roland SC-55",type:"Sound or MIDI",priority:"High",note:"Sample entry. Say which revision you want and what condition is acceptable.",sample:true}
+];
+var NOW=[
+ {t:"Toshiba Libretto 110CT build",note:"Sample entry. A short progress note, like what you fixed this week.",item:"toshiba-libretto-110ct",sample:true}
+];
+// Era context: PCS feeds the "high-end PC" sections and timeline. Games, movies, hardware and events live in timeline-data.js.
+// PCS: a high-end desktop PC of that time (approximate and general).
+var PCS=[
+ {y:1981,cpu:"Intel 8088, 4.77 MHz",ram:"16 to 256 KB",video:"CGA color or monochrome text",sound:"PC speaker beeps",storage:"Cassette port or 5.25-inch floppy drives",ex:"IBM PC (5150)"},
+ {y:1984,cpu:"Intel 80286, 6 to 8 MHz",ram:"256 to 512 KB",video:"EGA, 16 colors",sound:"PC speaker",storage:"1.2 MB floppy, around 20 MB hard disk",ex:"IBM PC/AT"},
+ {y:1987,cpu:"Intel 80386, 16 to 20 MHz",ram:"1 to 4 MB",video:"VGA, 256 colors at 320 x 200",sound:"AdLib FM card or PC speaker",storage:"40 to 80 MB hard disk",ex:"IBM PS/2 Model 80, Compaq Deskpro 386"},
+ {y:1990,cpu:"Intel 80486, 25 to 33 MHz",ram:"4 MB",video:"VGA, some Super VGA",sound:"AdLib or Sound Blaster",storage:"80 to 200 MB hard disk",ex:"A 486 tower"},
+ {y:1993,cpu:"486DX2-66, or the first Pentiums at 60 and 66 MHz",ram:"8 MB",video:"Super VGA, 1 MB",sound:"Sound Blaster 16",storage:"250 to 500 MB hard disk, double-speed CD-ROM",ex:"A 486 or early Pentium tower"},
+ {y:1995,cpu:"Pentium, 90 to 133 MHz",ram:"16 MB",video:"PCI SVGA, 2 MB",sound:"Sound Blaster 16 or AWE32",storage:"1 GB hard disk, 4x CD-ROM",ex:"A Windows 95 Pentium PC"},
+ {y:1997,cpu:"Pentium II, 233 to 300 MHz (or Pentium MMX)",ram:"32 to 64 MB",video:"3dfx Voodoo add-in 3D card",sound:"Sound Blaster AWE64",storage:"4 to 6 GB hard disk, 24x CD-ROM",ex:"A Pentium II tower"},
+ {y:1998,cpu:"Pentium II, 333 to 450 MHz",ram:"64 to 128 MB",video:"AGP card such as Voodoo2 or Riva TNT",sound:"Sound Blaster Live!",storage:"8 to 10 GB hard disk, DVD-ROM appearing",ex:"A Pentium II tower"},
+ {y:1999,cpu:"Pentium III, 450 to 600 MHz, or AMD Athlon",ram:"128 MB",video:"AGP card such as TNT2 or GeForce 256",sound:"Sound Blaster Live!",storage:"10 to 20 GB hard disk, DVD-ROM",ex:"A Pentium III tower"},
+ {y:2000,cpu:"Pentium III or Athlon, up to 1 GHz",ram:"128 to 256 MB",video:"GeForce 2 class AGP card",sound:"Sound Blaster Live!",storage:"20 to 40 GB hard disk, CD-RW",ex:"A Pentium III or Athlon tower"}
+];
+// Review scale: score 0-640 (K of conventional memory). Each tier starts at "min". n = name, d = description.
+var SCALE=[
+ {min:0,n:"Divide overflow",d:"The message DOS printed when a program divided by zero and died. Broken, unreliable, or not worth the shelf space."},
+ {min:100,n:"Abort, Retry, Fail?",d:"DOS's famously unhelpful error prompt. It works if you are patient and don't mind the stress."},
+ {min:200,n:"Not enough memory",d:"The 640K wall. It runs, but only after a fight with your settings, and it may never be happy."},
+ {min:300,n:"Runs from a boot disk",d:"Needed a custom floppy with its own CONFIG.SYS and AUTOEXEC.BAT before it would behave. Good, with effort."},
+ {min:400,n:"Loads into upper memory",d:"EMM386 could map drivers into the space above 640K, leaving more room below. A solid, well-behaved item."},
+ {min:500,n:"Loads high",d:"LOADHIGH and DOS=HIGH pushed DOS and drivers out of the way. Great, and easy to recommend."},
+ {min:600,n:"Over 620K free",d:"The tinkerer's holy grail: nearly the whole 640K left for the program. The best of the collection."}
+];
+// Spec sheet template per type, in groups. An item only shows the specs you fill in, so a printer never shows CPU or RAM.
+// Anything you add that is not listed here still appears, under "Other specs".
+var SPEC_TYPES={
+ "Computer":{"Processor and memory":["CPU","CPU speed","FPU","Cache","RAM installed","RAM maximum","RAM type"],
+  "Storage":["Storage","Floppy drives","Optical drive","Removable media"],
+  "Display and graphics":["Display","Resolution","Colors","Graphics","Video RAM"],
+  "Sound and input":["Sound","Keyboard","Pointing device"],
+  "Ports and expansion":["Ports","Expansion slots","Networking","Modem"],
+  "Power and physical":["Power supply","Battery","Weight","Dimensions","Case color"],
+  "Board and software":["Motherboard or chipset","Form factor","BIOS version","OS shipped","Bundled software"]},
+ "Console or handheld":{"Hardware":["Generation","CPU","RAM","Video","Audio"],"Media and ports":["Media type","Controller ports","Video output"],"Power and region":["Power","Region"]},
+ "Game or software":{"Release":["Publisher","Developer","Genre","Players","Version or revision","Language","Region","Age rating","UPC or SKU"],
+  "Media":["Platform","Format","Number of disks","Disk size","Disk density","Number of discs","Number of cartridges","Capacity","Install size"],
+  "Requirements":["Minimum CPU","Minimum RAM","Video support","Sound support","Input support"],
+  "Protection and packaging":["Copy protection","Manual","Packaging","Extras and feelies","Registration card"]},
+ "Expansion card":{"Hardware":["Bus","Chipset","Onboard memory","Ports and connectors","Card length"],"Configuration":["Default IRQ","Default DMA","Default I/O address","Jumpers and switches"],"Software":["Drivers included","Compatible with"]},
+ "Sound or MIDI":{"Sound":["Synthesis","Polyphony","Channels","Sample rate","Memory"],"Connections":["Connectors","Compatible software"]},
+ "Peripheral":{"Hardware":["Kind","Switch type","Layout","Buttons","Resolution or DPI"],"Connection":["Connector","Interface","Cable length","Power","Compatible systems"]},
+ "Storage":{"Drive":["Kind","Capacity","Interface","Form factor","Speed or RPM","Cache","Access time"],"Geometry":["Heads","Cylinders","Sectors"]},
+ "Monitor":{"Display":["Diagonal size","Display type","Max resolution","Refresh rate","Dot pitch"],"Connections":["Inputs","Speakers","Power draw"]},
+ "Printer":{"Printing":["Technology","Resolution","Speed","Paper size","Pins"],"Connections and supplies":["Interface","Fonts or memory","Ribbon or cartridge"]},
+ "Other":{}
+};
+// Also per item: type (a SPEC_TYPES key), msrp, model, partno, rev, upc, disc (year discontinued), made (date code), country, works (Working, Partly working, Untested, Not working), notes (repairs and mods), status (Display, Storage, Repair, Loaned, Sold), qty, acquired, has ["Box","Manual"], tags [], links [{t,u}], acc (auto CM-0001 if blank), cond (Working, Untested, For parts...), specs {"Label":"Value"}.
+// Per item: photos ["url or data: URI"], videos [{t,u}], audio [{t,src}], got, thoughts, score (0-640),
+// wiki {t:"Article title",u:"url",summary:"snapshot text"}
+// ---- end of editable data ----
+var app=document.getElementById("app");
+function prepItems(){ITEMS.forEach(function(it){if(!it.year&&it.rel)it.year=+String(it.rel).slice(0,4)});
+ ITEMS.forEach(function(it,i){if(!it.acc)it.acc="CM-"+String(i+1).padStart(4,"0")})}
+prepItems();
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+function safeUrl(u,k){u=String(u==null?"":u).trim();if(!u)return "";
+ if(/^https?:\/\/[^\s"'<>]+$/i.test(u))return u;
+ if(k==="link"&&/^mailto:[^\s"'<>]+$/i.test(u))return u;
+ if(k==="img"&&/^data:image\/(png|jpe?g|gif|webp|svg\+xml);base64,[A-Za-z0-9+\/=]+$/i.test(u))return u;
+ if(k==="audio"&&/^data:audio\/(wav|x-wav|mpeg|mp3|ogg);base64,[A-Za-z0-9+\/=]+$/i.test(u))return u;
+ if(/^[A-Za-z0-9_\-\/.]+$/.test(u)&&u.charAt(0)!=="/"&&u.indexOf("..")<0)return u;
+ return ""}
+function pic(it){var u=it.photos&&it.photos.length?safeUrl(it.photos[0],"img"):"";return u?'<img src="'+esc(u)+'" alt="'+esc(it.name)+'" loading="lazy">':"No photo yet"}
+function socials(){return '<div class="socials">'+SOCIALS.map(function(s,i){return '<a class="btn'+(i==0?' pri':'')+'" href="'+esc(safeUrl(s.u,"link"))+'" target="_blank" rel="noopener noreferrer">'+esc(s.n)+'</a>'}).join("")+'</div>'}
+function home(){
+ var n=ITEMS.length,pct=Math.max(1,n/640*100);
+ var sc=ITEMS.filter(function(i){return i.score!=null});
+ var avg=sc.length?Math.round(sc.reduce(function(a,i){return a+i.score},0)/sc.length):0;
+ var old=ITEMS.slice().sort(function(a,b){return a.year-b.year})[0];
+ var top=sc.slice().sort(function(a,b){return b.score-a.score})[0];
+ app.innerHTML='<div class="uc"><span>UNDER CONSTRUCTION</span></div><div class="mq"><span>Welcome to the museum! Please keep your hands and 5.25 inch floppies inside the cart at all times. Thank you for visiting!</span></div><div class="hero"><h1>Conventional Memory</h1><p>Vintage computers and the people who kept them running. Watch the videos, then browse every item in the museum, with photos, audio and the story behind each one.</p>'
+ +'<div class="mem" role="img" aria-label="'+n+' items cataloged"><div class="bar"><i style="width:'+pct+'%"></i></div><small>'+n+'K used, '+(640-n)+'K free. One item cataloged per K.</small></div>'
+ +socials()+'<p><a class="btn" href="#/random">Load a random item</a> <a class="btn" href="#/scale">How items are scored</a></p></div>'
+ +'<section><h2>The museum so far</h2><div class="stats"><div><b>'+n+'</b>items</div><div><b>'+(sc.length?avg+'K':'none')+'</b>average score</div><div><b>'+(old?old.year:'none')+'</b>oldest item</div>'+(top?'<div><b><a href="#/item/'+top.id+'">'+esc(top.name)+'</a></b>top rated, '+top.score+'K</div>':'')+'</div></section>'
+ +daily()+qodHtml()+otd()+recentHtml()+nowHtml()+'<section><h2>Latest in the catalog</h2><div class="grid">'+ITEMS.slice(-4).reverse().map(card).join("")+'</div><p><a class="btn" href="#/catalog">Browse the full catalog</a></p></section>'+contactHtml()}
+function card(it){return '<a class="card" href="#/item/'+it.id+'"><div class="ph">'+pic(it)+'</div><div class="t"><h3>'+esc(it.name)+'</h3><p>'+esc(it.maker)+', '+it.year+(it.score!=null?'<span class="tag">'+it.score+'K</span>':'')+(it.status?'<span class="tag">'+esc(it.status)+'</span>':'')+(it.qty>1?'<span class="tag">x'+it.qty+'</span>':'')+(it.sample?'<span class="tag">sample</span>':'')+'</p></div></a>'}
+function catalog(){
+ var cats=[],sts=[];ITEMS.forEach(function(i){if(cats.indexOf(i.cat)<0)cats.push(i.cat);if(i.status&&sts.indexOf(i.status)<0)sts.push(i.status)});
+ app.innerHTML='<section><h2>Catalog</h2>'+tagChips()+'<div class="tools"><input id="q" type="search" placeholder="Search items, makers, years" aria-label="Search"><select id="c" aria-label="Category"><option value="">All categories</option>'+cats.map(function(c){return '<option>'+esc(c)+'</option>'}).join("")+'</select><select id="st" aria-label="Status"><option value="">Any status</option>'+sts.map(function(c){return '<option>'+esc(c)+'</option>'}).join("")+'</select><select id="s" aria-label="Sort"><option value="">Catalog order</option><option value="score">Highest score</option><option value="old">Oldest first</option><option value="new">Newest first</option><option value="name">Name A to Z</option></select><button class="btn" id="vw" type="button">DIR view</button></div><div id="g" class="grid"></div></section>';
+ var q=document.getElementById("q"),c=document.getElementById("c"),so=document.getElementById("s"),stEl=document.getElementById("st"),g=document.getElementById("g");
+ var view="grid",vw=document.getElementById("vw");vw.onclick=function(){view=view==="dir"?"grid":"dir";vw.textContent=view==="dir"?"Grid view":"DIR view";run()};
+ function run(){var t=q.value.toLowerCase();var r=ITEMS.filter(function(i){return(!c.value||i.cat===c.value)&&(!stEl.value||i.status===stEl.value)&&(i.name+" "+i.maker+" "+i.year+" "+i.cat+" "+i.acc+" "+(i.tags||[]).join(" ")).toLowerCase().indexOf(t)>=0});
+  if(so.value==="score")r.sort(function(a,b){return(b.score||0)-(a.score||0)});
+  else if(so.value==="old")r.sort(function(a,b){return a.year-b.year});
+  else if(so.value==="new")r.sort(function(a,b){return b.year-a.year});
+  else if(so.value==="name")r.sort(function(a,b){return a.name.localeCompare(b.name)});
+  g.className=view==="dir"?"":"grid";g.innerHTML=!r.length?'<div class="empty">No items match. Clear the search or pick another category.</div>':view==="dir"?dir(r):r.map(card).join("")}
+ q.oninput=run;c.onchange=run;stEl.onchange=run;so.onchange=run;run()}
+var MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+function fmtDate(d){var p=String(d).split("-");return p.length===3?MON[+p[1]-1]+" "+(+p[2])+", "+p[0]:p.length===2?MON[+p[1]-1]+" "+p[0]:p[0]}
+function dyear(d){return +String(d).slice(0,4)}
+function today(){var d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+var TLK={i:["Museum items","Item"],hw:["Hardware","Hardware"],sw:["Software","Software"],gt:["Top games","Top game"],gn:["Notable games","Notable game"],gc:["Comical and obscure games","Obscure game"],e:["Industry events","Industry"],m:["Movies","Movie"],w:["World events","World"],u:["US events","US"],p:["High-end PCs","PC"]};
+var TLF={},TLQ="";Object.keys(TLK).forEach(function(k){TLF[k]=1});
+function tlEntries(){var e=[];
+ if(TLF.i)ITEMS.forEach(function(i){e.push({d:i.rel||String(i.year),k:"i",i:i})});
+ var mine=ITEMS.map(function(i){return i.name.toLowerCase()});
+ TL.forEach(function(r){var t=r[2].toLowerCase();if(TLF[r[1]]&&!mine.some(function(n){return t.indexOf(n)>=0||n.indexOf(t)>=0}))e.push({d:r[0],k:r[1],t:r[2],p:r[3],n:r[4],s:r[5]})});
+ if(TLF.p)PCS.forEach(function(p){e.push({d:String(p.y),k:"p",t:"High-end PC of the year: "+p.cpu+", "+p.ram+" RAM, "+p.video+", "+p.sound,n:p.ex})});
+ var q=TLQ.trim().toLowerCase();
+ if(q)e=e.filter(function(x){return(x.i?x.i.name+" "+x.i.maker:x.t+" "+(x.n||"")).toLowerCase().indexOf(q)>=0});
+ return e.sort(function(a,b){return a.d<b.d?-1:a.d>b.d?1:0})}
+function astr(x){var u=x.k==="i"?x.i.relx:x.k==="p"?false:!x.s;return u?'<span class="ast" title="Not confirmed against a source">*</span>':""}
+function tlHtml(e){var d=null,h="";
+ e.forEach(function(x){var yr=dyear(x.d),dc=Math.floor(yr/10)*10;if(dc!==d){d=dc;h+='<h3 class="sub">'+dc+'s</h3>'}
+  var main=x.k==="i"?'<a href="#/item/'+esc(x.i.id)+'">'+esc(x.i.name)+'</a>, '+esc(x.i.maker):esc(x.t);
+  var pr=x.k==="i"?x.i.msrp:x.p,sc=x.k==="i"&&x.i.score!=null?' <span class="tag">'+x.i.score+'K</span>':"";
+  h+='<p class="tl '+x.k+'" data-y="'+yr+'" data-dec="'+dc+'"><b>'+esc(fmtDate(x.d))+astr(x)+'</b><span class="tag">'+esc(TLK[x.k][1])+'</span> '+main+(pr?' <span class="tag pr">'+esc(pr)+'</span>':"")+sc+(x.n?'<br><small class="tn">'+esc(x.n)+'</small>':"")+'</p>'});
+ return h||'<div class="empty">Nothing matches. Turn a layer back on or clear the search.</div>'}
+function timeline(y){
+ app.innerHTML='<section><h2>Timeline</h2><p>The machines, the games, the movies, the industry and the world, side by side, dated to the day where I could confirm it. Prices are US launch prices where known. An asterisk (*) on a date or price means I could not confirm it against a source, so treat it as approximate. It runs through 2010.</p>'
+ +'<div class="tools"><input id="tq" type="search" placeholder="Search the timeline" aria-label="Search the timeline"></div>'
+ +'<p class="chips">'+Object.keys(TLK).map(function(k){return '<label class="tag"><input type="checkbox" data-f="'+k+'"'+(TLF[k]?" checked":"")+'> '+TLK[k][0]+'</label>'}).join("")+' <button class="btn" id="tall" type="button">All</button> <button class="btn" id="tnone" type="button">None</button></p>'
+ +'<p class="chips">Jump to: '+[1970,1980,1990,2000,2010].map(function(d){return '<a class="tag" href="#/timeline/'+d+'">'+d+(d===2010?'':'s')+'</a>'}).join("")+'</p><p id="tcount"></p><div id="tlist"></div></section>';
+ var tq=document.getElementById("tq");tq.value=TLQ;
+ function draw(){var e=tlEntries();document.getElementById("tcount").textContent=e.length+" entries";document.getElementById("tlist").innerHTML=tlHtml(e)}
+ tq.oninput=function(){TLQ=tq.value;draw()};
+ app.querySelectorAll("input[data-f]").forEach(function(c){c.onchange=function(){TLF[c.dataset.f]=c.checked?1:0;draw()}});
+ document.getElementById("tall").onclick=function(){Object.keys(TLK).forEach(function(k){TLF[k]=1});timeline(0)};
+ document.getElementById("tnone").onclick=function(){Object.keys(TLK).forEach(function(k){TLF[k]=0});timeline(0)};
+ draw();
+ var t=y&&(app.querySelector('[data-y="'+y+'"]')||app.querySelector('[data-dec="'+y+'"]'));if(t&&t.scrollIntoView)t.scrollIntoView()}
+function gamesFor(y){var by={};TL.forEach(function(r){if(r[1]==="gt"||r[1]==="gn"){var yy=dyear(r[0]);(by[yy]=by[yy]||[]).push(r)}});
+ var ys=Object.keys(by).map(Number).filter(function(v){return v<=y}).sort(function(a,b){return b-a});
+ if(!ys.length)return null;return {y:ys[0],l:by[ys[0]].slice().sort(function(a,b){return(a[1]==="gt"?0:1)-(b[1]==="gt"?0:1)})}}
+function pcFor(y){var r=null;PCS.forEach(function(p){if(p.y<=y)r=p});return r}
+/* ---------- tribute ads ---------- */
+function hstr(s){var h=2166136261;for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}
+function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;var t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+var AD_SKY=[["#0000aa","#aa00aa","#ffff55"],["#000000","#0000aa","#55ffff"],["#aa0000","#ff5555","#ffff55"],["#00aaaa","#0000aa","#ffffff"],["#aa00aa","#ff55ff","#55ffff"],["#00aa00","#005555","#ffff55"],["#aa5500","#aa0000","#ffff55"]];
+function adArt(r,w,h,uid){var R=rng(hstr(r[2])),sk=AD_SKY[Math.floor(R()*AD_SKY.length)],soft=r[1]!=="hw",g="ag"+uid,o='<svg viewBox="0 0 180 150" width="'+w+'" height="'+h+'" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Generated artwork for '+esc(r[2])+'" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="'+g+'" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+sk[0]+'"/><stop offset="1" stop-color="'+sk[1]+'"/></linearGradient></defs><rect width="180" height="150" fill="url(#'+g+')"/>',i;
+ if(soft){var style=Math.floor(R()*2),x;
+  for(i=0;i<22;i++)o+='<rect x="'+Math.floor(R()*178)+'" y="'+Math.floor(R()*80)+'" width="'+(R()<.2?2:1)+'" height="'+(R()<.2?2:1)+'" fill="#fff"/>';
+  if(style===0){x=40+Math.floor(R()*100);o+='<circle cx="'+x+'" cy="78" r="30" fill="'+sk[2]+'"/>';for(i=0;i<6;i++)o+='<rect x="'+(x-32)+'" y="'+(80+i*5)+'" width="64" height="'+(1+i*.5)+'" fill="'+sk[1]+'"/>';
+   o+='<polygon points="0,104 30,72 55,96 85,64 120,98 150,76 180,100 180,150 0,150" fill="#000" opacity=".55"/>';
+   o+='<rect y="104" width="180" height="46" fill="#000"/>';for(i=0;i<7;i++)o+='<line x1="90" y1="104" x2="'+(-90+i*60)+'" y2="150" stroke="'+sk[2]+'" stroke-width=".7"/>';for(i=1;i<5;i++)o+='<line x1="0" y1="'+(104+i*i*3)+'" x2="180" y2="'+(104+i*i*3)+'" stroke="'+sk[2]+'" stroke-width=".7"/>'}
+  else{x=30+Math.floor(R()*120);o+='<circle cx="'+x+'" cy="62" r="34" fill="'+sk[2]+'" opacity=".95"/><circle cx="'+(x+9)+'" cy="55" r="34" fill="'+sk[0]+'" opacity=".55"/>';o+='<ellipse cx="'+x+'" cy="62" rx="52" ry="9" fill="none" stroke="#fff" stroke-width="2" transform="rotate(-18 '+x+' 62)"/>';
+   o+='<polygon points="0,150 0,118 22,100 40,112 66,88 96,110 120,94 150,112 180,96 180,150" fill="#000" opacity=".7"/>';
+   for(i=0;i<9;i++)o+='<rect x="'+Math.floor(R()*170)+'" y="'+(112+Math.floor(R()*30))+'" width="3" height="3" fill="'+sk[2]+'"/>'}}
+ else{for(i=0;i<8;i++){var a=i*Math.PI/4,x2=90+Math.cos(a)*200,y2=75+Math.sin(a)*200,a2=a+Math.PI/8;o+='<polygon points="90,75 '+x2.toFixed(0)+','+y2.toFixed(0)+' '+(90+Math.cos(a2)*200).toFixed(0)+','+(75+Math.sin(a2)*200).toFixed(0)+'" fill="#fff" opacity=".13"/>'}
+  o+='<rect x="46" y="28" width="88" height="66" rx="5" fill="#aaa" stroke="#000" stroke-width="2"/><rect x="54" y="35" width="72" height="50" fill="#0000aa" stroke="#555" stroke-width="2"/><text x="60" y="55" font-family="monospace" font-size="10" fill="#fff">C:\\&gt;_</text><rect x="60" y="62" width="40" height="3" fill="#55ffff"/><rect x="60" y="69" width="28" height="3" fill="#ffff55"/>';
+  o+='<rect x="76" y="94" width="28" height="8" fill="#aaa" stroke="#000"/><rect x="52" y="102" width="76" height="12" rx="2" fill="#aaa" stroke="#000" stroke-width="2"/>';for(i=0;i<9;i++)o+='<rect x="'+(56+i*8)+'" y="105" width="6" height="3" fill="#555"/>';
+  o+='<rect y="126" width="180" height="24" fill="#000" opacity=".6"/>'}
+ return o+'</svg>'}
+function adStore(r){return r[1]==="hw"?"Bit Barn Computers":"Bargain Bytes Software"}
+var AD_TAGS_SW=["Clear some room on your hard drive.","Sound card recommended. Volume knob required.","Your mouse will thank you.","Loads high. Plays higher.","Now in glorious 256 colors.","Save often. Trust nobody.","Insert disk 1 to begin."];
+var AD_TAGS_HW=["More megahertz than you can shake a floppy at.","The future fits on your desk.","Upgrade before your neighbor does.","Plug in. Power up. Play.","Now with a turbo button, probably."];
+function adTag(r){var p=r[1]==="hw"?AD_TAGS_HW:AD_TAGS_SW;return p[hstr(r[2]+"t")%p.length]}
+function adBurst(pr){var t=pr.t,m=t.match(/[$£¥][\d,.]+/);var big=pr.est?(m?m[0]:"TBA"):(t.length<=11?t:(m?m[0]:t.slice(0,10)));return '<span class="ad-burst" aria-label="Price '+esc(t)+'"><i>'+(pr.est?"EST.":"ONLY")+'</i><b>'+esc(big)+(pr.est&&big.slice(-1)!=="*"&&/\*/.test(t)?"*":"")+'</b></span>'}
+function dnum(d,up){var p=String(d).split("-"),y=+p[0],m=p[1]?+p[1]:up?12:1,dd=p[2]?+p[2]:up?28:1;return y*372+(m-1)*31+dd-1}
+function fine(d){return String(d).length>=7}
+function guessPrice(r,y){if(r[3])return {t:r[3],est:/\*$/.test(r[3])};
+ if(r[1]==="hw")return {t:"Price TBA*",est:true};
+ var pr=y<1990?"$29.95 to $49.95*":y<1996?"$39.95 to $59.95*":y<2000?"$39.99 to $54.99*":y<2006?"$29.99 to $49.99*":"$39.99 to $59.99*";return {t:pr,est:true}}
+function adPicks(it){var d0=it.rel||String(it.year);if(!it.year)return [];var a=dnum(d0,false),out=[];
+ TL.forEach(function(r){if(["gt","gn","hw","sw"].indexOf(r[1])<0||!fine(r[0]))return;var n=dnum(r[0],false);if(n<=a||n>a+31*9)return;
+  var t=r[2].toLowerCase();if(ITEMS.some(function(x){return t.indexOf(x.name.toLowerCase())>=0}))return;out.push({r:r,n:n})});
+ out.sort(function(x,y){return x.n-y.n});
+ var gm=out.filter(function(x){return x.r[1]==="gt"||x.r[1]==="gn"}),hw=out.filter(function(x){return x.r[1]==="hw"});
+ gm.sort(function(x,y){return(x.r[1]==="gt"?0:1)-(y.r[1]==="gt"?0:1)||x.n-y.n});
+ var pick=gm.slice(0,2).concat(hw.slice(0,1));if(pick.length<3)pick=pick.concat(gm.slice(2,5-pick.length));
+ return pick.slice(0,3).sort(function(x,y){return x.n-y.n}).map(function(x){return x.r})}
+function adWhen(r){return "COMING "+fmtDate(r[0]).toUpperCase()+(r[5]?"":"*")}
+function adBanner(r){var pr=guessPrice(r,dyear(r[0]));
+ return '<aside class="adbar" aria-label="Tribute advertisement"><div class="ad-art sm">'+adArt(r,96,80,"b")+'</div><div class="adbar-t"><span class="ad-store">'+esc(adStore(r))+' presents</span><b class="adh">'+esc(r[2])+'</b><span>'+esc(adTag(r))+' <em>'+esc(adWhen(r))+'</em></span></div>'+adBurst(pr)+'<button class="adx" type="button" aria-label="Close this ad">&times;</button><span class="ad-fine">TRIBUTE AD</span></aside>'}
+function adPoster(r,i){var pr=guessPrice(r,dyear(r[0]));
+ return '<article class="ad-poster"><div class="ad-art">'+adArt(r,180,150,"p"+i)+adBurst(pr)+'<span class="ad-ribbon">'+esc(adWhen(r))+'</span></div><div class="ad-body"><span class="ad-store">'+esc(adStore(r))+' presents</span><h4>'+esc(r[2])+'</h4><p class="ad-tag">'+esc(adTag(r))+'</p>'+(pr.est?'<p class="ad-fine2">Estimated price, not a real MSRP.</p>':'')+'</div></article>'}
+function adShelf(picks){return picks.length?'<section class="adshelf"><h3 class="sub">Coming soon <span class="tag">tribute ads</span></h3><div class="ad-row">'+picks.map(adPoster).join("")+'</div><small class="tn">Tribute ads in the spirit of 90s software store flyers. Not a real store or offer, and nothing can be ordered. * means the date or price is unconfirmed or estimated.</small></section>':""}
+function adBar(picks){var gone=false;try{gone=sessionStorage.getItem("cm-adx")==="1"}catch(e){}return picks.length&&!gone?adBanner(picks[0]):""}
+function eraSec(it){if(!it.year)return "";var cols=[],d0=it.rel||String(it.year),a=dnum(d0,false),b=dnum(d0,true);
+ if(it.type==="Game or software"){var p=pcFor(it.year);if(p)cols.push('<div><h3 class="sub">A high-end PC then</h3>'+tbl([["As of",p.y],["CPU",p.cpu],["RAM",p.ram],["Video",p.video],["Sound",p.sound],["Storage",p.storage],["Example",p.ex]])+'<small class="tn">Curated summary, approximate and general.</small></div>')}
+ var near=TL.filter(function(r){var n=dnum(r[0],false);return(r[1]==="gt"||r[1]==="gn")&&fine(r[0])&&n>=a-31*6&&n<=a+31*3});
+ near.sort(function(x,y){return(x[1]==="gt"?0:1)-(y[1]==="gt"?0:1)});near=near.slice(0,10).sort(function(x,y){return dnum(x[0])-dnum(y[0])});
+ if(near.length)cols.push('<div><h3 class="sub">Games out around then</h3>'+near.map(function(r){var x=dnum(r[0],false);return '<p class="tl">'+esc(r[2])+' <small class="tn">'+esc(fmtDate(r[0]))+(r[5]?'':'*')+(x>b?', after':x<a?', before':'')+'</small></p>'}).join("")+'</div>');
+ else{var g=gamesFor(it.year);if(g)cols.push('<div><h3 class="sub">Games around '+g.y+'</h3><p>'+g.l.slice(0,10).map(function(r){return esc(r[2])}).join(", ")+'</p></div>')}
+ var ev=TL.filter(function(r){return(r[1]==="e"||r[1]==="hw"||r[1]==="sw")&&fine(r[0])&&Math.abs(dnum(r[0],false)-a)<=31*6&&r[2]!==it.name});
+ ev.sort(function(x,y){return(x[1]==="e"?0:1)-(y[1]==="e"?0:1)});ev=ev.slice(0,8).sort(function(x,y){return dnum(x[0])-dnum(y[0])});
+ if(ev.length)cols.push('<div><h3 class="sub">Industry and tech nearby</h3>'+ev.map(function(r){return '<p class="tl">'+esc(r[2])+' <small class="tn">'+esc(fmtDate(r[0]))+(r[5]?'':'*')+'</small></p>'}).join("")+'</div>');
+ return cols.length?'<section class="eras"><h2>Around this date</h2><div class="era">'+cols.join("")+'</div><p><a href="#/timeline/'+it.year+'">See '+it.year+' on the timeline</a> <small class="tn">An asterisk means unconfirmed.</small></p></section>':""}
+var LOGTYPES=["Acquired","Upgrade","Repair","Mod","Clean","Test","Moved","Sold","Note"];
+function logsOf(it){return(it.log||[]).slice().sort(function(a,b){return a.d<b.d?1:a.d>b.d?-1:0})}
+function logSec(it){var l=logsOf(it);return l.length?sec("Changelog",'<div>'+l.map(function(x){return '<div class="cl"><b>'+esc(fmtDate(x.d))+'</b><span class="tag">'+esc(x.t||"Note")+'</span> '+esc(x.n||"")+'</div>'}).join("")+'</div>'):""}
+function allLogs(){var r=[];ITEMS.forEach(function(it){(it.log||[]).forEach(function(x){r.push({it:it,x:x})})});return r.sort(function(a,b){return a.x.d<b.x.d?1:a.x.d>b.x.d?-1:0})}
+function logRow(e){return '<div class="cl"><b>'+esc(fmtDate(e.x.d))+'</b><span class="tag">'+esc(e.x.t||"Note")+'</span> <a href="#/item/'+esc(e.it.id)+'">'+esc(e.it.name)+'</a>: '+esc(e.x.n||"")+'</div>'}
+function recentHtml(){var r=allLogs().slice(0,5);return r.length?'<section><h2>Recent changes</h2>'+r.map(logRow).join("")+'<p><a href="#/changes">See every change</a></p></section>':""}
+function changes(){
+ app.innerHTML='<section><h2>Changelog</h2><p>Every upgrade, repair and change to the collection, newest first.</p><div class="tools"><select id="lt" aria-label="Type"><option value="">All types</option>'+LOGTYPES.map(function(t){return '<option>'+t+'</option>'}).join("")+'</select></div><div id="ll"></div></section>';
+ var r=allLogs(),s=document.getElementById("lt"),ll=document.getElementById("ll");
+ function draw(){var l=r.filter(function(e){return !s.value||e.x.t===s.value}),m=null,o="";
+  l.forEach(function(e){var mo=String(e.x.d).slice(0,7);if(mo!==m){m=mo;o+='<h3 class="sub">'+esc(fmtDate(mo))+'</h3>'}o+=logRow(e)});
+  ll.innerHTML=o||'<div class="empty">No changes logged yet. Add entries to an item log from the Admin page.</div>'}
+ s.onchange=draw;draw()}
+var EXST=["Have","Want","Missing","Optional"];
+var ACC_HINTS={"Computer":["AC adapter","Battery","Manual","Original box","Carrying case","Restore or driver disks","Dock or port replicator","Mouse","Keyboard"],
+ "Console or handheld":["Controllers","AV cable","Power adapter","Memory card","Manual","Original box"],
+ "Game or software":["Box","Manual","Disks or discs","Registration card","Map or cloth map","Code wheel","Feelies","Reference card"],
+ "Expansion card":["Driver disks","Manual","Original box","Slot bracket","Cables"],
+ "Sound or MIDI":["Power cable","MIDI cables","Interface card","Manual","Original box"],
+ "Peripheral":["Cable","Adapter","Manual","Original box","Driver disk"],
+ "Storage":["Cable","Mounting rails","Manual","Drivers","Original box"],
+ "Monitor":["Power cable","Video cable","Manual","Stand","Original box"],
+ "Printer":["Power cable","Interface cable","Manual","Ribbon or cartridge","Paper"],
+ "Other":["Manual","Original box","Cables"]};
+function exStat(x){return EXST.indexOf(x.s)>=0?x.s:"Have"}
+function exSec(it){var e=it.extras||[];if(!e.length)return "";
+ var core=e.filter(function(x){return exStat(x)!=="Optional"}),have=core.filter(function(x){return exStat(x)==="Have"}).length;
+ var sum=core.length?'<p>'+(have===core.length?'<span class="tag want">Complete set</span> ':'')+have+' of '+core.length+' pieces in the set.</p>':"";
+ return sec("Accessories and companions",sum+e.map(function(x){var s=exStat(x),lk=x.item&&ITEMS.some(function(i){return i.id===x.item});
+  return '<div class="ex"><span class="tag'+(s==="Want"||s==="Missing"?' want':'')+'">'+s+'</span> '+(lk?'<a href="#/item/'+esc(x.item)+'">'+esc(x.n)+'</a>':esc(x.n))+(x.note?' <small class="tn">'+esc(x.note)+'</small>':'')+'</div>'}).join(""))}
+function wantedExtras(){var r=[];ITEMS.forEach(function(it){(it.extras||[]).forEach(function(x){var s=exStat(x);if(s==="Want"||s==="Missing")r.push({it:it,x:x,s:s})})});return r}
+function gcd(a,b){return b?gcd(b,a%b):a}
+function qod(){var d=new Date(),n=Math.floor(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())/864e5),L=QUOTES.length,st=151;while(gcd(st,L)!==1)st++;return QUOTES[(n*st)%L]}
+function qBlock(q){return '<blockquote class="qt"><p>'+esc(q[0])+'</p><div class="qa">'+esc(q[1])+'</div></blockquote>'}
+function qodHtml(){return QUOTES.length?'<section><h2>Quote of the day</h2><div id="qbox">'+qBlock(qod())+'</div><p><button class="btn" id="qnew" type="button">Another quote</button> <a class="btn" href="#/quotes">All '+QUOTES.length+' quotes</a></p></section>':""}
+function quotesPage(){
+ app.innerHTML='<section><h2>Quotes</h2><p>'+QUOTES.length+' quotes about computers, memory, collecting and the past. Where a famous line is disputed, the attribution says so. Lines credited to Conventional Memory are the museum&rsquo;s own.</p><div class="tools"><input id="qs" type="search" placeholder="Search quotes or people" aria-label="Search quotes"></div><p id="qc"></p><div id="ql"></div></section>';
+ var qs=document.getElementById("qs");
+ function draw(){var t=qs.value.toLowerCase(),l=QUOTES.filter(function(q){return(q[0]+" "+q[1]).toLowerCase().indexOf(t)>=0});document.getElementById("qc").textContent=l.length+" quotes";document.getElementById("ql").innerHTML=l.map(qBlock).join("")}
+ qs.oninput=draw;draw()}
+function otd(){var d=new Date(),k="-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+ var l=TL.filter(function(r){return r[0].length===10&&r[0].slice(4)===k}).map(function(r){return{y:r[0].slice(0,4),k:r[1],t:r[2]}})
+  .concat(ITEMS.filter(function(i){return i.rel&&i.rel.length===10&&i.rel.slice(4)===k}).map(function(i){return{y:i.rel.slice(0,4),k:"i",t:i.name}}))
+  .sort(function(a,b){return a.y<b.y?-1:1}).slice(0,5);
+ return l.length?'<section><h2>On this day</h2>'+l.map(function(r){return '<p class="tl"><b>'+esc(r.y)+'</b><span class="tag">'+esc(TLK[r.k][1])+'</span> '+esc(r.t)+'</p>'}).join("")+'<p><a href="#/timeline">Open the timeline</a></p></section>':""}
+function tagChips(){var c={};ITEMS.forEach(function(i){(i.tags||[]).forEach(function(t){c[t]=(c[t]||0)+1})});var k=Object.keys(c).sort();
+ return k.length?'<p class="chips">'+k.map(function(t){return '<a class="tag" href="#/tag/'+encodeURIComponent(t)+'">'+esc(t)+' ('+c[t]+')</a>'}).join("")+'</p>':""}
+function tagPage(t){var l=ITEMS.filter(function(i){return(i.tags||[]).indexOf(t)>=0});
+ app.innerHTML='<section><h2>Tag: '+esc(t)+'</h2><p><a href="#/catalog">Back to the catalog</a></p><div class="grid">'+(l.map(card).join("")||'<div class="empty">No items have that tag.</div>')+'</div></section>'}
+function daily(){if(!ITEMS.length)return "";var it=ITEMS[Math.floor(Date.now()/864e5)%ITEMS.length];return '<section><h2>Exhibit of the day</h2><div class="grid">'+card(it)+'</div></section>'}
+function cmpSel(it){return ITEMS.length>1?'<p><label>Compare with <select id="cmp"><option value="">Choose an item</option>'+ITEMS.filter(function(x){return x!==it}).map(function(x){return '<option value="'+esc(x.id)+'">'+esc(x.name)+'</option>'}).join("")+'</select></label></p>':""}
+function compare(x,y){var A=ITEMS.filter(function(i){return i.id===x})[0],B=ITEMS.filter(function(i){return i.id===y})[0];
+ if(!A||!B){dlg("One of those items is not in the catalog.",'<a class="btn" href="#/catalog">Back to the catalog</a>');return}
+ var r=[["Released","year"],["Maker","maker"],["Model","model"],["Original MSRP","msrp"]].map(function(f){return [f[0],A[f[1]],B[f[1]]]});
+ r.push(["Score",A.score!=null?A.score+"K":"",B.score!=null?B.score+"K":""]);
+ [["Type","type"],["Status","status"],["Condition","cond"],["Working","works"]].forEach(function(f){r.push([f[0],A[f[1]],B[f[1]]])});
+ var ks=[];[A,B].forEach(function(i){Object.keys(i.specs||{}).forEach(function(k){if(ks.indexOf(k)<0)ks.push(k)})});
+ ks.forEach(function(k){r.push([k,(A.specs||{})[k],(B.specs||{})[k]])});
+ r=r.filter(function(v){return v[1]||v[2]});
+ app.innerHTML='<section><p><a href="#/item/'+esc(A.id)+'">Back to '+esc(A.name)+'</a></p><h2>Compare</h2><p>Highlighted rows differ.</p><div class="scr"><div class="cmp cmph"><b></b><b>'+esc(A.name)+'</b><b>'+esc(B.name)+'</b></div>'
+  +r.map(function(v){return '<div class="cmp'+(String(v[1]||"")!==String(v[2]||"")?" df":"")+'"><span>'+esc(v[0])+'</span><span>'+esc(v[1]||"none")+'</span><span>'+esc(v[2]||"none")+'</span></div>'}).join("")+'</div></section>'}
+function scale(){var h='<section><h2>The 640K scale</h2><p>Every item gets a score from 0 to 640K, named for the memory limit of the original IBM PC. The more memory a program left free, the happier its owner was, so a higher score means a better item. Each range is named for a moment from DOS history.</p>';
+ SCALE.forEach(function(t,i){var hi=i<SCALE.length-1?SCALE[i+1].min-1:640;var c=ITEMS.filter(function(x){return x.score!=null&&tier(x.score)===t}).length;
+  h+='<div class="src"><b>'+t.min+'K to '+hi+'K: '+esc(t.n)+'</b><p>'+esc(t.d)+'</p><small>'+c+' item'+(c==1?'':'s')+' in this tier</small></div>'});
+ app.innerHTML=h+'</section>'}
+function dos(it){return(it.name.toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,8)||"ITEM")+".ITM"}
+function dpath(it){return "C:\\MUSEUM\\"+(it.cat.toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,8)||"MISC")+"\\"+dos(it)}
+function dlg(msg,btns){app.innerHTML='<section><div class="dlg"><div class="tb">Error</div><p>'+msg+'</p><p>'+btns+'</p></div></section>'}
+function dir(list){var t=" Volume in drive C is CONVMEM\n Directory of C:\\MUSEUM\n\n";
+ list.forEach(function(i){t+='<a href="#/item/'+i.id+'">'+dos(i).padEnd(12)+'</a> '+(i.score!=null?String(i.score).padStart(4)+"K":"   --")+"  "+String(i.year).padEnd(5)+esc(i.name)+"\n"});
+ return '<div class="scr"><pre class="dir">'+t+"\n   "+list.length+" file(s)</pre></div>"}
+function mem(){var cats={};ITEMS.forEach(function(i){(cats[i.cat]=cats[i.cat]||[]).push(i)});
+ function bar(v){var n=Math.round(v/640*10);return "\u2588".repeat(n)+"\u2591".repeat(10-n)}
+ var t="Category".padEnd(14)+" "+"Items".padStart(5)+"  Average\n"+"-".repeat(38)+"\n";
+ Object.keys(cats).sort().forEach(function(k){var l=cats[k].filter(function(i){return i.score!=null}),a=l.length?Math.round(l.reduce(function(x,i){return x+i.score},0)/l.length):null;
+  t+=k.slice(0,14).padEnd(14)+" "+String(cats[k].length).padStart(5)+"  "+(a==null?"n/a":bar(a)+" "+a+"K")+"\n"});
+ t+="-".repeat(38)+"\n"+"Total items".padEnd(14)+" "+String(ITEMS.length).padStart(5)+"\n"+"Free".padEnd(14)+" "+String(640-ITEMS.length).padStart(5)+"K of 640K\n";
+ app.innerHTML='<section><h2>MEM /C</h2><p>The catalog laid out the way DOS listed memory: one row per category, with the average score as a bar.</p><div class="scr"><pre class="dir">'+esc(t)+'</pre></div></section>'}
+var THEMES=[["","Default"],["green","Green phosphor"],["amber","Amber"],["ega","EGA blue"],["clean","Clean, no scanlines"]];
+function setTheme(i){var t=THEMES[i],r=document.documentElement;if(t[0])r.setAttribute("data-theme",t[0]);else r.removeAttribute("data-theme");document.getElementById("th").textContent="Theme: "+t[1];try{localStorage.setItem("cm-theme",i)}catch(e){}}
+function boot(){
+ try{if(sessionStorage.getItem("cm-boot")||matchMedia("(prefers-reduced-motion: reduce)").matches)return;sessionStorage.setItem("cm-boot","1")}catch(e){}
+ var d=document.createElement("div"),m=0,t;d.className="boot";
+ d.innerHTML='<pre>Conventional Memory BIOS v1.0\nCopyright (C) Conventional Memory LLC\n\n<span>Memory Test:    0K</span></pre><p>Press any key to skip</p>';
+ document.body.appendChild(d);var el=d.querySelector("span"),pre=d.querySelector("pre");
+ function done(){clearInterval(t);d.remove();document.removeEventListener("keydown",done)}
+ t=setInterval(function(){m+=32;if(m>=640){clearInterval(t);el.textContent="Memory Test: 640K OK";pre.appendChild(document.createTextNode("\n"+ITEMS.length+" items found\nLoading catalog...\n\nYou are now entering the information superhighway!"));setTimeout(done,800)}else el.textContent="Memory Test: "+m+"K"},40);
+ d.onclick=done;document.addEventListener("keydown",done)}
+function check(){var seen={},rows=[],ok=0;
+ ITEMS.forEach(function(i){var p=[];
+  if(seen[i.id])p.push("duplicate id");seen[i.id]=1;
+  if(!/^[a-z0-9-]+$/.test(i.id||""))p.push("id should use lowercase letters, numbers and dashes");
+  if(!i.year)p.push("missing release year");
+  if(!i.maker||i.maker==="Unknown")p.push("missing maker");
+  if(i.score!=null&&(i.score<0||i.score>640))p.push("score outside 0 to 640");
+  if(i.type&&!SPEC_TYPES[i.type])p.push("unknown type "+i.type);
+  if(!(i.photos||[]).length)p.push("no photos");
+  if(i.type!=="Other"&&!(i.specs&&Object.keys(i.specs).length))p.push("no specs");
+  if(!i.wiki)p.push("no reference link");
+  if(!i.got)p.push("no acquisition note");if(!i.works)p.push("working status not recorded");
+  if(i.sample)p.push("still a sample entry");
+  if(i.rel&&!/^\d{4}(-\d\d(-\d\d)?)$/.test(i.rel))p.push("release date should look like 1998, 1998-11 or 1998-11-03");
+  if((i.log||[]).some(function(x){return !/^\d{4}-\d\d-\d\d$/.test(x.d||"")}))p.push("a changelog entry has a bad date (use YYYY-MM-DD)");
+  if(p.length)rows.push('<div class="src"><b><a href="#/item/'+esc(i.id)+'">'+esc(i.name)+'</a></b> '+esc(i.acc)+', '+comp(i)+'% complete<br>'+esc(p.join(", "))+'</div>');else ok++});
+ function q(v){return '"'+String(v==null?"":v).replace(/"/g,'""')+'"'}
+ var cols=["acc","name","maker","model","year","rel","disc","cat","type","status","qty","msrp","cond","works","score","acquired"];
+ var csv=[cols.join(",")].concat(ITEMS.map(function(i){return cols.map(function(c){return q(i[c])}).join(",")})).join("\n");
+ app.innerHTML='<section class="bld"><h2>Data check</h2><p>'+ok+' of '+ITEMS.length+' items have nothing flagged.</p>'+rows.join("")+'<h3 class="sub">Export</h3><p>Copies the public catalog fields as CSV, ready for a spreadsheet.</p><textarea id="csv" readonly></textarea><p><button class="btn pri" id="cc" type="button">Copy CSV</button></p></section>';
+ var ta=document.getElementById("csv");ta.value=csv;
+ document.getElementById("cc").onclick=function(){try{navigator.clipboard.writeText(csv)}catch(e){ta.select();document.execCommand("copy")}}}
+function contactHtml(){var m="mailto:"+EMAIL;
+ return '<section><h2>Contact</h2><div class="ctc"><a class="mb" href="'+m+'?subject=Hello%20from%20ConventionalMemory.io" aria-label="Email me"><svg viewBox="0 0 160 130" role="img" aria-hidden="true"><rect x="70" y="80" width="10" height="50" fill="#7a5a3a" stroke="#333" stroke-width="2"/><path d="M30 82V58Q30 30 75 30Q120 30 120 58V82Z" fill="#c9ced6" stroke="#333" stroke-width="3"/><rect x="42" y="62" width="66" height="8" fill="#333"/><g class="flag"><rect x="118" y="30" width="5" height="36" fill="#d22" stroke="#333" stroke-width="1.5"/><rect x="123" y="30" width="18" height="12" fill="#d22" stroke="#333" stroke-width="1.5"/></g></svg></a>'
+ +'<div><p><b>You&rsquo;ve got mail!</b> Click the mailbox to write to me.</p><p><a href="'+m+'?subject=Guestbook">Sign my guestbook</a></p></div></div></section>'}
+function nowHtml(){return NOW.length?'<section><h2>Now working on</h2>'+NOW.map(function(n){return '<div class="src"><b>'+(n.item?'<a href="#/item/'+esc(n.item)+'">'+esc(n.t)+'</a>':esc(n.t))+(n.sample?'<span class="tag">sample</span>':'')+'</b><p>'+esc(n.note)+'</p></div>'}).join("")+'</section>':""}
+function wanted(){var h='<section><h2>Wanted</h2><p>Items I am hunting for. If you have one to sell or donate, message me on any of my socials.</p>'+socials();
+ h+=WANTED.length?WANTED.map(function(w){return '<div class="src"><b>'+esc(w.name)+'</b><span class="tag">'+esc(w.priority||"Wanted")+'</span>'+(w.sample?'<span class="tag">sample</span>':'')+'<br>'+esc(w.type||"")+'<p>'+esc(w.note||"")+'</p></div>'}).join(""):'<div class="empty">Nothing on the list right now.</div>';
+ var we=wantedExtras();if(we.length)h+='<h3 class="sub">Accessories and parts</h3>'+we.map(function(w){return '<div class="ex"><span class="tag want">'+w.s+'</span> '+esc(w.x.n)+' for <a href="#/item/'+esc(w.it.id)+'">'+esc(w.it.name)+'</a>'+(w.x.note?' <small class="tn">'+esc(w.x.note)+'</small>':'')+'</div>'}).join("");
+ app.innerHTML=h+'</section>'}
+function pn(it){var i=ITEMS.indexOf(it),p=ITEMS[i-1],n=ITEMS[i+1];
+ return '<p class="pn"><span>'+(p?'<a href="#/item/'+p.id+'">Previous: '+esc(p.name)+'</a>':'<a href="#/catalog">Back to the catalog</a>')+'</span><span>'+(n?'<a href="#/item/'+n.id+'">Next: '+esc(n.name)+'</a>':'')+'</span></p>'}
+function related(it){var r=ITEMS.filter(function(x){return x!==it&&(x.cat===it.cat||x.maker===it.maker)}).slice(0,3);
+ return r.length?'<h3 class="sub">More like this</h3><div class="grid">'+r.map(card).join("")+'</div>':""}
+function tier(v){var t=SCALE[0];SCALE.forEach(function(x){if(v>=x.min)t=x});return t}
+function tbl(rows){rows=rows.filter(function(r){return r[1]!==undefined&&r[1]!==null&&r[1]!==""});return rows.length?'<dl>'+rows.map(function(r){return '<dt>'+esc(r[0])+'</dt><dd>'+(r[1]&&r[1].h?r[1].h:esc(r[1]))+'</dd>'}).join("")+'</dl>':""}
+function sec(t,body){return body?'<h3 class="sub">'+esc(t)+'</h3>'+body:""}
+function comp(it){var f=[it.year,it.maker&&it.maker!=="Unknown",it.model,it.msrp,it.cond,it.works,it.got,it.acquired,it.specs&&Object.keys(it.specs).length,(it.photos||[]).length,it.wiki,it.score!=null,it.thoughts];return Math.round(f.filter(Boolean).length/f.length*100)}
+function specSheet(it){var g=SPEC_TYPES[it.type]||{},sp=it.specs||{},used={},h="";
+ Object.keys(g).forEach(function(n){h+=sec(n,tbl(g[n].filter(function(k){return sp[k]}).map(function(k){used[k]=1;return [k,sp[k]]})))});
+ return h+sec(Object.keys(g).length?"Other specs":"Specs",tbl(Object.keys(sp).filter(function(k){return !used[k]}).map(function(k){return [k,sp[k]]})))}
+function item(id){
+ var it=ITEMS.filter(function(i){return i.id===id})[0];
+ if(!it){dlg("Item not found reading drive C.<br>Abort, Retry, Fail?",'<a class="btn" href="#/">Abort</a> <button class="btn" id="rt" type="button">Retry</button> <a class="btn" href="#/catalog">Fail</a>');document.getElementById("rt").onclick=route;return}
+ var ph=it.photos||[],vd=it.videos||[],au=it.audio||[],w=it.wiki;
+ var gal=ph.length>1?'<div class="gal">'+ph.slice(1).map(function(x){var u=safeUrl(x,"img");return u?'<div class="ph"><img src="'+esc(u)+'" alt="'+esc(it.name)+' photo" loading="lazy"></div>':""}).join("")+'</div>':"";
+ var media="";
+ if(vd.length)media+=sec("Videos",'<p>'+vd.map(function(v){var u=safeUrl(v.u,"link");return u?'<a class="btn pri" href="'+esc(u)+'" target="_blank" rel="noopener noreferrer">'+esc(v.t)+'</a> ':""}).join("")+'</p>');
+ if(au.length)media+=sec("Audio",au.map(function(a){var u=safeUrl(a.src,"audio");return u?'<div class="aud"><span>'+esc(a.t)+'</span><audio controls preload="none" src="'+esc(u)+'"></audio></div>':""}).join(""));
+ if(!vd.length&&!au.length)media='<p class="empty">No videos or audio linked yet.</p>';
+ if(it.links&&it.links.length)media+=sec("Manuals and references",'<p>'+it.links.map(function(l){var u=safeUrl(l.u,"link");return u?'<a href="'+esc(u)+'" target="_blank" rel="noopener noreferrer">'+esc(l.t)+'</a>':esc(l.t)}).join("<br>")+'</p>');
+ var t=tier(it.score),sc=it.score!=null?'<div class="score"><div class="bar"><i style="width:'+(it.score/640*100)+'%"></i></div><b>'+it.score+'K of 640K</b><span>'+esc(t.n)+'</span> <a href="#/scale">About the scale</a><p>'+esc(t.d)+'</p></div>':"";
+ var wu=w?safeUrl(w.u,"link"):"";
+ var src=w?'<div class="src"><b>From Wikipedia: '+esc(w.t)+'</b>'+(w.summary?'<p>'+esc(w.summary)+'</p>':'')+(wu?'<a href="'+esc(wu)+'" target="_blank" rel="noopener noreferrer">Read the full article</a>':'')+(w.summary?'<small>Summary text from Wikipedia, licensed CC BY-SA.</small>':'')+'</div>':"";
+ var ident=tbl([["Maker",it.maker],["Model",it.model],["Part number",it.partno],["Revision",it.rev],["Barcode",it.upc],["Released",(it.rel?fmtDate(it.rel):it.year)+(it.relx?"*":"")],["Discontinued",it.disc],["Original MSRP",it.msrp],["Made in",it.country],["Date code",it.made],["Category",it.cat],["Type",it.type]]);
+ var coll=tbl([["Accession",it.acc],["Status",it.status?it.status+(it.qty>1?", quantity "+it.qty:""):""],["Condition",it.cond],["Working",it.works],["Includes",(it.has||[]).join(", ")],["Acquired",it.acquired],["Last changed",logsOf(it)[0]?fmtDate(logsOf(it)[0].d):""],["Where I got it",it.got],["Tags",(it.tags||[]).length?{h:it.tags.map(function(t){return '<a href="#/tag/'+encodeURIComponent(t)+'">'+esc(t)+'</a>'}).join(", ")}:""],["Record complete",comp(it)+"%"]]);
+ var picks=adPicks(it);
+ app.innerHTML='<section class="itempage">'+pn(it)+adBar(picks)+'<div class="detail"><div class="dl"><div class="ph">'+pic(it)+'</div>'+gal+(it.credit?'<small style="color:var(--mute)">'+esc(it.credit)+'</small>':'')+media+src+'</div><div class="dr"><div class="tb">'+esc(dpath(it))+'</div><h2>'+esc(it.name)+(it.sample?'<span class="tag">sample</span>':'')+'</h2>'
+  +cmpSel(it)+sc+(it.text?'<p>'+esc(it.text)+'</p>':"")+(it.thoughts?sec("My take",'<p>'+esc(it.thoughts)+'</p>'):"")+sec("Identification and history",ident)+specSheet(it)+sec("Collection record",coll)+exSec(it)+logSec(it)+(it.notes?sec("Repairs and mods",'<p>'+esc(it.notes)+'</p>'):"")+'</div></div>'
+  +eraSec(it)+related(it)+adShelf(picks)+'</section>';
+ var cs=document.getElementById("cmp");if(cs)cs.onchange=function(){if(cs.value)location.hash="#/compare/"+it.id+"/"+cs.value};
+ var ax=app.querySelector(".adx");if(ax)ax.onclick=function(){try{sessionStorage.setItem("cm-adx","1")}catch(e){}var b=app.querySelector(".adbar");if(b)b.remove()};
+ app.querySelectorAll(".dl .ph img").forEach(function(im){im.onclick=function(){var d=document.createElement("div");d.className="lb";var i2=document.createElement("img");i2.src=im.src;i2.alt="";d.appendChild(i2);d.onclick=function(){d.remove()};document.body.appendChild(d)}})}
+function stats(){
+ var n=ITEMS.length,q=0,tot=0,mk={},dec={},st={},wk={},cd={};
+ ITEMS.forEach(function(i){var c=i.qty||1;q+=c;var m=String(i.msrp||"").match(/\$\s?([\d,]+(?:\.\d+)?)/);if(m)tot+=parseFloat(m[1].replace(/,/g,""))*c;
+  mk[i.maker]=(mk[i.maker]||0)+1;var d=i.year?Math.floor(i.year/10)*10+"s":"Unknown";dec[d]=(dec[d]||0)+1;
+  if(i.status)st[i.status]=(st[i.status]||0)+1;if(i.works)wk[i.works]=(wk[i.works]||0)+1;if(i.cond)cd[i.cond]=(cd[i.cond]||0)+1});
+ function bars(o,sort){var k=Object.keys(o);if(sort)k.sort(function(a,b){return o[b]-o[a]});else k.sort();var mx=Math.max.apply(null,k.map(function(x){return o[x]}));
+  return k.length?k.slice(0,8).map(function(x){return '<div class="br"><span>'+esc(x)+'</span><i style="width:'+(o[x]/mx*100)+'%"></i><b>'+o[x]+'</b></div>'}).join(""):'<p class="empty">Nothing recorded yet.</p>'}
+ function pct(f){return n?Math.round(ITEMS.filter(f).length/n*100)+"%":"0%"}
+ app.innerHTML='<section><h2>The numbers</h2><div class="stats"><div><b>'+n+'</b>catalog entries</div><div><b>'+q+'</b>total pieces</div><div><b>'+(tot?"$"+Math.round(tot).toLocaleString("en-US"):"none")+'</b>original retail value, in dollars as priced</div><div><b>'+pct(function(i){return(i.photos||[]).length})+'</b>have photos</div><div><b>'+pct(function(i){return i.specs&&Object.keys(i.specs).length})+'</b>have specs</div><div><b>'+pct(function(i){return i.score!=null})+'</b>scored</div><div><b>'+wantedExtras().length+'</b>accessories still wanted</div><div><b>'+ITEMS.filter(function(i){var c=(i.extras||[]).filter(function(x){return exStat(x)!=="Optional"});return c.length&&c.every(function(x){return exStat(x)==="Have"})}).length+'</b>complete sets</div><div><b>'+allLogs().length+'</b>changelog entries</div></div>'
+ +sec("By decade",bars(dec,false))+sec("Top makers",bars(mk,true))+sec("By status",bars(st,true))+sec("Working status",bars(wk,true))+sec("Condition",bars(cd,true))+'</section>'}
+function follow(){app.innerHTML='<section><h2>Follow @'+HANDLE+'</h2><p>New items and videos go up on all four platforms.</p>'+socials()+'</section>'+contactHtml()}
+function loadAdmin(){if(window.CMAdmin){window.CMApp={ITEMS:ITEMS,SPEC_TYPES:SPEC_TYPES,ACC_HINTS:ACC_HINTS,EXST:EXST,LOGTYPES:LOGTYPES,REPO:REPO,esc:esc,safeUrl:safeUrl,today:today,prep:prepItems,fmtDate:fmtDate};CMAdmin.mount(app,window.CMApp);return}
+ app.innerHTML='<section><h2>Admin</h2><p>Loading the admin tools.</p></section>';var sc=document.createElement("script");sc.src="admin.js";sc.onload=function(){route()};sc.onerror=function(){app.innerHTML='<section><h2>Admin</h2><p class="empty">The admin tools (admin.js) could not be loaded. Make sure admin.js is in the same folder as the site.</p></section>'};document.head.appendChild(sc)}
+function route(){if(window.CMAdmin)CMAdmin.unmount();var h=location.hash.replace(/^#\/?/,"").split("/");window.scrollTo(0,0);app.oninput=null;if(window.CMGame)CMGame.unmount();
+ if(h[0]==="random"){location.replace("#/item/"+ITEMS[Math.floor(Math.random()*ITEMS.length)].id);return}
+ if(h[0]==="maze"&&window.CMGame)CMGame.mount(app,{items:ITEMS,tl:TL,tier:tier,scale:SCALE});else if(h[0]==="compare")compare(h[1],h[2]);else if(h[0]==="tag")tagPage(decodeURIComponent(h.slice(1).join("/")));else if(h[0]==="changes")changes();else if(h[0]==="quotes")quotesPage();else if(h[0]==="stats")stats();else if(h[0]==="wanted")wanted();else if(h[0]==="check")check();else if(h[0]==="mem")mem();else if(h[0]==="admin"||h[0]==="builder")loadAdmin();else if(h[0]==="timeline")timeline(+h[1]||0);else if(h[0]==="scale")scale();else if(h[0]==="catalog")catalog();else if(h[0]==="item")item(h[1]);else if(h[0]==="follow")follow();else home();
+ var qb=document.getElementById("qnew");if(qb)qb.onclick=function(){document.getElementById("qbox").innerHTML=qBlock(QUOTES[Math.floor(Math.random()*QUOTES.length)])};
+ var t=app.querySelector("h1,h2"),n=t&&(t.firstChild||t).textContent;document.title=n&&n!=="Conventional Memory"?n+" | Conventional Memory":"Conventional Memory"}
+window.addEventListener("hashchange",route);route();
+var ti=0;try{ti=+localStorage.getItem("cm-theme")||0}catch(e){}
+setTheme(ti);document.getElementById("th").onclick=function(){ti=(ti+1)%THEMES.length;setTheme(ti)};
+if(!location.hash||location.hash==="#/")boot();
+var scs=ITEMS.filter(function(i){return i.score!=null}),mood=scs.length?tier(Math.round(scs.reduce(function(a,i){return a+i.score},0)/scs.length)).n:"unknown";
+function beats(){var d=new Date(),t=(d.getUTCHours()*3600+d.getUTCMinutes()*60+d.getUTCSeconds()+3600)%86400;return "@"+String(Math.floor(t/86.4)).padStart(3,"0")}
+setInterval(function(){var e=document.getElementById("beat");if(e)e.textContent=beats()},10000);
+var vis=String(Math.floor(Math.random()*99000)+1000).padStart(6,"0");
+document.getElementById("retro").innerHTML='<div class="rb"></div><p>You are visitor number <span class="cnt" role="img" aria-label="visitor counter, for fun" title="This counter is just for fun">'+vis.split("").map(function(c){return '<b>'+c+'</b>'}).join("")+'</span></p>'
+ +'<div class="btns"><a class="b88" href="#/scale">POWERED BY 640K</a><span class="b88">MADE ON A 486</span><span class="b88">BEST VIEWED 800x600</span><span class="b88">Y2K COMPLIANT</span><span class="b88">NO FRAMES!</span><a class="b88" href="#/maze">STAFF ONLY: BASEMENT</a><span class="b88">HAND-CODED</span><span class="b88">WEB DESIGN IS MY PASSION</span><span class="b88">ANY BROWSER</span></div>'
+ +'<p class="ring">Currently browsing: 1 (that is you). Mood of the museum: <b>'+esc(mood)+'</b>. Internet Time: <span id="beat">'+beats()+'</span> .beats</p>'
+ +'<p class="ring">Museum Ring: <a href="#/item/'+ITEMS[ITEMS.length-1].id+'">[&lt;&lt; Prev]</a> <a href="#/random">[Random]</a> <a href="#/item/'+ITEMS[0].id+'">[Next &gt;&gt;]</a></p>'
+ +'<p class="ring">Best viewed with Netscape Navigator 4.0 at 800x600, but it works everywhere. Last updated '+UPDATED+'.</p>';
+var cmd=document.getElementById("cmd"),cout=document.getElementById("cout");
+var GO={dir:"#/catalog",catalog:"#/catalog",mem:"#/mem",scale:"#/scale",timeline:"#/timeline",random:"#/random",cls:"#/",home:"#/",follow:"#/follow",admin:"#/admin",check:"#/check",wanted:"#/wanted",stats:"#/stats",changes:"#/changes",quotes:"#/quotes",maze:"#/maze",basement:"#/maze"};
+cmd.onkeydown=function(e){if(e.key!=="Enter")return;var c=cmd.value.trim().toLowerCase();cmd.value="";
+ if(!c){cout.textContent="";return}
+ if(c==="help"){cout.textContent="Commands: "+Object.keys(GO).join(", ")+", quote, ver";return}
+ if(c==="ver"){cout.textContent="Conventional Memory [Version 1.0]";return}
+ var EG={"format c:":"WARNING: ALL DATA ON DRIVE C: WILL BE LOST! Proceed with Format (Y/N)? ... Just kidding. Every item is safe.","win":"This program cannot be run in DOS mode. Try dir.","iddqd":"Degreelessness mode on."};
+ var eg=c==="chkdsk"?ITEMS.length+" items cataloged. "+(640-ITEMS.length)+"K free of 640K conventional memory.":EG[c];
+ if(eg){cout.textContent=eg;return}
+ if(c==="quote"){var qq=QUOTES[Math.floor(Math.random()*QUOTES.length)];cout.textContent=qq[0]+" - "+qq[1];return}
+ if(GO[c]){cout.textContent="";location.hash=GO[c]}else cout.textContent="Bad command or file name"}
