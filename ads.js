@@ -91,22 +91,37 @@ function pickSpecs(it,k){var sp=it.specs||{},out=[],pr=SPEC_PRIO[k]||[],seen={};
 function sameMaker(it){var mk=(it.maker||"").split(/[\s\/,(]/)[0].toLowerCase();if(mk.length<3||mk==="unknown")return[];var n=it.name.toLowerCase(),d=it.year||0;
  return TL.filter(function(r){return(r[1]==="hw"||r[1]==="sw"||r[1]==="w")&&(r[2].toLowerCase().indexOf(mk)>=0||(r[4]||"").toLowerCase().indexOf(mk)>=0)&&n.indexOf(r[2].toLowerCase())<0&&r[2].toLowerCase().indexOf(n)<0})
   .sort(function(a,b){return Math.abs(dyear(a[0])-d)-Math.abs(dyear(b[0])-d)}).slice(0,6).sort(function(a,b){return a[0]<b[0]?-1:1})}
-function adBurst2(p){var big=p.none?"?":(p.t.match(/[$£¥][\d,.]+/)||[p.t.slice(0,8)])[0];return'<span class="ad-burst" aria-label="List price '+esc(p.t)+'"><i>'+(p.none?"MSRP":p.est?"LIST*":"LIST")+'</i><b>'+esc(big)+'</b></span>'}
+function priceBig(p){if(p.none)return"?";var m=String(p.t).match(/[$£¥][\d,.]+/);return m?m[0]:String(p.t).slice(0,9)}
+function czSeason(d){var m=+String(d).slice(5,7)||0;return m>=11||m===12?"HOLIDAY GIFT GUIDE":m>=6&&m<=8?"SUMMER SOFTWARE SAVINGS":m>=1&&m<=2?"NEW YEAR NEW ARRIVALS":m>=3&&m<=5?"SPRING PC SPECIALS":"BACK TO SCHOOL PC PICKS"}
+function czLogo(name){var w=String(name).split(" ");return'<span class="cz-logo"><b>'+esc(w[0])+'</b> <em>'+esc(w.slice(1).join(" "))+'</em></span>'}
+function czFlag(p,est){return'<span class="cz-price'+(p.est||est?" est":"")+'" aria-label="Price '+esc(p.t)+'"><i>'+(p.none?"PRICE":p.est||est?"EST. PRICE":"LAUNCH PRICE")+'</i><b>'+esc(priceBig(p))+(p.est&&!p.none&&priceBig(p).slice(-1)!=="*"?"*":"")+'</b></span>'}
+function czHead(store,left,right){return'<div class="cz-head"><div class="cz-hl">'+czLogo(store)+'<span class="cz-sub">'+esc(left)+'</span></div><div class="cz-hr">'+esc(right)+'</div></div>'}
+function czBox(r,i){var p=guessPrice(r,dyear(r[0]));return'<article class="cz-box"><div class="cz-art">'+adArt(r,150,125,"z"+i)+'<span class="cz-spine"></span></div><h4>'+esc(r[2])+'</h4><p class="cz-meta">'+(r[1]==="hw"?"Hardware":"Game or software")+' &middot; '+esc(adWhen(r).replace("COMING","Ships"))+'</p>'+czFlag(p)+'<p class="cz-tag">'+esc(adTag(r))+'</p></article>'}
+function adShelf(picks){if(!picks.length)return"";var d=picks[0][0];
+ return'<section class="cz cz-shelf" aria-label="Tribute advertisement">'+czHead(adStore(picks[0]),"Coming soon: reserve yours today","Computers, software & games")
+  +'<div class="cz-row">'+picks.map(czBox).join("")+'</div>'
+  +'<table class="cz-tbl"><caption>Release schedule</caption><thead><tr><th>Title</th><th>Ships</th><th>Price</th></tr></thead><tbody>'+picks.map(function(r){var p=guessPrice(r,dyear(r[0]));return'<tr><td>'+esc(r[2])+'</td><td>'+esc(fmtDate(r[0]))+(r[5]?"":"*")+'</td><td>'+esc(p.t)+'</td></tr>'}).join("")+'</tbody></table>'
+  +'<p class="cz-fine">Tribute ad in the style of 1990s computer software store flyers. Made-up store, real timeline data. Nothing here can be ordered. Prices marked * are estimates and dates marked * are unconfirmed.</p></section>'}
+function adBanner(r){var p=guessPrice(r,dyear(r[0]));
+ return'<aside class="cz cz-bar" aria-label="Tribute advertisement"><div class="cz-art sm">'+adArt(r,72,60,"b")+'</div><div class="cz-bt">'+czLogo(adStore(r))+'<b>'+esc(r[2])+'</b><span>'+esc(adWhen(r))+'</span></div>'+czFlag(p)+'<button class="adx" type="button" aria-label="Close this ad">&times;</button></aside>'}
+function adBar(picks){var gone=false;try{gone=sessionStorage.getItem("cm-adx")==="1"}catch(e){}return picks.length&&!gone?adBanner(picks[0]):""}
 function adItem(it){var k=prodKind(it),p=priceOf(it),sp=pickSpecs(it,k),head=(AD_HEAD[k]||AD_HEAD.box),h=head[hstr(it.name)%head.length],
   ph=it.photos&&it.photos.length?safeUrl(it.photos[0],"img"):"",art=ph?'<img src="'+esc(ph)+'" alt="'+esc(it.name)+'" loading="lazy">':prodSvg(it,240,180,"i"),
-  feats=sp.slice(0,6).map(function(s){return'<li><b>'+esc(s[0])+'</b> '+esc(shortVal(s[1],70))+'</li>'}).join(""),
-  chips=sp.slice(0,4).map(function(s){return'<div class="af-chip"><b>'+esc(chipVal(s[1]))+'</b><span>'+esc(s[0])+'</span></div>'}).join(""),
+  store=(k==="card"||k==="synth"||k==="keyboard"||k==="mouse"||k==="joystick"||k==="disk"||k==="drive"||k==="modem")?"Bit Barn Computers":(k==="laptop"||k==="tower"||k==="monitor"||k==="printer")?"Bit Barn Computers":"Bargain Bytes Software",
+  when=it.rel||it.year||"",
+  feats=sp.slice(0,6).map(function(s){return'<li><b>'+esc(s[0])+':</b> '+esc(shortVal(s[1],70))+'</li>'}).join(""),
+  chips=sp.slice(0,4).map(function(s){return'<div class="cz-chip"><b>'+esc(chipVal(s[1]))+'</b><span>'+esc(s[0])+'</span></div>'}).join(""),
   ex=(it.extras||[]),mark={Have:"[x]",Want:"[ ]",Missing:"[!]",Optional:"[ ]"},
   exl=ex.slice(0,7).map(function(e){return'<li class="e-'+esc((e.s||"").toLowerCase())+'"><code>'+(mark[e.s]||"[ ]")+'</code> '+esc(e.n)+' <small>'+esc(e.s||"")+'</small></li>'}).join(""),
   lg=logsOf(it),mk=sameMaker(it),
-  file=[["Status",it.status],["Working",it.works],["Condition",it.cond],["On file",(it.qty||1)+" in the museum"],["Log entries",lg.length?lg.length+" (latest "+fmtDate(lg[0].d)+")":"none yet"]].filter(function(x){return x[1]}).map(function(x){return'<div><span>'+esc(x[0])+'</span><b>'+esc(shortVal(x[1],46))+'</b></div>'}).join(""),
-  sc=it.score!=null?'<div class="af-sc"><i style="width:'+(it.score/640*100)+'%"></i><b>'+it.score+'K / 640K</b></div>':"";
- return'<section class="adfull" aria-label="Tribute advertisement for '+esc(it.name)+'"><div class="af-top"><span>'+(k==="card"||k==="synth"||k==="keyboard"||k==="mouse"||k==="joystick"||k==="disk"?"Bargain Bytes Software":"Bit Barn Computers")+' presents</span><span class="tag">tribute ad</span></div>'
- +'<div class="af-main"><div class="af-art">'+art+adBurst2(p)+(it.year?'<span class="ad-ribbon">'+esc(it.rel?fmtDate(it.rel):it.year)+(it.relx?"*":"")+'</span>':"")+'</div>'
- +'<div class="af-copy"><h3 class="af-h">'+esc(h)+'</h3><p class="af-name">'+esc(it.name)+(it.maker&&it.maker!=="Unknown"?' <em>by '+esc(it.maker)+'</em>':"")+'</p>'+(it.text?'<p class="af-sub">'+esc(firstSentence(it.text))+'</p>':"")+(feats?'<ul class="af-feat">'+feats+'</ul>':'<p class="af-sub">Specs coming soon. Add them in Admin.</p>')+'</div></div>'
- +(chips?'<div class="af-chips">'+chips+'</div>':"")
- +'<div class="af-bot"><div class="af-file"><h4>From the museum file</h4>'+file+sc+'</div>'
- +(exl?'<div class="af-ex"><h4>Accessories checklist</h4><ul>'+exl+'</ul></div>':"")
- +'<div class="af-order"><h4>Order form</h4><p>Item <b>'+esc(it.name)+'</b></p>'+(it.model?'<p>Model <b>'+esc(it.model)+'</b></p>':"")+(it.partno?'<p>Part no. <b>'+esc(it.partno)+'</b></p>':"")+'<p>Price <b>'+esc(p.none?"see your dealer":p.t)+(p.est&&!p.none?"":"")+'</b></p><p>Qty [_] &nbsp; Ship to [__________]</p><small>Cut along the dotted line. Not a real order form: nothing can be bought here.</small></div></div>'
- +(mk.length?'<div class="af-more"><h4>Also from '+esc(it.maker)+' on the timeline</h4><ul>'+mk.map(function(r){return'<li><a href="#/timeline/'+dyear(r[0])+'"><b>'+esc(fmtDate(r[0]))+(r[5]?"":"*")+'</b> '+esc(r[2])+(r[3]?' <span>'+esc(r[3])+'</span>':"")+'</a></li>'}).join("")+'</ul></div>':"")
- +'<small class="tn">Tribute ad in the spirit of 90s computer magazine and store flyers. Made-up store, real museum data. * means unconfirmed or estimated.</small></section>'}
+  file=[["Status",it.status],["Working",it.works],["Condition",it.cond],["On hand",(it.qty||1)+" in the museum"],["Log entries",lg.length?lg.length+" (latest "+fmtDate(lg[0].d)+")":"none yet"]].filter(function(x){return x[1]}).map(function(x){return'<div><span>'+esc(x[0])+'</span><b>'+esc(shortVal(x[1],46))+'</b></div>'}).join(""),
+  sc=it.score!=null?scoreBlock(it.score):"";
+ return'<section class="cz cz-item" aria-label="Tribute advertisement for '+esc(it.name)+'">'+czHead(store,czSeason(when),"Computers, software & games"+(when?" · "+fmtDate(when)+(it.relx?"*":""):""))
+ +'<div class="cz-main"><div class="cz-figure"><div class="cz-art big">'+art+'</div>'+czFlag(p)+'<span class="cz-new">'+(it.sample?"SAMPLE":"IN THE MUSEUM")+'</span></div>'
+ +'<div class="cz-copy"><h3 class="cz-h">'+esc(h)+'</h3><p class="cz-name">'+esc(it.name)+(it.maker&&it.maker!=="Unknown"?' <em>by '+esc(it.maker)+'</em>':"")+'</p>'+(it.text?'<p class="cz-sub2">'+esc(firstSentence(it.text))+'</p>':"")+(feats?'<ul class="cz-feat">'+feats+'</ul>':'<p class="cz-sub2">Specs coming soon.</p>')+'</div></div>'
+ +(chips?'<div class="cz-chips">'+chips+'</div>':"")
+ +'<div class="cz-cols"><div class="cz-panel"><h4>From the museum file</h4>'+file+(sc?'<div class="cz-sc">'+sc+'</div>':"")+'</div>'
+ +(exl?'<div class="cz-panel"><h4>Accessories checklist</h4><ul class="cz-ex">'+exl+'</ul></div>':"")
+ +'<div class="cz-coupon"><h4>Mail-in coupon</h4><p>Item <b>'+esc(it.name)+'</b></p>'+(it.model?'<p>Model <b>'+esc(it.model)+'</b></p>':"")+(it.partno?'<p>Part no. <b>'+esc(it.partno)+'</b></p>':"")+'<p>Price <b>'+esc(p.none?"see your dealer":p.t)+'</b></p><p>Qty [_] &nbsp; Ship to [__________]</p><small>Cut along the dotted line. Not a real coupon: nothing can be bought here.</small></div></div>'
+ +(mk.length?'<div class="cz-more"><h4>Also from '+esc(it.maker)+'</h4><ul>'+mk.map(function(r){return'<li><a href="#/timeline/'+dyear(r[0])+'"><b>'+esc(fmtDate(r[0]))+(r[5]?"":"*")+'</b> '+esc(r[2])+(r[3]?' <span>'+esc(r[3])+'</span>':"")+'</a></li>'}).join("")+'</ul></div>':"")
+ +'<p class="cz-fine">Tribute ad in the style of 1990s computer software store flyers. Made-up store, real museum data. * means unconfirmed or estimated.</p></section>'}

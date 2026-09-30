@@ -115,7 +115,7 @@ function depths(){var d={},q=[S.start];d[S.start]=0;var mx=0;
 function exhibitFor(rm,pool){var e=pool.shift();return e}
 function newGame(who,sd){
  seed=sd||((Date.now()&0xffffff)^0x5bd1e995);
- S={who:who,mem:640,min:0,taken:0,hints:who==="matt"?3:1,pen:who==="tony"?16:PENALTY,used:{},msg:"",room:0,px:40,py:112,dir:1,step:0,mode:"play",q:null,door:null,sound:false,talk:{},moves:0,flash:0,fade:0,log:[],npcs:{}};
+ S={seed0:seed,acts:[],who:who,mem:640,min:0,taken:0,hints:who==="matt"?3:1,pen:who==="tony"?16:PENALTY,used:{},msg:"",room:0,px:40,py:112,dir:1,step:0,mode:"play",q:null,door:null,sound:false,talk:{},moves:0,flash:0,fade:0,log:[],npcs:{}};
  S.rooms=makeMaze();S.start=idx(0,ROWS-1);S.goal=idx(COLS-1,0);S.room=S.start;
  var dp=depths();S.mx=dp.mx;
  var names=shuf(NAMES),pool=[],real=D.items.slice();
@@ -161,8 +161,8 @@ function showQ(pre){var box=host.querySelector("#gq"),o="";
  box.innerHTML='<p class="gpre">'+esc(pre||"")+'</p><p><b>'+esc(q.q)+'</b></p><div class="gopts">'+o+'</div><p><button type="button" class="btn" data-h="1">Ask Auntie Autoexec ('+S.hints+' left)</button></p>';
  box.hidden=false;box.querySelectorAll("[data-a]").forEach(function(b){b.onclick=function(){answer(+b.dataset.a)}});
  var hb=box.querySelector("[data-h]");hb.onclick=useHint;var fb=box.querySelector("[data-a]");if(fb)fb.focus()}
-function useHint(){if(S.hints<1||!S.q)return;S.hints--;var w=[];S.q.o.forEach(function(t,i){if(i!==S.q.c)w.push(i)});S.hidden=shuf(w).slice(0,2);showQ("Auntie Autoexec whispers, \"Not those two, dear.\"");hud()}
-function answer(i){var q=S.q;if(!q)return;var ok=i===q.c,box=host.querySelector("#gq");S.hidden=null;S.min+=2;
+function useHint(){if(S.hints<1||!S.q||S.mode!=="q")return;S.acts.push("h");S.hints--;var w=[];S.q.o.forEach(function(t,i){if(i!==S.q.c)w.push(i)});S.hidden=shuf(w).slice(0,2);showQ("Auntie Autoexec whispers, \"Not those two, dear.\"");hud()}
+function answer(i){var q=S.q;if(!q||S.mode!=="q"||S.locked)return;if(!(i===0||i===1||i===2||i===3)||i>=q.o.length||(S.hidden||[]).indexOf(i)>=0)return;S.acts.push(String(i));var ok=i===q.c,box=host.querySelector("#gq");S.hidden=null;S.min+=2;
  if(ok){beep(880,.12);box.hidden=true;S.q=null;
   if(S.door&&S.door.gremlin){S.mode="play";S.gr.room=pick(S.rooms.map(function(r){return r.i}).filter(function(x){return x!==S.room&&x!==S.start}));say("The Gremlin shrieks and scuttles away.");hud();return}
   if(S.door&&S.door.finale){win();return}
@@ -179,24 +179,47 @@ function check(){if(S.mode==="over")return;if(S.mem<=0){S.mem=0;end(false,"DIVID
 function go(from,dir){var d=S.rooms[from].d[dir];S.min+=5;S.moves++;
  if(S.moves%2===0&&S.gr.room!==S.room)moveGremlin();
  enter(d.to,dir);check();hud()}
-function tryDoor(dir){var rm=room(),d=rm.d[dir];if(!d||S.mode!=="play")return;
+function tryDoor(dir){var rm=room(),d=rm.d[dir];if(!d||S.mode!=="play")return;S.acts.push(dir.toLowerCase());
  if(!d.locked){go(rm.i,dir);return}
  S.mode="q";S.door={from:rm.i,dir:dir,to:d.to};var lvl=Math.min(2,Math.floor(S.rooms[d.to].depth/(S.mx/3)));S.q=nextQ(S.rooms[d.to].era,lvl);showQ("The door to the "+({N:"north",E:"east",S:"south",W:"west"})[dir]+" is locked. A brass plate reads: ANSWER TO PASS.")}
-function look(){var rm=room();if(S.mode!=="play")return;var e=rm.ex;
+function look(){var rm=room();if(S.mode!=="play")return;S.acts.push("l");var e=rm.ex;
  if(e&&!rm.taken){var t=e.title+(e.year?" ("+e.year+")":"")+".";if(e.price)t+=" Launch price "+e.price+".";if(e.note)t+="\n"+e.note;if(e.kind==="item")t+="\nFrom the real museum catalog.";say("You study the pedestal.\n"+t)}
  else say(rm.name+". "+pick(FLAVOR))}
-function take(){var rm=room();if(S.mode!=="play")return;var e=rm.ex;
+function take(){var rm=room();if(S.mode!=="play")return;S.acts.push("k");var e=rm.ex;
  if(!e||rm.taken){say("Nothing here to take. The pedestal is empty.");return}
  if(e.kind==="goal"){S.mode="q";S.door={finale:true};S.q=nextQ(2010,2);showQ("The Master Boot Disk sits in a locked drive. The drive wants proof you deserve it.");return}
  rm.taken=true;S.taken++;S.mem=Math.min(640,S.mem+16);S.min+=1;beep(1200,.08);say("You take the "+e.title+" and slip it into the exhibit case at your belt. Freed 16K of memory.");hud()}
-function talk(){var rm=room(),n=S.npcs[rm.i];if(S.mode!=="play")return;
+function talk(){var rm=room(),n=S.npcs[rm.i];if(S.mode!=="play")return;S.acts.push("y");
  if(!n){say("You mutter to yourself. The house does not answer.");return}
  if(S.talk[rm.i]){say("They have nothing more to say.");return}S.talk[rm.i]=1;
  if(n==="aunt"){var p=bfs(rm.i,S.goal),dir=p.length?p[0].k:"N";S.hints++;say(pick(AUNT)+"\n(She points "+({N:"north",E:"east",S:"south",W:"west"})[dir]+" and hands you a hint.)")}
  else say(pick(n==="matt"?MATT_LINES:TONY_LINES));hud()}
-function win(){S.mode="over";S.win=true;var t=deps.tier(S.mem),lbl=t&&t.n?t.n:"",best=0;try{best=+localStorage.getItem("cm-maze-best")||0;if(S.mem>best)localStorage.setItem("cm-maze-best",S.mem)}catch(e){}
- var left=MIDNIGHT-S.min;
- finish('<h3>You found the Master Boot Disk!</h3><p>'+clock(S.min)+', with '+left+' minutes to spare.</p><pre class="dir">MEM /C\n\nConventional memory free: '+S.mem+'K of 640K\nExhibits collected:       '+S.taken+' of '+(ROOMS-2)+'\nRank on the 640K scale:   '+esc(lbl)+'</pre><p>'+(S.mem>best?"That is your best run in this browser.":"Your best in this browser: "+best+"K.")+'</p>')}
+/* ---------- run codes: every finished game can be replayed and checked ---------- */
+function fnv(t){var h=2166136261;for(var i=0;i<t.length;i++){h^=t.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}
+function dataHash(){var a=D.items.map(function(i){return i.id||i.name}).join("|"),t=D.tl;return fnv(a+"#"+t.length+"#"+(t[0]||[])[2]+"#"+(t[t.length-1]||[])[2]).toString(36)}
+function makeCode(){var body="CM1."+S.who.charAt(0)+"."+S.seed0.toString(36)+"."+S.acts.join("")+"."+S.mem+"."+dataHash();return body+"."+fnv(body+"|cm").toString(36)}
+function verify(code){var p=String(code||"").replace(/\s+/g,"").split(".");
+ if(p.length!==7||p[0]!=="CM1")return{ok:false,why:"That is not a run code."};
+ var body=p.slice(0,6).join(".");if(fnv(body+"|cm").toString(36)!==p[6])return{ok:false,why:"The code has a typo or was altered."};
+ var who=p[1]==="m"?"matt":p[1]==="t"?"tony":"",sd=parseInt(p[2],36),acts=p[3],claim=+p[4];
+ if(!who||!(sd>0)||!/^[nesw0-3klyh]{0,3000}$/.test(acts)||!(claim>=0&&claim<=640))return{ok:false,why:"The code is malformed."};
+ if(p[5]!==dataHash())return{ok:false,stale:true,why:"The catalog or timeline has changed since this run, so it cannot be replayed."};
+ var sv={S:S,host:host,seed:seed},res={ok:false,why:"The moves do not lead to a win."};
+ try{host=document.createElement("div");host.innerHTML='<div id="gq"></div><div id="gmsg"></div>';S=null;newGame(who,sd);S.replay=true;S.sound=false;
+  for(var i=0;i<acts.length&&S.mode!=="over";i++){var c=acts.charAt(i);
+   if("nesw".indexOf(c)>=0){var dr=c.toUpperCase();if(S.mode!=="play"||!room().d[dr]){res.why="Move "+(i+1)+" is not possible in that game.";throw 0}tryDoor(dr)}
+   else if("0123".indexOf(c)>=0){var n=+c;if(S.mode!=="q"||n>=S.q.o.length||(S.hidden||[]).indexOf(n)>=0){res.why="Answer "+(i+1)+" is not possible in that game.";throw 0}answer(n)}
+   else if(c==="h"){if(S.mode!=="q"||S.hints<1){res.why="Hint "+(i+1)+" is not possible in that game.";throw 0}useHint()}
+   else{if(S.mode!=="play"){res.why="Action "+(i+1)+" is not possible in that game.";throw 0}if(c==="k")take();else if(c==="l")look();else talk()}}
+  if(S.mode==="over"&&S.win&&i===acts.length&&S.mem===claim)res={ok:true,who:who,mem:S.mem,min:S.min,taken:S.taken,code:code};
+  else if(S.mode==="over"&&S.win&&S.mem!==claim)res.why="The score in the code does not match the replay."}
+ catch(e){if(e!==0)res.why="The replay failed."}
+ S=sv.S;host=sv.host;seed=sv.seed;return res}
+function bestFromStore(){try{var c=localStorage.getItem("cm-maze-code");if(!c)return null;var v=verify(c);if(v.ok)return{mem:v.mem,ok:true};if(v.stale){var m=+c.split(".")[4];return{mem:m,ok:false}}}catch(e){}return null}
+function win(){S.mode="over";S.win=true;var t=deps.tier(S.mem),lbl=t&&t.n?t.n:"",best=0,code=makeCode();
+ if(!S.replay){var b=bestFromStore();best=b?b.mem:0;try{if(S.mem>best)localStorage.setItem("cm-maze-code",code)}catch(e){}}
+ var left=MIDNIGHT-S.min;if(S.replay)return;
+ finish('<h3>You found the Master Boot Disk!</h3><p>'+clock(S.min)+', with '+left+' minutes to spare.</p><pre class="dir">MEM /C\n\nConventional memory free: '+S.mem+'K of 640K\nExhibits collected:       '+S.taken+' of '+(ROOMS-2)+'\nRank on the 640K scale:   '+esc(lbl)+'</pre><p>'+(S.mem>best?"That is your best run in this browser.":"Your best in this browser: "+best+"K.")+'</p><p class="gnote">Run code (anyone can paste it on the Memory Maze start screen to replay and check your score):</p><textarea class="gcode" readonly rows="3" aria-label="Run code">'+esc(code)+'</textarea>')}
 function end(win,txt){S.mode="over";finish('<h3>Game over</h3><p>'+esc(txt).replace(/\n/g,"<br>")+'</p>')}
 function finish(html){var box=host.querySelector("#gq");box.hidden=false;box.innerHTML=html+'<p><button class="btn pri" type="button" id="gagain">Play again</button> <a class="btn" href="#/">Back to the site</a></p>';
  box.querySelector("#gagain").onclick=function(){box.hidden=true;select()};hud()}
@@ -263,7 +286,7 @@ function loop(t){raf=requestAnimationFrame(loop);if(!S||!cvs||!document.body.con
    if(S.py<FLOOR+6){if(rm.d.N&&Math.abs(S.px-160)<16){S.py=FLOOR+6;tryDoor("N")}else S.py=FLOOR+6}
    if(S.py>H-2){if(rm.d.S&&Math.abs(S.px-160)<18){S.py=H-2;tryDoor("S")}else S.py=H-2}}}
  if(S.fade>0)S.fade=Math.max(0,S.fade-.06*dt);if(S.flash>0&&Math.floor(t/60)%1===0)S.flash=Math.max(0,S.flash-.2*dt);
- if(!S.nextLight)S.nextLight=t+9000+R()*12000;if(t>S.nextLight){S.lightning=8;S.nextLight=t+12000+R()*15000;if(S.mode==="play")say(S.msg.split("\n")[0]+"\nThunder shakes the house.")}
+ if(!S.nextLight)S.nextLight=t+9000+Math.random()*12000;if(t>S.nextLight){S.lightning=8;S.nextLight=t+12000+Math.random()*15000;if(S.mode==="play")say(S.msg.split("\n")[0]+"\nThunder shakes the house.")}
  if(S.lightning>0)S.lightning-=.35*dt;
  draw()}
 
@@ -283,9 +306,10 @@ function select(){roomCache={};S=null;
  host.innerHTML='<section class="gm"><div class="gbar"><b>MEMORY MAZE</b><span>A Conventional Memory mystery</span></div><div class="gsel"><h2>Who are you tonight?</h2><p>The Master Boot Disk has vanished from the Conventional Memory Museum on a stormy night. The house is a maze of locked doors. Each lock wants a right answer, and every wrong one costs you memory. Find the Vault before midnight.</p>'
  +'<div class="gchars"><button class="gchar" data-w="matt" type="button"><canvas width="60" height="90" data-p="matt"></canvas><b>Matt</b><span>The curator. Knows where everything is and why it is broken. Starts with 3 hints.</span></button>'
  +'<button class="gchar" data-w="tony" type="button"><canvas width="60" height="90" data-p="tony"></canvas><b>Tony</b><span>The tinkerer. Steady hands: wrong answers cost only 16K. Starts with 1 hint.</span></button></div>'
- +'<p class="gnote">Best run in this browser: <b id="gbest">none yet</b>. The characters here are cartoon stand-ins, so they look like nobody in particular. <a href="#/">Back to the site</a></p></div></section>';
- try{var b=+localStorage.getItem("cm-maze-best");if(b)host.querySelector("#gbest").textContent=b+"K free"}catch(e){}
+ +'<p class="gnote">Best run in this browser: <b id="gbest">none yet</b>. The characters here are cartoon stand-ins, so they look like nobody in particular. <a href="#/">Back to the site</a></p><h3 class="sub">Check a run code</h3><p class="gnote">Paste a code from someone\'s win screen. The game replays every move and confirms the score, so scores cannot be faked.</p><textarea id="gvin" class="gcode" rows="2" aria-label="Run code"></textarea><p><button class="btn" id="gvgo" type="button">Check it</button> <span id="gvout" aria-live="polite"></span></p></div></section>';
+ var bb=bestFromStore();if(bb)host.querySelector("#gbest").textContent=bb.mem+"K free"+(bb.ok?" (checked)":" (unchecked: the museum has changed since)");
  host.querySelectorAll("canvas[data-p]").forEach(function(c){var x=c.getContext("2d");x.imageSmoothingEnabled=false;x.fillStyle=C.b;x.fillRect(0,0,60,90);x.save();x.scale(4,4);person(x,7,20,LOOK[c.dataset.p],0,1);x.restore()});
+ host.querySelector("#gvgo").onclick=function(){var r=verify(host.querySelector("#gvin").value),o=host.querySelector("#gvout");o.textContent=r.ok?"Valid. "+(r.who==="matt"?"Matt":"Tony")+" finished at "+clock(r.min)+" with "+r.mem+"K free and "+r.taken+" exhibits.":"Not valid. "+r.why};
  host.querySelectorAll(".gchar").forEach(function(b){b.onclick=function(){begin(b.dataset.w)}})}
 function begin(who){shell();keys={};newGame(who);last=performance.now();cancelAnimationFrame(raf);raf=requestAnimationFrame(loop)}
 
@@ -301,5 +325,5 @@ function mount(el,d){unmount();host=el;deps=d;D.items=(d.items||[]).filter(funct
  D.tl=(d.tl||[]).filter(function(r){return r[5]&&(String(r[3]||"").indexOf("*")<0||true)&&r[0]&&r[2]});
  patCache={};roomCache={};onKey=onk;onKeyUp=onku;window.addEventListener("keydown",onKey);window.addEventListener("keyup",onKeyUp);select()}
 function unmount(){cancelAnimationFrame(raf);raf=0;if(onKey)window.removeEventListener("keydown",onKey);if(onKeyUp)window.removeEventListener("keyup",onKeyUp);onKey=onKeyUp=null;S=null;keys={};host=null;cvs=null}
-window.CMGame={mount:mount,unmount:unmount,_t:{tryDoor:tryDoor,answer:answer,take:take,look:look,S:function(){return S},qYear:qYear,qFirst:qFirst,qPrice:qPrice,nextQ:nextQ,newGame:function(w,s){S=null;host=host||document.createElement("div");newGame(w,s);return S},makeMaze:function(){return makeMaze()},bfs:bfs,clock:clock,dn:dn,setD:function(d){D=d},setS:function(s){S=s},setSeed:function(v){seed=v}}};
+window.CMGame=Object.freeze({mount:mount,unmount:unmount});
 })();

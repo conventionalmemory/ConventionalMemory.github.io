@@ -3,11 +3,11 @@
    personal access token that can only touch this one repository. GitHub checks it on every
    request, so only the token holder can save changes. Changes are saved as commits to items.js
    (and photos/), and GitHub Pages republishes the site a minute or two later.
-   The token is kept in memory only (or in this tab's sessionStorage if you tick the box). */
+   The token is kept in memory only. It can also be saved encrypted with a passphrase (see the vault below). */
 (function(){
 "use strict";
 var C,host=null,tok=null,S=null,view="list",editing=null,q="",note=null,idle=0,busy=false;
-var API="https://api.github.com",FILE="items.js",TKEY="cm-gh-token";
+var API="https://api.github.com",FILE="items.js";
 var HEAD="// Museum items. This file is rewritten by the Admin page (#/admin), so edit items there.\n// You can also edit it by hand: keep it valid JSON after \"var ITEMS=\".\n";
 var CORE=[["name","Name",1],["maker","Maker or publisher"],["year","Release year (number)"],["rel","Release date: YYYY, YYYY-MM or YYYY-MM-DD"],["msrp","Original MSRP"],["cat","Category (for example Laptops)"],["model","Model"],["partno","Part number"],["rev","Revision"],["upc","UPC or barcode"],["disc","Discontinued (year)"],["made","Manufactured (date code)"],["country","Country of origin"],["cond","Condition"],["works","Working status (Working, Partly working, Untested, Not working)"],["status","Status (Display, Storage, Repair, Loaned, Sold)"],["qty","Quantity"],["acquired","Acquired (date)"],["got","Where I got it"],["score","Score, 0 to 640"]];
 var LONG=[["text","Description"],["thoughts","My take"],["notes","Repairs, mods and history of this unit"]];
@@ -27,22 +27,42 @@ function gh(path,o){o=o||{};var h={"Accept":o.accept||"application/vnd.github+js
 function repo(){return"/repos/"+encodeURIComponent(C.REPO.owner)+"/"+encodeURIComponent(C.REPO.repo)}
 function errText(r){var m=r&&r.json&&r.json.message?r.json.message:"";if(r.status===401)return"GitHub rejected that token (401). Check that you pasted the whole token and that it has not expired.";if(r.status===403)return"GitHub refused the request (403). "+m;if(r.status===404)return"GitHub could not find the repository, or the token has no access to it (404).";if(r.status===409||r.status===422)return"The file on GitHub changed since you unlocked. Lock and unlock to reload it. "+m;return"GitHub error "+r.status+". "+m}
 
-/* ---------- encrypted token vault (optional): token encrypted with a passphrase you choose, stored in this browser only ---------- */
-var VKEY="cm-gh-vault";
-function hasVault(){try{return !!localStorage.getItem(VKEY)}catch(e){return false}}
-function b2s(a){var s="";new Uint8Array(a).forEach(function(c){s+=String.fromCharCode(c)});return btoa(s)}
+/* ---------- encrypted token vault (optional) ----------
+   Threat model, plainly:
+   - The token is encrypted with AES-256-GCM. The key comes from your passphrase through PBKDF2-SHA-256 (600,000 rounds, random 16-byte salt).
+   - GCM authenticates the data, so any tampering with the saved blob makes decryption fail. The blob is also bound to this site and repository (AAD).
+   - Someone who copies the blob off your computer can try passphrases offline. Nothing on a static site can stop that, so the passphrase must be strong:
+     12+ characters and not guessable. The "Generate" button makes a random 100-bit one.
+   - Online guessing in this page is slowed by a growing delay, and the saved token is erased after 10 failed tries in a row.
+   - Only a fine-grained token limited to this one repository, with an expiry, is accepted. If it ever leaks, revoke it on GitHub. */
+var VKEY="cm-gh-vault",FKEY="cm-gh-vault-fail",ITER=600000,MAXFAIL=10;
+function hasVault(){try{var o=JSON.parse(localStorage.getItem(VKEY)||"null");return !!(o&&o.c)}catch(e){return false}}
+function b2s(a){var s="",u=new Uint8Array(a);for(var i=0;i<u.length;i++)s+=String.fromCharCode(u[i]);return btoa(s)}
 function s2b(t){var s=atob(t),a=new Uint8Array(s.length);for(var i=0;i<s.length;i++)a[i]=s.charCodeAt(i);return a}
-function vKey(pass,salt){var enc=new TextEncoder();return crypto.subtle.importKey("raw",enc.encode(pass),"PBKDF2",false,["deriveKey"]).then(function(k){return crypto.subtle.deriveKey({name:"PBKDF2",salt:salt,iterations:310000,hash:"SHA-256"},k,{name:"AES-GCM",length:256},false,["encrypt","decrypt"])})}
-function vaultSave(token,pass){if(!(window.crypto&&crypto.subtle))return Promise.reject(new Error("This browser cannot encrypt (needs https)."));
+function aad(){return new TextEncoder().encode("cm-vault|2|"+location.origin+"|"+C.REPO.owner+"/"+C.REPO.repo)}
+function vKey(pass,salt,it){return crypto.subtle.importKey("raw",new TextEncoder().encode(pass),"PBKDF2",false,["deriveKey"]).then(function(k){return crypto.subtle.deriveKey({name:"PBKDF2",salt:salt,iterations:it,hash:"SHA-256"},k,{name:"AES-GCM",length:256},false,["encrypt","decrypt"])})}
+var COMMON=["password","passphrase","123456","qwerty","letmein","welcome","conventional","memory","github","admin","iloveyou","dragon","monkey"];
+function passProblem(p){if(p.length<12)return"Use at least 12 characters.";var l=p.toLowerCase();for(var i=0;i<COMMON.length;i++)if(l.indexOf(COMMON[i])>=0)return"That contains a very guessable word. Use the Generate button or a random phrase.";
+ var u={};for(var j=0;j<p.length;j++)u[p[j]]=1;if(Object.keys(u).length<7)return"Use more different characters.";
+ var cls=(/[a-z]/.test(p)?1:0)+(/[A-Z]/.test(p)?1:0)+(/\d/.test(p)?1:0)+(/[^A-Za-z0-9]/.test(p)?1:0);if(p.length<20&&cls<3)return"Mix upper case, lower case, digits or symbols, or make it 20+ characters.";return""}
+function genPass(){var A="abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789",lim=256-(256%A.length),out="",b;while(out.length<20){b=crypto.getRandomValues(new Uint8Array(1))[0];if(b<lim)out+=A[b%A.length]}return out.replace(/(.{5})(?=.)/g,"$1-")}
+function vaultSave(token,pass){if(!(window.crypto&&crypto.subtle))return Promise.reject(new Error("This browser cannot encrypt (it needs https)."));
  var salt=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12));
- return vKey(pass,salt).then(function(k){return crypto.subtle.encrypt({name:"AES-GCM",iv:iv},k,new TextEncoder().encode(token))}).then(function(ct){localStorage.setItem(VKEY,JSON.stringify({v:1,s:b2s(salt),i:b2s(iv),c:b2s(ct)}))})}
+ return vKey(pass,salt,ITER).then(function(k){return crypto.subtle.encrypt({name:"AES-GCM",iv:iv,additionalData:aad()},k,new TextEncoder().encode(token))}).then(function(ct){localStorage.setItem(VKEY,JSON.stringify({v:2,i:ITER,s:b2s(salt),n:b2s(iv),c:b2s(ct)}));localStorage.removeItem(FKEY)})}
+function failState(){try{return JSON.parse(localStorage.getItem(FKEY)||"null")||{n:0,t:0}}catch(e){return{n:0,t:0}}}
+function waitLeft(){var f=failState();if(!f.n)return 0;var w=Math.min(300,Math.pow(2,f.n-1))*1000;return Math.max(0,f.t+w-Date.now())}
 function vaultOpen(pass){var o;try{o=JSON.parse(localStorage.getItem(VKEY))}catch(e){}
- if(!o||!o.s)return Promise.reject(new Error("No saved token on this device."));
- return vKey(pass,s2b(o.s)).then(function(k){return crypto.subtle.decrypt({name:"AES-GCM",iv:s2b(o.i)},k,s2b(o.c))}).then(function(pt){return new TextDecoder().decode(pt)},function(){throw new Error("Wrong passphrase.")})}
-function vaultForget(){try{localStorage.removeItem(VKEY)}catch(e){}}
+ if(!o||!o.c)return Promise.reject(new Error("No saved token on this device."));
+ if(o.v!==2||o.i<ITER||o.i>5000000||typeof o.s!=="string"||typeof o.n!=="string"||typeof o.c!=="string"){vaultForget();return Promise.reject(new Error("The saved token was in an old or damaged format, so it was removed. Paste the token again."))}
+ var w=waitLeft();if(w>0)return Promise.reject(new Error("Too many wrong tries. Wait "+Math.ceil(w/1000)+" seconds."));
+ var salt,iv,ct;try{salt=s2b(o.s);iv=s2b(o.n);ct=s2b(o.c)}catch(e){vaultForget();return Promise.reject(new Error("The saved token was damaged, so it was removed. Paste the token again."))}
+ return vKey(pass,salt,o.i).then(function(k){return crypto.subtle.decrypt({name:"AES-GCM",iv:iv,additionalData:aad()},k,ct)}).then(function(pt){localStorage.removeItem(FKEY);return new TextDecoder().decode(pt)},function(){var f=failState();f.n++;f.t=Date.now();
+   if(f.n>=MAXFAIL){vaultForget();localStorage.removeItem(FKEY);throw new Error("Too many wrong tries. The saved token was erased. Paste the token again.")}
+   localStorage.setItem(FKEY,JSON.stringify(f));throw new Error("Wrong passphrase, or the saved data was changed. "+(MAXFAIL-f.n)+" tries left.")})}
+function vaultForget(){try{localStorage.removeItem(VKEY);localStorage.removeItem(FKEY)}catch(e){}}
 var pasteMode=false;
 function unlock(token,remember,pass){tok=token.trim();busy=true;render();
- if(!/^[A-Za-z0-9_]{20,255}$/.test(tok)){tok=null;busy=false;note={t:"err",m:"That does not look like a GitHub token. It starts with github_pat_ (fine-grained) or ghp_ (classic)."};render();return}
+ if(!/^github_pat_[A-Za-z0-9_]{20,250}$/.test(tok)){tok=null;busy=false;note={t:"err",m:"Only fine-grained tokens are accepted. They start with github_pat_ and can be limited to this one repository. Classic tokens (ghp_) are too powerful."};render();return}
  gh(repo()).then(function(r){
   if(!r.ok)throw new Error(errText(r));
   if(r.json.permissions&&r.json.permissions.push===false)throw new Error("This token can read the repository but not write to it. Give it Contents: Read and write.");
@@ -52,12 +72,12 @@ function unlock(token,remember,pass){tok=token.trim();busy=true;render();
    return gh(repo()+"/contents/"+FILE+"?ref="+encodeURIComponent(C.REPO.branch),{accept:"application/vnd.github.raw+json",text:true}).then(function(t){
     if(!t.ok)throw new Error(errText(t));return{sha:m.json.sha,items:parseItems(t.text)}})})
  }).then(function(d){S={sha:d.sha,items:d.items,dirty:!!d.created,photos:[],created:!!d.created};
-   if(remember){try{sessionStorage.setItem(TKEY,tok)}catch(e){}}
    if(pass){vaultSave(tok,pass).then(function(){note={t:'ok',m:'Unlocked, and the token is now saved encrypted on this device. Next time just type your passphrase.'};render()},function(e){note={t:'err',m:'Unlocked, but could not save the token: '+e.message};render()})}
    note=d.created?{t:"ok",m:"Unlocked. items.js is not in the repository yet, so the current page's items are loaded. Save to GitHub to create it."}:{t:"ok",m:"Unlocked. Loaded "+S.items.length+" items from GitHub."};
    view="list";bump()
  }).catch(function(e){tok=null;S=null;note={t:"err",m:String(e.message||e)}}).then(function(){busy=false;render()})}
-function lock(m){tok=null;S=null;editing=null;view="list";clearTimeout(idle);try{sessionStorage.removeItem(TKEY)}catch(e){}note=m?{t:"ok",m:m}:null;render()}
+function lock(m){tok=null;S=null;editing=null;view="list";clearTimeout(idle);note=m?{t:"ok",m:m}:null;render()}
+var hid=0;document.addEventListener("visibilitychange",function(){if(document.hidden){hid=setTimeout(function(){if(tok&&!(S&&S.dirty))lock("Locked after the tab was in the background for 5 minutes.")},5*60*1000)}else clearTimeout(hid)});
 function bump(){clearTimeout(idle);if(tok)idle=setTimeout(function(){if(S&&S.dirty){bump();return}lock("Locked after 20 minutes of no activity.")},20*60*1000)}
 function save(){if(!S||busy)return;busy=true;note={t:"ok",m:"Saving to GitHub..."};render();
  var chain=Promise.resolve();
@@ -78,10 +98,9 @@ function lockedView(){var hv=hasVault()&&!pasteMode;
   +'<p class="tn">The token is encrypted (AES-256, key from your passphrase) and never leaves this browser except to api.github.com.</p>');
  return shell('<p>Sign in with GitHub to add, edit or remove museum items. There is no separate password: GitHub is the login, so only someone holding a token for this repository can change the site.</p>'+setup
  +'<label for="tk">Token</label><input id="tk" type="password" autocomplete="off" spellcheck="false" placeholder="github_pat_...">'
- +'<label for="pp">Passphrase to save it on this device (optional, 8+ characters)</label><input id="pp" type="password" autocomplete="new-password" spellcheck="false" placeholder="leave blank to not save">'
- +'<label><input type="checkbox" id="rm" style="width:auto;display:inline"> Stay unlocked in this browser tab until I close it</label>'
+ +'<label for="pp">Passphrase to save it on this device (optional, 12+ characters)</label><input id="pp" type="password" autocomplete="new-password" spellcheck="false" placeholder="leave blank to not save"><p><button class="btn" id="gen" type="button">Generate a strong one</button> <span id="genout" class="tn"></span></p>'
  +'<p><button class="btn pri" id="go" type="button"'+(busy?" disabled":"")+'>'+(busy?"Checking...":"Unlock")+'</button>'+(hasVault()?' <button class="btn" id="vback" type="button">Back to saved token</button>':'')+'</p>'
- +'<p class="tn">With a passphrase, the token is stored encrypted in this browser so you only paste it once. Without one it stays in this page only. Either way it is sent to api.github.com and nowhere else, and the page locks after 20 idle minutes.</p>')}
+ +'<p class="tn">With a passphrase, the token is stored encrypted in this browser (AES-256-GCM, 600,000 PBKDF2 rounds) so you only paste it once. Without one it stays in this page only. It is sent to api.github.com and nowhere else, and the page locks after 20 idle minutes. Use a random passphrase from a password manager: a copied browser profile can be guessed at offline, and only a strong passphrase stops that.</p>')}
 function listView(){var items=S.items,ql=q.toLowerCase(),vis=items.map(function(it,i){return{it:it,i:i}}).filter(function(x){return!ql||(x.it.name+" "+(x.it.maker||"")+" "+x.it.id+" "+(x.it.cat||"")).toLowerCase().indexOf(ql)>=0});
  return shell('<p>Signed in to <b>'+esc(C.REPO.owner+"/"+C.REPO.repo)+'</b>, branch '+esc(C.REPO.branch)+'. '+items.length+' items. '+(S.dirty?'<span class="tag want">Unsaved changes</span>':'<span class="tag">Saved</span>')+(S.photos.length?' <span class="tag">'+S.photos.length+' photo(s) waiting</span>':"")+'</p>'
  +'<p><button class="btn pri" id="add" type="button">Add item</button> <button class="btn'+(S.dirty?' pri':'')+'" id="sv" type="button"'+(busy||!S.dirty&&!S.photos.length?" disabled":"")+'>Save to GitHub</button> <button class="btn" id="dl" type="button">Download items.js backup</button> <button class="btn" id="lk" type="button">Lock</button></p>'
@@ -151,9 +170,10 @@ function collect(){var o=clone(editing.it),err=[],num=function(id,lo,hi,label){v
  return{o:o,err:err}}
 function shrink(file){return new Promise(function(res,rej){var img=new Image(),u=URL.createObjectURL(file);img.onload=function(){var m=1600,r=Math.min(1,m/Math.max(img.width,img.height)),c=document.createElement("canvas");c.width=Math.max(1,Math.round(img.width*r));c.height=Math.max(1,Math.round(img.height*r));c.getContext("2d").drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(u);res(c.toDataURL("image/jpeg",.85))};img.onerror=function(){URL.revokeObjectURL(u);rej(new Error("That file is not an image the browser can read."))};img.src=u})}
 function wire(){if(!host)return;host.oninput=bump;
- var vg=$("vgo");if(vg){var vp=$("vp");vg.onclick=function(){var p=vp.value;if(!p)return;busy=true;render();vaultOpen(p).then(function(t){busy=false;unlock(t,false)},function(e){busy=false;note={t:"err",m:e.message};render()})};vp.onkeydown=function(e){if(e.key==="Enter")vg.click()};$("vnew").onclick=function(){pasteMode=true;note=null;render()};$("vfg").onclick=function(){if(confirm("Remove the saved token from this browser?")){vaultForget();note={t:"ok",m:"Saved token removed."};render()}};if(!busy)vp.focus();return}
+ var vg=$("vgo");if(vg){var vp=$("vp");vg.onclick=function(){var p=vp.value;vp.value="";if(!p)return;busy=true;render();vaultOpen(p).then(function(t){busy=false;unlock(t,false)},function(e){busy=false;note={t:"err",m:e.message};render()})};vp.onkeydown=function(e){if(e.key==="Enter")vg.click()};$("vnew").onclick=function(){pasteMode=true;note=null;render()};$("vfg").onclick=function(){if(confirm("Remove the saved token from this browser?")){vaultForget();note={t:"ok",m:"Saved token removed."};render()}};if(!busy)vp.focus();return}
  var vb=$("vback");if(vb)vb.onclick=function(){pasteMode=false;note=null;render()};
- var g=$("go");if(g){var t=$("tk");g.onclick=function(){var pp=$("pp").value;if(pp&&pp.length<8){note={t:"err",m:"Passphrase must be at least 8 characters."};render();return}pasteMode=false;unlock(t.value,$("rm").checked,pp)};t.onkeydown=function(e){if(e.key==="Enter")g.click()};if(!busy)t.focus();return}
+ var gn=$("gen");if(gn)gn.onclick=function(){var p=genPass();$("pp").value=p;$("genout").textContent="Save this in your password manager now: "+p};
+ var g=$("go");if(g){var t=$("tk");g.onclick=function(){var pp=$("pp").value,tv=t.value;if(pp){var pr=passProblem(pp);if(pr){note={t:"err",m:pr};render();return}}pasteMode=false;t.value="";unlock(tv,false,pp)};t.onkeydown=function(e){if(e.key==="Enter")g.click()};if(!busy)t.focus();return}
  if(view==="edit"){
   $("ty").onchange=function(){editing.it=collectSoft();render()};
   $("bk").onclick=$("cx").onclick=function(){editing=null;view="list";render()};
@@ -176,7 +196,7 @@ function wire(){if(!host)return;host.oninput=bump;
  host.querySelectorAll("[data-e]").forEach(function(b){b.onclick=function(){var i=+b.dataset.e;editing={i:i,it:clone(S.items[i]),newPhotos:[]};if(!editing.it.photos)editing.it.photos=[];view="edit";note=null;render();window.scrollTo(0,0)}});
  host.querySelectorAll("[data-d]").forEach(function(b){b.onclick=function(){var i=+b.dataset.d,it=S.items[i];if(!confirm('Delete "'+it.name+'" from the catalog? You can still bring it back by not saving, or from GitHub history.'))return;S.items.splice(i,1);S.dirty=true;note={t:"ok",m:"Removed "+it.name+". Press Save to GitHub to publish."};render()}})}
 function collectSoft(){var r=null;try{r=collect().o}catch(e){}return r||editing.it}
-function mount(el,ctx){C=ctx;host=el;if(!tok){try{var t=sessionStorage.getItem(TKEY);if(t&&!S){tok=t;unlock(t,true);return}}catch(e){}}render();bump()}
+function mount(el,ctx){C=ctx;host=el;render();bump()}
 function unmount(){host=null}
 window.addEventListener("beforeunload",function(e){if(S&&S.dirty){e.preventDefault();e.returnValue=""}});
 window.CMAdmin={mount:mount,unmount:unmount,_t:{serialize:serialize,parseItems:parseItems}};
