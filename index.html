@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Conventional Memory</title>
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#d6d1c4;--panel:#e8e4d8;--ink:#15151a;--mute:#54524a;--blue:#0000aa;--blue-ink:#fff;--line:#15151a;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1230;--panel:#161c44;--ink:#eceefb;--mute:#a4a9d0;--blue:#55ffff;--blue-ink:#0d1230;--line:#eceefb}}
+:root[data-theme="dark"]{--bg:#0d1230;--panel:#161c44;--ink:#eceefb;--mute:#a4a9d0;--blue:#55ffff;--blue-ink:#0d1230;--line:#eceefb}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.6 "IBM Plex Sans",system-ui,sans-serif}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+h1,h2,h3{font-family:"VT323","Courier New",monospace;font-weight:400;line-height:1;margin:0}
+h1{font-size:clamp(48px,11vw,96px)}
+h2{font-size:36px;margin-bottom:12px}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+header.top{padding:18px 0;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+header.top a{font-family:"VT323",monospace;font-size:24px;text-decoration:none}
+@media(max-width:480px){header.top a{font-size:20px}}
+header.top nav{display:flex;flex-wrap:wrap;align-items:center;gap:4px 14px;max-width:100%}
+nav a{margin-left:16px;font-size:15px}
+.hero{padding:28px 0 36px}
+.hero p{max-width:60ch;margin:14px 0 0}
+.mem{margin-top:26px;border:2px solid var(--line);background:var(--panel);padding:10px}
+.bar{height:26px;border:2px solid var(--line);background:repeating-linear-gradient(90deg,transparent 0 9px,color-mix(in srgb,var(--line) 18%,transparent) 9px 10px)}
+.bar i{display:block;height:100%;background:var(--blue);min-width:6px}
+.mem small{display:block;margin-top:8px;font-family:"VT323",monospace;font-size:21px;color:var(--mute)}
+.socials{display:flex;flex-wrap:wrap;gap:10px;margin:24px 0 0}
+.btn{display:inline-block;padding:10px 16px;border:2px solid var(--line);background:var(--panel);text-decoration:none;font-weight:600;font-size:15px}
+.btn:hover,.btn.pri{background:var(--blue);color:var(--blue-ink)}
+section{padding:24px 0}
+.tools{display:flex;flex-wrap:wrap;gap:10px;margin:8px 0 18px}
+input,select{font:inherit;padding:9px 12px;border:2px solid var(--line);background:var(--panel);color:var(--ink);min-width:0}
+input{flex:1 1 200px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px}
+.card{display:block;text-decoration:none;border:2px solid var(--line);background:var(--panel)}
+.card:hover{border-color:var(--blue);box-shadow:4px 4px 0 var(--blue)}
+.ph{aspect-ratio:4/3;display:grid;place-items:center;background:var(--bg);border-bottom:2px solid var(--line);font-family:"VT323",monospace;font-size:22px;color:var(--mute);overflow:hidden}
+.ph img{width:100%;height:100%;object-fit:cover}
+.card div.t{padding:10px 12px}
+.card h3{font-size:26px}
+.card p{margin:2px 0 0;color:var(--mute);font-size:14px}
+.tag{font-size:12px;border:1px solid var(--mute);padding:1px 6px;color:var(--mute);margin-left:6px}
+.detail{display:grid;gap:22px}
+@media(min-width:720px){.detail{grid-template-columns:1.1fr 1fr}}
+.detail .ph{border:2px solid var(--line);font-size:28px}
+dl{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;margin:16px 0}
+dt{color:var(--mute)}dd{margin:0}
+.score{margin:14px 0}.score b{font-family:"VT323",monospace;font-size:28px;font-weight:400;margin-right:8px}.score span{color:var(--mute)}
+.src{border:2px solid var(--line);background:var(--panel);padding:12px 14px;margin:16px 0}.src small{display:block;color:var(--mute);margin-top:6px}
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:10px}.gal .ph{cursor:zoom-in;font-size:18px}
+.aud{margin:10px 0}.aud audio{width:100%}.aud span{display:block;font-size:14px;color:var(--mute)}
+.lb{position:fixed;inset:0;background:rgba(0,0,0,.88);display:grid;place-items:center;z-index:9;cursor:zoom-out;padding:16px}.lb img{max-width:100%;max-height:100%}
+.score .bar{background:repeating-linear-gradient(90deg,transparent 0 calc(15.625% - 2px),var(--line) calc(15.625% - 2px) 15.625%)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}.stats div{border:2px solid var(--line);background:var(--panel);padding:10px 12px;color:var(--mute);font-size:14px}
+.stats b{display:block;font-family:"VT323",monospace;font-weight:400;font-size:34px;line-height:1.1;color:var(--ink)}
+.tl{margin:4px 0}.tl b{font-family:"VT323",monospace;font-size:24px;font-weight:400;margin-right:8px}
+.pn{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:15px}
+.bld label{display:block;font-size:14px;color:var(--mute);margin-top:10px}.bld input,.bld select,.bld textarea{width:100%;display:block}
+.bld fieldset{border:2px solid var(--line);margin:16px 0;padding:6px 14px 14px}.bld legend{font-family:"VT323",monospace;font-size:24px;padding:0 6px}
+.bld textarea{font:14px/1.4 monospace;min-height:220px;background:var(--panel);color:var(--ink);border:2px solid var(--line);padding:10px}
+button.btn{font-family:inherit;color:var(--ink);cursor:pointer;padding:4px 10px}
+:root[data-theme="green"]{--bg:#031403;--panel:#082408;--ink:#4dff6e;--mute:#2fb84a;--blue:#4dff6e;--blue-ink:#031403;--line:#2fb84a}
+:root[data-theme="amber"]{--bg:#140c00;--panel:#221400;--ink:#ffb000;--mute:#b87d00;--blue:#ffb000;--blue-ink:#140c00;--line:#b87d00}
+:root[data-theme="ega"]{--bg:#0000aa;--panel:#0000c8;--ink:#fff;--mute:#aaf;--blue:#55ffff;--blue-ink:#000080;--line:#fff}
+:root[data-theme="green"] body,:root[data-theme="amber"] body,:root[data-theme="ega"] body{font-family:"VT323","Courier New",monospace;font-size:21px}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:15;background:repeating-linear-gradient(0deg,rgba(0,0,0,.09) 0 1px,transparent 1px 3px)}
+:root[data-theme="green"] body::after,:root[data-theme="amber"] body::after,:root[data-theme="ega"] body::after{background:repeating-linear-gradient(0deg,rgba(0,0,0,.2) 0 1px,transparent 1px 3px)}
+:root[data-theme="clean"] body::after{display:none}
+@media (prefers-contrast:more){body::after{display:none}}
+:root[data-theme="green"] h1,:root[data-theme="amber"] h1{text-shadow:0 0 8px currentColor}
+.cur{margin-left:2px}
+@media (prefers-reduced-motion:no-preference){.cur{animation:blink 1.1s steps(1) infinite}@keyframes blink{50%{opacity:0}}}
+.tb{background:var(--blue);color:var(--blue-ink);font-family:"VT323",monospace;font-size:22px;line-height:1.4;padding:0 10px;margin-bottom:10px;overflow-wrap:anywhere}
+.dlg{max-width:480px;margin:30px auto;border:2px solid var(--line);background:var(--panel);box-shadow:6px 6px 0 var(--line)}.dlg .tb{margin:0}.dlg p{padding:0 14px}
+.scr{overflow-x:auto;border:2px solid var(--line);background:var(--panel);padding:12px}.dir{font:15px/1.35 "Courier New",monospace;margin:0}
+.boot{position:fixed;inset:0;z-index:20;background:#000;color:#c8c8c8;font:24px/1.3 "VT323","Courier New",monospace;padding:calc(20px + env(safe-area-inset-top,0px)) 20px 20px;cursor:pointer}
+.boot pre{margin:0;white-space:pre-wrap;font:inherit}.boot p{margin-top:24px;color:#777}
+.prompt{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:14px}.prompt label{font-family:"VT323",monospace;font-size:24px;color:var(--ink)}
+.prompt input{flex:1;min-width:140px;border:0;border-bottom:2px solid var(--line);background:transparent}#cout{width:100%;min-height:1.5em;color:var(--mute)}
+.uc{border:3px solid #000;background:repeating-linear-gradient(45deg,#ffd400 0 14px,#111 14px 28px);text-align:center;margin:0 0 10px}
+.uc span{display:inline-block;background:#111;color:#ffd400;font:22px/1 "VT323",monospace;padding:4px 14px;margin:6px;letter-spacing:.08em}
+.mq{border:2px solid var(--line);background:var(--panel);padding:2px 8px;font-family:"VT323",monospace;font-size:22px}
+@media (prefers-reduced-motion:no-preference){.mq{overflow:hidden;white-space:nowrap;padding:2px 0}.mq span{display:inline-block;padding-left:100%;animation:mq 22s linear infinite}@keyframes mq{to{transform:translateX(-100%)}}.new{animation:blink 1.1s steps(1) infinite}.mb .flag{transition:transform .25s}}
+.new{background:#d22;color:#fff;font:14px/1 "VT323",monospace;padding:1px 4px;margin-left:4px;vertical-align:middle}
+.mb{display:inline-block;text-decoration:none}.mb .flag{transform-origin:120px 66px}.mb:hover .flag,.mb:focus-visible .flag{transform:rotate(-18deg)}
+.ctc{display:flex;flex-wrap:wrap;align-items:center;gap:18px}.ctc svg{width:150px;height:auto;display:block}
+.rb{height:6px;background:linear-gradient(90deg,#e22,#f90,#fd0,#3b3,#28e,#84c);margin:8px 0}
+.cnt{display:inline-flex;gap:2px;vertical-align:middle;margin:0 6px}.cnt b{background:#000;color:#3f3;font:22px/1 "VT323",monospace;padding:3px 4px;border:1px solid var(--mute)}
+.btns{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.b88{display:flex;align-items:center;justify-content:center;width:88px;height:31px;border:2px outset #999;background:#c0c0c0;color:#000;font:10px/11px "Courier New",monospace;text-align:center;padding:1px 2px;text-decoration:none;overflow:hidden}
+.ring{margin:8px 0;font-size:14px}
+.br{display:grid;grid-template-columns:110px 1fr 32px;gap:8px;align-items:center;margin:4px 0}.br i{display:block;height:16px;background:var(--blue);min-width:4px}.br b{font-family:"VT323",monospace;font-weight:400}
+.chips{margin:0 0 10px}.chips a.tag{display:inline-block;margin:0 6px 6px 0;text-decoration:none}
+.tl.mk{color:var(--mute);font-style:italic}
+.cmp{display:grid;grid-template-columns:120px 1fr 1fr;gap:10px;padding:5px 4px;min-width:520px;border-bottom:1px solid color-mix(in srgb,var(--line) 25%,transparent)}
+.cmp.df{background:color-mix(in srgb,var(--blue) 14%,transparent)}.cmph b{font-family:"VT323",monospace;font-size:24px;font-weight:400}
+.tl.g,.tl.p{border-left:3px solid var(--mute);padding-left:8px}.tl.g{border-color:var(--blue)}
+.qt{margin:12px 0;padding:10px 14px;border-left:4px solid var(--blue);background:var(--panel)}.qt p{margin:0;font-size:1.05em}.qa{margin-top:6px;color:var(--mute);font-family:"VT323",monospace;font-size:20px}
+.cl{padding:5px 0;border-bottom:1px solid color-mix(in srgb,var(--line) 25%,transparent)}.cl b{font-family:"VT323",monospace;font-size:22px;font-weight:400;margin-right:8px}
+.ex{padding:4px 0}.tn{color:var(--mute)}
+.tag.want{background:var(--blue);color:var(--blue-ink);border-color:var(--blue)}.tag.pr{border-color:var(--ink);color:var(--ink)}
+.tl b{display:inline-block;min-width:96px}.tl.gt,.tl.i,.tl.hw{border-left:3px solid var(--blue);padding-left:8px}.tl.w,.tl.u{color:var(--mute)}
+.tl.e{border-left:3px solid var(--mute);padding-left:8px;font-weight:600}.ast{color:var(--mute);cursor:help}
+.ad{margin:10px 0;padding:10px 12px;border:2px dashed var(--line);background:var(--panel)}.ad b.adh{font-family:"VT323",monospace;font-size:24px;font-weight:400}.ad p{margin:2px 0}
+.ad .adp{font-family:"VT323",monospace;font-size:26px}.ad .adx{font-size:12px;color:var(--mute)}
+.gm{background:#000;color:#fff;border:3px solid #aaa;padding:0;margin:8px 0}.gm h2{color:#ff5;margin:0 0 6px}
+.gbar{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;background:#aaa;color:#000;padding:4px 10px;font-family:"VT323",monospace;font-size:22px}.gbar b{color:#00a}
+.gmemw{margin-left:auto;display:inline-flex;align-items:center;gap:6px}.gmemw .bar{display:inline-block;width:90px;height:12px;background:#555;border:1px solid #000;padding:0}.gmemw .bar i{display:block;height:100%;background:#5f5;width:100%}
+.gstage canvas{display:block;width:100%;height:auto;image-rendering:pixelated;image-rendering:crisp-edges;background:#000}
+.gq{background:#00a;color:#fff;border-top:3px solid #fff;padding:10px 12px}.gq[hidden]{display:none}.gq .gpre{color:#ff5;font-style:italic}.gopts{display:grid;gap:6px;margin:8px 0}
+.gm .btn{background:#aaa;color:#000;border:2px solid #fff;border-right-color:#555;border-bottom-color:#555;text-align:left;font-family:inherit}.gm .btn:hover,.gm .btn:focus{background:#ff5;outline:2px solid #fff}.gm .btn.pri{background:#5f5}
+.gmsg{min-height:3.2em;padding:6px 12px;background:#000;color:#5ff;border-top:3px solid #aaa;font-family:"VT323",monospace;font-size:21px;line-height:1.15}
+.gctl{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;padding:8px 10px;background:#555}.gpad,.gact{display:flex;flex-wrap:wrap;gap:6px}.gpad .btn{min-width:48px;min-height:44px;text-align:center}.gact .btn{min-height:44px}
+.gnote{padding:6px 12px;font-size:13px;color:#aaa}.gnote a,.gsel a{color:#5ff}
+.gsel{padding:12px 14px}.gchars{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:12px 0}.gchar{background:#00a;color:#fff;border:3px solid #aaa;padding:10px;text-align:center;cursor:pointer;font:inherit}.gchar:hover,.gchar:focus{border-color:#ff5}.gchar b{display:block;font-family:"VT323",monospace;font-size:28px;color:#ff5}.gchar span{display:block;font-size:14px}.gchar canvas{image-rendering:pixelated}
+h3.sub{font-size:26px;margin:18px 0 4px}
+footer{margin-top:30px;padding:20px 0 30px;border-top:2px solid var(--line);font-size:14px;color:var(--mute)}
+.empty{padding:24px;border:2px dashed var(--mute);color:var(--mute)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+<a href="#/">C:\&gt;ConventionalMemory.io<span class="cur" aria-hidden="true">_</span></a>
+<nav><a href="#/catalog">Catalog</a><a href="#/timeline">Timeline</a><a href="#/wanted">Wanted<span class="new">NEW!</span></a><a href="#/follow">Follow</a><button class="btn" id="th" type="button" style="margin-left:16px">Theme</button></nav>
+</header>
+<main id="app"></main>
+<footer><div id="retro"></div><div class="prompt"><label for="cmd">C:\&gt;</label><input id="cmd" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Type a command: dir, mem, random, scale, timeline, quote, help"><div id="cout" aria-live="polite">Type help and press Enter.</div></div><a href="#/changes">Changes</a> &middot; <a href="#/quotes">Quotes</a> &middot; <a href="#/stats">Stats</a> &middot; <a href="#/scale">Scale</a> &middot; <a href="#/mem">Memory map</a> &middot; <a href="#/builder">Item builder</a> &middot; <a href="#/check">Data check</a> &middot; <a href="#/maze">Basement (staff only)</a><br> &copy; Conventional Memory LLC. Content on TikTok, YouTube, Instagram and Facebook.</footer>
+</div>
+<script src="timeline-data.js"></script>
+<script src="quotes.js"></script>
+<script src="game.js"></script>
+<script>
+// ---- EDIT HERE: your socials and your catalog ----
+var HANDLE="ConventionalMemory";
+var EMAIL="conventionalmemory@gmail.com"; // your contact address, used by the mailbox
+var UPDATED="09/30/2026"; // shown in the footer; change it when you update the site
+var SOCIALS=[
+ {n:"YouTube",u:"https://www.youtube.com/@ConventionalMemory"},
+ {n:"TikTok",u:"https://www.tiktok.com/@ConventionalMemory"},
+ {n:"Instagram",u:"https://www.instagram.com/ConventionalMemory"},
+ {n:"Facebook",u:"https://www.facebook.com/ConventionalMemory"}
+];
+// Wanted list and current projects. Delete the sample: true flag when you replace these entries.
+var WANTED=[
+ {name:"Roland SC-55",type:"Sound or MIDI",priority:"High",note:"Sample entry. Say which revision you want and what condition is acceptable.",sample:true}
+];
+var NOW=[
+ {t:"Toshiba Libretto 110CT build",note:"Sample entry. A short progress note, like what you fixed this week.",item:"toshiba-libretto-110ct",sample:true}
+];
+// Era context: PCS feeds the "high-end PC" sections and timeline. Games, movies, hardware and events live in timeline-data.js.
+// PCS: a high-end desktop PC of that time (approximate and general).
+var PCS=[
+ {y:1981,cpu:"Intel 8088, 4.77 MHz",ram:"16 to 256 KB",video:"CGA color or monochrome text",sound:"PC speaker beeps",storage:"Cassette port or 5.25-inch floppy drives",ex:"IBM PC (5150)"},
+ {y:1984,cpu:"Intel 80286, 6 to 8 MHz",ram:"256 to 512 KB",video:"EGA, 16 colors",sound:"PC speaker",storage:"1.2 MB floppy, around 20 MB hard disk",ex:"IBM PC/AT"},
+ {y:1987,cpu:"Intel 80386, 16 to 20 MHz",ram:"1 to 4 MB",video:"VGA, 256 colors at 320 x 200",sound:"AdLib FM card or PC speaker",storage:"40 to 80 MB hard disk",ex:"IBM PS/2 Model 80, Compaq Deskpro 386"},
+ {y:1990,cpu:"Intel 80486, 25 to 33 MHz",ram:"4 MB",video:"VGA, some Super VGA",sound:"AdLib or Sound Blaster",storage:"80 to 200 MB hard disk",ex:"A 486 tower"},
+ {y:1993,cpu:"486DX2-66, or the first Pentiums at 60 and 66 MHz",ram:"8 MB",video:"Super VGA, 1 MB",sound:"Sound Blaster 16",storage:"250 to 500 MB hard disk, double-speed CD-ROM",ex:"A 486 or early Pentium tower"},
+ {y:1995,cpu:"Pentium, 90 to 133 MHz",ram:"16 MB",video:"PCI SVGA, 2 MB",sound:"Sound Blaster 16 or AWE32",storage:"1 GB hard disk, 4x CD-ROM",ex:"A Windows 95 Pentium PC"},
+ {y:1997,cpu:"Pentium II, 233 to 300 MHz (or Pentium MMX)",ram:"32 to 64 MB",video:"3dfx Voodoo add-in 3D card",sound:"Sound Blaster AWE64",storage:"4 to 6 GB hard disk, 24x CD-ROM",ex:"A Pentium II tower"},
+ {y:1998,cpu:"Pentium II, 333 to 450 MHz",ram:"64 to 128 MB",video:"AGP card such as Voodoo2 or Riva TNT",sound:"Sound Blaster Live!",storage:"8 to 10 GB hard disk, DVD-ROM appearing",ex:"A Pentium II tower"},
+ {y:1999,cpu:"Pentium III, 450 to 600 MHz, or AMD Athlon",ram:"128 MB",video:"AGP card such as TNT2 or GeForce 256",sound:"Sound Blaster Live!",storage:"10 to 20 GB hard disk, DVD-ROM",ex:"A Pentium III tower"},
+ {y:2000,cpu:"Pentium III or Athlon, up to 1 GHz",ram:"128 to 256 MB",video:"GeForce 2 class AGP card",sound:"Sound Blaster Live!",storage:"20 to 40 GB hard disk, CD-RW",ex:"A Pentium III or Athlon tower"}
+];
+// Review scale: score 0-640 (K of conventional memory). Each tier starts at "min". n = name, d = description.
+var SCALE=[
+ {min:0,n:"Divide overflow",d:"The message DOS printed when a program divided by zero and died. Broken, unreliable, or not worth the shelf space."},
+ {min:100,n:"Abort, Retry, Fail?",d:"DOS's famously unhelpful error prompt. It works if you are patient and don't mind the stress."},
+ {min:200,n:"Not enough memory",d:"The 640K wall. It runs, but only after a fight with your settings, and it may never be happy."},
+ {min:300,n:"Runs from a boot disk",d:"Needed a custom floppy with its own CONFIG.SYS and AUTOEXEC.BAT before it would behave. Good, with effort."},
+ {min:400,n:"Loads into upper memory",d:"EMM386 could map drivers into the space above 640K, leaving more room below. A solid, well-behaved item."},
+ {min:500,n:"Loads high",d:"LOADHIGH and DOS=HIGH pushed DOS and drivers out of the way. Great, and easy to recommend."},
+ {min:600,n:"Over 620K free",d:"The tinkerer's holy grail: nearly the whole 640K left for the program. The best of the collection."}
+];
+// Spec sheet template per type, in groups. An item only shows the specs you fill in, so a printer never shows CPU or RAM.
+// Anything you add that is not listed here still appears, under "Other specs".
+var SPEC_TYPES={
+ "Computer":{"Processor and memory":["CPU","CPU speed","FPU","Cache","RAM installed","RAM maximum","RAM type"],
+  "Storage":["Storage","Floppy drives","Optical drive","Removable media"],
+  "Display and graphics":["Display","Resolution","Colors","Graphics","Video RAM"],
+  "Sound and input":["Sound","Keyboard","Pointing device"],
+  "Ports and expansion":["Ports","Expansion slots","Networking","Modem"],
+  "Power and physical":["Power supply","Battery","Weight","Dimensions","Case color"],
+  "Board and software":["Motherboard or chipset","Form factor","BIOS version","OS shipped","Bundled software"]},
+ "Console or handheld":{"Hardware":["Generation","CPU","RAM","Video","Audio"],"Media and ports":["Media type","Controller ports","Video output"],"Power and region":["Power","Region"]},
+ "Game or software":{"Release":["Publisher","Developer","Genre","Players","Version or revision","Language","Region","Age rating","UPC or SKU"],
+  "Media":["Platform","Format","Number of disks","Disk size","Disk density","Number of discs","Number of cartridges","Capacity","Install size"],
+  "Requirements":["Minimum CPU","Minimum RAM","Video support","Sound support","Input support"],
+  "Protection and packaging":["Copy protection","Manual","Packaging","Extras and feelies","Registration card"]},
+ "Expansion card":{"Hardware":["Bus","Chipset","Onboard memory","Ports and connectors","Card length"],"Configuration":["Default IRQ","Default DMA","Default I/O address","Jumpers and switches"],"Software":["Drivers included","Compatible with"]},
+ "Sound or MIDI":{"Sound":["Synthesis","Polyphony","Channels","Sample rate","Memory"],"Connections":["Connectors","Compatible software"]},
+ "Peripheral":{"Hardware":["Kind","Switch type","Layout","Buttons","Resolution or DPI"],"Connection":["Connector","Interface","Cable length","Power","Compatible systems"]},
+ "Storage":{"Drive":["Kind","Capacity","Interface","Form factor","Speed or RPM","Cache","Access time"],"Geometry":["Heads","Cylinders","Sectors"]},
+ "Monitor":{"Display":["Diagonal size","Display type","Max resolution","Refresh rate","Dot pitch"],"Connections":["Inputs","Speakers","Power draw"]},
+ "Printer":{"Printing":["Technology","Resolution","Speed","Paper size","Pins"],"Connections and supplies":["Interface","Fonts or memory","Ribbon or cartridge"]},
+ "Other":{}
+};
+// Also per item: type (a SPEC_TYPES key), msrp, model, partno, rev, upc, disc (year discontinued), made (date code), country, works (Working, Partly working, Untested, Not working), notes (repairs and mods), status (Display, Storage, Repair, Loaned, Sold), qty, acquired, has ["Box","Manual"], tags [], links [{t,u}], acc (auto CM-0001 if blank), cond (Working, Untested, For parts...), specs {"Label":"Value"}.
+// Per item: photos ["url or data: URI"], videos [{t,u}], audio [{t,src}], got, thoughts, score (0-640),
+// wiki {t:"Article title",u:"url",summary:"snapshot text"}
+var ITEMS=[
+ {
+ "id": "toshiba-libretto-110ct",
+ "type": "Computer",
+ "name": "Toshiba Libretto 110CT",
+ "cat": "Laptops",
+ "year": 1998,
+ "maker": "Toshiba",
+ "model": "Libretto 110CT",
+ "partno": "PA1280U-T2W98",
+ "rel": "1998-11-03",
+ "relx": true,
+ "log": [{"d": "2026-08-24", "t": "Note", "n": "Example: planned the CompactFlash and Windows 98 SE conversion."}, {"d": "2026-09-05", "t": "Clean", "n": "Example: removed the leaking CMOS battery and cleaned the board."}, {"d": "2026-09-20", "t": "Upgrade", "n": "Example: replaced the hard drive with an 8 GB CompactFlash card."}],
+ "extras": [{"n": "Mini Port Replicator", "s": "Have", "note": "Example"}, {"n": "AC adapter", "s": "Have"}, {"n": "External floppy drive (PC Card)", "s": "Have"}, {"n": "Original box", "s": "Missing"}, {"n": "Mobile CD-ROM drive (PC Card)", "s": "Want", "note": "Example: 10x model"}, {"n": "Restore and driver disks", "s": "Want"}, {"n": "Carrying case", "s": "Optional"}],
+ "status": "Repair",
+ "qty": 1,
+ "cond": "Example: good, light case wear",
+ "works": "Working",
+ "acquired": "Example: 2025",
+ "got": "Example: bought online; came with the Mini Port Replicator",
+ "has": [
+  "Unit",
+  "AC adapter",
+  "Mini Port Replicator"
+ ],
+ "tags": [
+  "Win98",
+  "Handheld",
+  "Conversion project",
+  "CompactFlash"
+ ],
+ "score": 540,
+ "text": "A pocket-sized Toshiba subnotebook from the Libretto line: a Pentium MMX 233 with a 7.1-inch 800 x 480 screen, small enough for a coat pocket yet able to run full Windows 95 or 98. Toshiba announced it in Europe in November 1998.",
+ "notes": "Conversion plan: replace the original hard drive with an 8 GB CompactFlash card, then install Windows 98 SE trimmed down with 98lite (Sleek profile), plus the Unofficial Windows 98SE Service Pack (USP3) and KernelEx. Partition with a Windows ME boot disk to sidestep the Win98SE FDISK 64 GB bug. Watch list: the NiMH CMOS battery can leak, and RAM tops out at 64 MB officially.",
+ "thoughts": "Example: Tiny, strange and a lot of fun. The pointing stick takes getting used to, but the OPL3 sound makes it a great little DOS and early Windows game machine.",
+ "specs": {
+  "CPU": "Intel Pentium with MMX",
+  "CPU speed": "233 MHz (66 MHz bus), 1.6 V core",
+  "Cache": "32 KB on chip (16 KB code, 16 KB data)",
+  "RAM installed": "32 MB EDO DRAM (standard)",
+  "RAM maximum": "64 MB officially; 96 MB with a modded RAM module",
+  "RAM type": "EDO DRAM",
+  "Storage": "4.32 GB hard disk, 8.45 mm high (original)",
+  "Floppy drives": "External 3.5-inch 1.44 MB / 720 KB via PC Card",
+  "Optical drive": "Optional 10x mobile CD-ROM via PC Card",
+  "Removable media": "PC Card slots, CardBus",
+  "Display": "7.1-inch TFT color",
+  "Resolution": "800 x 480 internal; external up to 1024 x 768 (65,536 colors)",
+  "Colors": "16.7 million (internal)",
+  "Graphics": "NeoMagic NM2160, 128-bit accelerator",
+  "Video RAM": "2 MB",
+  "Sound": "Yamaha OPL3-SA3, 16-bit stereo, Sound Blaster Pro compatible, MIDI, full duplex",
+  "Keyboard": "82 keys, 12 function keys, 4 cursor keys, 2 Windows keys",
+  "Pointing device": "MousePoint pointing stick on the display bevel; buttons on the back of the display",
+  "Ports": "Fast infrared (FIR), headphone, speaker; serial, parallel, RGB and PS/2 via port replicator",
+  "Expansion slots": "2 x PC Card Type II or 1 x Type III, ZV port support",
+  "Modem": "PC Card high-speed modem (optional)",
+  "Power supply": "Autosensing 100 to 240 V AC adapter",
+  "Battery": "Removable lithium-ion, up to 4 hours with the high-capacity battery",
+  "Weight": "About 950 g",
+  "Dimensions": "210 x 132 x 35 mm",
+  "Form factor": "Subnotebook",
+  "OS shipped": "Windows 95 or Windows 98 (selectable install)",
+  "Bundled software": "Toshiba utilities and drivers, including Hibernation and Power Extensions"
+ },
+ "photos": [
+  "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MDAgMzAwIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0iI2Q2ZDFjNCIvPjxnIHN0cm9rZT0iIzE1MTUxYSIgc3Ryb2tlLXdpZHRoPSI0Ij48cmVjdCB4PSI2MCIgeT0iNTAiIHdpZHRoPSIyODAiIGhlaWdodD0iMTYwIiByeD0iMTAiIGZpbGw9IiMzYTNmNTIiLz48cmVjdCB4PSI4NCIgeT0iNzIiIHdpZHRoPSIyMzIiIGhlaWdodD0iMTE2IiBmaWxsPSIjMDAwMGFhIi8+PHBhdGggZD0iTTQ0IDIxNEgzNTZMMzM4IDI1MEg2MloiIGZpbGw9IiNjOWM0YjYiLz48L2c+PGcgZmlsbD0iIzhhODU3OCIgc3Ryb2tlPSIjMTUxNTFhIiBzdHJva2Utd2lkdGg9IjEuNSI+PHJlY3QgeD0iNzIiIHk9IjIyNiIgd2lkdGg9IjE2IiBoZWlnaHQ9IjkiIHJ4PSIyIi8+PHJlY3QgeD0iOTMiIHk9IjIyNiIgd2lkdGg9IjE2IiBoZWlnaHQ9IjkiIHJ4PSIyIi8+PHJlY3QgeD0iMTE0IiB5PSIyMjYiIHdpZHRoPSIxNiIgaGVpZ2h0PSI5IiByeD0iMiIvPjxyZWN0IHg9IjEzNSIgeT0iMjI2IiB3aWR0aD0iMTYiIGhlaWdodD0iOSIgcng9IjIiLz48cmVjdCB4PSIxNTYiIHk9IjIyNiIgd2lkdGg9IjE2IiBoZWlnaHQ9IjkiIHJ4PSIyIi8+PHJlY3QgeD0iMTc3IiB5PSIyMjYiIHdpZHRoPSIxNiIgaGVpZ2h0PSI5IiByeD0iMiIvPjxyZWN0IHg9IjE5OCIgeT0iMjI2IiB3aWR0aD0iMTYiIGhlaWdodD0iOSIgcng9IjIiLz48cmVjdCB4PSIyMTkiIHk9IjIyNiIgd2lkdGg9IjE2IiBoZWlnaHQ9IjkiIHJ4PSIyIi8+PHJlY3QgeD0iMjQwIiB5PSIyMjYiIHdpZHRoPSIxNiIgaGVpZ2h0PSI5IiByeD0iMiIvPjxyZWN0IHg9IjI2MSIgeT0iMjI2IiB3aWR0aD0iMTYiIGhlaWdodD0iOSIgcng9IjIiLz48cmVjdCB4PSIyODIiIHk9IjIyNiIgd2lkdGg9IjE2IiBoZWlnaHQ9IjkiIHJ4PSIyIi8+PHJlY3QgeD0iMzAzIiB5PSIyMjYiIHdpZHRoPSIxNiIgaGVpZ2h0PSI5IiByeD0iMiIvPjwvZz48dGV4dCB4PSIyMDAiIHk9IjEyOCIgZmlsbD0iI2ZmZiIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSIgZm9udC1zaXplPSIyMiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+QzpcJmd0O188L3RleHQ+PHRleHQgeD0iMjAwIiB5PSIxNjgiIGZpbGw9IiM1NWZmZmYiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTQiIHRleHQtYW5jaG9yPSJtaWRkbGUiPklMTFVTVFJBVElPTjwvdGV4dD48L3N2Zz4="
+ ],
+ "credit": "Illustration drawn for this demo, not a photo. Replace it with your own photos.",
+ "videos": [
+  {
+   "t": "Example: Libretto 110CT tour (opens the YouTube channel)",
+   "u": "https://www.youtube.com/@ConventionalMemory"
+  },
+  {
+   "t": "Example: short clip (opens the TikTok channel)",
+   "u": "https://www.tiktok.com/@ConventionalMemory"
+  }
+ ],
+ "audio": [
+  {
+   "t": "Example: startup chime placeholder",
+   "src": "data:audio/wav;base64,UklGRuQSAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YcASAACAgICBgYKCgoGAfnx7enl5e3x/goWHiYqJh4SBfHh1cnFydHh9g4mNkZKRjomDfHVva2lqbXN7g4yTmJqZlY6GfHJqZGFiZm53g46XnqKhnZWKfXFmXVlZXmdzgY+bpaqqpZyPf3BiWFJRVmBufo+eqrGyrqOUg3FgUkpITVhneo6gr7i7tqubh3JeTkRARE9gdYyhs7/Dv7SjjHVeSz04O0ZYb4mhtsTLyb2rk3heSDgwMj1QaYWguMrT0se0mn1gRjMpKTNHYYCeuc3Y2M67oYJkSDQoJi9CXHqZtMrX2dG/pohpTTcpJi0+V3STsMfV2dPDq45vUjorJis6Um+Oq8PT2dXHsJN0Vz4tJik3TWmIpr/R2dfKtJl6XEIvJig0SGSCobvO2NjNuZ6AYUYyJycxRF59m7fL19nQvaOFZks1KCYuQFl3lrLI1tnSwaiLbE84KiYsPFRxkK3F1NrUxa2QcVQ8LCYqOE9si6jB0tnWyLKWd1lALiYoNUtmhaO90NnXy7ebfV5EMScnMkZhgJ65zdjYzruhgmRINCgmL0Jcepm0ytfZ0b+miGlNNykmLT5XdJOwx9XZ08Orjm9SOismKzpSb46rw9PZ1cewk3RXPi0mKTdNaYimv9HZ18q0mXpcQi8mKDRIZIKhu87Y2M25nn9hRjInJzFEXn2bt8vX2dC9o4VmSzUoJi5AWXeWssjW2dLBqItsTzgqJiw8VHGQrcXU2tTFrZBxVDwsJio4T2yLqMHS2dbIspZ3WUAuJig1S2aFo73Q2dfLt5t9XkQxJycyRmF/nrnN2NjOu6GCZEg0KCYvQlx6mbTK19nRv6aIaU03KSYtPld0k7DH1dnTw6uOb1I6KyYrOlJvjqvD09nVx7CTdFc+LSYpN01piKa/0dnXyrSZelxCLyYoNEhkgqG7ztjYzbmef2FGMicnMURefZu3y9fZ0L2jhWZLNSgmLkBZd5ayyNbZ0sGoi2xPOComLDxUcZCtxdTa1MWtkHFUPCwmKjhPbIuowdLZ1siylndZQC4mKDVLZoWjvdDZ18u3m31eRDEnJzJGYYCeuc3Y2M67oYJkSDQoJi9CXHqZtMrX2dG/pohpTTcpJi0+V3STsMfV2dPDq45vUjorJis6Um+Oq8PT2dXHsJN0Vz4tJik3TWmIpr/R2dfKtJl6XEIvJig0SGSCobvO2NjNuZ5/YUYyJycxRF59m7fL19nQvaOFZks1KCYuQFl3lrLI1tnSwaiLbE84KiYsPFRxkK3F1NrUxa2QcVQ8LCYqOE9si6jB0tnWyLKWd1lALiYoNUtmhaO90NnXy7ebfV5EMScnMkZhgJ65zdjYzruhgmRINCgmL0Jcepm0ytfZ0b+miGlNNykmLT5XdJOwx9XZ08Orjm9SOismKzpSb46rw9PZ1cewk3RXPi0mKTdNaYimv9HZ18q0mXpcQi8mKDRIZIKhu87Y2M25nn9hRjInJzFEXn2bt8vX2dC9o4VmSzUoJi5AWXeWssjW2dLBqItsTzgqJiw8VHGQrcXU2tTFrZBxVDwsJio4T2yLqMHS2dbIspZ3WUAuJig1S2aFo73Q2dfLt5t9XkQxJycyRmF/nrnN2NjOu6GCZEg0KCYvQlx6mbTK19nRv6aIaU03KSYtPld0k7DH1dnTw6uOb1I6KyYrOlJvjqvD09nVx7CTdFc+LSYpN01piKa/0dnXyrSZelxCLyYoNEhkgqG7ztjYzbmegGFGMicnMURefZu3y9fZ0L2jhWZLNSgmLkBZd5ayyNbZ0sGoi2xPOComLDxUcZCtxdTa1MWtkHFUPCwmKjhPbIuowdLZ1siylndZQC4mKDVLZoWjvdDZ18u3m31eRDEnJzJGYYCeuc3Y2M67oYJkSDQoJi9CXHqZtMrX2dG/pohpTTcpJi0+V3STsMfV2dPDq45vUjorJis6Um+Oq8PT2dXHsJN0Vz4tJik3TWmIpr/R2dfKtJl6XEIvJig0SGSCobvO2NjNuZ5/YUYyJycxRF59m7fL19nQvaOFZks1KCYuQFl3lrLI1tnSwaiLbE84KiYsPFRxkK3F1NrUxa2QcVQ8LCYqOE9si6jB0tnWyLKWd1lALiYoNUtmhaO90NnXy7ebfV5EMScnMkZhgJ65zdjYzruhgmRINCgmL0Jcepm0ytfZ0b+miGlNNykmLT5XdJOwx9XZ08Orjm9SOismKzpSb46rw9PZ1cewk3RXPi0mKTdNaYimv9HZ18q0mXpcQi8mKDRIZIKhu87Y2M25nn9hRjInJzFEXn2bt8vX2dC9o4VmSzUoJi5AWXeWssjW2dLBqItsTzgqJiw8VHGQrcXU2tTFrZBxVDwsJio4T2yLqMHS2dbIspZ3WUAuJig1S2aFo73Q2dfLt5t9XkQxJycyRmGAnrnN2NjOu6GCZEg0KCYvQlx6mbTK19nRv6aIaU03KSYtPld0k7DH1dnTw6uOb1I6KyYrOlJvjqvD09nVx7CTdFc+LSYpN01piKa/0dnXyrSZelxCLyYoNEhkgqG7ztjYzbmef2FGMicnMURefZu3y9fZ0L2jhWZLNSgmLkBZd5ayyNbZ0sGoi2xPOComLDxUcZCtxdTa1MWtkHFUPCwmKjhPbIuowdLZ1siylndZQC4mKDVLZoWjvdDZ18u3m31eRDEnJzJGYYCeuczX1826oIJkSjYrKTJEXXqXssbS1My7o4drUTwwLTRDWnWRq8DN0Mq8poxxV0I1MTZDWHGMpbnHzMi8qJB2XUk7NThDVm2Gn7PByMa7qpR7Y09AOTtEVWqCma28w8O6q5Z/aVVGPj5GVGd9lKe2v7+5q5mDblpMQ0FHVGV6j6Kxury3q5uHc2BRSEVKVGR3ipyrtbi0qpyKd2VWTUlMVWN0hpimsLSxqZyMe2pcUk5PVmJyg5Ohq6+uqJ2Ofm5hV1JSWGNwgI+cpqurppyPgXJlXFZWWmNvfYuXoaano5uQg3ZqYVtaXWRve4iTnKKjoZqQhXluZWBeYGZveYWPmJ2fnZiQhnxyamRiY2hveIKMk5mbmpaPh351bmhmZ2pweICIj5SXlpOOh394cW1qam1yeH+GjJCTk5GMh4F6dXFvbnB0eH6EiIyOj42KhoF8eHVzcnN2eX6ChomKi4qIhYF+e3h3dnd5e36Bg4WGh4aFg4F/fXx7ent8fX6AgYKDg4KCgYB/f35+fn9/f3+AgICBgYGAfnx7e31/goWGhoSAfHh2dnl+hImMi4iCe3RxcXV8hYyRkYyEenFsbHF6hY+WlpGGem5nZmx3hZKanJaKemxiYGd0hJSfoZuNfGpeW2Fvg5Wjp6GSfmlbVVtrgJamraeXgGlXUFVlfZapsq2chGlUS09gepWst7OiiGpSRkhadZSuvLqpjGxRQUJTcJKvwMCvkW5QPTxMa4+wxMa2l3JPOTVFZYuwx829nnZQNi8+XoevytLFpXpRMyo3V4KtzdjMrIBTMiYxUH2qy9nQsYVYNSYuTHelyNnStotdOCYsR3GfxdjUupBiPCcqQ2yawdfWvpZoQCkoP2aVvdbXwpttRConO2GPudTYxqFzSCwmOFyJtNLZyaZ4TS8mNFeEsM/ZzKt+UjEmMVJ+q8zZz7CEVzQmL014psnZ0rSJXDgmLEhzocbY1LmPYTsnKkRtm8LX1r2VZj8oKUBolr7W18GabEMqJzxikLrU2MWfcUcsJjhdi7bS2cild0wuJjVYhbHQ2cuqfVAxJjJTf6zN2c6vglU0Ji9OeqfK2dGziFo3Ji1JdKLH2dO4jmA6JytFb53D2NW8k2U+KClBaZe/1tfAmWpCKSg9ZJK71djEnnBGKyc5Xoy309nHo3ZLLSY2WYey0NnLqHtPMCYzVIGtztrOrYFUMyYwT3uoy9nQsodZNiYtS3ajx9nTt4xeOScrRnCexNjVu5JkPSgpQmqZwNfWv5dpQSkoPmWTvNXYw51vRSsnOmCOuNPZx6J0SS0mN1qIs9HZyqd6Ti8mNFWCr87ZzayAUzImMVB9qsvZ0LGFWDUmLkx3pcjZ0raLXTgmLEdxn8XY1LqQYjwnKkNsmsHX1r6WaEApKD9mlb3W18KbbUQqJzthj7nU2Mahc0gsJjhcibTS2cmmeE0vJjRXhLDP2cyrflIxJjFSfqvM2c+whFc0Ji9NeKbJ2dK0iVw4JixIc6HG2NS5j2E7JypEbZvC19a9lWY/KClAaJa+1tfBmmxDKic8YpC61NjFn3FHLCY4XYu20tnIpXdMLiY1WIWx0NnLqn1QMSYyU3+szdnOr4JVNCYvTnqnytnRs4haNyYtSXSix9nTuI5gOicrRW+dw9jVvJNlPigpQWmXv9bXwJlqQikoPWSSu9XYxJ5wRisnOV6Mt9PZx6N2Sy0mNlmHstDZy6h7TzAmM1SBrc7azq2BVDMmME97qMvZ0LKHWTYmLUt2o8fZ07eMXjknK0ZwnsTY1buSZD0oKUJqmcDX1r+XaUEpKD5lk7zV2MOdb0UrJzpgjrjT2ceidEktJjdaiLPR2cqnek4vJjRVgq/O2c2sgFMyJjFQfarL2dCxhVg1Ji5Md6XI2dK2i104JixHcZ/F2NS6kGI8JypDbJrB19a+lmhAKSg/ZpW91tfCm21EKic7YY+51NjGoXNILCY4XIm00tnJpnhNLyY0V4Swz9nMq35SMSYxUn6rzNnPsIRXNCYvTXimydnStIlcOCYsSHOhxtjUuY9hOycqRG2bwtfWvZVmPygpQGiWvtbXwZpsQyonPGKQutTYxZ9xRywmOF2LttLZyKV3TC4mNViFsdDZy6p9UDEmMlN/rM3Zzq+CVTQmL056p8rZ0bOIWjcmLUl0osfZ07iOYDonK0VvncPY1byTZT4oKUFpl7/W18CZakIpKD1kkrvV2MSecEYrJzlejLfT2cejdkstJjZZh7LQ2cuoe08wJjNUga3O2s6tgVQzJjBPe6jL2dCyh1k2Ji1LdqPH2dO3jF45JytGcJ7E2NW7kmQ9KClCapnA19a/l2lBKSg+ZZO81djDnW9FKyc6YI6409nHonRJLSY3Woiz0dnKp3pOLyY0VYKvztnNrIBTMiYxUH2qy9nQsYVYNSYuTHelyNnStotdOCYsR3GfxdjUupBiPCcqQ2yawdfWvpZoQCkoP2aVvdbXwpttRConO2GPudTYxqFzSCwmOFyJtNLZyaZ4TS8mNFeEsM/ZzKt+UjEmMVJ+q8zZz7CEVzQmL014psnZ0rSJXDgmLEhzocbY1LmPYTsnKkRtm8LX1r2VZj8oKUBolr7W18GabEMqJzxikLrU2MWfcUcsJjhdi7bS2cild0wuJjVYhbHQ2cuqfVAxJjJTf6zN2c6vglU0Ji9OeqfK2dGziFo3Ji1JdKLH2dO4jmA6JytFb53D2NW8k2U+KClBaZe/1tfAmWpCKSg9ZJK71djEnnBGKyc5Xoy309nHo3ZLLSY2WYey0NnLqHtPMCYzVIGtztrOrYFUMyYwT3uoy9nQsodZNiYtS3ajx9nTt4xeOScrRnCexNjVu5JkPSgpQmqZwNfWv5dpQSkoPmWTvNXYw51vRSsnOmCOuNPZx6J0SS0mN1qIs9HZyqd6Ti8mNFWCr87ZzayAUzImMVB9qsvZ0LGFWDUmLkx3pcjZ0raLXTgmLEdxn8XY1LqQYjwnKkNsmsHX1r6WaEApKD9mlb3W18KbbUQqJzthj7nU2Mahc0gsJjhcibTS2cmmeE0vJjRXhLDP2cyrflIxJjFSfqvM2c+whFc0Ji9NeKbJ2dK0iVw4JixIc6HG2NS5j2E7JypEbZvC19a9lWY/KClAaJa+1tfBmmxDKic8YpC61NjFn3FHLCY4XYu20tnIpXdMLiY1WIWx0NnLqn1QMSYyU3+szdnOroJWNSgxT3qmx9bOsYhcOisxTXWgwtPNtI1iQC4ySnCavc/NtpFoRTIzSGyUt8vLuJVtSzY0R2iPssfKuZlzUDo2RmSKrMPIupx4VT44RWGFp7/Gup98WkI7RV+BorrDuqKBX0c9RVx8nbbAuaSFZEtARlp5mLG9uaWIaVBDR1l1lK26t6aLbVRHSFhyj6i2tqeOcllKSldvi6SztKiRdl1OTFdtiKCvsqiTeWFSTldrhJyrsKeVfWVVUVhqgZioraeWgGlZU1lpfpSkqqaXgm1dVlpofJCgqKSXhHBhWVxneo2dpaOYhnRkXF1neIqZoaGXiHdoX19odoeWnp+XiXlrYmFodYWSm5yWintuZmRpdYKPmJqVi31xaWZrdIGNlZeUi390bGlsdH+KkpWSi4B2b2xudX6Ij5KQioF5cm9wdX2FjI+OiYJ6dHFydn2EiYyMiIJ8d3R0eH2Ch4mJh4J9eXd3eX2BhYeHhYJ+e3p5e32Ag4SEg4F/fXx8fX6AgYKCgYB/f39/f38="
+  }
+ ],
+ "links": [
+  {
+   "t": "Toshiba Europe press release, 3 November 1998 (PDF)",
+   "u": "https://criggie.org.nz/laptop/libretto110/Libretto110CT.pdf"
+  },
+  {
+   "t": "Toshiba Libretto 110CT brochure and manual (ManualsLib)",
+   "u": "https://www.manualslib.com/manual/328584/Toshiba-Libretto-110ct.html"
+  },
+  {
+   "t": "Libretto 100/110CT information page (Wayback Machine)",
+   "u": "https://web.archive.org/web/20110705205546/http://www.josephn.net/toshiba_libretto_110ct"
+  }
+ ],
+ "wiki": {
+  "t": "Toshiba Libretto",
+  "u": "https://en.wikipedia.org/wiki/Toshiba_Libretto",
+  "summary": ""
+ },
+ "sample": true
+},
+ {id:"sound-blaster-16",type:"Expansion card",rel:"1992-06",extras:[{n:"Driver disks",s:"Want",note:"Example"},{n:"Manual",s:"Have"}],status:"Storage",cond:"Sample",specs:{"Bus":"ISA","Audio":"16-bit"},name:"Sound Blaster 16",cat:"Sound cards",year:1992,maker:"Creative Labs",photos:[],videos:[],audio:[],sample:true,
+  got:"Sample: where you found it.",thoughts:"Sample: your honest take on it.",score:560,
+  wiki:{t:"Sound Blaster 16",u:"https://en.wikipedia.org/wiki/Sound_Blaster_16",summary:""},
+  text:"Sample entry. An ISA sound card that defined PC audio for a generation of DOS games."},
+ {id:"ibm-model-m",type:"Peripheral",cond:"Sample",specs:{"Switch type":"Buckling spring"},name:"IBM Model M",cat:"Keyboards",year:1985,maker:"IBM",photos:[],videos:[],audio:[],sample:true,
+  got:"Sample: where you found it.",thoughts:"Sample: your honest take on it.",score:620,
+  wiki:{t:"Model M keyboard",u:"https://en.wikipedia.org/wiki/Model_M_keyboard",summary:""},
+  text:"Sample entry. The buckling-spring keyboard people still type on today."},
+ {id:"roland-mt-32",type:"Sound or MIDI",rel:"1987-06",msrp:"$695",extras:[{n:"Power cable",s:"Have"},{n:"MPU-401 compatible interface card",s:"Want",note:"Example: needed to connect it to a PC"},{n:"Manual",s:"Have"}],cond:"Sample",specs:{"Synthesis":"Linear Arithmetic","Polyphony":"32 notes","Channels":"8 melodic plus 1 rhythm","Connectors":"MIDI"},name:"Roland MT-32",cat:"MIDI",year:1987,maker:"Roland",photos:[],videos:[],audio:[],sample:true,
+  got:"Sample: where you found it.",thoughts:"Sample: your honest take on it.",score:300,
+  wiki:{t:"Roland MT-32",u:"https://en.wikipedia.org/wiki/Roland_MT-32",summary:""},
+  text:"Sample entry. A MIDI sound module many DOS games were written to support."}
+];
+// ---- end of editable data ----
+var app=document.getElementById("app");
+ITEMS.forEach(function(it){if(!it.year&&it.rel)it.year=+String(it.rel).slice(0,4)});
+ITEMS.forEach(function(it,i){if(!it.acc)it.acc="CM-"+String(i+1).padStart(4,"0")});
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function pic(it){return it.photos&&it.photos.length?'<img src="'+esc(it.photos[0])+'" alt="'+esc(it.name)+'">':"No photo yet"}
+function socials(){return '<div class="socials">'+SOCIALS.map(function(s,i){return '<a class="btn'+(i==0?' pri':'')+'" href="'+s.u+'" target="_blank" rel="noopener">'+s.n+'</a>'}).join("")+'</div>'}
+function home(){
+ var n=ITEMS.length,pct=Math.max(1,n/640*100);
+ var sc=ITEMS.filter(function(i){return i.score!=null});
+ var avg=sc.length?Math.round(sc.reduce(function(a,i){return a+i.score},0)/sc.length):0;
+ var old=ITEMS.slice().sort(function(a,b){return a.year-b.year})[0];
+ var top=sc.slice().sort(function(a,b){return b.score-a.score})[0];
+ app.innerHTML='<div class="uc"><span>UNDER CONSTRUCTION</span></div><div class="mq"><span>Welcome to the museum! Please keep your hands and 5.25 inch floppies inside the cart at all times. Thank you for visiting!</span></div><div class="hero"><h1>Conventional Memory</h1><p>Vintage computers and the people who kept them running. Watch the videos, then browse every item in the museum, with photos, audio and the story behind each one.</p>'
+ +'<div class="mem" role="img" aria-label="'+n+' items cataloged"><div class="bar"><i style="width:'+pct+'%"></i></div><small>'+n+'K used, '+(640-n)+'K free. One item cataloged per K.</small></div>'
+ +socials()+'<p><a class="btn" href="#/random">Load a random item</a> <a class="btn" href="#/scale">How items are scored</a></p></div>'
+ +'<section><h2>The museum so far</h2><div class="stats"><div><b>'+n+'</b>items</div><div><b>'+(sc.length?avg+'K':'none')+'</b>average score</div><div><b>'+(old?old.year:'none')+'</b>oldest item</div>'+(top?'<div><b><a href="#/item/'+top.id+'">'+esc(top.name)+'</a></b>top rated, '+top.score+'K</div>':'')+'</div></section>'
+ +daily()+qodHtml()+otd()+recentHtml()+nowHtml()+'<section><h2>Latest in the catalog</h2><div class="grid">'+ITEMS.slice(-4).reverse().map(card).join("")+'</div><p><a class="btn" href="#/catalog">Browse the full catalog</a></p></section>'+contactHtml()}
+function card(it){return '<a class="card" href="#/item/'+it.id+'"><div class="ph">'+pic(it)+'</div><div class="t"><h3>'+esc(it.name)+'</h3><p>'+esc(it.maker)+', '+it.year+(it.score!=null?'<span class="tag">'+it.score+'K</span>':'')+(it.status?'<span class="tag">'+esc(it.status)+'</span>':'')+(it.qty>1?'<span class="tag">x'+it.qty+'</span>':'')+(it.sample?'<span class="tag">sample</span>':'')+'</p></div></a>'}
+function catalog(){
+ var cats=[],sts=[];ITEMS.forEach(function(i){if(cats.indexOf(i.cat)<0)cats.push(i.cat);if(i.status&&sts.indexOf(i.status)<0)sts.push(i.status)});
+ app.innerHTML='<section><h2>Catalog</h2>'+tagChips()+'<div class="tools"><input id="q" type="search" placeholder="Search items, makers, years" aria-label="Search"><select id="c" aria-label="Category"><option value="">All categories</option>'+cats.map(function(c){return '<option>'+esc(c)+'</option>'}).join("")+'</select><select id="st" aria-label="Status"><option value="">Any status</option>'+sts.map(function(c){return '<option>'+esc(c)+'</option>'}).join("")+'</select><select id="s" aria-label="Sort"><option value="">Catalog order</option><option value="score">Highest score</option><option value="old">Oldest first</option><option value="new">Newest first</option><option value="name">Name A to Z</option></select><button class="btn" id="vw" type="button">DIR view</button></div><div id="g" class="grid"></div></section>';
+ var q=document.getElementById("q"),c=document.getElementById("c"),so=document.getElementById("s"),stEl=document.getElementById("st"),g=document.getElementById("g");
+ var view="grid",vw=document.getElementById("vw");vw.onclick=function(){view=view==="dir"?"grid":"dir";vw.textContent=view==="dir"?"Grid view":"DIR view";run()};
+ function run(){var t=q.value.toLowerCase();var r=ITEMS.filter(function(i){return(!c.value||i.cat===c.value)&&(!stEl.value||i.status===stEl.value)&&(i.name+" "+i.maker+" "+i.year+" "+i.cat+" "+i.acc+" "+(i.tags||[]).join(" ")).toLowerCase().indexOf(t)>=0});
+  if(so.value==="score")r.sort(function(a,b){return(b.score||0)-(a.score||0)});
+  else if(so.value==="old")r.sort(function(a,b){return a.year-b.year});
+  else if(so.value==="new")r.sort(function(a,b){return b.year-a.year});
+  else if(so.value==="name")r.sort(function(a,b){return a.name.localeCompare(b.name)});
+  g.className=view==="dir"?"":"grid";g.innerHTML=!r.length?'<div class="empty">No items match. Clear the search or pick another category.</div>':view==="dir"?dir(r):r.map(card).join("")}
+ q.oninput=run;c.onchange=run;stEl.onchange=run;so.onchange=run;run()}
+var MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+function fmtDate(d){var p=String(d).split("-");return p.length===3?MON[+p[1]-1]+" "+(+p[2])+", "+p[0]:p.length===2?MON[+p[1]-1]+" "+p[0]:p[0]}
+function dyear(d){return +String(d).slice(0,4)}
+function today(){var d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+var TLK={i:["Museum items","Item"],hw:["Hardware","Hardware"],sw:["Software","Software"],gt:["Top games","Top game"],gn:["Notable games","Notable game"],gc:["Comical and obscure games","Obscure game"],e:["Industry events","Industry"],m:["Movies","Movie"],w:["World events","World"],u:["US events","US"],p:["High-end PCs","PC"]};
+var TLF={},TLQ="";Object.keys(TLK).forEach(function(k){TLF[k]=1});
+function tlEntries(){var e=[];
+ if(TLF.i)ITEMS.forEach(function(i){e.push({d:i.rel||String(i.year),k:"i",i:i})});
+ var mine=ITEMS.map(function(i){return i.name.toLowerCase()});
+ TL.forEach(function(r){var t=r[2].toLowerCase();if(TLF[r[1]]&&!mine.some(function(n){return t.indexOf(n)>=0||n.indexOf(t)>=0}))e.push({d:r[0],k:r[1],t:r[2],p:r[3],n:r[4],s:r[5]})});
+ if(TLF.p)PCS.forEach(function(p){e.push({d:String(p.y),k:"p",t:"High-end PC of the year: "+p.cpu+", "+p.ram+" RAM, "+p.video+", "+p.sound,n:p.ex})});
+ var q=TLQ.trim().toLowerCase();
+ if(q)e=e.filter(function(x){return(x.i?x.i.name+" "+x.i.maker:x.t+" "+(x.n||"")).toLowerCase().indexOf(q)>=0});
+ return e.sort(function(a,b){return a.d<b.d?-1:a.d>b.d?1:0})}
+function astr(x){var u=x.k==="i"?x.i.relx:x.k==="p"?false:!x.s;return u?'<span class="ast" title="Not confirmed against a source">*</span>':""}
+function tlHtml(e){var d=null,h="";
+ e.forEach(function(x){var yr=dyear(x.d),dc=Math.floor(yr/10)*10;if(dc!==d){d=dc;h+='<h3 class="sub">'+dc+'s</h3>'}
+  var main=x.k==="i"?'<a href="#/item/'+esc(x.i.id)+'">'+esc(x.i.name)+'</a>, '+esc(x.i.maker):esc(x.t);
+  var pr=x.k==="i"?x.i.msrp:x.p,sc=x.k==="i"&&x.i.score!=null?' <span class="tag">'+x.i.score+'K</span>':"";
+  h+='<p class="tl '+x.k+'" data-y="'+yr+'" data-dec="'+dc+'"><b>'+esc(fmtDate(x.d))+astr(x)+'</b><span class="tag">'+esc(TLK[x.k][1])+'</span> '+main+(pr?' <span class="tag pr">'+esc(pr)+'</span>':"")+sc+(x.n?'<br><small class="tn">'+esc(x.n)+'</small>':"")+'</p>'});
+ return h||'<div class="empty">Nothing matches. Turn a layer back on or clear the search.</div>'}
+function timeline(y){
+ app.innerHTML='<section><h2>Timeline</h2><p>The machines, the games, the movies, the industry and the world, side by side, dated to the day where I could confirm it. Prices are US launch prices where known. An asterisk (*) on a date or price means I could not confirm it against a source, so treat it as approximate. It runs through 2010.</p>'
+ +'<div class="tools"><input id="tq" type="search" placeholder="Search the timeline" aria-label="Search the timeline"></div>'
+ +'<p class="chips">'+Object.keys(TLK).map(function(k){return '<label class="tag"><input type="checkbox" data-f="'+k+'"'+(TLF[k]?" checked":"")+'> '+TLK[k][0]+'</label>'}).join("")+' <button class="btn" id="tall" type="button">All</button> <button class="btn" id="tnone" type="button">None</button></p>'
+ +'<p class="chips">Jump to: '+[1970,1980,1990,2000,2010].map(function(d){return '<a class="tag" href="#/timeline/'+d+'">'+d+(d===2010?'':'s')+'</a>'}).join("")+'</p><p id="tcount"></p><div id="tlist"></div></section>';
+ var tq=document.getElementById("tq");tq.value=TLQ;
+ function draw(){var e=tlEntries();document.getElementById("tcount").textContent=e.length+" entries";document.getElementById("tlist").innerHTML=tlHtml(e)}
+ tq.oninput=function(){TLQ=tq.value;draw()};
+ app.querySelectorAll("input[data-f]").forEach(function(c){c.onchange=function(){TLF[c.dataset.f]=c.checked?1:0;draw()}});
+ document.getElementById("tall").onclick=function(){Object.keys(TLK).forEach(function(k){TLF[k]=1});timeline(0)};
+ document.getElementById("tnone").onclick=function(){Object.keys(TLK).forEach(function(k){TLF[k]=0});timeline(0)};
+ draw();
+ var t=y&&(app.querySelector('[data-y="'+y+'"]')||app.querySelector('[data-dec="'+y+'"]'));if(t&&t.scrollIntoView)t.scrollIntoView()}
+function gamesFor(y){var by={};TL.forEach(function(r){if(r[1]==="gt"||r[1]==="gn"){var yy=dyear(r[0]);(by[yy]=by[yy]||[]).push(r)}});
+ var ys=Object.keys(by).map(Number).filter(function(v){return v<=y}).sort(function(a,b){return b-a});
+ if(!ys.length)return null;return {y:ys[0],l:by[ys[0]].slice().sort(function(a,b){return(a[1]==="gt"?0:1)-(b[1]==="gt"?0:1)})}}
+function pcFor(y){var r=null;PCS.forEach(function(p){if(p.y<=y)r=p});return r}
+function dnum(d,up){var p=String(d).split("-"),y=+p[0],m=p[1]?+p[1]:up?12:1,dd=p[2]?+p[2]:up?28:1;return y*372+(m-1)*31+dd-1}
+function fine(d){return String(d).length>=7}
+function guessPrice(r,y){if(r[3])return {t:r[3],est:false};
+ if(r[1]==="hw")return {t:"Price TBA*",est:true};
+ var pr=y<1990?"$29.95 to $49.95*":y<1996?"$39.95 to $59.95*":y<2000?"$39.99 to $54.99*":y<2006?"$29.99 to $49.99*":"$39.99 to $59.99*";return {t:pr,est:true}}
+function adsFor(it){var d0=it.rel||String(it.year);if(!it.year)return "";var a=dnum(d0,false),out=[];
+ TL.forEach(function(r){if(["gt","gn","hw","sw"].indexOf(r[1])<0||!fine(r[0]))return;var n=dnum(r[0],false);if(n<=a||n>a+31*9)return;
+  var mine=ITEMS.some(function(x){return r[2].toLowerCase().indexOf(x.name.toLowerCase())>=0});if(mine)return;out.push({r:r,n:n})});
+ out.sort(function(x,y){return x.n-y.n});
+ var pick=out.filter(function(x){return x.r[1]==="gt"||x.r[1]==="gn"||x.r[1]==="hw"}).slice(0,3);
+ if(!pick.length)return "";
+ return sec("Coming soon (tribute ads)",pick.map(function(x){var r=x.r,pr=guessPrice(r,dyear(r[0])),soft=r[1]==="gt"||r[1]==="gn"||r[1]==="sw",shop=soft?"Bargain Bytes Software":"Bit Barn Computers";
+  return '<div class="ad"><p class="adx">'+esc(shop)+' presents</p><p><b class="adh">'+esc(r[2])+'</b></p><p>COMING '+esc(fmtDate(r[0]).toUpperCase())+(r[5]?'':'*')+'</p><p class="adp">'+esc(pr.t)+'</p><p class="adx">'+(pr.est?'Price is a museum estimate for the era, not a real MSRP. ':'Launch price from the timeline. ')+'</p></div>'}).join("")+'<small class="tn">Tribute ads in the spirit of 90s software store flyers. These are not from a real store, and you cannot order anything. Dates and prices with an asterisk are unconfirmed.</small>')}
+function eraSec(it){if(!it.year)return "";var h="",note='<small class="tn">Games and events come from the timeline. An asterisk means unconfirmed.</small>',d0=it.rel||String(it.year),a=dnum(d0,false),b=dnum(d0,true);
+ if(it.type==="Game or software"){var p=pcFor(it.year);if(p)h=sec("A high-end PC when this came out",tbl([["As of",p.y],["CPU",p.cpu],["RAM",p.ram],["Video",p.video],["Sound",p.sound],["Storage",p.storage],["Example",p.ex]])+'<small class="tn">Curated summary, approximate and general.</small>')}
+ var near=TL.filter(function(r){return(r[1]==="gt"||r[1]==="gn")&&fine(r[0])&&dnum(r[0],false)>=a-31*6&&dnum(r[0],false)<=a+31*3}).sort(function(x,y){return dnum(x[0])-dnum(y[0])});
+ if(near.length)h+=sec("Games out around then",'<p>'+near.slice(0,12).map(function(r){var x=dnum(r[0],false);return esc(r[2])+' <small class="tn">('+esc(fmtDate(r[0]))+(r[5]?'':'*')+(x>b?', after':x<a?', before':'')+')</small>'}).join("; ")+'</p>'+note);
+ else{var g=gamesFor(it.year);if(g)h+=sec("Top and notable games around "+it.year,'<p>'+g.l.map(function(r){return esc(r[2])+' <small class="tn">('+esc(fmtDate(r[0]))+')</small>'}).join(", ")+'</p>'+(g.y!==it.year?'<small class="tn">From '+g.y+', the latest year listed.</small> ':'')+note)}
+ var ev=TL.filter(function(r){return r[1]==="e"&&fine(r[0])&&Math.abs(dnum(r[0],false)-a)<=31*6}).sort(function(x,y){return dnum(x[0])-dnum(y[0])});
+ if(ev.length)h+=sec("Industry events nearby",ev.slice(0,6).map(function(r){return '<p class="tl e"><b>'+esc(fmtDate(r[0]))+(r[5]?'':'<span class="ast">*</span>')+'</b> '+esc(r[2])+(r[4]?'<br><small class="tn">'+esc(r[4])+'</small>':'')+'</p>'}).join(""));
+ h+=adsFor(it);
+ return h?h+'<p><a href="#/timeline/'+it.year+'">See '+it.year+' on the timeline</a></p>':""}
+var LOGTYPES=["Acquired","Upgrade","Repair","Mod","Clean","Test","Moved","Sold","Note"];
+function logsOf(it){return(it.log||[]).slice().sort(function(a,b){return a.d<b.d?1:a.d>b.d?-1:0})}
+function logSec(it){var l=logsOf(it);return l.length?sec("Changelog",'<div>'+l.map(function(x){return '<div class="cl"><b>'+esc(fmtDate(x.d))+'</b><span class="tag">'+esc(x.t||"Note")+'</span> '+esc(x.n||"")+'</div>'}).join("")+'</div>'):""}
+function allLogs(){var r=[];ITEMS.forEach(function(it){(it.log||[]).forEach(function(x){r.push({it:it,x:x})})});return r.sort(function(a,b){return a.x.d<b.x.d?1:a.x.d>b.x.d?-1:0})}
+function logRow(e){return '<div class="cl"><b>'+esc(fmtDate(e.x.d))+'</b><span class="tag">'+esc(e.x.t||"Note")+'</span> <a href="#/item/'+esc(e.it.id)+'">'+esc(e.it.name)+'</a>: '+esc(e.x.n||"")+'</div>'}
+function recentHtml(){var r=allLogs().slice(0,5);return r.length?'<section><h2>Recent changes</h2>'+r.map(logRow).join("")+'<p><a href="#/changes">See every change</a></p></section>':""}
+function changes(){
+ app.innerHTML='<section><h2>Changelog</h2><p>Every upgrade, repair and change to the collection, newest first.</p><div class="tools"><select id="lt" aria-label="Type"><option value="">All types</option>'+LOGTYPES.map(function(t){return '<option>'+t+'</option>'}).join("")+'</select></div><div id="ll"></div></section>';
+ var r=allLogs(),s=document.getElementById("lt"),ll=document.getElementById("ll");
+ function draw(){var l=r.filter(function(e){return !s.value||e.x.t===s.value}),m=null,o="";
+  l.forEach(function(e){var mo=String(e.x.d).slice(0,7);if(mo!==m){m=mo;o+='<h3 class="sub">'+esc(fmtDate(mo))+'</h3>'}o+=logRow(e)});
+  ll.innerHTML=o||'<div class="empty">No changes logged yet. Add entries to an item log with the Item builder.</div>'}
+ s.onchange=draw;draw()}
+var EXST=["Have","Want","Missing","Optional"];
+var ACC_HINTS={"Computer":["AC adapter","Battery","Manual","Original box","Carrying case","Restore or driver disks","Dock or port replicator","Mouse","Keyboard"],
+ "Console or handheld":["Controllers","AV cable","Power adapter","Memory card","Manual","Original box"],
+ "Game or software":["Box","Manual","Disks or discs","Registration card","Map or cloth map","Code wheel","Feelies","Reference card"],
+ "Expansion card":["Driver disks","Manual","Original box","Slot bracket","Cables"],
+ "Sound or MIDI":["Power cable","MIDI cables","Interface card","Manual","Original box"],
+ "Peripheral":["Cable","Adapter","Manual","Original box","Driver disk"],
+ "Storage":["Cable","Mounting rails","Manual","Drivers","Original box"],
+ "Monitor":["Power cable","Video cable","Manual","Stand","Original box"],
+ "Printer":["Power cable","Interface cable","Manual","Ribbon or cartridge","Paper"],
+ "Other":["Manual","Original box","Cables"]};
+function exStat(x){return EXST.indexOf(x.s)>=0?x.s:"Have"}
+function exSec(it){var e=it.extras||[];if(!e.length)return "";
+ var core=e.filter(function(x){return exStat(x)!=="Optional"}),have=core.filter(function(x){return exStat(x)==="Have"}).length;
+ var sum=core.length?'<p>'+(have===core.length?'<span class="tag want">Complete set</span> ':'')+have+' of '+core.length+' pieces in the set.</p>':"";
+ return sec("Accessories and companions",sum+e.map(function(x){var s=exStat(x),lk=x.item&&ITEMS.some(function(i){return i.id===x.item});
+  return '<div class="ex"><span class="tag'+(s==="Want"||s==="Missing"?' want':'')+'">'+s+'</span> '+(lk?'<a href="#/item/'+esc(x.item)+'">'+esc(x.n)+'</a>':esc(x.n))+(x.note?' <small class="tn">'+esc(x.note)+'</small>':'')+'</div>'}).join(""))}
+function wantedExtras(){var r=[];ITEMS.forEach(function(it){(it.extras||[]).forEach(function(x){var s=exStat(x);if(s==="Want"||s==="Missing")r.push({it:it,x:x,s:s})})});return r}
+function gcd(a,b){return b?gcd(b,a%b):a}
+function qod(){var d=new Date(),n=Math.floor(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())/864e5),L=QUOTES.length,st=151;while(gcd(st,L)!==1)st++;return QUOTES[(n*st)%L]}
+function qBlock(q){return '<blockquote class="qt"><p>'+esc(q[0])+'</p><div class="qa">'+esc(q[1])+'</div></blockquote>'}
+function qodHtml(){return QUOTES.length?'<section><h2>Quote of the day</h2><div id="qbox">'+qBlock(qod())+'</div><p><button class="btn" id="qnew" type="button">Another quote</button> <a class="btn" href="#/quotes">All '+QUOTES.length+' quotes</a></p></section>':""}
+function quotesPage(){
+ app.innerHTML='<section><h2>Quotes</h2><p>'+QUOTES.length+' quotes about computers, memory, collecting and the past. Where a famous line is disputed, the attribution says so. Lines credited to Conventional Memory are the museum&rsquo;s own.</p><div class="tools"><input id="qs" type="search" placeholder="Search quotes or people" aria-label="Search quotes"></div><p id="qc"></p><div id="ql"></div></section>';
+ var qs=document.getElementById("qs");
+ function draw(){var t=qs.value.toLowerCase(),l=QUOTES.filter(function(q){return(q[0]+" "+q[1]).toLowerCase().indexOf(t)>=0});document.getElementById("qc").textContent=l.length+" quotes";document.getElementById("ql").innerHTML=l.map(qBlock).join("")}
+ qs.oninput=draw;draw()}
+function otd(){var d=new Date(),k="-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+ var l=TL.filter(function(r){return r[0].length===10&&r[0].slice(4)===k}).map(function(r){return{y:r[0].slice(0,4),k:r[1],t:r[2]}})
+  .concat(ITEMS.filter(function(i){return i.rel&&i.rel.length===10&&i.rel.slice(4)===k}).map(function(i){return{y:i.rel.slice(0,4),k:"i",t:i.name}}))
+  .sort(function(a,b){return a.y<b.y?-1:1}).slice(0,5);
+ return l.length?'<section><h2>On this day</h2>'+l.map(function(r){return '<p class="tl"><b>'+esc(r.y)+'</b><span class="tag">'+esc(TLK[r.k][1])+'</span> '+esc(r.t)+'</p>'}).join("")+'<p><a href="#/timeline">Open the timeline</a></p></section>':""}
+function tagChips(){var c={};ITEMS.forEach(function(i){(i.tags||[]).forEach(function(t){c[t]=(c[t]||0)+1})});var k=Object.keys(c).sort();
+ return k.length?'<p class="chips">'+k.map(function(t){return '<a class="tag" href="#/tag/'+encodeURIComponent(t)+'">'+esc(t)+' ('+c[t]+')</a>'}).join("")+'</p>':""}
+function tagPage(t){var l=ITEMS.filter(function(i){return(i.tags||[]).indexOf(t)>=0});
+ app.innerHTML='<section><h2>Tag: '+esc(t)+'</h2><p><a href="#/catalog">Back to the catalog</a></p><div class="grid">'+(l.map(card).join("")||'<div class="empty">No items have that tag.</div>')+'</div></section>'}
+function daily(){if(!ITEMS.length)return "";var it=ITEMS[Math.floor(Date.now()/864e5)%ITEMS.length];return '<section><h2>Exhibit of the day</h2><div class="grid">'+card(it)+'</div></section>'}
+function cmpSel(it){return ITEMS.length>1?'<p><label>Compare with <select id="cmp"><option value="">Choose an item</option>'+ITEMS.filter(function(x){return x!==it}).map(function(x){return '<option value="'+esc(x.id)+'">'+esc(x.name)+'</option>'}).join("")+'</select></label></p>':""}
+function compare(x,y){var A=ITEMS.filter(function(i){return i.id===x})[0],B=ITEMS.filter(function(i){return i.id===y})[0];
+ if(!A||!B){dlg("One of those items is not in the catalog.",'<a class="btn" href="#/catalog">Back to the catalog</a>');return}
+ var r=[["Released","year"],["Maker","maker"],["Model","model"],["Original MSRP","msrp"]].map(function(f){return [f[0],A[f[1]],B[f[1]]]});
+ r.push(["Score",A.score!=null?A.score+"K":"",B.score!=null?B.score+"K":""]);
+ [["Type","type"],["Status","status"],["Condition","cond"],["Working","works"]].forEach(function(f){r.push([f[0],A[f[1]],B[f[1]]])});
+ var ks=[];[A,B].forEach(function(i){Object.keys(i.specs||{}).forEach(function(k){if(ks.indexOf(k)<0)ks.push(k)})});
+ ks.forEach(function(k){r.push([k,(A.specs||{})[k],(B.specs||{})[k]])});
+ r=r.filter(function(v){return v[1]||v[2]});
+ app.innerHTML='<section><p><a href="#/item/'+esc(A.id)+'">Back to '+esc(A.name)+'</a></p><h2>Compare</h2><p>Highlighted rows differ.</p><div class="scr"><div class="cmp cmph"><b></b><b>'+esc(A.name)+'</b><b>'+esc(B.name)+'</b></div>'
+  +r.map(function(v){return '<div class="cmp'+(String(v[1]||"")!==String(v[2]||"")?" df":"")+'"><span>'+esc(v[0])+'</span><span>'+esc(v[1]||"none")+'</span><span>'+esc(v[2]||"none")+'</span></div>'}).join("")+'</div></section>'}
+function scale(){var h='<section><h2>The 640K scale</h2><p>Every item gets a score from 0 to 640K, named for the memory limit of the original IBM PC. The more memory a program left free, the happier its owner was, so a higher score means a better item. Each range is named for a moment from DOS history.</p>';
+ SCALE.forEach(function(t,i){var hi=i<SCALE.length-1?SCALE[i+1].min-1:640;var c=ITEMS.filter(function(x){return x.score!=null&&tier(x.score)===t}).length;
+  h+='<div class="src"><b>'+t.min+'K to '+hi+'K: '+esc(t.n)+'</b><p>'+esc(t.d)+'</p><small>'+c+' item'+(c==1?'':'s')+' in this tier</small></div>'});
+ app.innerHTML=h+'</section>'}
+function builder(){
+ var core=[["name","Name"],["maker","Maker or publisher"],["year","Release year"],["rel","Release date (YYYY, YYYY-MM or YYYY-MM-DD)"],["msrp","Original MSRP"],["cat","Category"],["model","Model"],["partno","Part number"],["rev","Revision"],["upc","UPC or barcode"],["disc","Discontinued (year)"],["made","Manufactured (date code)"],["country","Country of origin"],["cond","Condition"],["works","Working status (Working, Partly working, Untested, Not working)"],["notes","Repairs, mods and history of this unit"],["status","Status (Display, Storage, Repair, Loaned, Sold)"],["qty","Quantity"],["acquired","Acquired (date)"],["has","Includes (comma separated, e.g. Box, Manual, Disks)"],["tags","Tags (comma separated)"],["got","Where I got it"],["score","Score (0 to 640)"],["text","Description"],["thoughts","My take"],["wiki","Wikipedia URL"]];
+ app.innerHTML='<section class="bld"><h2>Item builder</h2><p>Pick a type, fill in what applies, and copy the result. Blank fields are left out, so a printer never shows CPU or RAM. Send the copied text to me with your photos and I will add the item to the catalog.</p>'
+ +'<label for="ty">Type</label><select id="ty">'+Object.keys(SPEC_TYPES).map(function(k){return '<option>'+esc(k)+'</option>'}).join("")+'</select>'
+ +'<fieldset><legend>Basics</legend>'+core.map(function(f){return '<label for="f_'+f[0]+'">'+f[1]+'</label><input id="f_'+f[0]+'">'}).join("")+'</fieldset>'
+ +'<fieldset><legend>Specs</legend><div id="sp"></div></fieldset>'
+ +'<fieldset><legend>Accessories</legend><p id="exh" class="tn"></p><label for="f_extras">One per line: Name | Have, Want, Missing or Optional | note</label><textarea id="f_extras" style="min-height:90px"></textarea></fieldset>'
+ +'<label for="out">Result</label><textarea id="out" readonly></textarea><p><button class="btn pri" id="cp" type="button">Copy</button></p>'
+ +'<h3 class="sub">Changelog entry</h3><p>Record an upgrade or change on the day you make it. Copy the result and add it to that item&rsquo;s log list, or send it to me.</p>'
+ +'<label for="lg_item">Item</label><select id="lg_item">'+ITEMS.map(function(i){return '<option value="'+esc(i.id)+'">'+esc(i.name)+'</option>'}).join("")+'</select>'
+ +'<label for="lg_date">Date</label><input type="date" id="lg_date"><label for="lg_type">Type</label><select id="lg_type">'+LOGTYPES.map(function(t){return '<option>'+t+'</option>'}).join("")+'</select>'
+ +'<label for="lg_note">What changed</label><input id="lg_note"><label for="lg_out">Result</label><textarea id="lg_out" readonly style="min-height:60px"></textarea><p><button class="btn pri" id="lg_cp" type="button">Copy</button></p></section>';
+ var ty=document.getElementById("ty"),sp=document.getElementById("sp"),out=document.getElementById("out"),exh=document.getElementById("exh");
+ function draw(){var g=SPEC_TYPES[ty.value]||{},i=0,h="";Object.keys(g).forEach(function(k){h+='<h3 class="sub">'+esc(k)+'</h3>'+g[k].map(function(f){i++;return '<label for="s'+i+'">'+esc(f)+'</label><input id="s'+i+'" data-k="'+esc(f)+'">'}).join("")});sp.innerHTML=h||'<p>No specs for this type.</p>';exh.textContent='Ideas for this type: '+(ACC_HINTS[ty.value]||[]).join(', ');gen()}
+ function gen(){var o={},v=function(id){return document.getElementById("f_"+id).value.trim()};
+  o.id=v("name").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");o.type=ty.value;
+  core.forEach(function(f){var x=v(f[0]);if(!x||f[0]==="wiki")return;o[f[0]]=(f[0]==="year"||f[0]==="score"||f[0]==="qty"||f[0]==="disc")?Number(x):(f[0]==="has"||f[0]==="tags")?x.split(",").map(function(t){return t.trim()}).filter(Boolean):x});
+  var w=v("wiki");if(w)o.wiki={t:decodeURIComponent(w.split("/").pop()).replace(/_/g," "),u:w,summary:""};
+  var sc={};sp.querySelectorAll("input").forEach(function(i){if(i.value.trim())sc[i.dataset.k]=i.value.trim()});if(Object.keys(sc).length)o.specs=sc;
+  var ex=document.getElementById("f_extras").value.split("\n").map(function(l){var p=l.split("|").map(function(x){return x.trim()});if(!p[0])return null;var st=EXST.filter(function(k){return k.toLowerCase()===(p[1]||"").toLowerCase()})[0]||"Have",r={n:p[0],s:st};if(p[2])r.note=p[2];return r}).filter(Boolean);if(ex.length)o.extras=ex;
+  o.photos=[];o.videos=[];o.audio=[];out.value=JSON.stringify(o,null,1)}
+ ty.onchange=draw;app.oninput=gen;
+ document.getElementById("cp").onclick=function(){try{navigator.clipboard.writeText(out.value)}catch(e){out.select();document.execCommand("copy")}};
+ var li=document.getElementById("lg_item"),ld=document.getElementById("lg_date"),lt=document.getElementById("lg_type"),ln=document.getElementById("lg_note"),lo=document.getElementById("lg_out");
+ ld.value=today();
+ function lgen(){lo.value=ln.value.trim()?JSON.stringify({item:li.value,d:ld.value,t:lt.value,n:ln.value.trim()}):""}
+ [li,ld,lt,ln].forEach(function(el){el.addEventListener("input",lgen);el.addEventListener("change",lgen)});
+ document.getElementById("lg_cp").onclick=function(){try{navigator.clipboard.writeText(lo.value)}catch(e){lo.select();document.execCommand("copy")}};
+ draw()}
+function dos(it){return(it.name.toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,8)||"ITEM")+".ITM"}
+function dpath(it){return "C:\\MUSEUM\\"+(it.cat.toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,8)||"MISC")+"\\"+dos(it)}
+function dlg(msg,btns){app.innerHTML='<section><div class="dlg"><div class="tb">Error</div><p>'+msg+'</p><p>'+btns+'</p></div></section>'}
+function dir(list){var t=" Volume in drive C is CONVMEM\n Directory of C:\\MUSEUM\n\n";
+ list.forEach(function(i){t+='<a href="#/item/'+i.id+'">'+dos(i).padEnd(12)+'</a> '+(i.score!=null?String(i.score).padStart(4)+"K":"   --")+"  "+String(i.year).padEnd(5)+esc(i.name)+"\n"});
+ return '<div class="scr"><pre class="dir">'+t+"\n   "+list.length+" file(s)</pre></div>"}
+function mem(){var cats={};ITEMS.forEach(function(i){(cats[i.cat]=cats[i.cat]||[]).push(i)});
+ function bar(v){var n=Math.round(v/640*10);return "\u2588".repeat(n)+"\u2591".repeat(10-n)}
+ var t="Category".padEnd(14)+" "+"Items".padStart(5)+"  Average\n"+"-".repeat(38)+"\n";
+ Object.keys(cats).sort().forEach(function(k){var l=cats[k].filter(function(i){return i.score!=null}),a=l.length?Math.round(l.reduce(function(x,i){return x+i.score},0)/l.length):null;
+  t+=k.slice(0,14).padEnd(14)+" "+String(cats[k].length).padStart(5)+"  "+(a==null?"n/a":bar(a)+" "+a+"K")+"\n"});
+ t+="-".repeat(38)+"\n"+"Total items".padEnd(14)+" "+String(ITEMS.length).padStart(5)+"\n"+"Free".padEnd(14)+" "+String(640-ITEMS.length).padStart(5)+"K of 640K\n";
+ app.innerHTML='<section><h2>MEM /C</h2><p>The catalog laid out the way DOS listed memory: one row per category, with the average score as a bar.</p><div class="scr"><pre class="dir">'+esc(t)+'</pre></div></section>'}
+var THEMES=[["","Default"],["green","Green phosphor"],["amber","Amber"],["ega","EGA blue"],["clean","Clean, no scanlines"]];
+function setTheme(i){var t=THEMES[i],r=document.documentElement;if(t[0])r.setAttribute("data-theme",t[0]);else r.removeAttribute("data-theme");document.getElementById("th").textContent="Theme: "+t[1];try{localStorage.setItem("cm-theme",i)}catch(e){}}
+function boot(){
+ try{if(sessionStorage.getItem("cm-boot")||matchMedia("(prefers-reduced-motion: reduce)").matches)return;sessionStorage.setItem("cm-boot","1")}catch(e){}
+ var d=document.createElement("div"),m=0,t;d.className="boot";
+ d.innerHTML='<pre>Conventional Memory BIOS v1.0\nCopyright (C) Conventional Memory LLC\n\n<span>Memory Test:    0K</span></pre><p>Press any key to skip</p>';
+ document.body.appendChild(d);var el=d.querySelector("span"),pre=d.querySelector("pre");
+ function done(){clearInterval(t);d.remove();document.removeEventListener("keydown",done)}
+ t=setInterval(function(){m+=32;if(m>=640){clearInterval(t);el.textContent="Memory Test: 640K OK";pre.appendChild(document.createTextNode("\n"+ITEMS.length+" items found\nLoading catalog...\n\nYou are now entering the information superhighway!"));setTimeout(done,800)}else el.textContent="Memory Test: "+m+"K"},40);
+ d.onclick=done;document.addEventListener("keydown",done)}
+function check(){var seen={},rows=[],ok=0;
+ ITEMS.forEach(function(i){var p=[];
+  if(seen[i.id])p.push("duplicate id");seen[i.id]=1;
+  if(!/^[a-z0-9-]+$/.test(i.id||""))p.push("id should use lowercase letters, numbers and dashes");
+  if(!i.year)p.push("missing release year");
+  if(!i.maker||i.maker==="Unknown")p.push("missing maker");
+  if(i.score!=null&&(i.score<0||i.score>640))p.push("score outside 0 to 640");
+  if(i.type&&!SPEC_TYPES[i.type])p.push("unknown type "+i.type);
+  if(!(i.photos||[]).length)p.push("no photos");
+  if(i.type!=="Other"&&!(i.specs&&Object.keys(i.specs).length))p.push("no specs");
+  if(!i.wiki)p.push("no reference link");
+  if(!i.got)p.push("no acquisition note");if(!i.works)p.push("working status not recorded");
+  if(i.sample)p.push("still a sample entry");
+  if(i.rel&&!/^\d{4}(-\d\d(-\d\d)?)$/.test(i.rel))p.push("release date should look like 1998, 1998-11 or 1998-11-03");
+  if((i.log||[]).some(function(x){return !/^\d{4}-\d\d-\d\d$/.test(x.d||"")}))p.push("a changelog entry has a bad date (use YYYY-MM-DD)");
+  if(p.length)rows.push('<div class="src"><b><a href="#/item/'+esc(i.id)+'">'+esc(i.name)+'</a></b> '+esc(i.acc)+', '+comp(i)+'% complete<br>'+esc(p.join(", "))+'</div>');else ok++});
+ function q(v){return '"'+String(v==null?"":v).replace(/"/g,'""')+'"'}
+ var cols=["acc","name","maker","model","year","rel","disc","cat","type","status","qty","msrp","cond","works","score","acquired"];
+ var csv=[cols.join(",")].concat(ITEMS.map(function(i){return cols.map(function(c){return q(i[c])}).join(",")})).join("\n");
+ app.innerHTML='<section class="bld"><h2>Data check</h2><p>'+ok+' of '+ITEMS.length+' items have nothing flagged.</p>'+rows.join("")+'<h3 class="sub">Export</h3><p>Copies the public catalog fields as CSV, ready for a spreadsheet.</p><textarea id="csv" readonly></textarea><p><button class="btn pri" id="cc" type="button">Copy CSV</button></p></section>';
+ var ta=document.getElementById("csv");ta.value=csv;
+ document.getElementById("cc").onclick=function(){try{navigator.clipboard.writeText(csv)}catch(e){ta.select();document.execCommand("copy")}}}
+function contactHtml(){var m="mailto:"+EMAIL;
+ return '<section><h2>Contact</h2><div class="ctc"><a class="mb" href="'+m+'?subject=Hello%20from%20ConventionalMemory.io" aria-label="Email me"><svg viewBox="0 0 160 130" role="img" aria-hidden="true"><rect x="70" y="80" width="10" height="50" fill="#7a5a3a" stroke="#333" stroke-width="2"/><path d="M30 82V58Q30 30 75 30Q120 30 120 58V82Z" fill="#c9ced6" stroke="#333" stroke-width="3"/><rect x="42" y="62" width="66" height="8" fill="#333"/><g class="flag"><rect x="118" y="30" width="5" height="36" fill="#d22" stroke="#333" stroke-width="1.5"/><rect x="123" y="30" width="18" height="12" fill="#d22" stroke="#333" stroke-width="1.5"/></g></svg></a>'
+ +'<div><p><b>You&rsquo;ve got mail!</b> Click the mailbox to write to me.</p><p><a href="'+m+'?subject=Guestbook">Sign my guestbook</a></p></div></div></section>'}
+function nowHtml(){return NOW.length?'<section><h2>Now working on</h2>'+NOW.map(function(n){return '<div class="src"><b>'+(n.item?'<a href="#/item/'+esc(n.item)+'">'+esc(n.t)+'</a>':esc(n.t))+(n.sample?'<span class="tag">sample</span>':'')+'</b><p>'+esc(n.note)+'</p></div>'}).join("")+'</section>':""}
+function wanted(){var h='<section><h2>Wanted</h2><p>Items I am hunting for. If you have one to sell or donate, message me on any of my socials.</p>'+socials();
+ h+=WANTED.length?WANTED.map(function(w){return '<div class="src"><b>'+esc(w.name)+'</b><span class="tag">'+esc(w.priority||"Wanted")+'</span>'+(w.sample?'<span class="tag">sample</span>':'')+'<br>'+esc(w.type||"")+'<p>'+esc(w.note||"")+'</p></div>'}).join(""):'<div class="empty">Nothing on the list right now.</div>';
+ var we=wantedExtras();if(we.length)h+='<h3 class="sub">Accessories and parts</h3>'+we.map(function(w){return '<div class="ex"><span class="tag want">'+w.s+'</span> '+esc(w.x.n)+' for <a href="#/item/'+esc(w.it.id)+'">'+esc(w.it.name)+'</a>'+(w.x.note?' <small class="tn">'+esc(w.x.note)+'</small>':'')+'</div>'}).join("");
+ app.innerHTML=h+'</section>'}
+function pn(it){var i=ITEMS.indexOf(it),p=ITEMS[i-1],n=ITEMS[i+1];
+ return '<p class="pn"><span>'+(p?'<a href="#/item/'+p.id+'">Previous: '+esc(p.name)+'</a>':'<a href="#/catalog">Back to the catalog</a>')+'</span><span>'+(n?'<a href="#/item/'+n.id+'">Next: '+esc(n.name)+'</a>':'')+'</span></p>'}
+function related(it){var r=ITEMS.filter(function(x){return x!==it&&(x.cat===it.cat||x.maker===it.maker)}).slice(0,3);
+ return r.length?'<h3 class="sub">More like this</h3><div class="grid">'+r.map(card).join("")+'</div>':""}
+function tier(v){var t=SCALE[0];SCALE.forEach(function(x){if(v>=x.min)t=x});return t}
+function tbl(rows){rows=rows.filter(function(r){return r[1]!==undefined&&r[1]!==null&&r[1]!==""});return rows.length?'<dl>'+rows.map(function(r){return '<dt>'+esc(r[0])+'</dt><dd>'+(r[1]&&r[1].h?r[1].h:esc(r[1]))+'</dd>'}).join("")+'</dl>':""}
+function sec(t,body){return body?'<h3 class="sub">'+esc(t)+'</h3>'+body:""}
+function comp(it){var f=[it.year,it.maker&&it.maker!=="Unknown",it.model,it.msrp,it.cond,it.works,it.got,it.acquired,it.specs&&Object.keys(it.specs).length,(it.photos||[]).length,it.wiki,it.score!=null,it.thoughts];return Math.round(f.filter(Boolean).length/f.length*100)}
+function specSheet(it){var g=SPEC_TYPES[it.type]||{},sp=it.specs||{},used={},h="";
+ Object.keys(g).forEach(function(n){h+=sec(n,tbl(g[n].filter(function(k){return sp[k]}).map(function(k){used[k]=1;return [k,sp[k]]})))});
+ return h+sec(Object.keys(g).length?"Other specs":"Specs",tbl(Object.keys(sp).filter(function(k){return !used[k]}).map(function(k){return [k,sp[k]]})))}
+function item(id){
+ var it=ITEMS.filter(function(i){return i.id===id})[0];
+ if(!it){dlg("Item not found reading drive C.<br>Abort, Retry, Fail?",'<a class="btn" href="#/">Abort</a> <button class="btn" id="rt" type="button">Retry</button> <a class="btn" href="#/catalog">Fail</a>');document.getElementById("rt").onclick=route;return}
+ var ph=it.photos||[],vd=it.videos||[],au=it.audio||[],w=it.wiki;
+ var gal=ph.length>1?'<div class="gal">'+ph.slice(1).map(function(x){return '<div class="ph"><img src="'+esc(x)+'" alt="'+esc(it.name)+' photo"></div>'}).join("")+'</div>':"";
+ var media="";
+ if(vd.length)media+=sec("Videos",'<p>'+vd.map(function(v){return '<a class="btn pri" href="'+esc(v.u)+'" target="_blank" rel="noopener">'+esc(v.t)+'</a> '}).join("")+'</p>');
+ if(au.length)media+=sec("Audio",au.map(function(a){return '<div class="aud"><span>'+esc(a.t)+'</span><audio controls preload="none" src="'+esc(a.src)+'"></audio></div>'}).join(""));
+ if(!vd.length&&!au.length)media='<p class="empty">No videos or audio linked yet.</p>';
+ if(it.links&&it.links.length)media+=sec("Manuals and references",'<p>'+it.links.map(function(l){return '<a href="'+esc(l.u)+'" target="_blank" rel="noopener">'+esc(l.t)+'</a>'}).join("<br>")+'</p>');
+ var t=tier(it.score),sc=it.score!=null?'<div class="score"><div class="bar"><i style="width:'+(it.score/640*100)+'%"></i></div><b>'+it.score+'K of 640K</b><span>'+esc(t.n)+'</span> <a href="#/scale">About the scale</a><p>'+esc(t.d)+'</p></div>':"";
+ var src=w?'<div class="src"><b>From Wikipedia: '+esc(w.t)+'</b>'+(w.summary?'<p>'+esc(w.summary)+'</p>':'')+'<a href="'+esc(w.u)+'" target="_blank" rel="noopener">Read the full article</a>'+(w.summary?'<small>Summary text from Wikipedia, licensed CC BY-SA.</small>':'')+'</div>':"";
+ var ident=tbl([["Maker",it.maker],["Model",it.model],["Part number",it.partno],["Revision",it.rev],["Barcode",it.upc],["Released",(it.rel?fmtDate(it.rel):it.year)+(it.relx?"*":"")],["Discontinued",it.disc],["Original MSRP",it.msrp],["Made in",it.country],["Date code",it.made],["Category",it.cat],["Type",it.type]]);
+ var coll=tbl([["Accession",it.acc],["Status",it.status?it.status+(it.qty>1?", quantity "+it.qty:""):""],["Condition",it.cond],["Working",it.works],["Includes",(it.has||[]).join(", ")],["Acquired",it.acquired],["Last changed",logsOf(it)[0]?fmtDate(logsOf(it)[0].d):""],["Where I got it",it.got],["Tags",(it.tags||[]).length?{h:it.tags.map(function(t){return '<a href="#/tag/'+encodeURIComponent(t)+'">'+esc(t)+'</a>'}).join(", ")}:""],["Record complete",comp(it)+"%"]]);
+ app.innerHTML='<section>'+pn(it)+'<div class="detail"><div><div class="ph">'+pic(it)+'</div>'+gal+(it.credit?'<small style="color:var(--mute)">'+esc(it.credit)+'</small>':'')+'</div><div><div class="tb">'+esc(dpath(it))+'</div><h2>'+esc(it.name)+(it.sample?'<span class="tag">sample</span>':'')+'</h2>'
+  +cmpSel(it)+sc+(it.text?'<p>'+esc(it.text)+'</p>':"")+sec("Identification and history",ident)+eraSec(it)+specSheet(it)+sec("Collection record",coll)+exSec(it)+logSec(it)+(it.notes?sec("Repairs and mods",'<p>'+esc(it.notes)+'</p>'):"")+(it.thoughts?sec("My take",'<p>'+esc(it.thoughts)+'</p>'):"")+src+media+related(it)+'</div></div></section>';
+ var cs=document.getElementById("cmp");if(cs)cs.onchange=function(){if(cs.value)location.hash="#/compare/"+it.id+"/"+cs.value};
+ app.querySelectorAll(".ph img").forEach(function(im){im.onclick=function(){var d=document.createElement("div");d.className="lb";d.innerHTML='<img src="'+im.src+'" alt="">';d.onclick=function(){d.remove()};document.body.appendChild(d)}})}
+function stats(){
+ var n=ITEMS.length,q=0,tot=0,mk={},dec={},st={},wk={},cd={};
+ ITEMS.forEach(function(i){var c=i.qty||1;q+=c;var m=String(i.msrp||"").match(/\$\s?([\d,]+(?:\.\d+)?)/);if(m)tot+=parseFloat(m[1].replace(/,/g,""))*c;
+  mk[i.maker]=(mk[i.maker]||0)+1;var d=i.year?Math.floor(i.year/10)*10+"s":"Unknown";dec[d]=(dec[d]||0)+1;
+  if(i.status)st[i.status]=(st[i.status]||0)+1;if(i.works)wk[i.works]=(wk[i.works]||0)+1;if(i.cond)cd[i.cond]=(cd[i.cond]||0)+1});
+ function bars(o,sort){var k=Object.keys(o);if(sort)k.sort(function(a,b){return o[b]-o[a]});else k.sort();var mx=Math.max.apply(null,k.map(function(x){return o[x]}));
+  return k.length?k.slice(0,8).map(function(x){return '<div class="br"><span>'+esc(x)+'</span><i style="width:'+(o[x]/mx*100)+'%"></i><b>'+o[x]+'</b></div>'}).join(""):'<p class="empty">Nothing recorded yet.</p>'}
+ function pct(f){return n?Math.round(ITEMS.filter(f).length/n*100)+"%":"0%"}
+ app.innerHTML='<section><h2>The numbers</h2><div class="stats"><div><b>'+n+'</b>catalog entries</div><div><b>'+q+'</b>total pieces</div><div><b>'+(tot?"$"+Math.round(tot).toLocaleString("en-US"):"none")+'</b>original retail value, in dollars as priced</div><div><b>'+pct(function(i){return(i.photos||[]).length})+'</b>have photos</div><div><b>'+pct(function(i){return i.specs&&Object.keys(i.specs).length})+'</b>have specs</div><div><b>'+pct(function(i){return i.score!=null})+'</b>scored</div><div><b>'+wantedExtras().length+'</b>accessories still wanted</div><div><b>'+ITEMS.filter(function(i){var c=(i.extras||[]).filter(function(x){return exStat(x)!=="Optional"});return c.length&&c.every(function(x){return exStat(x)==="Have"})}).length+'</b>complete sets</div><div><b>'+allLogs().length+'</b>changelog entries</div></div>'
+ +sec("By decade",bars(dec,false))+sec("Top makers",bars(mk,true))+sec("By status",bars(st,true))+sec("Working status",bars(wk,true))+sec("Condition",bars(cd,true))+'</section>'}
+function follow(){app.innerHTML='<section><h2>Follow @'+HANDLE+'</h2><p>New items and videos go up on all four platforms.</p>'+socials()+'</section>'+contactHtml()}
+function route(){var h=location.hash.replace(/^#\/?/,"").split("/");window.scrollTo(0,0);app.oninput=null;if(window.CMGame)CMGame.unmount();
+ if(h[0]==="random"){location.replace("#/item/"+ITEMS[Math.floor(Math.random()*ITEMS.length)].id);return}
+ if(h[0]==="maze"&&window.CMGame)CMGame.mount(app,{items:ITEMS,tl:TL,tier:tier,scale:SCALE});else if(h[0]==="compare")compare(h[1],h[2]);else if(h[0]==="tag")tagPage(decodeURIComponent(h.slice(1).join("/")));else if(h[0]==="changes")changes();else if(h[0]==="quotes")quotesPage();else if(h[0]==="stats")stats();else if(h[0]==="wanted")wanted();else if(h[0]==="check")check();else if(h[0]==="mem")mem();else if(h[0]==="builder")builder();else if(h[0]==="timeline")timeline(+h[1]||0);else if(h[0]==="scale")scale();else if(h[0]==="catalog")catalog();else if(h[0]==="item")item(h[1]);else if(h[0]==="follow")follow();else home();
+ var qb=document.getElementById("qnew");if(qb)qb.onclick=function(){document.getElementById("qbox").innerHTML=qBlock(QUOTES[Math.floor(Math.random()*QUOTES.length)])};
+ var t=app.querySelector("h1,h2"),n=t&&(t.firstChild||t).textContent;document.title=n&&n!=="Conventional Memory"?n+" | Conventional Memory":"Conventional Memory"}
+window.addEventListener("hashchange",route);route();
+var ti=0;try{ti=+localStorage.getItem("cm-theme")||0}catch(e){}
+setTheme(ti);document.getElementById("th").onclick=function(){ti=(ti+1)%THEMES.length;setTheme(ti)};
+if(!location.hash||location.hash==="#/")boot();
+var scs=ITEMS.filter(function(i){return i.score!=null}),mood=scs.length?tier(Math.round(scs.reduce(function(a,i){return a+i.score},0)/scs.length)).n:"unknown";
+function beats(){var d=new Date(),t=(d.getUTCHours()*3600+d.getUTCMinutes()*60+d.getUTCSeconds()+3600)%86400;return "@"+String(Math.floor(t/86.4)).padStart(3,"0")}
+setInterval(function(){var e=document.getElementById("beat");if(e)e.textContent=beats()},10000);
+var vis=String(Math.floor(Math.random()*99000)+1000).padStart(6,"0");
+document.getElementById("retro").innerHTML='<div class="rb"></div><p>You are visitor number <span class="cnt" role="img" aria-label="visitor counter, for fun" title="This counter is just for fun">'+vis.split("").map(function(c){return '<b>'+c+'</b>'}).join("")+'</span></p>'
+ +'<div class="btns"><a class="b88" href="#/scale">POWERED BY 640K</a><span class="b88">MADE ON A 486</span><span class="b88">BEST VIEWED 800x600</span><span class="b88">Y2K COMPLIANT</span><span class="b88">NO FRAMES!</span><a class="b88" href="#/maze">STAFF ONLY: BASEMENT</a><span class="b88">HAND-CODED</span><span class="b88">WEB DESIGN IS MY PASSION</span><span class="b88">ANY BROWSER</span></div>'
+ +'<p class="ring">Currently browsing: 1 (that is you). Mood of the museum: <b>'+esc(mood)+'</b>. Internet Time: <span id="beat">'+beats()+'</span> .beats</p>'
+ +'<p class="ring">Museum Ring: <a href="#/item/'+ITEMS[ITEMS.length-1].id+'">[&lt;&lt; Prev]</a> <a href="#/random">[Random]</a> <a href="#/item/'+ITEMS[0].id+'">[Next &gt;&gt;]</a></p>'
+ +'<p class="ring">Best viewed with Netscape Navigator 4.0 at 800x600, but it works everywhere. Last updated '+UPDATED+'.</p>';
+var cmd=document.getElementById("cmd"),cout=document.getElementById("cout");
+var GO={dir:"#/catalog",catalog:"#/catalog",mem:"#/mem",scale:"#/scale",timeline:"#/timeline",random:"#/random",cls:"#/",home:"#/",follow:"#/follow",builder:"#/builder",check:"#/check",wanted:"#/wanted",stats:"#/stats",changes:"#/changes",quotes:"#/quotes",maze:"#/maze",basement:"#/maze"};
+cmd.onkeydown=function(e){if(e.key!=="Enter")return;var c=cmd.value.trim().toLowerCase();cmd.value="";
+ if(!c){cout.textContent="";return}
+ if(c==="help"){cout.textContent="Commands: "+Object.keys(GO).join(", ")+", quote, ver";return}
+ if(c==="ver"){cout.textContent="Conventional Memory [Version 1.0]";return}
+ var EG={"format c:":"WARNING: ALL DATA ON DRIVE C: WILL BE LOST! Proceed with Format (Y/N)? ... Just kidding. Every item is safe.","win":"This program cannot be run in DOS mode. Try dir.","iddqd":"Degreelessness mode on."};
+ var eg=c==="chkdsk"?ITEMS.length+" items cataloged. "+(640-ITEMS.length)+"K free of 640K conventional memory.":EG[c];
+ if(eg){cout.textContent=eg;return}
+ if(c==="quote"){var qq=QUOTES[Math.floor(Math.random()*QUOTES.length)];cout.textContent=qq[0]+" - "+qq[1];return}
+ if(GO[c]){cout.textContent="";location.hash=GO[c]}else cout.textContent="Bad command or file name"}
+</script>
+</body>
+</html>
