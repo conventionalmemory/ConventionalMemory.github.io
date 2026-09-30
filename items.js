@@ -272,5 +272,75 @@ var ITEMS=[
    "summary": ""
   },
   "text": "Sample entry. A MIDI sound module many DOS games were written to support."
+ },
+ {
+  "type": "Other",
+  "photos": [],
+  "id": "ibm-personal-computer",
+  "cat": "Other",
+  "videos": [],
+  "audio": [],
+  "maker": "International Business Machines (IBM)",
+  "rel": "1981-08-12",
+  "year": 1981,
+  "msrp": "US$1,565 (equivalent to $5,540 in 2025)",
+  "disc": 1987,
+  "name": "IBM Personal Computer",
+  "text": "The IBM Personal Computer (model 5150), often referred to as the IBM PC, is the first microcomputer released in the IBM PC model line and the basis for the IBM PC compatible de facto standard. Released on August 12, 1981, it was created by a team of engineers and designers at International Business Machines (IBM), directed by William C. Lowe and Philip Don Estridge in Boca Raton, Florida.",
+  "specs": {
+   "OS shipped": "IBM BASIC / PC DOS 1.0; CP/M-86; UCSD p-System",
+   "CPU": "Intel 8088 @ 4.77 MHz",
+   "RAM installed": "16 KB – 256 KB (motherboard) (DRAM)",
+   "Display": "IBM 5151 Monochrome Display, IBM 5153 Color Display",
+   "Graphics": "MDA, CGA",
+   "Sound": "PC speaker 1-channel square-wave/1-bit digital (PWM-capable)",
+   "Input support": "XT-Keyboard",
+   "Ports": "Serial port, parallel port",
+   "Power supply": "120/240 V AC ～",
+   "Dimensions": "Approximately 20.25 in × 16.5 in × 5.5 in (51.4 cm × 41.9 cm × 14.0 cm) (width × depth × height)",
+   "Weight": "24–30 lb (11–14 kg)"
+  },
+  "wiki": {
+   "t": "IBM Personal Computer",
+   "u": "https://en.wikipedia.org/wiki/IBM_Personal_Computer",
+   "summary": "The IBM Personal Computer (model 5150), often referred to as the IBM PC, is the first microcomputer released in the IBM PC model line and the basis for the IBM PC compatible de facto standard. Released on August 12, 1981, it was created by a team of engineers and designers at International Business Machines (IBM), directed by William C. Lowe and Philip Don Estridge in Boca Raton, Florida.\nPowered by an x86-architecture Intel 8088 processor, the machine was based on open architecture and third-party peripherals. Over time, expansion cards and software technology increased to support it. The PC had a  substantial influence on the personal computer market; the specifications of the IBM PC became one of the most popular computer design standards in the world. The only significant competition it faced from a non-compatible platform throughout the 1980s was from Apple's Macintosh product line, as well as consumer-grade platforms created by companies like Commodore and Atari. Most present-day personal computers, including the Intel-based Mac computers manufactured from 2006 to 2022, share architectural features in common with the original IBM PC.",
+   "sections": [
+    {
+     "h": "History",
+     "t": "Prior to the 1980s, IBM had largely been known as a provider of business computer systems. As the 1980s began, their market share in the growing minicomputer market failed to keep up with competitors, while other manufacturers were beginning to see impressive profits. The market for personal computers was dominated at the time by Tandy, Commodore, and Apple, whose machines sold for several hundred dollars each and had become very popular. The microcomputer market was large enough for IBM's attention, with $15 billion in sales by 1979 and projected annual growth of more than 40% during the early 1980s. Other large technology companies had entered this market, such as Hewlett-Packard, Texas Instruments, and Data General, and some large IBM customers were buying Apple’s products.\nAs early as 1980 there were rumors of IBM developing a personal computer, possibly a miniaturized version of the IBM System/370, and Matsushita acknowledged publicly that it had discussed with IBM the possibility of manufacturing a personal computer in partnership, although this project was abandoned. The public responded to these rumors with skepticism, owing to IBM's tendency towards slow-moving, bureaucratic business practices tailored towards the production of large, sophisticated and expensive business systems. As with other large computer companies, its new products typically required about four to five years for development."
+    },
+    {
+     "h": "Hardware",
+     "t": "For low cost and a quick design turnaround time, the hardware design of the IBM PC used entirely \"off-the-shelf\" parts from third party manufacturers, rather than unique hardware designed by IBM.\nThe PC is housed in a wide, short steel chassis intended to support the weight of a CRT monitor. The front panel is made of plastic, with an opening where one or two disk drives can be installed. The back panel houses a power inlet and switch, a keyboard connector, a cassette connector and a series of tall vertical slots with blank metal panels which can be removed in order to install expansion cards.\nInternally, the chassis is dominated by a motherboard which houses the CPU, built-in RAM, expansion RAM sockets, and slots for expansion cards.\nThe IBM PC was highly expandable and upgradeable, but the base factory configuration included:"
+    },
+    {
+     "h": "Reception",
+     "t": "The PC improved IBM's reputation with investors, customers, and the general public. The computer's reception was extremely positive. Even before its release reviewers were impressed by the advertised specifications of the machine, and upon its release reviews praised virtually every aspect of its design both in comparison to contemporary machines and with regards to new and unexpected features.\nPraise was directed at the build quality of the PC, in particular its keyboard, IBM's decision to use open specifications to encourage third party software and hardware development, their speed at delivering documentation and the quality therein, the quality of the video display, and the use of commodity components from established suppliers in the electronics industry. The price was considered extremely competitive compared to the value per dollar of competing machines.\nTwo years after its release, Byte magazine retrospectively concluded that the PC had succeeded both because of its features – an 80-column screen, open architecture, and high-quality keyboard – and the failure of other computer manufacturers to achieve these features first:\n\nIn retrospect, it seems IBM stepped into a void that remained, paradoxically, at the center of a crowded market.\nCreative Computing that year named the PC the best desktop computer between $2,000 and $4,000, praising its vast hardware and software selection, manufacturer support, and resale value."
+    },
+    {
+     "h": "Software",
+     "t": "IBM initially announced intent to support multiple operating systems: CP/M-86, UCSD p-System, and an in-house product called IBM PC DOS, based on 86-DOS from Seattle Computer Products and provided by Microsoft. In practice, IBM's expectation and intent was for the market to primarily use PC DOS. CP/M-86 was not available for six months after the PC's release and received extremely few orders once it was, and p-System was also not available at release. PC DOS rapidly established itself as the standard OS for the PC and remained the standard for over a decade, with a variant being sold by Microsoft themselves as MS-DOS.\nThe PC included BASIC in ROM (four 8 KB chips), a common feature of 1980s home computers. Its ROM BASIC supported the cassette tape interface, but PC DOS did not, limiting use of that interface to BASIC only.\nPC DOS version 1.00 supported only 160 KB SSDD floppies, but version 1.1, which was released nine months after the PC's introduction, supported 160 KB SSDD and 320 KB DSDD floppies. Support for the slightly larger nine sector per track 180 KB and 360 KB formats was added in March 1983.\nThird-party software support grew extremely quickly, and within a year the PC platform was supplied with a vast array of titles for any conceivable purpose."
+    },
+    {
+     "h": "Design process",
+     "t": "The design process was kept under a policy of strict secrecy, even from other IBM divisions.\nSeveral CPUs were considered, including the Texas Instruments TMS9900, Motorola 68000 and Intel 8088. The 68000 had 32 bit registers with a flat 24 bit address space for up to 16MB of memory and was considered the best choice, but was not production-ready like the others. The IBM 801 RISC processor was also considered, since it was considerably more powerful than the other options, but rejected due to the design constraint to use off-the-shelf parts. The TMS9900 had only 16 bits of address space which was the same as other 8 bit chips and was rejected as it was inferior to the Intel 8088 which had 20 bits of address space which could use one megabyte of memory.\nThe Intel 8086 architecture had 16 bit registers and used a segment scheme to increase the address space to 20 bits or 1MB of memory which complicated programming but was a big step up from 64K limit of most 8 bit chips. The 8086 was designed as a source code compatible, though not binary compatible, extension of the older 8080 which made it easier to port existing software like BASIC. IBM chose the 8088 variant of the 16 bit 8086 because Intel offered a better price for the former and could provide more units, and the 8088's 8-bit bus reduced the cost of the rest of the computer. The 8088 had the advantage that IBM already had familiarity with the 8085 from designing the IBM System/23 Datamaster."
+    },
+    {
+     "h": "Debut",
+     "t": "The IBM PC debuted on August 12, 1981, after development for one year. Pricing started at $1,565 for a configuration with 16 KB RAM, Color Graphics Adapter, keyboard, and no disk drives. The price was designed to compete with comparable machines in the market. For comparison, the Datamaster, announced two weeks earlier as IBM's least expensive computer, cost $10,000.\nIBM's marketing campaign licensed the likeness of Charlie Chaplin's character \"The Little Tramp\" for a series of advertisements based on Chaplin's movies, played by Billy Scudder.\nThe PC was IBM's first attempt to sell a computer through retail channels rather than directly to customers. Because it did not have retail experience other than the IBM Product Centers it began opening in 1980, the company ensured that software like VisiCalc and EasyWriter was quickly available. It partnered with the retail chains ComputerLand and Sears, which provided important knowledge of the marketplace and competed with IBM's own direct sales force. More than 190 ComputerLand stores already existed, while Sears was in the process of creating a handful of in-store computer centers for sale of the new product.\nReception was overwhelmingly positive, with analysts estimating sales volume in the billions of dollars in the first few years after release. After release, IBM's PC immediately became the talk of the entire computing industry."
+    }
+   ],
+   "facts": {
+    "Product family": "IBM PC",
+    "Generation": "First generation",
+    "Lifespan": "1981–1987",
+    "Removable storage": "5.25\" Floppy drives (160 KB or 320 KB), Cassette",
+    "Model Number": "IBM 5150",
+    "Predecessor": "IBM System/23 Datamaster",
+    "Successor": "IBM Personal Computer XT (next model); IBM PS/2 (next generation)",
+    "Related": "List of IBM Personal Computer models",
+    "Made in": "USA"
+   }
+  }
  }
 ];
