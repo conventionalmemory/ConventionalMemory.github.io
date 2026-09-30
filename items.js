@@ -172,7 +172,13 @@ var ITEMS=[
   "cond": "Sample",
   "specs": {
    "Bus": "ISA",
-   "Audio": "16-bit"
+   "Audio": "16-bit, up to 44.1 kHz stereo",
+   "Chipset": "Yamaha OPL3 FM synthesizer with Creative DSP",
+   "Ports and connectors": "Line in, mic in, line/speaker out, 15-pin MIDI and game port",
+   "Default IRQ": "5",
+   "Default DMA": "1 (8-bit), 5 (16-bit)",
+   "Default I/O address": "220h",
+   "Compatible with": "Sound Blaster Pro, AdLib"
   },
   "name": "Sound Blaster 16",
   "cat": "Sound cards",
@@ -197,7 +203,10 @@ var ITEMS=[
   "type": "Peripheral",
   "cond": "Sample",
   "specs": {
-   "Switch type": "Buckling spring"
+   "Switch type": "Buckling spring",
+   "Kind": "Keyboard",
+   "Layout": "101-key (US)",
+   "Connector": "PS/2 or AT DIN, depending on model"
   },
   "name": "IBM Model M",
   "cat": "Keyboards",
@@ -242,7 +251,9 @@ var ITEMS=[
    "Synthesis": "Linear Arithmetic",
    "Polyphony": "32 notes",
    "Channels": "8 melodic plus 1 rhythm",
-   "Connectors": "MIDI"
+   "Connectors": "MIDI In, MIDI Out/Thru, stereo line out, headphones",
+   "Sample rate": "32 kHz",
+   "Compatible software": "Sierra, LucasArts, Origin and many other DOS games, through an MPU-401 interface"
   },
   "name": "Roland MT-32",
   "cat": "MIDI",

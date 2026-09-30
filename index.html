@@ -136,6 +136,23 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:15;bac
 .adx{position:absolute;top:2px;right:4px;border:0;background:transparent;color:#fff;font-size:22px;line-height:1;cursor:pointer;padding:4px 8px}.adx:hover{color:#ffff55}
 .ad-fine{position:absolute;right:8px;bottom:3px;font-size:9px;letter-spacing:.12em;opacity:.7}
 @media(prefers-reduced-motion:no-preference){.adbar::after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.22) 50%,transparent 60%);transform:translateX(-120%);animation:shine 6s ease-in-out infinite;pointer-events:none}@keyframes shine{60%,100%{transform:translateX(120%)}}}
+
+h2,h3,h4{overflow-wrap:anywhere}
+.adfull{margin:22px 0;border:4px double var(--line);background:linear-gradient(180deg,#0000aa 0,#000055 100%);color:#fff;padding:0 0 12px;box-shadow:6px 6px 0 var(--line)}
+.af-top{display:flex;justify-content:space-between;align-items:center;padding:5px 10px;background:#aa0000;color:#ffff55;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.af-main{display:grid;grid-template-columns:minmax(200px,300px) 1fr;gap:16px;padding:14px}
+.af-art{position:relative;border:3px solid #000;background:#000;align-self:start}.af-art img,.af-art svg{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover}.af-art .ad-burst{position:absolute;right:6px;top:6px;width:76px;height:76px}
+.af-h{margin:0 0 4px;font:400 38px/1 "VT323",monospace;color:#ffff55;text-shadow:3px 3px 0 #000}.af-name{margin:0 0 6px;font:400 22px/1.1 "VT323",monospace;color:#55ffff}.af-name em{font-style:normal;color:#fff;opacity:.85}
+.af-sub{margin:0 0 8px;font-size:14px;line-height:1.4}.af-feat{margin:0;padding:0;list-style:none;font-size:14px}.af-feat li{padding:3px 0 3px 22px;position:relative;border-bottom:1px dotted rgba(255,255,255,.25)}.af-feat li::before{content:"\25BA";position:absolute;left:2px;color:#ffff55}.af-feat b{color:#55ffff;font-weight:400;margin-right:6px}
+.af-chips{display:flex;flex-wrap:wrap;gap:10px;padding:0 14px 12px}.af-chip{flex:1 1 120px;background:#000;border:2px solid #55ffff;text-align:center;padding:6px 4px}.af-chip b{display:block;font:400 24px/1 "VT323",monospace;color:#ffff55}.af-chip span{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#aaa}
+.af-bot{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;padding:0 14px}.af-bot h4,.af-more h4{margin:0 0 6px;font:400 22px/1 "VT323",monospace;color:#ffff55}
+.af-file,.af-ex,.af-order{background:rgba(0,0,0,.35);border:2px solid #000;padding:8px 10px;font-size:13px}.af-file div{display:flex;justify-content:space-between;gap:8px;padding:2px 0;border-bottom:1px dotted rgba(255,255,255,.2)}.af-file span{color:#aaa}.af-file b{font-weight:400;text-align:right}
+.af-sc{position:relative;height:16px;background:#000;border:2px solid #fff;margin-top:8px}.af-sc i{position:absolute;left:0;top:0;bottom:0;background:#55ff55}.af-sc b{position:relative;display:block;text-align:center;font:400 14px/12px "VT323",monospace;color:#fff;mix-blend-mode:difference}
+.af-ex ul{list-style:none;margin:0;padding:0}.af-ex li{padding:2px 0}.af-ex code{color:#55ffff;background:none}.af-ex .e-have code{color:#55ff55}.af-ex .e-missing code{color:#ff5555}.af-ex small{color:#aaa}
+.af-order{background:#fff;color:#000;border:2px dashed #aa0000}.af-order h4{color:#aa0000}.af-order p{margin:3px 0;font-family:"VT323",monospace;font-size:18px}.af-order small{color:#555}
+.af-more{padding:12px 14px 0}.af-more ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}.af-more a{display:block;background:#000;border:2px solid #aa00aa;color:#fff;padding:4px 8px;font-size:13px;text-decoration:none}.af-more a:hover{border-color:#ffff55}.af-more b{color:#55ffff;font-weight:400}.af-more span{color:#ffff55}
+.adfull .tn{display:block;padding:10px 14px 0;color:#aaa}
+@media(max-width:640px){.af-main{grid-template-columns:1fr}.af-h{font-size:32px}}
 @media(max-width:560px){.adbar .ad-burst{display:none}.ad-art.sm{flex-basis:72px}}
 .adshelf{padding-top:8px}.ad-row{display:flex;gap:14px;overflow-x:auto;padding:4px 2px 12px;scroll-snap-type:x proximity}
 .ad-poster{flex:0 0 200px;scroll-snap-align:start;border:3px solid var(--line);background:var(--panel);box-shadow:4px 4px 0 var(--line);transition:transform .15s}.ad-poster:hover{transform:translateY(-3px) rotate(-.6deg)}
@@ -163,6 +180,7 @@ footer{margin-top:30px;padding:20px 0 30px;border-top:2px solid var(--line);font
 <script src="quotes.js"></script>
 <script src="items.js"></script>
 <script src="game.js"></script>
+<script src="ads.js"></script>
 <script src="app.js"></script>
 
 </body>
