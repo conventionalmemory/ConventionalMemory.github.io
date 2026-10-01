@@ -33,6 +33,13 @@ console.log('form',await pg.evaluate(()=>[...document.querySelectorAll('.adm inp
 await pg.fill('#t_n','Edited note from tle test.');await pg.click('#tok');await pg.waitForTimeout(300);
 await pg.click('#sv');await pg.waitForTimeout(300);await pg.click('#rvok');await pg.waitForTimeout(1200);
 console.log('puts2',puts.map(p=>p.f));const tp=puts.find(p=>/timeline-edits/.test(p.f));console.log(tp?tp.body.slice(0,300):'NO TLE PUT');
+// private value tracker: import encrypts, public items.js never holds the numbers
+{const n0=puts.length;if(await pg.$('#bk')){await pg.click('#bk');await pg.waitForTimeout(300)}
+ await pg.click('#gval');await pg.waitForTimeout(300);await pg.fill('#vtp','correct horse battery staple 77');await pg.click('#vtgo');await pg.waitForTimeout(1500);
+ await pg.fill('#vtin','Sound Blaster 16, 25, 60, Swap Meet Sam, Shelf 2');await pg.click('#vtimp');await pg.waitForTimeout(1500);
+ const tv=await pg.evaluate(()=>document.querySelector('.adm').innerText);const okv=/\$25\b/.test(tv)&&/\$60\b/.test(tv);console.log(okv?'ok   value tracker totals':'FAIL value tracker totals',tv.slice(0,200).replace(/\n+/g,' | '));if(!okv)errs.push('value tracker');
+ await pg.click('#bk');await pg.waitForTimeout(300);await pg.click('#sv');await pg.waitForTimeout(300);await pg.click('#rvok');await pg.waitForTimeout(1200);
+ const ip=puts.slice(n0).find(p=>/items\.js/.test(p.f));const leak=!ip||/Swap Meet Sam|Shelf 2/.test(ip.body)||!/privEnc/.test(ip.body);console.log(leak?'FAIL private data leaked or not encrypted':'ok   private data saved encrypted only');if(leak)errs.push('priv leak')}
 // standalone tle view
 await pg.goto(BASE+'/index.html#/admin/tle/'+encodeURIComponent('Apple I'));await pg.waitForTimeout(800);console.log('hash view',await txt());
 console.log(errs.join('\n')||'no errors');await b.close();srv.close();process.exit(errs.length||!puts.some(p=>/timeline-edits/.test(p.f))?1:0)})();
