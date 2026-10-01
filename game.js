@@ -112,10 +112,10 @@ function qItemX(it){var t=R(),o=[];
  return null}
 function qMuseum(ok){if(!D.items.length||ok.length<3)return null;var it=pick(D.items),w=shuf(ok.filter(function(r){return nameOf(r)!==it.name})).slice(0,3).map(nameOf);if(w.length<3)return null;return mk("Which of these is actually in the museum's collection?",it.name,w,"item")}
 function qStatic(){var s=pick(STATIC);return mk(s[0],s[1],s[2],"dos")}
-function qGame(list){var c=list.filter(function(r){return D.gx&&D.gx[r[2]]&&D.gx[r[2]].c!=="low"&&group(r[1])==="g"});if(c.length<3)return null;var r=pick(c),x=D.gx[r[2]],pl=[],i;x.r.forEach(function(q){if(pl.indexOf(q[0])<0)pl.push(q[0])});
+function qGame(list){var PCP=["DOS","Windows","Mac","Linux","PC-98","FM Towns"],hasPc=function(x){return x.r.some(function(q){return PCP.indexOf(q[0])>=0})},c=list.filter(function(r){return D.gx&&D.gx[r[2]]&&D.gx[r[2]].c!=="low"&&group(r[1])==="g"&&hasPc(D.gx[r[2]])});if(c.length<3)return null;var r=pick(c),x=D.gx[r[2]],pl=[],i;x.r.forEach(function(q){if(pl.indexOf(q[0])<0)pl.push(q[0])});
  var all=[];Object.keys(D.gx).forEach(function(t){D.gx[t].r.forEach(function(q){if(all.indexOf(q[0])<0&&q[0]!=="Other")all.push(q[0])})});
  var kind=R();
- if(kind<.4){var f=x.r[0][0];if(f==="Other")return null;var w=shuf(all.filter(function(p){return pl.indexOf(p)<0})).slice(0,3);if(w.length<3)return null;return mk('Which system was "'+nameOf(r)+'" first released for?',f,w,"firstsys")}
+ if(kind<.45){var fp=null;x.r.forEach(function(q){if(!fp&&PCP.indexOf(q[0])>=0)fp=q[0]});var w=shuf(PCP.filter(function(p){return pl.indexOf(p)<0})).slice(0,3);if(!fp||w.length<3)return null;return mk('Which PC system was "'+nameOf(r)+'" first released for?',fp,w,"firstsys")}
  if(kind<.7&&pl.length>=3){var last=x.r[x.r.length-1][0];if(last==="Other"||last===x.r[0][0])return null;var w2=shuf(all.filter(function(p){return p!==last&&p!==x.r[0][0]})).slice(0,3);if(w2.length<3)return null;return mk('Which of these systems got "'+nameOf(r)+'" last?',last,w2,"lastsys")}
  if(x.n&&x.c==="high"&&!/knowledge/i.test(x.s||"")&&x.n.ramMB!=null&&x.n.ramMB>=1){var ram=x.n.ramMB,o=[ram*2,ram*4,Math.max(1,ram/2),ram*8].filter(function(v,j,a){return v!==ram&&a.indexOf(v)===j}).slice(0,3);if(o.length<3)return null;var f2=function(v){return v+" MB"};return mk('About how much RAM did "'+nameOf(r)+'" list as its minimum on a PC?',f2(ram),o.map(f2),"minram")}
  return null}

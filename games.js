@@ -10,13 +10,17 @@ var GXRIGS=[
  {n:"1990 486 PC",y:1990,cls:4,mhz:33,ram:4,vram:0.5},{n:"1993 486DX2-66",y:1993,cls:4,mhz:66,ram:8,vram:1},{n:"1995 Pentium 133",y:1995,cls:5,mhz:133,ram:16,vram:2},
  {n:"1997 Pentium II 266",y:1997,cls:6,mhz:266,ram:64,vram:8},{n:"1998 Pentium II 400",y:1998,cls:6,mhz:400,ram:128,vram:16},{n:"1999 Pentium III 600",y:1999,cls:7,mhz:600,ram:128,vram:32},{n:"2000 Pentium III 1 GHz",y:2000,cls:7,mhz:1000,ram:256,vram:32}];
 var GXCLS={1:"8088/8086",2:"80286",3:"80386",4:"80486",5:"Pentium class",6:"Pentium II class",7:"Pentium III / Athlon",8:"Pentium 4 or later"};
-var GXS={q:"",p:"",f:"",g:"",dec:"",y:"",req:0,multi:0,sort:"date",rig:null,sub:"list"};
+var GXS={q:"",p:"",f:"pc",g:"",dec:"",y:"",req:0,multi:0,sort:"date",rig:null,sub:"list"};
 function gxok(){return typeof GX!=="undefined"}
 function gxFam(p){return GXFAM[p]||"oth"}
 function gxMo(d){var p=String(d).split("-");return(+p[0])*12+(p[1]?+p[1]-1:0)}
 function gxFmt(d){return fmtDate(d)}
-function gxDelay(d0,d){var m=gxMo(d)-gxMo(d0);if(m<=0)return"same time";if(m<12)return"+"+m+" mo";var y=Math.floor(m/12),r=m%12;return"+"+y+" yr"+(r?" "+r+" mo":"")}
-function gxPlats(x){var s={},o=[];x.r.forEach(function(r){if(!s[r[0]]){s[r[0]]=1;o.push(r[0])}});return o}
+function gxDelay(d0,d){var m=gxMo(d)-gxMo(d0);if(m<0)return"before";if(m===0)return"same time";if(m<12)return"+"+m+" mo";var y=Math.floor(m/12),r=m%12;return"+"+y+" yr"+(r?" "+r+" mo":"")}
+var GXRANK={pc:0,micro:1,con:2,hand:3,arc:4,oth:5};
+function gxPlats(x){var s={},o=[];x.r.forEach(function(r){if(!s[r[0]]){s[r[0]]=1;o.push(r[0])}});return o.map(function(p,i){return[p,i]}).sort(function(a,b){return GXRANK[gxFam(a[0])]-GXRANK[gxFam(b[0])]||a[1]-b[1]}).map(function(a){return a[0]})}
+// First PC release (DOS, Windows, Mac, Linux, PC-98, FM Towns); PC is what this site cares about most.
+function gxPc(x){for(var i=0;i<x.r.length;i++)if(gxFam(x.r[i][0])==="pc")return x.r[i];return null}
+function gxDebut(x){return gxPc(x)||x.r[0]}
 function gxChip(p,btn){var f=gxFam(p);return'<'+(btn?'button type="button" data-gxp="'+esc(p)+'"':'span')+' class="pf pf-'+f+'" title="'+esc(GXFAMN[f])+'">'+esc(p==="Other"?"Other system":p)+'</'+(btn?'button':'span')+'>'}
 function gxRam(v){return v==null?"":v<1?Math.round(v*1024)+" KB":v+" MB"}
 function gxDisk(v){return v==null?"":v>=1024?(Math.round(v/102.4)/10)+" GB":v+" MB"}
@@ -35,12 +39,13 @@ function gxReqTable(x){var n=x.n,m=x.m||{},rows=[["OS","os",function(v){return v
  rows.forEach(function(r){var a=n[r[1]]!=null?r[2](n[r[1]]):"",b=m[r[1]]!=null?r[2](m[r[1]]):"";if(a||b)h+='<tr><th scope="row">'+r[0]+'</th><td>'+esc(a||"")+'</td>'+(x.m?'<td>'+esc(b||"")+'</td>':"")+'</tr>'});
  return h?'<table class="gxt gxreq"><thead><tr><th></th><th>Minimum</th>'+(x.m?'<th>Recommended</th>':"")+'</tr></thead><tbody>'+h+'</tbody></table>':""}
 // The panel shown inside an open timeline card and on an item page.
-function gxPanel(title){if(!gxok())return"";var x=GX[title];if(!x)return"";var pl=gxPlats(x),first=x.r[0],h='<div class="gx"><p class="gxchips">'+(x.g?'<span class="pf pf-g">'+esc(x.g)+'</span> ':"")+pl.map(function(p){return gxChip(p,true)}).join(" ")+'</p>';
- if(x.r.length>1||pl.length>1||true){h+='<table class="gxt"><caption>Release date by system</caption><thead><tr><th>System</th><th>Region</th><th>Released</th><th>After the first</th></tr></thead><tbody>'
-  +x.r.map(function(r,i){return'<tr'+(i===0?' class="gx1"':"")+'><td>'+gxChip(r[0])+'</td><td><abbr title="'+esc(GXREG[r[2]]||r[2])+'">'+esc(r[2])+'</abbr></td><td>'+esc(gxFmt(r[1]))+'</td><td>'+(i===0?"first":esc(gxDelay(first[1],r[1])))+'</td></tr>'}).join("")+'</tbody></table>'}
+function gxPanel(title){if(!gxok())return"";var x=GX[title];if(!x)return"";var pl=gxPlats(x),first=gxDebut(x),pcd=gxPc(x),h='<div class="gx"><p class="gxchips">'+(x.g?'<span class="pf pf-g">'+esc(x.g)+'</span> ':"")+pl.map(function(p){return gxChip(p,true)}).join(" ")+'</p>';
+ var rs=x.r.map(function(r,i){return[r,i]}).sort(function(a,b){return(gxFam(a[0][0])==="pc"?0:1)-(gxFam(b[0][0])==="pc"?0:1)||a[1]-b[1]}).map(function(a){return a[0]});
+ h+='<table class="gxt"><caption>Release date by system'+(pcd?' (PC first)':'')+'</caption><thead><tr><th>System</th><th>Region</th><th>Released</th><th>'+(pcd?'Versus PC debut':'After the first')+'</th></tr></thead><tbody>'
+  +rs.map(function(r,i){var pcr=gxFam(r[0])==="pc";return'<tr class="'+(r===first?'gx1 ':'')+(pcr?'gxpc':'')+'"><td>'+gxChip(r[0])+'</td><td><abbr title="'+esc(GXREG[r[2]]||r[2])+'">'+esc(r[2])+'</abbr></td><td>'+esc(gxFmt(r[1]))+'</td><td>'+(r===first?(pcd?"PC debut":"first"):esc(gxDelay(first[1],r[1])))+'</td></tr>'}).join("")+'</tbody></table>';
  var row=null;for(var i=0;i<TL.length;i++)if(TL[i][2]===title){row=TL[i];break}
- if(row&&String(row[0]).slice(0,4)!==String(first[1]).slice(0,4))h+='<p class="tn">The date on this entry ('+esc(fmtDate(row[0]))+') differs from the earliest system date here ('+esc(gxFmt(first[1]))+', '+esc(first[0])+'). Sources disagree, or the entry follows a different release.</p>';
- else h+='<p class="tn">The date on this entry is the earliest release, on '+esc(first[0])+'. Dates are as listed by region and are not all verified.</p>';
+ var ev=x.r[0];if(row&&String(row[0]).slice(0,4)!==String(ev[1]).slice(0,4)&&String(row[0]).slice(0,4)!==String(first[1]).slice(0,4))h+='<p class="tn">The date on this entry ('+esc(fmtDate(row[0]))+') differs from the dates listed here. Sources disagree, or the entry follows a different release.</p>';
+ else h+='<p class="tn">'+(pcd&&ev!==pcd?'First release anywhere: '+esc(ev[0])+', '+esc(gxFmt(ev[1]))+'. ':'')+'Dates are as listed by region and are not all verified.</p>';
  var pc=pl.some(function(p){return gxFam(p)==="pc"||gxFam(p)==="micro"});
  if(x.n){h+='<h4 class="gxh">System requirements</h4>'+gxReqTable(x);
   var f1=gxFirstRig(x.n),f2=x.m?gxFirstRig(x.m):null,t=[];
@@ -48,12 +53,12 @@ function gxPanel(title){if(!gxok())return"";var x=GX[title];if(!x)return"";var p
   if(t.length)h+='<p>'+t.join("; ")+'. <button class="btn" type="button" data-gxrig="'+esc(title)+'">Open the Rig checker</button></p>';
   h+='<p class="tn">Requirements source: '+esc(gxSrc(x))+'.</p>'}
  else if(pc)h+='<p class="tn">No system requirements on file for this one yet.</p>';
- else h+='<p class="tn">A console, handheld or arcade release ran on fixed hardware, so there are no requirements to list.</p>';
+ else h+='<p class="tn">No PC release on file; consoles, handhelds and arcades ran on fixed hardware, so there are no requirements to list.</p>';
  var same=gxSimilar(title,x);if(same.length)h+='<p class="tle-rel"><b>More '+esc((x.g||"games").toLowerCase())+':</b> '+same.map(function(t){return'<a href="#/timeline" data-go="'+esc(t)+'">'+esc(t)+'</a>'}).join(" ")+'</p>';
  return h+'</div>'}
 function gxSimilar(title,x){if(!x.g)return[];var out=[];Object.keys(GX).forEach(function(t){if(t!==title&&GX[t].g===x.g)out.push([t,Math.abs(gxMo(GX[t].r[0][1])-gxMo(x.r[0][1]))])});return out.sort(function(a,b){return a[1]-b[1]}).slice(0,4).map(function(a){return a[0]})}
 // One-line hint for the header of a collapsed timeline card.
-function gxHint(title){if(!gxok())return"";var x=GX[title];if(!x)return"";var pl=gxPlats(x);return' <small class="gxhint" title="'+esc(pl.join(", "))+'">'+esc(pl[0])+(pl.length>1?" +"+(pl.length-1):"")+'</small>'}
+function gxHint(title){if(!gxok())return"";var x=GX[title];if(!x)return"";var pl=gxPlats(x);if(!pl.length)return"";return' <small class="gxhint" title="'+esc(pl.join(", "))+'">'+esc(pl[0])+(pl.length>1?" +"+(pl.length-1):"")+'</small>'}
 // Museum crossover: games for the platform an item belongs to, around its year.
 var GXITEMMAP=[[/commodore 64|c64/i,"Commodore 64"],[/amiga/i,"Amiga"],[/atari st/i,"Atari ST"],[/apple ii|apple \]\[/i,"Apple II"],[/macintosh|\bmac\b|powerbook|imac/i,"Mac"],[/spectrum/i,"ZX Spectrum"],[/trs-80/i,"TRS-80"],[/nintendo 64|\bn64\b/i,"N64"],[/super nintendo|\bsnes\b|super famicom/i,"SNES"],[/\bnes\b|famicom/i,"NES"],[/genesis|mega drive/i,"Genesis"],[/dreamcast/i,"Dreamcast"],[/saturn/i,"Saturn"],[/playstation 2|\bps2\b/i,"PS2"],[/playstation|\bpsx\b/i,"PlayStation"],[/game boy advance/i,"Game Boy Advance"],[/game boy/i,"Game Boy"],[/xbox 360/i,"Xbox 360"],[/xbox/i,"Xbox"],[/gamecube/i,"GameCube"],[/atari 2600/i,"Atari 2600"],[/windows 9|windows|\bpc\b|ibm|toshiba|thinkpad|libretto|compaq|dell/i,"Windows"]];
 function gxPlatOfItem(it){var s=it.name+" "+(it.maker||"")+" "+(it.model||"");for(var i=0;i<GXITEMMAP.length;i++)if(GXITEMMAP[i][0].test(s)){var p=GXITEMMAP[i][1];if(p==="Windows"&&it.year&&it.year<1995)return"DOS";return p}return""}
@@ -63,14 +68,14 @@ function gxItemSec(it){if(!gxok())return"";var h="",r=typeof tlMatch==="function
   L.sort(function(a,b){return a[1]<b[1]?-1:1});if(L.length)h+='<section class="wsec"><h2>Games from its era on '+esc(p)+'</h2><p class="tn">Games released for '+esc(p)+' within three years of this item ('+yr+'). Click one to see all its systems.</p><p class="tle-rel">'+L.slice(0,18).map(function(a){return'<a href="#/timeline" data-tl="'+esc(a[0])+'">'+esc(a[0])+'</a> <small>'+esc(a[1].slice(0,4))+'</small>'}).join(" ")+'</p></section>'}}
  return h}
 // ---- Games tab ----
-function gxList(){var out=[];Object.keys(GX).forEach(function(t){var x=GX[t],row=null;for(var i=0;i<TL.length;i++)if(TL[i][2]===t){row=TL[i];break}out.push({t:t,x:x,row:row,first:x.r[0],pl:gxPlats(x),delay:gxMaxDelay(x)})});return out}
+function gxList(){var out=[];Object.keys(GX).forEach(function(t){var x=GX[t],row=null;for(var i=0;i<TL.length;i++)if(TL[i][2]===t){row=TL[i];break}out.push({t:t,x:x,row:row,first:gxDebut(x),pc:!!gxPc(x),pl:gxPlats(x),delay:gxMaxDelay(x)})});return out}
 function gxFilter(L){var q=GXS.q.trim().toLowerCase();return L.filter(function(g){
  if(q&&(g.t+" "+(g.x.g||"")+" "+g.pl.join(" ")).toLowerCase().indexOf(q)<0)return false;
  if(GXS.p&&g.pl.indexOf(GXS.p)<0)return false;if(GXS.f&&!g.pl.some(function(p){return gxFam(p)===GXS.f}))return false;if(GXS.g&&g.x.g!==GXS.g)return false;
  var y=+g.first[1].slice(0,4);if(GXS.dec&&Math.floor(y/10)*10!==+GXS.dec)return false;if(GXS.y&&y!==+GXS.y)return false;
  if(GXS.req&&!g.x.n)return false;if(GXS.multi&&g.pl.length<3)return false;return true})}
 function gxSort(L){var s=GXS.sort,c={date:function(a,b){return a.first[1]<b.first[1]?-1:a.first[1]>b.first[1]?1:0},title:function(a,b){return a.t<b.t?-1:1},most:function(a,b){return b.pl.length-a.pl.length},wait:function(a,b){return b.delay-a.delay},ram:function(a,b){return(a.x.n&&a.x.n.ramMB!=null?a.x.n.ramMB:1e9)-(b.x.n&&b.x.n.ramMB!=null?b.x.n.ramMB:1e9)}};return L.slice().sort(c[s]||c.date)}
-function gxHeat(L){var P={},ys={};L.forEach(function(g){g.x.r.forEach(function(r){var y=+r[1].slice(0,4);P[r[0]]=P[r[0]]||{};P[r[0]][y]=(P[r[0]][y]||0)+1;ys[y]=1})});
+function gxHeat(L,fam){var P={},ys={};L.forEach(function(g){g.x.r.forEach(function(r){if(fam&&gxFam(r[0])!==fam)return;var y=+r[1].slice(0,4);P[r[0]]=P[r[0]]||{};P[r[0]][y]=(P[r[0]][y]||0)+1;ys[y]=1})});
  var plats=Object.keys(P).sort(function(a,b){var fa=["pc","micro","con","hand","arc","oth"].indexOf(gxFam(a)),fb=["pc","micro","con","hand","arc","oth"].indexOf(gxFam(b));if(fa!==fb)return fa-fb;var ta=0,tb=0;for(var k in P[a])ta+=P[a][k];for(var k2 in P[b])tb+=P[b][k2];return tb-ta});
  if(!plats.length)return"";var y0=1976,y1=2010,W=900,Lm=118,cw=(W-Lm-8)/(y1-y0+1),rh=15,H=plats.length*rh+26,mx=0;plats.forEach(function(p){for(var k in P[p])mx=Math.max(mx,P[p][k])});
  var o='<svg class="gxheat" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Games released per system per year. Click a cell to filter the list.">';
@@ -84,18 +89,18 @@ function gxStats(L){var most=L.slice().sort(function(a,b){return b.pl.length-a.p
 function gxView(){if(!gxok())return'<div class="tlsnap"><p>Game data is not loaded.</p></div>';var all=gxList(),L=gxFilter(all),S=gxSort(L),plats={},gens={},decs={};
  all.forEach(function(g){g.pl.forEach(function(p){plats[p]=(plats[p]||0)+1});if(g.x.g)gens[g.x.g]=(gens[g.x.g]||0)+1;decs[Math.floor(+g.first[1].slice(0,4)/10)*10]=1});
  var opt=function(v,t,sel){return'<option value="'+esc(v)+'"'+(sel?" selected":"")+'>'+esc(t)+'</option>'};
- var h='<div class="tlsnap"><h3>Games by system</h3><p class="tn">'+all.length+' games with a release date for each system they came out on. The date on the main timeline is the earliest one; here you can see which system it was for, and how long each port took. Brighter squares mean more releases. Click a system or a square to filter.</p>'
+ var h='<div class="tlsnap"><h3>Games by system</h3><p class="tn">'+all.length+' games with a release date for each system they came out on. The list starts with PC games, showing the PC debut of each; switch Kind of system to see consoles, handhelds and arcades too. Open a game to see every system and how long each port took. Brighter squares mean more releases. Click a system or a square to filter.</p>'
   +'<div class="gxsub"><button class="btn'+(GXS.sub==="list"?" pri":"")+'" type="button" data-gxsub="list">Browse games</button> <button class="btn'+(GXS.sub==="rig"?" pri":"")+'" type="button" data-gxsub="rig">Rig checker</button></div></div>';
  if(GXS.sub==="rig")return h+gxRigView(all);
- h+='<div class="tlsnap">'+gxHeat(all)+'</div><div class="tlsnap"><div class="gxfilters"><input id="gxq" type="search" placeholder="Search games, genres, systems" aria-label="Search games" value="'+esc(GXS.q)+'">'
+ h+='<div class="tlsnap">'+gxHeat(all,GXS.f)+'</div><div class="tlsnap"><div class="gxfilters"><input id="gxq" type="search" placeholder="Search games, genres, systems" aria-label="Search games" value="'+esc(GXS.q)+'">'
   +'<select id="gxp" aria-label="System">'+opt("","Any system",!GXS.p)+Object.keys(plats).sort().map(function(p){return opt(p,p+" ("+plats[p]+")",GXS.p===p)}).join("")+'</select>'
-  +'<select id="gxf" aria-label="Kind of system">'+opt("","Any kind",!GXS.f)+Object.keys(GXFAMN).map(function(k){return opt(k,GXFAMN[k],GXS.f===k)}).join("")+'</select>'
+  +'<select id="gxf" aria-label="Kind of system">'+opt("","Any kind (consoles too)",!GXS.f)+Object.keys(GXFAMN).map(function(k){return opt(k,GXFAMN[k]+(k==="pc"?" (default)":""),GXS.f===k)}).join("")+'</select>'
   +'<select id="gxg" aria-label="Genre">'+opt("","Any genre",!GXS.g)+Object.keys(gens).sort().map(function(k){return opt(k,k+" ("+gens[k]+")",GXS.g===k)}).join("")+'</select>'
   +'<select id="gxd" aria-label="Decade">'+opt("","Any decade",!GXS.dec)+Object.keys(decs).sort().map(function(k){return opt(k,k+"s",GXS.dec===k)}).join("")+'</select>'
   +'<select id="gxs" aria-label="Sort">'+[["date","Oldest first"],["title","Title"],["most","Most systems"],["wait","Longest port wait"],["ram","Lowest RAM needed"]].map(function(a){return opt(a[0],"Sort: "+a[1],GXS.sort===a[0])}).join("")+'</select></div>'
-  +'<p class="tlflt"><label><input type="checkbox" id="gxr"'+(GXS.req?" checked":"")+'> Has requirements</label> <label><input type="checkbox" id="gxm"'+(GXS.multi?" checked":"")+'> On 3+ systems</label> '+(GXS.p||GXS.y||GXS.f||GXS.g||GXS.dec||GXS.q||GXS.req||GXS.multi?'<button class="btn" type="button" id="gxclr">Clear filters</button>':"")+'</p>'
+  +'<p class="tlflt"><label><input type="checkbox" id="gxr"'+(GXS.req?" checked":"")+'> Has requirements</label> <label><input type="checkbox" id="gxm"'+(GXS.multi?" checked":"")+'> On 3+ systems</label> '+(GXS.p||GXS.y||GXS.f!=="pc"||GXS.g||GXS.dec||GXS.q||GXS.req||GXS.multi?'<button class="btn" type="button" id="gxclr">Clear filters</button>':"")+'</p>'
   +'<p class="tn"><b>'+L.length+'</b> of '+all.length+' games'+(GXS.y?" first released in "+GXS.y:"")+(L.length>150?" (showing 150)":"")+'.</p>'
-  +'<div class="gxwrap"><table class="gxt gxlist"><thead><tr><th>First released</th><th>Game</th><th>Systems</th><th>Genre</th><th>Needs</th></tr></thead><tbody>'
+  +'<div class="gxwrap"><table class="gxt gxlist"><thead><tr><th>Debut</th><th>Game</th><th>Systems</th><th>Genre</th><th>Needs</th></tr></thead><tbody>'
   +S.slice(0,150).map(function(g){var n=g.x.n,need=n?(n.cpu?n.cpu.replace(/^Intel\s+/,""):"")+(n.ramMB!=null?(n.cpu?", ":"")+gxRam(n.ramMB):""):"";
    return'<tr><td>'+esc(gxFmt(g.first[1]))+'<br><small>'+gxChip(g.first[0])+'</small></td><td><a href="#/timeline" data-go="'+esc(g.t)+'">'+esc(g.t)+'</a></td><td>'+g.pl.slice(0,6).map(function(p){return gxChip(p,true)}).join(" ")+(g.pl.length>6?' <small>+'+(g.pl.length-6)+' more</small>':"")+'</td><td>'+esc(g.x.g||"")+'</td><td>'+(need?esc(need):'<small class="tn">-</small>')+'</td></tr>'}).join("")+'</tbody></table></div></div>'
   +'<div class="tlsnap">'+gxStats(all)+'</div>';return h}
@@ -119,4 +124,4 @@ function gxWire(main,redraw,jump){
   else if(id==="gxrp"){var v=t.value;GXS.rig=v[0]==="p"?GXRIGS[+v.slice(1)]:(window.__gxmus||[])[+v.slice(1)]}else return;redraw()});
  main.addEventListener("click",function(e){var s=e.target.closest("[data-gxsub]");if(s){GXS.sub=s.dataset.gxsub;redraw();return}
   var c=e.target.closest("[data-gxp]");if(c&&e.target.closest(".gxheat,.gxlist,.gxt")){GXS.sub="list";GXS.p=c.dataset.gxp;GXS.y=c.dataset.gxy||"";GXS.dec="";redraw();return}
-  if(e.target.id==="gxclr"){GXS={q:"",p:"",f:"",g:"",dec:"",y:"",req:0,multi:0,sort:"date",rig:GXS.rig,sub:"list"};redraw()}});}
+  if(e.target.id==="gxclr"){GXS={q:"",p:"",f:"pc",g:"",dec:"",y:"",req:0,multi:0,sort:"date",rig:GXS.rig,sub:"list"};redraw()}});}
