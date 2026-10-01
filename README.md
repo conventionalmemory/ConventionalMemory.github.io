@@ -140,3 +140,10 @@ Every timeline entry, ad and catalog item without a photo gets a picture drawn i
 - Item pages also have *Print spec sheet*, *Add to my collection* and *Suggest a correction*.
 
 **Admin additions:** *Bulk tools* (full JSON backup, CSV export and import with preview, bulk edit, duplicate finder, activity log), *Studio* (video plan sheet per item and a 28-day posting calendar with `.ics` export), photo drop zone and optional crop (4:3, square, 16:9).
+
+## Round 6: the catalog, two ways
+
+`#/catalog` has a **Style** switch (remembered in `cm-catmode`):
+
+- **Mail-order catalog** (`catbook.js`): the collection as a 1990s software-store catalog. Cover, contents with page numbers, a divider per category, four items per page (three on phones), a full index, and an order form. Pages turn with a 3D flip; use the arrow keys, swipe, tap the page edges or the *Jump to* menu. The flip is skipped when Motion is off or the device asks for reduced motion. Items get catalog numbers like `CM-0007` (their position in `items.js`, so append new items rather than reordering).
+- **Pro** (`catalog.js`): the previous look, tidied: a sticky search bar, a collapsible *Filters* drawer, removable chips for every active filter, *Group by* category / decade / letter with a jump strip, three densities (Big cards, List, Table) and "Show more" paging at 24 items.
