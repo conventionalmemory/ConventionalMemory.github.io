@@ -342,5 +342,1012 @@ var ITEMS=[
     "Made in": "USA"
    }
   }
+ },
+ {
+  "id": "ibm-dos-2-1-books-and-disks",
+  "type": "Game or software",
+  "name": "IBM DOS 2.1 books and disks",
+  "cat": "Games and software",
+  "maker": "IBM",
+  "model": "DOS 2.1",
+  "qty": 1,
+  "cond": "Per listing: seller gives no warranty that the disks are readable.",
+  "tags": [
+   "DOS",
+   "IBM"
+  ],
+  "text": "IBM DOS 2.1 manuals with disks. The listing names IBM as the brand and DOS 2.1 as the model.",
+  "specs": {
+   "Brand": "IBM",
+   "MPN": "DOS 2.1",
+   "Vintage": "Yes"
+  }
+ },
+ {
+  "id": "ibm-5150-for-parts-or-repair",
+  "type": "Computer",
+  "name": "IBM 5150 (for parts or repair)",
+  "cat": "Computers",
+  "maker": "IBM",
+  "model": "5150",
+  "qty": 1,
+  "works": "Not working",
+  "cond": "Per listing: parts or repair, does not power on, no power cord, needs some cleaning, minor dings.",
+  "tags": [
+   "IBM",
+   "Parts"
+  ],
+  "text": "An IBM 5150 listed for parts or repair. The seller says it does not power on and ships without a power cord.",
+  "specs": {
+   "Brand": "IBM",
+   "Model": "5150",
+   "Vintage": "Yes"
+  }
+ },
+ {
+  "id": "apple-m7332-45w-power-adapter-for-parts",
+  "type": "Peripheral",
+  "name": "Apple M7332 45W power adapter (for parts)",
+  "cat": "Cables and adapters",
+  "maker": "Apple",
+  "model": "M7332",
+  "partno": "M7332",
+  "qty": 1,
+  "works": "Untested",
+  "cond": "Per listing: for parts or not working, sold as is and untested, may show scratches and scuffs.",
+  "tags": [
+   "Apple",
+   "Parts",
+   "iBook",
+   "PowerBook"
+  ],
+  "text": "Apple 24 V, 1.875 A power adapter listed for iBook G3/G4 and PowerBook G4. Sold untested and for parts.",
+  "specs": {
+   "Brand": "Apple",
+   "MPN": "M7332",
+   "Voltage": "24 V",
+   "Output current": "1.875 A",
+   "Compatible product line": "Apple PowerBook, iBook"
+  }
+ },
+ {
+  "id": "alone-in-the-dark-big-box-pc",
+  "type": "Game or software",
+  "name": "Alone in the Dark Big Box (PC)",
+  "cat": "Games and software",
+  "maker": "Unknown",
+  "year": 1993,
+  "qty": 1,
+  "cond": "Per order email title: Big Box, PC, 1993. The listing page could not be matched to this purchase.",
+  "tags": [
+   "Big box"
+  ],
+  "text": "A big-box PC edition of Alone in the Dark, titled as 1993 in the order.",
+  "specs": {
+   "Platform": "PC",
+   "Edition": "Big Box"
+  }
+ },
+ {
+  "id": "shadow-warrior-1997-3d-realms-pc-cd-rom-with-manual",
+  "type": "Game or software",
+  "name": "Shadow Warrior (1997) 3D Realms PC CD-ROM with manual",
+  "cat": "Games and software",
+  "maker": "3D Realms",
+  "year": 1997,
+  "qty": 1,
+  "cond": "Per order email title: PC CD-ROM game with manual.",
+  "tags": [
+   "Shooter",
+   "3D Realms"
+  ],
+  "text": "Shadow Warrior, a 1997 3D Realms shooter on PC CD-ROM, bought with its manual.",
+  "specs": {
+   "Platform": "PC",
+   "Format": "CD-ROM",
+   "Publisher or studio": "3D Realms (per title)"
+  }
+ },
+ {
+  "id": "apple-desktop-bus-mouse-ii-m2706",
+  "type": "Peripheral",
+  "name": "Apple Desktop Bus Mouse II (M2706)",
+  "cat": "Peripherals",
+  "maker": "Apple",
+  "model": "Desktop Bus Mouse II",
+  "partno": "M2706",
+  "qty": 2,
+  "cond": "Per listings: one sold as pictured in very good condition; the other without a stated condition. Testing not stated.",
+  "tags": [
+   "Apple",
+   "ADB",
+   "Macintosh",
+   "Mouse"
+  ],
+  "text": "Apple Desktop Bus Mouse II, model M2706, with an ADB connector, platinum gray. Two were bought.",
+  "specs": {
+   "Brand": "Apple",
+   "MPN": "M2706",
+   "Connector": "ADB",
+   "Color": "Platinum Gray",
+   "Cord length": "2 ft (one listing)",
+   "Type": "Mouse"
+  }
+ },
+ {
+  "id": "intel-play-qx3-computer-microscope-open-box",
+  "type": "Peripheral",
+  "name": "Intel Play QX3+ Computer Microscope (open box)",
+  "cat": "Peripherals",
+  "maker": "Intel Play",
+  "year": 2001,
+  "model": "837381",
+  "partno": "837381",
+  "qty": 1,
+  "cond": "Per listing: new, open box; title says missing tweezer, eye drop and slides.",
+  "tags": [
+   "Intel Play"
+  ],
+  "text": "An Intel Play QX3+ computer microscope in an open box, missing the tweezer, eye drop and slides.",
+  "specs": {
+   "Brand": "Intel Play",
+   "MPN": "837381",
+   "Year": "2001",
+   "Recommended age": "8+"
+  }
+ },
+ {
+  "id": "microsoft-nickelodeon-3d-movie-maker",
+  "type": "Game or software",
+  "name": "Microsoft Nickelodeon 3D Movie Maker",
+  "cat": "Games and software",
+  "maker": "Microsoft",
+  "model": "Nickelodeon 3D Movie Maker",
+  "partno": "000-37796",
+  "qty": 1,
+  "works": "Untested",
+  "cond": "Per listing: very good, jewel case undamaged; the CD has not been tested.",
+  "tags": [
+   "Windows 95",
+   "CD-ROM"
+  ],
+  "text": "Microsoft Nickelodeon 3D Movie Maker on CD-ROM for Windows 95.",
+  "specs": {
+   "Brand": "Microsoft",
+   "MPN": "000-37796",
+   "Format": "CD",
+   "Operating system": "Windows 95",
+   "Minimum RAM": "16 MB",
+   "Minimum processor": "66 MHz",
+   "Minimum hard drive": "50 MB",
+   "Language": "English"
+  }
+ },
+ {
+  "id": "impact-m4896-ac-adapter-24-v-1-87-a-45-w",
+  "type": "Peripheral",
+  "name": "Impact M4896 AC adapter (24 V, 1.87 A, 45 W)",
+  "cat": "Cables and adapters",
+  "maker": "Impact",
+  "model": "M4896",
+  "partno": "M4896",
+  "qty": 1,
+  "cond": "Per listing: open box, described as excellent with no wear.",
+  "tags": [
+   "Power"
+  ],
+  "text": "A 24 V, 1.87 A, 45 W AC adapter with power cord. The listing names many compatible model numbers, including M4895, M5937, M6384LL-A, M6548G-A and M7387LL-A.",
+  "specs": {
+   "Brand": "Impact",
+   "MPN": "M4896",
+   "Output": "24 V, 1.87 A, 45 W",
+   "Includes": "Power cord"
+  }
+ },
+ {
+  "id": "vintage-5-port-metal-power-center-with-fax-modem-ports",
+  "type": "Peripheral",
+  "name": "Vintage 5-port metal power center with fax/modem ports",
+  "cat": "Power protection",
+  "maker": "Unknown",
+  "qty": 1,
+  "cond": "Per listing: good working condition, one owner.",
+  "tags": [
+   "Surge protector",
+   "Power"
+  ],
+  "text": "A vintage all-metal 5-outlet power center with fax/modem in and out ports.",
+  "specs": {
+   "Outlets": "5 (3-prong)",
+   "Other ports": "2 fax/modem in and out",
+   "Construction": "All metal",
+   "Vintage": "Yes"
+  }
+ },
+ {
+  "id": "pc-accessories-36011-p10045-temporary-power-tap",
+  "type": "Peripheral",
+  "name": "PC Accessories 36011/P10045 temporary power tap",
+  "cat": "Power protection",
+  "maker": "PC Accessories",
+  "model": "36011/P10045",
+  "partno": "36011/P10045",
+  "qty": 1,
+  "cond": "Per listing: used, seller says great working condition.",
+  "tags": [
+   "Surge protector",
+   "Power"
+  ],
+  "text": "A 5-outlet power tap with ports labeled Master, Monitor, Printer, Aux 1 and Aux 2.",
+  "specs": {
+   "Brand": "PC Accessories",
+   "MPN": "36011/P10045",
+   "Outlets": "5"
+  }
+ },
+ {
+  "id": "relocatable-power-tap-pc-0061-surge-suppressor",
+  "type": "Peripheral",
+  "name": "Relocatable power tap PC-0061 (surge suppressor)",
+  "cat": "Power protection",
+  "maker": "Unbranded",
+  "model": "PC-0061",
+  "partno": "PC-0061",
+  "qty": 1,
+  "cond": "Per listing: used, seller says great working condition.",
+  "tags": [
+   "Surge protector",
+   "Power"
+  ],
+  "text": "A 5-outlet relocatable power tap with transient voltage surge suppression, model PC-0061.",
+  "specs": {
+   "MPN": "PC-0061",
+   "Outlets": "5",
+   "Type": "Surge suppressor"
+  }
+ },
+ {
+  "id": "microsoft-encarta-95",
+  "type": "Game or software",
+  "name": "Microsoft Encarta 95",
+  "cat": "Games and software",
+  "maker": "Microsoft",
+  "year": 1995,
+  "qty": 1,
+  "cond": "Per listing: like new, near mint disc. Testing not stated.",
+  "tags": [
+   "Windows",
+   "CD-ROM",
+   "Encyclopedia"
+  ],
+  "text": "Microsoft Encarta 95, a multimedia encyclopedia on CD-ROM for Windows.",
+  "specs": {
+   "Brand": "Microsoft",
+   "Format": "CD",
+   "Operating system": "Windows",
+   "Year": "1995",
+   "Type": "Encyclopedia"
+  }
+ },
+ {
+  "id": "apple-a1152-wired-usb-optical-mouse",
+  "type": "Peripheral",
+  "name": "Apple A1152 wired USB optical mouse",
+  "cat": "Peripherals",
+  "maker": "Apple",
+  "model": "A1152",
+  "qty": 1,
+  "cond": "Order email only; the listing page could not be read.",
+  "tags": [
+   "Apple",
+   "USB",
+   "Mouse"
+  ],
+  "text": "Apple A1152 wired USB optical mouse with a scroll wheel, white, 400 DPI, one button, per the order title.",
+  "specs": {
+   "Model": "A1152",
+   "Interface": "Wired USB",
+   "Resolution": "400 DPI",
+   "Buttons": "1",
+   "Color": "White"
+  }
+ },
+ {
+  "id": "sierra-home-master-cook-deluxe-5-0",
+  "type": "Game or software",
+  "name": "Sierra Home Master Cook Deluxe 5.0",
+  "cat": "Games and software",
+  "maker": "Sierra Home",
+  "model": "Cook Deluxe 5.0",
+  "qty": 1,
+  "cond": "Per listing: very good; box very good, CDs and manuals excellent.",
+  "tags": [
+   "Windows",
+   "CD-ROM",
+   "Sierra"
+  ],
+  "text": "Sierra Home Master Cook Deluxe 5.0 on CD for Windows.",
+  "specs": {
+   "Brand": "Sierra Home",
+   "Format": "CD",
+   "Operating system": "Windows",
+   "Minimum RAM": "32 MB",
+   "Minimum hard drive": "60 MB",
+   "Minimum processor": "66 MHz",
+   "Language": "English"
+  }
+ },
+ {
+  "id": "leisure-suit-larry-3-big-box-pc-3-5-inch-floppy",
+  "type": "Game or software",
+  "name": "Leisure Suit Larry 3 Big Box (PC, 3.5-inch floppy)",
+  "cat": "Games and software",
+  "maker": "Sierra",
+  "qty": 1,
+  "cond": "Order email only; the listing page could not be read.",
+  "tags": [
+   "Big box",
+   "DOS",
+   "Sierra",
+   "Floppy"
+  ],
+  "text": "Leisure Suit Larry 3 in a big box for IBM PCs and MS-DOS on 3.5-inch floppies, listed as Sierra and complete.",
+  "specs": {
+   "Platform": "IBM PC / MS-DOS",
+   "Format": "3.5-inch floppy",
+   "Edition": "Big Box"
+  }
+ },
+ {
+  "id": "roland-ma-12c-powered-micro-monitor-speakers-pair",
+  "type": "Sound or MIDI",
+  "name": "Roland MA-12C powered micro monitor speakers (pair)",
+  "cat": "MIDI",
+  "maker": "Roland",
+  "model": "MA-12C",
+  "qty": 1,
+  "cond": "Per listing: used, good condition and working; boxes are not in the best condition.",
+  "tags": [
+   "Roland",
+   "Speakers",
+   "MIDI"
+  ],
+  "text": "A pair of Roland MA-12C powered micro monitor speakers, gray.",
+  "specs": {
+   "Brand": "Roland",
+   "Model": "MA-12C",
+   "Type": "Monitor speaker",
+   "Color": "Gray",
+   "Connectivity": "Wired"
+  }
+ },
+ {
+  "id": "3dfx-voodoo-original-print-ad-lara-croft-1997",
+  "type": "Game or software",
+  "name": "3Dfx Voodoo original print ad (Lara Croft, 1997)",
+  "cat": "Ephemera",
+  "maker": "3dfx",
+  "year": 1997,
+  "model": "Voodoo",
+  "qty": 1,
+  "cond": "Per listing: new, original print ad.",
+  "tags": [
+   "3dfx",
+   "Print ad",
+   "Ephemera"
+  ],
+  "text": "An original 1997 print ad for the 3dfx Voodoo graphics chip featuring Lara Croft.",
+  "specs": {
+   "Brand": "3dfx Voodoo",
+   "Type": "Print ad",
+   "Date": "1997",
+   "Original or reproduction": "Original"
+  }
+ },
+ {
+  "id": "duke-nukem-3d-big-box-pc",
+  "type": "Game or software",
+  "name": "Duke Nukem 3D Big Box (PC)",
+  "cat": "Games and software",
+  "maker": "Unknown",
+  "qty": 1,
+  "cond": "Order email only; the listing page showed no description.",
+  "tags": [
+   "Big box",
+   "Shooter"
+  ],
+  "text": "A big-box PC edition of Duke Nukem 3D, per the order title.",
+  "specs": {
+   "Platform": "PC",
+   "Edition": "Big Box"
+  }
+ },
+ {
+  "id": "doom-ii-big-box-ibm-pc-3-5-inch-floppies",
+  "type": "Game or software",
+  "name": "Doom II Big Box (IBM PC, 3.5-inch floppies)",
+  "cat": "Games and software",
+  "maker": "id Software",
+  "qty": 1,
+  "cond": "Per listing: very good, minimal wear. Includes the original box, 5 disks, manuals and paperwork.",
+  "tags": [
+   "Big box",
+   "Floppy",
+   "id Software"
+  ],
+  "text": "Doom II in its big box for IBM PC on 3.5-inch floppies, with the box, 5 disks, manuals and paperwork.",
+  "specs": {
+   "Platform": "IBM PC",
+   "Format": "3.5-inch floppy",
+   "Disks": "5",
+   "Includes": "Box, manuals, paperwork"
+  }
+ },
+ {
+  "id": "doom-gold-medallion-shareware-3-5-inch-floppies",
+  "type": "Game or software",
+  "name": "DOOM Gold Medallion shareware (3.5-inch floppies)",
+  "cat": "Games and software",
+  "maker": "id Software",
+  "qty": 1,
+  "cond": "Per listing: very good; refer to the photos for exact condition. Testing not stated.",
+  "tags": [
+   "Shareware",
+   "Floppy",
+   "id Software"
+  ],
+  "text": "Original Doom shareware from id Software on two 3.5-inch floppy discs.",
+  "specs": {
+   "Platform": "PC",
+   "Publisher": "id Software",
+   "Format": "3.5-inch floppy, 2 discs",
+   "Type": "Original shareware"
+  }
+ },
+ {
+  "id": "hp-200lx-palmtop-2-mb-dos-with-accessories",
+  "type": "Computer",
+  "name": "HP 200LX Palmtop (2 MB, DOS) with accessories",
+  "cat": "Computers",
+  "maker": "Hewlett Packard",
+  "model": "200LX",
+  "qty": 1,
+  "cond": "Per listing: good condition. Accessories are included but not itemized. Testing not stated.",
+  "tags": [
+   "HP",
+   "DOS",
+   "Palmtop",
+   "Handheld"
+  ],
+  "text": "A Hewlett Packard 200LX palmtop with 2 MB RAM running DOS, sold with accessories.",
+  "specs": {
+   "Brand": "Hewlett Packard",
+   "Type": "Pocket computer",
+   "RAM": "2 MB",
+   "Operating system": "DOS"
+  }
+ },
+ {
+  "id": "toshiba-libretto-l5-japanese",
+  "type": "Computer",
+  "name": "Toshiba Libretto L5 (Japanese)",
+  "cat": "Laptops",
+  "maker": "Toshiba",
+  "model": "Libretto L5",
+  "qty": 1,
+  "cond": "Order email only; the listing page could not be read.",
+  "tags": [
+   "Toshiba",
+   "Libretto",
+   "Japanese"
+  ],
+  "text": "A Toshiba Libretto L5 ultraportable, a Japanese model, per the order title.",
+  "specs": {
+   "Brand": "Toshiba",
+   "Model": "Libretto L5",
+   "Language": "Japanese (per title)"
+  }
+ },
+ {
+  "id": "toshiba-libretto-110ct-purchased-unit",
+  "type": "Computer",
+  "name": "Toshiba Libretto 110CT (purchased unit)",
+  "cat": "Laptops",
+  "maker": "Toshiba",
+  "model": "Libretto 110CT",
+  "qty": 1,
+  "cond": "Order email only; the listing no longer exists.",
+  "tags": [
+   "Toshiba",
+   "Libretto"
+  ],
+  "text": "The Toshiba Libretto 110CT bought as a vintage mini laptop. This entry holds only what the order shows; the sample 110CT entry holds the researched specs.",
+  "specs": {
+   "Brand": "Toshiba",
+   "Model": "Libretto 110CT"
+  }
+ },
+ {
+  "id": "kodak-serial-cable-dc40-dc50-dc120-dc240-dc2800",
+  "type": "Peripheral",
+  "name": "Kodak serial cable (DC40, DC50, DC120, DC240, DC2800)",
+  "cat": "Cables and adapters",
+  "maker": "PCCABLES.com",
+  "model": "PCC-87001",
+  "partno": "PCC-87001",
+  "qty": 1,
+  "cond": "Per listing: new, in original packaging.",
+  "tags": [
+   "Kodak",
+   "Serial",
+   "Cable"
+  ],
+  "text": "A 6 ft beige serial cable for Kodak DC40, DC50, DC120, DC240 and DC2800 cameras.",
+  "specs": {
+   "Brand": "PCCABLES.com",
+   "MPN": "PCC-87001",
+   "Length": "6 ft",
+   "Color": "Beige"
+  }
+ },
+ {
+  "id": "kodak-dc40-digital-camera-0-4-mp",
+  "type": "Peripheral",
+  "name": "Kodak DC40 digital camera (0.4 MP)",
+  "cat": "Cameras",
+  "maker": "Kodak",
+  "model": "DC40",
+  "qty": 1,
+  "cond": "Order email only; the listing page could not be read. The title says Works.",
+  "tags": [
+   "Kodak",
+   "Digital camera"
+  ],
+  "text": "A Kodak DC40 0.4 MP digital camera in black, per the order title.",
+  "specs": {
+   "Brand": "Kodak",
+   "Model": "DC40",
+   "Resolution": "0.4 MP (per title)",
+   "Color": "Black"
+  }
+ },
+ {
+  "id": "sony-cyber-shot-2-1-mp-with-128-mb-memory-stick",
+  "type": "Peripheral",
+  "name": "Sony Cyber-shot 2.1 MP with 128 MB Memory Stick",
+  "cat": "Cameras",
+  "maker": "Sony",
+  "qty": 1,
+  "cond": "Per order email title: working, with a 128 MB Memory Stick. The listing page could not be matched.",
+  "tags": [
+   "Sony",
+   "Digital camera",
+   "Memory Stick"
+  ],
+  "text": "A Sony Cyber-shot 2.1 megapixel camera, titled as working, sold with a 128 MB Memory Stick.",
+  "specs": {
+   "Brand": "Sony",
+   "Resolution": "2.1 MP (per title)",
+   "Lens": "f/6.4-19.2 mm 1:3.8 (per title)",
+   "Media": "Memory Stick"
+  }
+ },
+ {
+  "id": "sony-mavica-mvc-fd200-for-parts",
+  "type": "Peripheral",
+  "name": "Sony Mavica MVC-FD200 (for parts)",
+  "cat": "Cameras",
+  "maker": "Sony",
+  "model": "MVC-FD200",
+  "qty": 1,
+  "works": "Not working",
+  "cond": "Per order email title: for parts.",
+  "tags": [
+   "Sony",
+   "Mavica",
+   "Parts"
+  ],
+  "text": "A Sony Mavica MVC-FD200 digital camera sold for parts, per the order title.",
+  "specs": {
+   "Brand": "Sony",
+   "Model": "MVC-FD200"
+  }
+ },
+ {
+  "id": "sony-mavica-mvc-fd81-with-battery-and-case",
+  "type": "Peripheral",
+  "name": "Sony Mavica MVC-FD81 with battery and case",
+  "cat": "Cameras",
+  "maker": "Sony",
+  "model": "MVC-FD81",
+  "qty": 1,
+  "works": "Untested",
+  "cond": "Per order email title: with battery and case, no charger, untested.",
+  "tags": [
+   "Sony",
+   "Mavica"
+  ],
+  "text": "A Sony Mavica MVC-FD81 digital still camera with battery and case, no charger, untested.",
+  "specs": {
+   "Brand": "Sony",
+   "Model": "MVC-FD81",
+   "Includes": "Battery, case",
+   "Not included": "Charger"
+  }
+ },
+ {
+  "id": "sony-mavica-mvc-fd7-floppy-disk-camera",
+  "type": "Peripheral",
+  "name": "Sony Mavica MVC-FD7 floppy disk camera",
+  "cat": "Cameras",
+  "maker": "Sony",
+  "model": "MVC-FD7",
+  "partno": "MVC-FD7",
+  "qty": 1,
+  "cond": "Per listing: used, may show cosmetic wear. Charger not included. Testing not stated.",
+  "tags": [
+   "Sony",
+   "Mavica",
+   "Floppy"
+  ],
+  "text": "A Sony Mavica MVC-FD7 digital camera that records to 3.5-inch floppy disks, silver.",
+  "specs": {
+   "Brand": "Sony",
+   "Series": "Mavica",
+   "MPN": "MVC-FD7",
+   "Color": "Silver",
+   "Connectivity": "USB",
+   "Charger included": "No"
+  }
+ },
+ {
+  "id": "lexar-128-mb-memory-stick-full-size",
+  "type": "Storage",
+  "name": "Lexar 128 MB Memory Stick (full-size)",
+  "cat": "Storage",
+  "maker": "Lexar",
+  "qty": 1,
+  "cond": "Per listing: used, may show cosmetic wear, described as fully operational.",
+  "tags": [
+   "Lexar",
+   "Memory Stick",
+   "Sony"
+  ],
+  "text": "A Lexar Media 128 MB full-size Memory Stick for Sony cameras and other devices.",
+  "specs": {
+   "Brand": "Lexar",
+   "Format": "Memory Stick",
+   "Capacity": "128 MB",
+   "Compatible brand": "Sony"
+  }
+ },
+ {
+  "id": "floppy-disk-lot-with-locking-storage-file-50-disks",
+  "type": "Storage",
+  "name": "Floppy disk lot with locking storage file (50 disks)",
+  "cat": "Storage",
+  "maker": "Unbranded",
+  "qty": 1,
+  "cond": "Per listing: used, described as fully operational. Testing not stated.",
+  "tags": [
+   "Floppy",
+   "3.5-inch"
+  ],
+  "text": "Fifty recordable 3.5-inch 1.44 MB floppy disks in a locking storage file.",
+  "specs": {
+   "Type": "3.5-inch floppy disk",
+   "Capacity": "1.44 MB",
+   "Features": "Recordable",
+   "Count": "50"
+  }
+ },
+ {
+  "id": "roland-p-55-sc-55-replacement-dc-charger-adapter",
+  "type": "Peripheral",
+  "name": "Roland P-55 / SC-55 replacement DC charger adapter",
+  "cat": "Cables and adapters",
+  "maker": "Unknown",
+  "qty": 1,
+  "cond": "Order email only; the listing page could not be read.",
+  "tags": [
+   "Roland",
+   "Power",
+   "SC-55"
+  ],
+  "text": "A replacement DC power adapter and cord listed for the Roland P-55 SonicCell and SC-55/SC-55mkII, per the order title.",
+  "specs": {
+   "Compatible": "Roland P-55 SonicCell, SC-55, SC-55mkII (per title)"
+  }
+ },
+ {
+  "id": "roland-sound-canvas-sc-55mkii",
+  "type": "Sound or MIDI",
+  "name": "Roland Sound Canvas SC-55mkII",
+  "cat": "MIDI",
+  "maker": "Roland",
+  "model": "SC-55mkII",
+  "qty": 1,
+  "cond": "Order email only; the listing page could not be read.",
+  "tags": [
+   "Roland",
+   "MIDI",
+   "Sound Canvas"
+  ],
+  "text": "A Roland Sound Canvas SC-55mkII MIDI sound module, a Japanese market unit per the order title.",
+  "specs": {
+   "Brand": "Roland",
+   "Model": "SC-55mkII",
+   "Type": "MIDI sound module",
+   "Market": "Japan (per title)"
+  }
+ },
+ {
+  "id": "official-duke-nukem-3d-level-design-handbook",
+  "type": "Game or software",
+  "name": "Official Duke Nukem 3D Level Design Handbook",
+  "cat": "Books and magazines",
+  "maker": "Unknown",
+  "qty": 1,
+  "cond": "Order email only; no CD-ROM per the title.",
+  "tags": [
+   "Book",
+   "Duke Nukem",
+   "Level design"
+  ],
+  "text": "The Official Duke Nukem 3D Level Design Handbook, a video game guide book without a CD-ROM.",
+  "specs": {
+   "Format": "Book",
+   "CD-ROM": "Not included"
+  }
+ },
+ {
+  "id": "midi-15-pin-joystick-game-port-to-5-pin-din-breakout-adapter",
+  "type": "Peripheral",
+  "name": "MIDI 15-pin joystick game port to 5-pin DIN breakout adapter cable",
+  "cat": "Cables and adapters",
+  "maker": "Unknown",
+  "qty": 1,
+  "cond": "Order email only; the listing page could not be read.",
+  "tags": [
+   "MIDI",
+   "Game port",
+   "Cable"
+  ],
+  "text": "A 5 ft vintage-style adapter cable from a 15-pin game port to MIDI 5-pin DIN breakout, per the order title.",
+  "specs": {
+   "Length": "5 ft",
+   "Ends": "15-pin joystick game port, 5-pin DIN"
+  }
+ },
+ {
+  "id": "yamaha-tg100-tone-generator",
+  "type": "Sound or MIDI",
+  "name": "Yamaha TG100 tone generator",
+  "cat": "MIDI",
+  "maker": "Yamaha",
+  "model": "TG100",
+  "partno": "TG100",
+  "qty": 1,
+  "cond": "Per order email title: working condition with cord. Testing not otherwise stated.",
+  "tags": [
+   "Yamaha",
+   "MIDI"
+  ],
+  "text": "A Yamaha TG100 MIDI tone generator sound module, with cord.",
+  "specs": {
+   "Brand": "Yamaha",
+   "Model": "TG100",
+   "Type": "Tone generator",
+   "I/O": "MIDI DIN in and out"
+  }
+ },
+ {
+  "id": "commodore-64-serial-cable-6-pin-din-for-1541-1571-c128",
+  "type": "Peripheral",
+  "name": "Commodore 64 serial cable (6-pin DIN) for 1541, 1571, C128",
+  "cat": "Cables and adapters",
+  "maker": "Commodore",
+  "qty": 1,
+  "cond": "Per listing: described as a brand new, full-spec serial cable.",
+  "tags": [
+   "Commodore",
+   "C64",
+   "Serial",
+   "Cable"
+  ],
+  "text": "A 6-pin DIN serial cable for Commodore computers and peripherals such as the 1541 and 1571 disk drives.",
+  "specs": {
+   "Brand": "Commodore (compatible)",
+   "Type": "Cable",
+   "Connector": "6-pin DIN serial"
+  }
+ },
+ {
+  "id": "diablo-pc-1996",
+  "type": "Game or software",
+  "name": "Diablo (PC, 1996)",
+  "cat": "Games and software",
+  "maker": "Unknown",
+  "year": 1996,
+  "qty": 1,
+  "cond": "Order email only; the listing page could not be read.",
+  "tags": [
+   "PC"
+  ],
+  "text": "Diablo for PC, titled as 1996 in the order.",
+  "specs": {
+   "Platform": "PC"
+  }
+ },
+ {
+  "id": "altec-lansing-acs45-multimedia-speaker-system-with-subwoofer",
+  "type": "Sound or MIDI",
+  "name": "Altec Lansing ACS45 multimedia speaker system with subwoofer",
+  "cat": "Audio",
+  "maker": "Altec Lansing",
+  "model": "ACS45",
+  "qty": 1,
+  "cond": "Order email title says tested working. Listing page could not be read.",
+  "tags": [
+   "Altec Lansing",
+   "Speakers"
+  ],
+  "text": "An Altec Lansing ACS45 multimedia computer speaker system with subwoofer.",
+  "specs": {
+   "Brand": "Altec Lansing",
+   "Model": "ACS45",
+   "Type": "Computer speakers with subwoofer"
+  }
+ },
+ {
+  "id": "pcmcia-to-usb-2-0-cardbus-dual-port-adapter",
+  "type": "Peripheral",
+  "name": "PCMCIA to USB 2.0 CardBus dual-port adapter",
+  "cat": "Cables and adapters",
+  "maker": "SODIAL",
+  "model": "PC5782",
+  "qty": 1,
+  "cond": "Per listing: new, in original packaging.",
+  "tags": [
+   "PCMCIA",
+   "CardBus",
+   "USB"
+  ],
+  "text": "A CardBus (32-bit Type II) PC Card with two USB 2.0 ports, 480 Mbps.",
+  "specs": {
+   "Manufacturer": "SODIAL",
+   "Interface": "CardBus Type II",
+   "Ports": "2 x USB 2.0",
+   "Speed": "480 Mbps",
+   "USB power": "+5 V, 100 mA per port without adapter; 500 mA with adapter"
+  }
+ },
+ {
+  "id": "sharp-lq61d133-lcd-panel-used-and-tested",
+  "type": "Monitor",
+  "name": "Sharp LQ61D133 LCD panel (used and tested)",
+  "cat": "Displays",
+  "maker": "Sharp",
+  "model": "LQ61D133",
+  "partno": "LQ61D133",
+  "qty": 1,
+  "cond": "Per listing: used and tested, may show cosmetic wear.",
+  "tags": [
+   "Sharp",
+   "LCD"
+  ],
+  "text": "A used and tested Sharp LQ61D133 LCD screen panel.",
+  "specs": {
+   "Brand": "Sharp",
+   "Model": "LQ61D133",
+   "Type": "LCD screen panel",
+   "Operating temperature": "-20 to 60 C"
+  }
+ },
+ {
+  "id": "dim-bulb-tester-with-volt-and-amp-meter-v2",
+  "type": "Peripheral",
+  "name": "Dim bulb tester with volt and amp meter (V2)",
+  "cat": "Parts and tools",
+  "maker": "Unbranded",
+  "qty": 1,
+  "cond": "Per listing: new, with a 60 W bulb, circuit diagram and quick start guide.",
+  "tags": [
+   "Repair",
+   "Tool"
+  ],
+  "text": "A dim bulb tester, version 2, with volt and amp meters and a dual-mode toggle switch, for vintage radio and amplifier repair.",
+  "specs": {
+   "Type": "Current limiter",
+   "Includes": "60 W bulb, circuit diagram, quick start guide",
+   "Meters": "Volt and amp"
+  }
+ },
+ {
+  "id": "the-colonel-s-bequest-a-laura-bow-mystery-big-box-incomplete",
+  "type": "Game or software",
+  "name": "The Colonel's Bequest: A Laura Bow Mystery (Big Box, incomplete)",
+  "cat": "Games and software",
+  "maker": "Sierra",
+  "year": 1989,
+  "qty": 1,
+  "cond": "Per listing: incomplete (per title); used, good condition.",
+  "tags": [
+   "Big box",
+   "Sierra"
+  ],
+  "text": "The Colonel's Bequest, a 1989 Sierra Laura Bow mystery in a big box. The title says incomplete.",
+  "specs": {
+   "Platform": "PC",
+   "Publisher": "Sierra Online, Inc.",
+   "Release year": "1989",
+   "Genre": "Mystery adventure"
+  }
+ },
+ {
+  "id": "pc-gamer-november-1997-with-cd-rom",
+  "type": "Game or software",
+  "name": "PC Gamer, November 1997 (with CD-ROM)",
+  "cat": "Books and magazines",
+  "maker": "Imagine Publishing",
+  "year": 1997,
+  "qty": 1,
+  "cond": "Per listing: good. Curl, light cover and binding wear, scratch on back cover. CD read without problems.",
+  "tags": [
+   "Magazine",
+   "PC Gamer",
+   "CD-ROM"
+  ],
+  "text": "PC Gamer, Volume 4 Issue 11, November 1997, with a CD-ROM. Features include a Duke Nukem Forever preview and a Hexen II demo.",
+  "specs": {
+   "Publication": "PC Gamer",
+   "Publisher": "Imagine Publishing, Inc.",
+   "Issue": "11 (Volume 4)",
+   "Date": "November 1997",
+   "Pages": "448",
+   "Includes": "CD-ROM"
+  }
+ },
+ {
+  "id": "aol-america-online-version-2-0-3-5-inch-floppy-sealed",
+  "type": "Game or software",
+  "name": "AOL America Online Version 2.0 (3.5-inch floppy, sealed)",
+  "cat": "Games and software",
+  "maker": "AOL",
+  "model": "Version 2.0",
+  "qty": 1,
+  "cond": "Per listing: new and sealed. The listing's description says it probably does not work (nostalgia item).",
+  "tags": [
+   "AOL",
+   "Floppy",
+   "Online service"
+  ],
+  "text": "America Online version 2.0 on a sealed 3.5-inch floppy disk. The title says 1995; the item specifics say 1994.",
+  "specs": {
+   "Brand": "AOL",
+   "Type": "Program disk",
+   "Color": "Ivory",
+   "Original or reproduction": "Original"
+  }
+ },
+ {
+  "id": "replacement-rtc-bios-cmos-battery-for-toshiba-libretto",
+  "type": "Peripheral",
+  "name": "Replacement RTC BIOS CMOS battery for Toshiba Libretto",
+  "cat": "Parts and tools",
+  "maker": "RomeTech",
+  "qty": 3,
+  "cond": "Per listing: new, in original packaging.",
+  "tags": [
+   "Toshiba",
+   "Libretto",
+   "Battery"
+  ],
+  "text": "A replacement RTC/BIOS CMOS battery sold for the Toshiba Libretto, Tecra and Qosmio lines. Three were bought for Libretto 50CT/110CT/L5 variants.",
+  "specs": {
+   "Brand": "RomeTech",
+   "Type": "CMOS battery",
+   "Compatible": "Toshiba Libretto, Tecra, Qosmio"
+  }
  }
 ];
