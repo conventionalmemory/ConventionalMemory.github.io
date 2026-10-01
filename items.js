@@ -384,7 +384,11 @@ var ITEMS=[
    "Model": "5150",
    "Vintage": "Yes"
   },
-  "src": "ebay"
+  "src": "ebay",
+  "photos": [
+   "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f1/Ibm_pc_5150.jpg/960px-Ibm_pc_5150.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+  ],
+  "credit": "Photo: Ruben de Rijcke, CC BY-SA 3.0, via Wikimedia Commons"
  },
  {
   "id": "apple-m7332-45w-power-adapter-for-parts",
@@ -480,7 +484,11 @@ var ITEMS=[
    "Cord length": "2 ft (one listing)",
    "Type": "Mouse"
   },
-  "src": "ebay"
+  "src": "ebay",
+  "photos": [
+   "https://upload.wikimedia.org/wikipedia/commons/1/13/Apple_desktop_mouse_II_small.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled"
+  ],
+  "credit": "Photo: Original by StephenEdmonds for http://popcorn.cx/computers/,, CC BY-SA 3.0, via Wikimedia Commons"
  },
  {
   "id": "intel-play-qx3-computer-microscope-open-box",
