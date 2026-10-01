@@ -21,7 +21,7 @@ A retro DOS-style museum catalog, timeline and trivia game. It is a plain static
 | `art.js` | Generated artwork: 40+ product drawings, 30+ game scenes, seeded abstract covers, packaging (PC box, cartridge, disc case, arcade cabinet, floppy), movie posters, front pages and badges |
 | `ads.js` | Tribute ads: product drawings and the per-item ad |
 | `admin.js` | The Admin page (`#/admin`), including the Fill-in Quest |
-| `images-data.js` | `CIMG`: a few real photos hotlinked from Wikimedia Commons (https only), with a credit link to each Commons file page. If one fails to load it is hidden and the drawn art shows instead |
+| `images-data.js` | `CIMG`: about 190 real photos hotlinked from Wikimedia Commons (https only), with a credit link to each Commons file page. If one fails to load it is hidden and the drawn art shows instead |
 
 Keep all of them in the same folder. GitHub Pages serves `index.html` at the root.
 
@@ -43,7 +43,11 @@ To avoid pasting the token every visit, type a passphrase (8+ characters) in the
 
 Every item gets a completeness meter: the share of useful fields (maker, date, MSRP, model, photo, description, your take, score, condition, working status, tags, links, Wikipedia and every spec for its type) that are filled. The list can be filtered (Incomplete, Complete, No photo) and sorted (least complete first). **Copy** duplicates an item as a starting point, **Undo delete** brings back a removed item until you leave the page, and **Auto-fill from timeline** fills every blank field that has an exact timeline match.
 
-**Start the Fill-in Quest** walks the blank fields one at a time: Quick wins (fields the timeline can answer in one tap come first), Surprise me, or one item only. Each answer earns XP, builds a streak, and unlocks levels and badges (progress is kept in this browser only). Skip, or press Does not apply to hide a field for that item (stored as `na` on the item). Photos can be added by https address or from a file. Nothing is published until you press Save to GitHub.
+**Quick add**: type a name on the list page. An exact timeline match becomes a pre-filled item at once; otherwise pick the closest match or create a blank one, and you land straight in that item's quest.
+
+**Start the Fill-in Quest** opens a level-select map. Every item is a cartridge whose picture regains color as it is completed, with 1 to 3 stars. Pick one, or play Quick wins (fields the timeline can answer in one tap come first), **Photo Safari** (only photos), or Surprise me. Each card names the quest ("The Price Hunt", "Spec Sheet Dungeon"), says where the answer will show on the site, and has a checklist of every field on that item; click a blank tile to jump to it. Help is built in: **Use this** applies the timeline's answer, **Ask Wikipedia** reads the article's infobox for maker, date, price and specs, and the photo step searches for a free-licensed Commons image to keep or reject (K and N keys). Only free images are offered, and the credit is saved with the photo.
+
+Rewards: XP and 10 titled levels, a combo for answers in a row, a daily goal (5 fields), a day streak, 14 badges with pixel icons, loot drops every fifth answer, a confetti and ITEM RESTORED banner when an item hits 100%, and optional retro beeps (Sound toggle). Progress is kept in this browser only. Skip, or press Does not apply to hide a field for that item (stored as `na`). Photos can be added by https address or from a file. Nothing is published until you press Save to GitHub.
 
 ## Quick fill and private fields (Admin page)
 

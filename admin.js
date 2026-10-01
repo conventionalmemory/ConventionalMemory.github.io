@@ -111,8 +111,8 @@ function listView(){var items=S.items,ql=q.toLowerCase(),tot=0,dn=0;
  var all100=tot?Math.round(dn*100/tot):0;
  var chips=[["all","All"],["inc","Incomplete"],["done","Complete"],["nophoto","No photo"]].map(function(c){return'<button class="chip'+(lf===c[0]?" on":"")+'" data-lf="'+c[0]+'" type="button">'+c[1]+'</button>'}).join("");
  return shell('<p>Signed in to <b>'+esc(C.REPO.owner+"/"+C.REPO.repo)+'</b>, branch '+esc(C.REPO.branch)+'. '+items.length+' items. '+(S.dirty?'<span class="tag want">Unsaved changes</span>':'<span class="tag">Saved</span>')+(S.photos.length?' <span class="tag">'+S.photos.length+' photo(s) waiting</span>':"")+'</p>'
- +'<div class="qhero"><div><b>Catalog completeness</b> '+mbar({done:dn,total:tot,pct:all100})+'<br><small class="tn">'+(tot-dn)+' blank fields across '+items.length+' items.</small></div><button class="btn pri" id="qgo" type="button">Start the Fill-in Quest</button></div>'
- +'<p class="abar"><button class="btn pri" id="add" type="button">Add item</button> <button class="btn'+(S.dirty?' pri':'')+'" id="sv" type="button"'+(busy||!S.dirty&&!S.photos.length?" disabled":"")+'>Save to GitHub</button> <button class="btn" id="bulk" type="button" title="Fill every blank field the timeline knows an exact match for">Auto-fill from timeline</button> '
+ +'<div class="qhero"><div><b>Catalog completeness</b> '+mbar({done:dn,total:tot,pct:all100})+'<br><small class="tn">'+(tot-dn)+' blank fields across '+items.length+' items.</small></div><span><button class="btn pri" id="qgo" type="button">Start the Fill-in Quest</button> <button class="btn" id="qph" type="button">Photo Safari</button></span></div>'
+ +qaddHtml()+'<p class="abar"><button class="btn pri" id="add" type="button">Add item (full form)</button> <button class="btn'+(S.dirty?' pri':'')+'" id="sv" type="button"'+(busy||!S.dirty&&!S.photos.length?" disabled":"")+'>Save to GitHub</button> <button class="btn" id="bulk" type="button" title="Fill every blank field the timeline knows an exact match for">Auto-fill from timeline</button> '
  +(S.undo&&S.undo.length?'<button class="btn" id="ud" type="button">Undo delete ('+esc(S.undo[S.undo.length-1].it.name)+')</button> ':"")
  +'<button class="btn" id="dl" type="button">Download items.js backup</button> <button class="btn" id="lk" type="button">Lock</button></p>'
  +'<div class="tools"><input id="aq" type="search" placeholder="Search items" aria-label="Search items" value="'+esc(q)+'">'+chips+'<select id="ls" aria-label="Sort"><option value="az"'+(ls==="az"?" selected":"")+'>A to Z</option><option value="low"'+(ls==="low"?" selected":"")+'>Least complete first</option><option value="new"'+(ls==="new"?" selected":"")+'>Newest first</option></select></div>'
@@ -145,7 +145,7 @@ function tlMatches(q){q=nk(q);if(q.length<2)return[];var w=q.split(" "),out=[];
  (C.TL||[]).forEach(function(r){if(!/^(hw|sw|gt|gn|gc)$/.test(r[1]))return;var t=nk(r[2]),sc=0;if(t===q)sc=100;else if(t.indexOf(q)>=0)sc=60-Math.min(30,t.length-q.length);else{var hit=w.filter(function(x){return t.indexOf(x)>=0}).length;if(hit===w.length)sc=40;else if(hit&&hit>=Math.ceil(w.length/2)&&w.length>1)sc=15+hit}
   if(sc)out.push({r:r,sc:sc})});
  out.sort(function(a,b){return b.sc-a.sc});return out.slice(0,6)}
-function fillFromTL(r){var x=(C.TLX||{})[r[2]]||{},it=collectSoft(),n={};
+function tlItem(it,r){var x=(C.TLX||{})[r[2]]||{},n={};
  var ty=x.type&&C.SPEC_TYPES[x.type]?x.type:(/^(sw|gt|gn|gc)$/.test(r[1])?"Game or software":"Computer");
  if(!it.name)it.name=r[2];if(!it.maker&&x.maker)it.maker=x.maker;if(!it.rel){it.rel=r[0];it.year=+r[0].slice(0,4);if(!r[5])it.relx=true}
  if(!it.msrp&&r[3])it.msrp=r[3].replace(/\*$/," (estimated)");
@@ -156,7 +156,8 @@ function fillFromTL(r){var x=(C.TLX||{})[r[2]]||{},it=collectSoft(),n={};
  if(ty==="Game or software"){if(x.maker&&!src.Publisher)src.Publisher=x.maker;if(x.dev&&!src.Developer)src.Developer=x.dev}
  Object.keys(src).forEach(function(k){if(!sp[k])sp[k]=String(src[k])});
  it.specs=sp;it.type=ty;
- var tg=(it.tags||[]).slice();var dec=String(r[0]).slice(0,3)+"0s";[dec,r[1]==="hw"||r[1]==="pe"?"hardware":"software"].forEach(function(t){if(tg.indexOf(t)<0)tg.push(t)});it.tags=tg;
+ var tg=(it.tags||[]).slice();var dec=String(r[0]).slice(0,3)+"0s";[dec,r[1]==="hw"||r[1]==="pe"?"hardware":"software"].forEach(function(t){if(tg.indexOf(t)<0)tg.push(t)});it.tags=tg;return it}
+function fillFromTL(r){var it=tlItem(collectSoft(),r);
  editing.it=it;editing.lookupNote="Filled from the timeline entry \""+r[2]+"\". Check every field, then adjust.";render()}
 function wikiOk(u){return/^https:\/\/en\.wikipedia\.org\/wiki\/[^\s]+$/.test(u||"")}
 function wikiSearch(q){var u="https://en.wikipedia.org/w/api.php?action=opensearch&format=json&origin=*&limit=5&namespace=0&search="+encodeURIComponent(q);
@@ -232,7 +233,7 @@ function editView(){var it=editing.it,isNew=editing.i<0,ty=it.type||"Other",sp=i
 /* ---------- completeness and the Fill-in Quest (admin only) ----------
    Every item has a list of fields worth having. The quest walks the blank ones one at a time and pays XP for each.
    Progress (XP, streak, badges) lives in this browser only; the answers go into the catalog like any edit. */
-var QKEY="cm-quest",QT=null,QC={},QS={mode:"quick",item:null,skip:{},msg:null,boom:0,cur:null};
+var QKEY="cm-quest",QT=null,QC={},QW={},QA=null,QS={mode:"quick",screen:"map",item:null,skip:{},msg:null,boom:0,cur:null,pin:null,pop:0};
 var QF=[
  {k:"maker",s:"maker",l:"Who made it?",t:"t",xp:10,ph:"Company or publisher"},
  {k:"rel",s:"release date",l:"When did it come out?",t:"t",xp:10,ph:"1998, 1998-11 or 1998-11-03",has:function(it){return!!(it.rel||it.year)}},
@@ -267,50 +268,129 @@ function qApply(it,f,v){v=String(v==null?"":v).trim();if(!v)return"Type somethin
  else if(f.spec){it.specs=it.specs||{};it.specs[f.spec]=v}
  else it[k]=v;
  return""}
-function qLoad(){var o=null;try{o=JSON.parse(localStorage.getItem(QKEY)||"null")}catch(e){}return Object.assign({xp:0,filled:0,streak:0,best:0,photos:0,full:0,badges:{}},o||{})}
+function qLoad(){var o=null;try{o=JSON.parse(localStorage.getItem(QKEY)||"null")}catch(e){}return qLoadDefaults(o)}
 function qStore(){try{localStorage.setItem(QKEY,JSON.stringify(QT))}catch(e){}}
 var QTITLES=["Boot Sector","Floppy Rookie","Bit Twiddler","Hex Hacker","Cache Hit","TSR Wrangler","Sysop","Overlay Wizard","Himem Hero","Conventional Legend"];
 function qLvl(xp){return Math.floor(Math.sqrt(xp/40))+1}
-var QB=[["first","First Byte","Fill in one field",function(t){return t.filled>=1}],["ten","Ten Fields","Fill in 10 fields",function(t){return t.filled>=10}],["streak5","Hot Streak","Five answers in a row",function(t){return t.best>=5}],["photo3","Shutterbug","Add 3 photos",function(t){return t.photos>=3}],["full","Complete Set","Finish every field on one item",function(t){return t.full>=1}],["arch","Archivist","Fill in 100 fields",function(t){return t.filled>=100}]];
-function qNext(){var c=[];S.items.forEach(function(it,i){if(QS.mode==="item"&&QS.item!==it.id)return;qFields(it).forEach(function(f,n){if(qNA(it,f)||qHas(it,f)||QS.skip[it.id+"|"+f.k])return;var sg=qSuggest(it,f),w=sg&&sg.exact?0:({t:1,c:1,n:1,l:2,u:2,w:2,p:2,a:3})[f.t];c.push({i:i,f:f,w:QS.mode==="item"?n:w*1000+n})})});
+function qIc(n,s){return typeof px==="function"?px(n,s||16):""}
+var QX={maker:["gear","The Maker's Mark","Shows under the title on the item page and on every catalog card."],rel:["clock","Date Detective","Puts it on the timeline and sorts the shelf."],msrp:["coin","The Price Hunt","Feeds the price charts and the tribute ad."],model:["key","Model Numbers","A row in the spec table."],photo:["camera","Photo Safari","Replaces the drawn picture on the card, the shelf and the item page."],text:["book","The Storyteller","The main paragraph on the item page."],thoughts:["heart","Hot Take","The My take box on the item page."],score:["trophy","The Verdict","Sets the 640K rating and the color of its shelf spine."],cond:["shield","Inspection","A row in the details table."],works:["bolt","Power-On Test","Shows the working badge."],country:["globe","Made In","A row in the details table."],tags:["flag","Labelmaker","Powers tag pages and search."],links:["folder","Library Card","The manuals and references list."],wiki:["news","Cross-Reference","Adds the Wikipedia summary and credit."],spec:["chip","Spec Sheet Dungeon","A row in the spec table. The Rig checker reads these too."]};
+function qx(f){return QX[f.spec?"spec":f.k]||["star",f.s,""]}
+var QB=[["first","First Byte","Fill in one field","chip",function(t){return t.filled>=1}],["ten","Ten Fields","Fill in 10 fields","floppy",function(t){return t.filled>=10}],["streak5","Hot Streak","Five answers in a row","bolt",function(t){return t.best>=5}],["combo10","Combo King","Ten answers in a row","crown",function(t){return t.best>=10}],["photo3","Shutterbug","Add 3 photos","camera",function(t){return t.photos>=3}],["photo10","Safari Guide","Add 10 photos","globe",function(t){return t.photos>=10}],["full","Complete Set","Restore one item to 100%","trophy",function(t){return t.full>=1}],["full3","Restorer","Restore 3 items","gear",function(t){return t.full>=3}],["goal","Daily Driver","Hit the daily goal","clock",function(t){return t.goalHit>=1}],["day3","Regular","Play on 3 days","sun",function(t){return t.days>=3}],["spec25","Spec Slayer","Fill in 25 specs","sword",function(t){return t.specs>=25}],["take5","Critic","Write 5 of your own takes","heart",function(t){return t.takes>=5}],["lvl5","Cache Hit","Reach level 5","gem",function(t){return qLvl(t.xp)>=5}],["arch","Archivist","Fill in 100 fields","book",function(t){return t.filled>=100}]];
+var QGOAL=5,LOOT=["You found a working 5.25-inch floppy!","A mint manual falls out of the box.","You rescued a CR2032 before it leaked.","Found a jumper setting that actually works.","A BBS phone number, still ringing.","A forgotten stack of AOL trial discs. Collectible!"];
+var AC=null;function snd(seq){if(!QT||QT.mute)return;try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();var t=AC.currentTime;seq.forEach(function(f,i){var o=AC.createOscillator(),g=AC.createGain();o.type="square";o.frequency.value=f;g.gain.setValueAtTime(.05,t+i*.08);g.gain.exponentialRampToValueAtTime(.001,t+i*.08+.1);o.connect(g);g.connect(AC.destination);o.start(t+i*.08);o.stop(t+i*.08+.11)})}catch(e){}}
+/* Wikipedia helpers for the quest: a free-licensed lead photo, and infobox facts */
+var WB="https://en.wikipedia.org/w/api.php?format=json&origin=*&redirects=1&";
+function wget(u){return fetch(u,{credentials:"omit",referrerPolicy:"no-referrer"}).then(function(r){if(!r.ok)throw new Error("Wikipedia answered "+r.status);return r.json()})}
+function enc(s){return encodeURIComponent(s)}
+function qWimg(it){var w=QW[it.id]=QW[it.id]||{};if(w.img)return;
+ if(typeof CIMG!=="undefined"&&CIMG[it.name]&&typeof cimgUrl==="function"){w.img={s:"ok",url:cimgUrl(it.name,800),page:cimgPage(it.name),why:"A free-licensed Wikimedia Commons photo already on file for this name",free:true,credit:"Photo: Wikimedia Commons contributor, free license (see the file page)"};return}
+ w.img={s:"load"};var t=(it.wiki&&it.wiki.t)||it.name;
+ wget(WB+"action=query&generator=search&gsrlimit=1&prop=pageimages&piprop=thumbnail|name&pithumbsize=800&gsrsearch="+enc(t)).then(function(j){
+  var pg=j.query&&j.query.pages?j.query.pages[Object.keys(j.query.pages)[0]]:null;if(!pg||!pg.thumbnail||!pg.pageimage){w.img={s:"none"};return}
+  var fn=pg.pageimage;return wget(WB+"action=query&prop=imageinfo&iiprop=extmetadata&iiextmetadatafilter=LicenseShortName|Artist|NonFree&titles="+enc("File:"+fn)).then(function(k){
+   var p2=k.query.pages[Object.keys(k.query.pages)[0]],md=(p2.imageinfo&&p2.imageinfo[0]&&p2.imageinfo[0].extmetadata)||{},lic=String((md.LicenseShortName||{}).value||"").slice(0,30),
+    free=p2.imagerepository==="shared"&&!md.NonFree,art=String((md.Artist||{}).value||"").replace(/<[^>]*>/g,"").replace(/\s+/g," ").trim().slice(0,60);
+   w.img={s:"ok",url:pg.thumbnail.source,page:"https://en.wikipedia.org/wiki/File:"+enc(fn.replace(/ /g,"_")),why:'Lead image of the Wikipedia article "'+pg.title+'"',free:free,credit:"Photo: "+(art||"see the file page")+(lic?", "+lic:"")+", via Wikimedia"}})
+ }).catch(function(e){w.img={s:"err",m:e.message}}).then(function(){qSide()})}
+function qWfacts(it){var w=QW[it.id]=QW[it.id]||{};if(w.f)return;w.f={s:"load"};var t=(it.wiki&&it.wiki.t)||it.name;
+ wget(WB+"action=query&list=search&srlimit=1&srsearch="+enc(t)).then(function(j){var h=j.query&&j.query.search&&j.query.search[0];if(!h)throw new Error("No Wikipedia article found");var ti=h.title;return wget(WB+"action=parse&prop=text&disablelimitreport=1&disableeditsection=1&page="+enc(ti)).then(function(p){w.f={s:"ok",title:ti,rows:wparse(p.parse&&p.parse.text?p.parse.text["*"]:"")}})})
+ .catch(function(e){w.f={s:"err",m:e.message}}).then(function(){qSide()})}
+function qWsug(it,f){var w=QW[it.id],r=w&&w.f&&w.f.s==="ok"?w.f.rows:null;if(!r)return null;var v="";
+ r.forEach(function(x){var k=x[0].toLowerCase();if(f.k==="rel"&&/^(release date|released|introduced|first release|initial release|release)$/.test(k)&&!v)v=wdate(x[1]);else if(f.k==="msrp"&&/^(introductory|launch|retail|original) ?price$|^price$|^msrp$/.test(k)&&!v)v=x[1].split(";")[0].slice(0,60);else if(f.k==="maker"&&WMAP[k]==="maker"&&!v)v=x[1].split(";")[0].slice(0,60);else if(f.spec&&WMAP[k]===f.spec&&!v)v=x[1].split(";")[0].slice(0,120)});
+ return v?{v:v,from:"Wikipedia: "+w.f.title,exact:false,wiki:true}:null}
+function qNext(){var c=[],pin=QS.pin;
+ if(pin){var pi=S.items.findIndex(function(x){return x.id===pin.id});if(pi>=0){var hit=null;qFields(S.items[pi]).forEach(function(f){if(!hit&&!qNA(S.items[pi],f)&&!qHas(S.items[pi],f)&&(f.k===pin.k||pin.k==="specs"&&f.spec))hit=f});if(hit)return{i:pi,f:hit}}QS.pin=null}
+ S.items.forEach(function(it,i){if(QS.mode==="item"&&QS.item!==it.id)return;qFields(it).forEach(function(f,n){if(QS.mode==="photo"&&f.k!=="photo")return;if(qNA(it,f)||qHas(it,f)||QS.skip[it.id+"|"+f.k])return;var sg=qSuggest(it,f),w=sg&&sg.exact?0:({t:1,c:1,n:1,l:2,u:2,w:2,p:2,a:3})[f.t];c.push({i:i,f:f,w:QS.mode==="item"?n:w*1000+n})})});
  if(!c.length)return null;if(QS.mode==="random")return c[Math.floor(Math.random()*c.length)];
  c.sort(function(a,b){return a.w-b.w||a.i-b.i});return c[0]}
-function qAfter(it,f,before){var t=QT,lv=qLvl(t.xp),gain=f.xp+(t.streak>=2?2:0),m=qMeter(it);
- t.xp+=gain;t.filled++;t.streak++;t.best=Math.max(t.best,t.streak);if(f.t==="p")t.photos++;if(before.pct<100&&m.pct>=100)t.full++;
- var nb=[];QB.forEach(function(b){if(!t.badges[b[0]]&&b[3](t)){t.badges[b[0]]=1;nb.push(b[1])}});
- var up=qLvl(t.xp)>lv,msg="+"+gain+" XP"+(t.streak>=3?" (streak bonus)":"");
- if(m.pct>=100&&before.pct<100)msg+=". "+it.name+" is complete!";if(up)msg+=" Level up: "+QTITLES[Math.min(qLvl(t.xp)-1,QTITLES.length-1)]+"!";if(nb.length)msg+=" Badge: "+nb.join(", ")+".";
- QS.msg={t:"ok",m:msg};QS.boom=(up||nb.length||m.pct>=100&&before.pct<100)?1:0;S.dirty=true;S.qn=(S.qn||0)+1;qStore()}
-function questView(){if(!QT)QT=qLoad();var cur=QS.cur=qNext(),lv=qLvl(QT.xp),base=40*(lv-1)*(lv-1),nxt=40*lv*lv,pc=Math.round((QT.xp-base)*100/(nxt-base));
- var h='<p class="abar"><button class="btn" id="bk" type="button">Back to the list</button> <button class="btn'+(S.dirty?' pri':'')+'" id="sv" type="button"'+(busy||!S.dirty&&!S.photos.length?" disabled":"")+'>Save to GitHub'+(S.qn?' ('+S.qn+' answers)':'')+'</button></p>'
- +'<div class="qhud"><b>Level '+lv+': '+esc(QTITLES[Math.min(lv-1,QTITLES.length-1)])+'</b> <span class="mbar"><i style="width:'+pc+'%"></i></span> <small>'+QT.xp+' XP, '+(nxt-QT.xp)+' to next level</small><br><small>Streak '+QT.streak+' (best '+QT.best+'). Filled '+QT.filled+' fields.</small><br>'
- +QB.map(function(b){return'<span class="qbd'+(QT.badges[b[0]]?" on":"")+'" title="'+esc(b[2])+'">'+esc(b[1])+'</span>'}).join(" ")+'</div>'
- +'<div class="tools"><button class="chip'+(QS.mode==="quick"?" on":"")+'" data-qm="quick" type="button">Quick wins</button><button class="chip'+(QS.mode==="random"?" on":"")+'" data-qm="random" type="button">Surprise me</button>'
- +'<select id="qi" aria-label="Quest on one item"><option value="">One item only...</option>'+S.items.map(function(it){return'<option value="'+esc(it.id)+'"'+(QS.mode==="item"&&QS.item===it.id?" selected":"")+'>'+esc(it.name)+' ('+qMeter(it).pct+'%)</option>'}).join("")+'</select></div>';
+function qAfter(it,f,before){var t=QT,lv=qLvl(t.xp),m=qMeter(it),td=C.today(),new_=[];
+ if(t.day!==td){var y=new Date(td+"T12:00:00");y.setDate(y.getDate()-1);var ys=y.getFullYear()+"-"+String(y.getMonth()+1).padStart(2,"0")+"-"+String(y.getDate()).padStart(2,"0");t.days=t.last===ys?(t.days||0)+1:1;t.day=td;t.today=0}
+ t.last=td;t.today=(t.today||0)+1;
+ var gain=f.xp+(t.streak>=2?2:0)+(t.streak>=9?3:0),done=before.pct<100&&m.pct>=100,loot="";
+ t.xp+=gain;t.filled++;t.streak++;t.best=Math.max(t.best,t.streak);if(f.t==="p")t.photos++;if(f.spec)t.specs=(t.specs||0)+1;if(f.k==="thoughts")t.takes=(t.takes||0)+1;if(done)t.full++;
+ if(t.filled%5===0){var b=5+Math.floor(Math.random()*16);t.xp+=b;loot=LOOT[Math.floor(Math.random()*LOOT.length)]+" +"+b+" bonus XP."}
+ if(t.today===QGOAL){t.goalHit=(t.goalHit||0)+1;t.xp+=20;loot+=" Daily goal reached! +20 XP."}
+ QB.forEach(function(b){if(!t.badges[b[0]]&&b[4](t)){t.badges[b[0]]=1;new_.push(b)}});
+ var up=qLvl(t.xp)>lv;
+ QS.pop=gain;QS.msg={t:"ok",m:"+"+gain+" XP"+(t.streak>=3?" (combo x"+t.streak+")":"")+(loot?" "+loot:"")};QS.loot=!!loot;
+ QS.award=[];if(up)QS.award.push({n:"Level "+qLvl(t.xp),d:QTITLES[Math.min(qLvl(t.xp)-1,QTITLES.length-1)],ic:"star"});new_.forEach(function(b){QS.award.push({n:b[1],d:b[2],ic:b[3]})});
+ if(done)QS.done={id:it.id,name:it.name};
+ QS.boom=(up||new_.length||done)?1:0;S.dirty=true;S.qn=(S.qn||0)+1;qStore();
+ snd(done?[523,659,784,1047,1319]:up||new_.length?[523,659,784,1047]:[660,880])}
+function qStars(p){return"★".repeat(p>=100?3:p>=67?2:p>=34?1:0)+"☆".repeat(p>=100?0:p>=67?1:p>=34?2:3)}
+function qPic(it,m){var g=(1-m.pct/100).toFixed(2);return'<div class="qpic'+(m.pct>=100?" gold":"")+'" style="filter:grayscale('+g+') contrast('+(0.9+m.pct/1000).toFixed(2)+')">'+(C.pic?C.pic(it):"")+'</div>'}
+function qCandHtml(it,f){var w=QW[it.id]||{},sg=qSuggest(it,f),h="";
+ if(f.k==="photo"){var g=w.img;
+  if(!g||g.s==="load")return'<div class="qcand"><p class="tn">Searching for a free photo...</p></div>';
+  if(g.s==="ok"){var u=C.safeUrl(g.url,"img");return'<div class="qcand"><figure class="qcimg"><img src="'+esc(u)+'" alt="Candidate photo" referrerpolicy="no-referrer"><figcaption><small>'+esc(g.why)+'. <a href="'+esc(C.safeUrl(g.page,"link"))+'" target="_blank" rel="noopener noreferrer">File page</a></small></figcaption></figure>'
+   +(g.free?'<p><button class="btn pri" id="qk" type="button">Yes, keep it (K)</button> <button class="btn" id="qnp" type="button">Not it (N)</button></p><p class="tn">Free license on Wikimedia Commons. The credit is saved with the photo.</p>':'<p class="msg err">That image looks non-free (a cover or fair-use image). It is not offered.</p><p><button class="btn" id="qnp" type="button">Not it (N)</button></p>')+'</div>'}
+  return'<div class="qcand"><p class="tn">'+(g.s==="err"?"Wikipedia is not reachable ("+esc(g.m||"")+").":"No free photo found.")+' Paste an https address instead, or choose a file.</p></div>'}
+ if(sg)h+='<p class="qsg">'+(sg.wiki?"Wikipedia has: ":"The timeline has: ")+'<b>'+esc(sg.v.length>220?sg.v.slice(0,220)+"...":sg.v)+'</b>'+(sg.exact||sg.wiki?"":' <small>(closest match: '+esc(sg.from)+')</small>')+(sg.wiki?' <small>('+esc(sg.from)+')</small>':"")+' <button class="btn" id="qu" type="button">Use this</button></p>';
+ else if(/^(maker|rel|msrp)$/.test(f.k)||f.spec){var wf=w.f;h+=!wf?'<p><button class="btn" id="qw" type="button">Ask Wikipedia</button></p>':wf.s==="load"?'<p class="tn">Asking Wikipedia...</p>':wf.s==="err"?'<p class="tn">Wikipedia: '+esc(wf.m||"not reachable")+'</p>':'<p class="tn">Wikipedia ('+esc(wf.title)+') has no answer for this one.</p>'}
+ return'<div class="qcand">'+h+'</div>'}
+function qSide(){if(view!=="quest"||!host||!QS.cur)return;var el=$("qcand"),it=S.items[QS.cur.i];if(!el||!it)return;var cf=QS.cur.f;el.innerHTML=qCandHtml(it,cf);wireCand(it,cf)}
+function qGo(it,f,v){var b4=qMeter(it),e=qApply(it,f,v);if(e){QS.msg={t:"err",m:e};QS.pop=0;render();return}qAfter(it,f,b4);render()}
+function wireCand(it,f){var qu=$("qu");if(qu)qu.onclick=function(){qGo(it,f,qSuggest(it,f).v)};var qw=$("qw");if(qw)qw.onclick=function(){qWfacts(it);qSide()};
+ var qk=$("qk");if(qk)qk.onclick=function(){var g=QW[it.id].img,b4=qMeter(it);it.photos=(it.photos||[]).concat([g.url]);if(!it.credit)it.credit=g.credit;qAfter(it,f,b4);render()};
+ var np=$("qnp");if(np)np.onclick=function(){QW[it.id].img={s:"none"};QS.skip[it.id+"|photo"]=1;QS.msg={t:"ok",m:"Next one."};QS.pop=0;render()}}
+function qLoadDefaults(o){return Object.assign({xp:0,filled:0,streak:0,best:0,photos:0,full:0,specs:0,takes:0,days:0,goalHit:0,today:0,mute:false,badges:{}},o||{})}
+function questView(){if(!QT)QT=qLoad();var lv=qLvl(QT.xp),base=40*(lv-1)*(lv-1),nxt=40*lv*lv,pc=Math.round((QT.xp-base)*100/(nxt-base)),td=C.today(),tdn=QT.day===td?QT.today:0;
+ var h='<p class="abar"><button class="btn" id="bk" type="button">Back to the list</button> <button class="btn'+(S.dirty?' pri':'')+'" id="sv" type="button"'+(busy||!S.dirty&&!S.photos.length?" disabled":"")+'>Save to GitHub'+(S.qn?' ('+S.qn+' answers)':'')+'</button> <button class="chip" id="qsn" type="button">Sound: '+(QT.mute?"off":"on")+'</button></p>'
+ +'<div class="qhud"><div class="qlv"><b>Level '+lv+': '+esc(QTITLES[Math.min(lv-1,QTITLES.length-1)])+'</b> <span class="mbar"><i style="width:'+pc+'%"></i></span> <small>'+QT.xp+' XP, '+(nxt-QT.xp)+' to next</small></div>'
+ +'<div class="qstat"><span title="Answers in a row">Combo x'+QT.streak+'</span><span title="Fields filled today">Today '+Math.min(tdn,QGOAL)+'/'+QGOAL+'</span><span title="Days played in a row">Day streak '+(QT.days||0)+'</span><span>Total '+QT.filled+'</span></div>'
+ +'<div class="qtrophy">'+QB.map(function(b){var on=QT.badges[b[0]];return'<span class="qbd'+(on?" on":"")+'" title="'+esc(b[1]+": "+b[2])+'">'+(on?qIc(b[3],18):'<small>?</small>')+'<small>'+esc(on?b[1]:"")+'</small></span>'}).join("")+'</div></div>';
+ if(QS.award&&QS.award.length){h+='<div class="qaward">'+QS.award.map(function(a){return'<div>'+qIc(a.ic,28)+'<b>'+esc(a.n)+'</b> <small>'+esc(a.d)+'</small></div>'}).join("")+'</div>';QS.award=null}
+ if(QS.boom){h+='<div class="qboom" aria-hidden="true">';for(var i=0;i<26;i++)h+='<i style="--x:'+(Math.round(Math.random()*100))+'%;--d:'+(Math.round(Math.random()*500))+'ms;--c:'+["#ff5555","#55ff55","#ffff55","#55ffff","#ff55ff","#5555ff"][i%6]+'"></i>';h+='</div>';QS.boom=0}
+ if(QS.screen==="map"){QS.cur=null;var tiles=S.items.map(function(it){return{it:it,m:qMeter(it)}}).filter(function(x){return x.m.pct<100||QS.showDone}).sort(function(a,b){return b.m.pct-a.m.pct||a.it.name.localeCompare(b.it.name)});
+  return shell(h+'<h3 class="sub">Pick your cartridge</h3><p class="tn">Every item is a cartridge waiting to be restored. The closer it is to done, the more color it gets back. Almost-finished ones are first.</p>'
+   +'<div class="tools"><button class="chip on" data-qm="quick" type="button">Quick wins</button><button class="chip" data-qm="photo" type="button">Photo Safari</button><button class="chip" data-qm="random" type="button">Surprise me</button><button class="chip'+(QS.showDone?" on":"")+'" id="qsd" type="button">Show finished</button></div>'
+   +(tiles.length?'<div class="qmap">'+tiles.map(function(x){return'<button class="qtile" data-qi="'+esc(x.it.id)+'" type="button">'+qPic(x.it,x.m)+'<b>'+esc(x.it.name)+'</b><span class="qst">'+qStars(x.m.pct)+' '+x.m.pct+'%</span></button>'}).join("")+'</div>':'<div class="qcard"><h3 class="qq">Every cartridge is restored!</h3></div>'));}
+ var cur=QS.cur=qNext();
+ h+='<div class="tools"><button class="chip" id="qmapb" type="button">Level select</button><button class="chip'+(QS.mode==="quick"?" on":"")+'" data-qm="quick" type="button">Quick wins</button><button class="chip'+(QS.mode==="photo"?" on":"")+'" data-qm="photo" type="button">Photo Safari</button><button class="chip'+(QS.mode==="random"?" on":"")+'" data-qm="random" type="button">Surprise me</button></div>';
+ if(QS.done)h+='<div class="qwin"><b>'+qIc("trophy",28)+' ITEM RESTORED!</b> '+esc(QS.done.name)+' is 100% complete. ★★★</div>';
  if(QS.msg)h+='<div class="msg '+QS.msg.t+'" role="status">'+esc(QS.msg.m)+'</div>';
- if(QS.boom){h+='<div class="qboom" aria-hidden="true">';for(var i=0;i<22;i++)h+='<i style="--x:'+(Math.round(Math.random()*100))+'%;--d:'+(Math.round(Math.random()*500))+'ms;--c:'+["#ff5555","#55ff55","#ffff55","#55ffff","#ff55ff","#5555ff"][i%6]+'"></i>';h+='</div>';QS.boom=0}
- if(!cur)return shell(h+'<div class="qcard"><h3 class="qq">'+(QS.mode==="item"?"That item is finished.":"Quest complete!")+'</h3><p>Every field that applies is filled in'+(QS.mode==="item"?" for this item":"")+'. Press Save to GitHub to publish.</p></div>');
- var it=S.items[cur.i],f=cur.f,sg=qSuggest(it,f),inp;
+ QS.done=null;
+ if(!cur)return shell(h+'<div class="qcard"><h3 class="qq">'+(QS.mode==="photo"?"No photos left to find.":QS.mode==="item"?"That cartridge is fully restored.":"Quest complete!")+'</h3><p>Nothing left in this mode. Press Save to GitHub to publish, or pick another mode.</p></div>');
+ var it=S.items[cur.i],f=cur.f,m=qMeter(it),q=qx(f),inp;
  if(f.t==="a")inp='<textarea id="qv" placeholder="'+esc(f.ph||"")+'" style="min-height:110px"></textarea>';
  else if(f.t==="c")inp='<select id="qv">'+f.ch.map(function(c){return'<option>'+esc(c)+'</option>'}).join("")+'</select>';
  else inp='<input id="qv" placeholder="'+esc(f.ph||"")+'" autocomplete="off">'+(f.t==="p"?'<p><label for="qf">Or choose a picture from this device</label><input id="qf" type="file" accept="image/*"></p>':"");
- return shell(h+'<div class="qcard"><div class="qitem"><b>'+esc(it.name)+'</b> <small class="tn">'+esc(it.maker||"")+' '+esc(it.rel||it.year||"")+'</small></div><p>'+mbar(qMeter(it))+'</p>'
- +'<h3 class="qq">'+esc(f.l)+' <span class="tag">+'+f.xp+' XP</span></h3>'+(f.hint?'<p class="tn">'+esc(f.hint)+'</p>':"")+inp
- +(sg?'<p class="qsg">The timeline has: <b>'+esc(sg.v.length>220?sg.v.slice(0,220)+"...":sg.v)+'</b>'+(sg.exact?"":' <small>(closest match: '+esc(sg.from)+')</small>')+' <button class="btn" id="qu" type="button">Use this</button></p>':"")
- +'<p class="abar"><button class="btn pri" id="qa" type="button">Save answer</button> <button class="btn" id="qs" type="button">Skip</button> <button class="btn" id="qn" type="button" title="Hide this field for this item">Does not apply</button></p></div>')}
-function wireQuest(){$("bk").onclick=function(){view="list";QS.msg=null;render()};$("sv").onclick=save;
- host.querySelectorAll("[data-qm]").forEach(function(b){b.onclick=function(){QS.mode=b.dataset.qm;QS.msg=null;QS.skip={};render()}});
- $("qi").onchange=function(){if(!this.value)return;QS.item=this.value;QS.mode="item";QS.msg=null;render()};
- var cur=QS.cur;if(!cur)return;var it=S.items[cur.i],f=cur.f,go=function(v){var b4=qMeter(it),e=qApply(it,f,v);if(e){QS.msg={t:"err",m:e};render();return}qAfter(it,f,b4);render()};
- $("qa").onclick=function(){go($("qv").value)};
+ var nsp=qFields(it).filter(function(x){return x.spec&&!qNA(it,x)}),dsp=nsp.filter(function(x){return qHas(it,x)}).length;
+ var chips=qFields(it).filter(function(x){return!x.spec&&!qNA(it,x)}).map(function(x){var d=qHas(it,x);return'<button class="qchip '+(d?"done":"blank")+(x.k===f.k?" now":"")+'" data-qk="'+esc(x.k)+'" type="button" title="'+esc(qx(x)[1])+'">'+qIc(qx(x)[0],14)+esc(qShort(x))+'</button>'}).join("")
+  +(nsp.length?'<button class="qchip '+(dsp===nsp.length?"done":"blank")+(f.spec?" now":"")+'" data-qk="specs" type="button">'+qIc("chip",14)+'specs '+dsp+'/'+nsp.length+'</button>':"");
+ return shell(h+'<div class="qplay"><div class="qside">'+qPic(it,m)+'<div class="qname"><b>'+esc(it.name)+'</b><br><small class="tn">'+esc(it.maker||"")+' '+esc(it.rel||it.year||"")+'</small></div><p class="qst">'+qStars(m.pct)+' '+mbar(m)+'</p><div class="qchips">'+chips+'</div>'
+ +'<p class="tn"><button class="btn" id="qed" type="button">Open full editor</button></p></div>'
+ +'<div class="qcard qmain">'+(QS.pop?'<span class="qpop">+'+QS.pop+' XP</span>':"")+(QT.streak>=3?'<span class="qcombo" style="font-size:'+Math.min(34,14+QT.streak)+'px">COMBO x'+QT.streak+'</span>':"")
+ +'<div class="qkind">'+qIc(q[0],24)+' <b>'+esc(q[1])+'</b></div><h3 class="qq">'+esc(f.l)+' <span class="tag">+'+f.xp+' XP</span></h3><p class="qwh">'+esc(q[2])+'</p>'+(f.hint?'<p class="tn">'+esc(f.hint)+'</p>':"")
+ +'<div id="qcand">'+qCandHtml(it,f)+'</div>'+inp
+ +'<p class="abar"><button class="btn pri" id="qa" type="button">Save answer</button> <button class="btn" id="qs" type="button">Skip</button> <button class="btn" id="qn" type="button" title="Hide this field for this item">Does not apply</button></p></div></div>');QS.pop=0}
+function wireQuest(){QS.pop=0;$("bk").onclick=function(){view="list";QS.msg=null;render()};$("sv").onclick=save;
+ $("qsn").onclick=function(){QT.mute=!QT.mute;qStore();snd([660]);render()};
+ host.querySelectorAll("[data-qm]").forEach(function(b){b.onclick=function(){QS.mode=b.dataset.qm;QS.screen="play";QS.pin=null;QS.msg=null;QS.skip={};render()}});
+ var sd=$("qsd");if(sd)sd.onclick=function(){QS.showDone=!QS.showDone;render()};
+ host.querySelectorAll("[data-qi]").forEach(function(b){b.onclick=function(){QS.mode="item";QS.item=b.dataset.qi;QS.screen="play";QS.pin=null;QS.msg=null;render();window.scrollTo(0,0)}});
+ var mb=$("qmapb");if(mb)mb.onclick=function(){QS.screen="map";QS.pin=null;QS.msg=null;render()};
+ var cur=QS.cur;if(!cur)return;var it=S.items[cur.i],f=cur.f;
+ host.querySelectorAll("[data-qk]").forEach(function(b){b.onclick=function(){QS.pin={id:it.id,k:b.dataset.qk};if(QS.mode!=="item"){QS.mode="item";QS.item=it.id}QS.msg=null;render()}});
+ $("qed").onclick=function(){editing={i:cur.i,it:clone(S.items[cur.i]),newPhotos:[],priv:{}};if(!editing.it.photos)editing.it.photos=[];view="edit";note=null;render();window.scrollTo(0,0)};
+ $("qa").onclick=function(){qGo(it,f,$("qv").value)};
  $("qv").onkeydown=function(e){if(e.key==="Enter"&&(f.t!=="a"||e.ctrlKey||e.metaKey)){e.preventDefault();$("qa").click()}};
- var qu=$("qu");if(qu)qu.onclick=function(){go(qSuggest(it,f).v)};
- $("qs").onclick=function(){QS.skip[it.id+"|"+f.k]=1;QT.streak=0;qStore();QS.msg={t:"ok",m:"Skipped. It comes back next visit."};render()};
- $("qn").onclick=function(){it.na=(it.na||[]).concat([f.k]);S.dirty=true;QS.msg={t:"ok",m:"Marked as not applicable for "+it.name+"."};render()};
+ host.onkeydown=function(e){if(/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName))return;var k=e.key.toLowerCase();if(k==="k"&&$("qk"))$("qk").click();else if(k==="n"&&$("qnp"))$("qnp").click()};
+ wireCand(it,f);
+ $("qs").onclick=function(){QS.skip[it.id+"|"+f.k]=1;QT.streak=0;qStore();QS.msg={t:"ok",m:"Skipped. It comes back next visit."};QS.pin=null;snd([220]);render()};
+ $("qn").onclick=function(){it.na=(it.na||[]).concat([f.k]);S.dirty=true;QS.msg={t:"ok",m:"Marked as not applicable for "+it.name+"."};QS.pin=null;render()};
  var qf=$("qf");if(qf)qf.onchange=function(e){var fl=e.target.files[0];if(!fl)return;shrink(fl).then(function(d){var b4=qMeter(it),path="photos/"+slug(it.id)+"-"+Date.now().toString(36)+".jpg";S.photos.push({path:path,b64:d.split(",")[1]});it.photos=(it.photos||[]).concat([path]);qAfter(it,f,b4);render()},function(er){QS.msg={t:"err",m:er.message};render()})};
- if(!busy)$("qv").focus()}
+ if(f.k==="photo")qWimg(it),qSide();
+ if(!busy&&!(f.k==="photo"&&QW[it.id]&&QW[it.id].img&&QW[it.id].img.s==="ok"))$("qv").focus()}
 function bulkFill(){var n=0,it2=0;S.items.forEach(function(it){var c=0;qFields(it).forEach(function(f){if(f.t==="p"||qNA(it,f)||qHas(it,f))return;var sg=qSuggest(it,f);if(sg&&sg.exact&&!qApply(it,f,sg.v))c++});if(c){n+=c;it2++}});
  if(n){S.dirty=true;note={t:"ok",m:"Filled "+n+" blank fields on "+it2+" items from the timeline. Look them over, then Save to GitHub."}}else note={t:"ok",m:"Nothing to fill: every blank field has no exact timeline match."};render()}
+function qaddMake(name,r,ty){var it={type:ty||"Computer",photos:[],name:name};if(r)tlItem(it,r);else it.cat=CATMAP[it.type]||(it.type+"s");
+ var id=slug(it.name)||"item",base=id,n=2;while(S.items.some(function(x){return x.id===id}))id=base+"-"+n++;it.id=id;it.audio=[];S.items.push(it);S.dirty=true;
+ QS.mode="item";QS.item=id;QS.screen="play";QS.pin=null;QS.skip={};QS.msg={t:"ok",m:"Added "+it.name+" to the catalog. Now the fun part: fill in the blanks."};QA=null;view="quest";note=null;render();window.scrollTo(0,0)}
+function qaddHtml(){var h='<div class="qadd"><label for="qan">Quick add: type a name, press Enter</label><div class="abar"><input id="qan" placeholder="Voodoo2, Sony Mavica FD7, Sega Saturn..." value="'+esc(QA?QA.q:"")+'"><button class="btn pri" id="qab" type="button">Quick add</button></div>';
+ if(QA){h+='<div class="qres"><p class="tn">Pick the closest timeline entry and I will pre-fill it, or create a blank one.</p>'+QA.res.map(function(x,i){return'<button class="btn" data-qr="'+i+'" type="button">'+esc(x.r[2])+' <small>('+esc(x.r[0])+')</small></button>'}).join(" ")
+  +'<p><label for="qat">Blank item type</label> <select id="qat">'+Object.keys(C.SPEC_TYPES).map(function(k){return'<option'+(k==="Computer"?" selected":"")+'>'+esc(k)+'</option>'}).join("")+'</select> <button class="btn" id="qbk" type="button">Create blank "'+esc(QA.q)+'"</button></p></div>'}
+ return h+'</div>'}
 function render(){if(!host)return;host.innerHTML=!tok||!S?lockedView():view==="edit"?editView():view==="quest"?questView():listView();wire()}
 function $(id){return host.querySelector("#"+id)}
 function val(id){var e=$(id);return e?e.value.trim():""}
@@ -387,10 +467,15 @@ function wire(){if(!host)return;host.oninput=bump;
  host.querySelectorAll("[data-d]").forEach(function(b){b.onclick=function(){var i=+b.dataset.d,it=S.items[i];if(!confirm('Delete "'+it.name+'" from the catalog? You can undo until you leave this page.'))return;S.items.splice(i,1);(S.undo=S.undo||[]).push({it:it,i:i});S.dirty=true;note={t:"ok",m:"Removed "+it.name+". Press Undo delete to bring it back, or Save to GitHub to publish."};render()}});
  host.querySelectorAll("[data-c]").forEach(function(b){b.onclick=function(){var src=S.items[+b.dataset.c],cp=clone(src),id=slug(src.id)+"-copy",n=2;while(S.items.some(function(x){return x.id===id}))id=slug(src.id)+"-copy-"+n++;
   delete cp.privEnc;cp.name=src.name+" (copy)";cp.id=id;editing={i:-1,it:cp,newPhotos:[],priv:{}};if(!cp.photos)cp.photos=[];if(PP)editing.privOk=true;view="edit";note={t:"ok",m:"This is a copy of "+src.name+". Change what differs, then Add to the catalog."};render();window.scrollTo(0,0)}});
- host.querySelectorAll("[data-q]").forEach(function(b){b.onclick=function(){QS.mode="item";QS.item=S.items[+b.dataset.q].id;QS.msg=null;QS.skip={};view="quest";note=null;render();window.scrollTo(0,0)}});
+ host.querySelectorAll("[data-q]").forEach(function(b){b.onclick=function(){QS.mode="item";QS.item=S.items[+b.dataset.q].id;QS.screen="play";QS.pin=null;QS.msg=null;QS.skip={};view="quest";note=null;render();window.scrollTo(0,0)}});
  host.querySelectorAll("[data-lf]").forEach(function(b){b.onclick=function(){lf=b.dataset.lf;render()}});
  $("ls").onchange=function(){ls=this.value;render()};
- $("qgo").onclick=function(){QS.mode="quick";QS.skip={};QS.msg=null;view="quest";note=null;render();window.scrollTo(0,0)};
+ $("qgo").onclick=function(){QS.mode="quick";QS.screen="map";QS.skip={};QS.msg=null;view="quest";note=null;render();window.scrollTo(0,0)};
+ $("qph").onclick=function(){QS.mode="photo";QS.screen="play";QS.skip={};QS.msg=null;view="quest";note=null;render();window.scrollTo(0,0)};
+ var qab=$("qab");qab.onclick=function(){var v=$("qan").value.trim();if(v.length<2)return;var res=tlMatches(v);if(res.length&&res[0].sc===100&&(!res[1]||res[1].sc<100)){qaddMake(res[0].r[2],res[0].r);return}QA={q:v,res:res};render();var n=$("qan");n.focus()};
+ $("qan").onkeydown=function(e){if(e.key==="Enter")qab.click()};
+ host.querySelectorAll("[data-qr]").forEach(function(b){b.onclick=function(){var r=QA.res[+b.dataset.qr].r;qaddMake(r[2],r)}});
+ var qbk=$("qbk");if(qbk)qbk.onclick=function(){qaddMake(QA.q,null,$("qat").value)};
  $("bulk").onclick=function(){if(confirm("Fill every blank field that has an exact timeline match? You can review the result before saving."))bulkFill()};
  var ud=$("ud");if(ud)ud.onclick=function(){var u=S.undo.pop();S.items.splice(Math.min(u.i,S.items.length),0,u.it);S.dirty=true;note={t:"ok",m:"Brought back "+u.it.name+"."};render()}}
 function collectSoft(){var r=null;try{r=collect().o}catch(e){}return r||editing.it}
