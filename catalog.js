@@ -4,7 +4,11 @@
 var CATST={q:"",cats:{},dec:"",min:0,sort:"",view:"cards",status:"",group:"cat",dens:"cards",shown:60,panel:false,mode:null,all:false};
 function catMode(){var m=CATST.mode;if(!m){try{m=localStorage.getItem("cm-catmode")}catch(e){}CATST.mode=m==="book"?"book":"pro"}return CATST.mode}
 function catalog(){
- var S=CATST,mode=catMode();var pm=/^#\/catalog\/cat\/(.+)$/.exec(location.hash);if(pm){S.cats={};S.cats[decodeURIComponent(pm[1])]=true;S.all=false;S.q="";S.dec="";S.status="";S.min=0;S.view="cards";mode="pro";CATST.mode="pro"}
+ var S=CATST,mode=catMode();var pm=/^#\/catalog\/cat\/(.+)$/.exec(location.hash),uq=/^#\/catalog\?(.*)$/.exec(location.hash);
+ /* Filters live in the address (#/catalog?c=Computers&d=1990), so Back, bookmarks and the Catalog menu link all behave. Plain #/catalog is always the front. */
+ if(!pm){S.q="";S.cats={};S.dec="";S.min=0;S.status="";S.view="cards";S.all=false;if(uq){var P={};uq[1].split("&").forEach(function(kv){var i=kv.indexOf("=");if(i>0)try{P[kv.slice(0,i)]=decodeURIComponent(kv.slice(i+1).replace(/\+/g," "))}catch(e){}});
+  if(P.q)S.q=P.q.slice(0,80);if(P.c)P.c.split("|").forEach(function(c){if(c)S.cats[c]=true});if(/^\d{4}$/.test(P.d||""))S.dec=P.d;if(P.t)S.status=P.t;if(+P.m>0)S.min=Math.min(600,+P.m);if(/^(cards|shelf|years|next|dir)$/.test(P.v||""))S.view=P.v;if(P.a==="1")S.all=true;if(/^(score|old|new|name)$/.test(P.s||""))S.sort=P.s;if(/^(none|cat|dec|az)$/.test(P.g||""))S.group=P.g;if(/^(cards|rows|table)$/.test(P.n||""))S.dens=P.n}}
+ if(pm){S.cats={};S.cats[decodeURIComponent(pm[1])]=true;S.all=false;S.q="";S.dec="";S.status="";S.min=0;S.view="cards";mode="pro";CATST.mode="pro"}
  var cats={},decs={},sts={};
  ITEMS.forEach(function(i){cats[i.cat]=(cats[i.cat]||0)+1;var d=i.year?Math.floor(i.year/10)*10:0;if(d)decs[d]=(decs[d]||0)+1;if(i.status)sts[i.status]=(sts[i.status]||0)+1});
  var scored=ITEMS.filter(function(i){return i.score!=null}),avg=scored.length?scored.reduce(function(a,i){return a+i.score},0)/scored.length:null;
@@ -47,7 +51,9 @@ function catalog(){
  function draw(l){return S.dens==="rows"?'<div class="crows">'+l.map(row).join("")+'</div>':S.dens==="table"?tbl(l):'<div class="grid">'+l.map(card).join("")+'</div>'}
  function slug2(k){return"grp-"+String(k).replace(/[^a-z0-9]+/gi,"-")}
  function isIdle(){return useFront&&!S.all&&!S.q&&!Object.keys(S.cats).some(function(k){return S.cats[k]})&&!S.dec&&!S.status&&S.min<=0&&S.view==="cards"}
- function run(){var idle=isIdle();fr.hidden=!idle;res.hidden=idle;var r=ITEMS.filter(match);
+ function syncUrl(){var P=[];function add(k,v){P.push(k+"="+encodeURIComponent(v))}if(S.q)add("q",S.q);var cs=Object.keys(S.cats).filter(function(k){return S.cats[k]});if(cs.length)add("c",cs.join("|"));if(S.dec)add("d",S.dec);if(S.status)add("t",S.status);if(S.min>0)add("m",S.min);if(S.view!=="cards")add("v",S.view);if(S.all)add("a","1");if(S.sort)add("s",S.sort);if(S.group&&S.group!=="cat")add("g",S.group);if(S.dens&&S.dens!=="cards")add("n",S.dens);
+  var filt=P.some(function(x){return/^(q|c|d|t|m|v|a)=/.test(x)});var t="#/catalog"+(filt?"?"+P.join("&"):"");if(location.hash!==t&&/^#\/catalog/.test(location.hash)){try{history.replaceState(null,"",t)}catch(e){}}}
+ function run(){var idle=isIdle();syncUrl();fr.hidden=!idle;res.hidden=idle;var r=ITEMS.filter(match);
   if(S.sort==="score")r.sort(function(a,b){return(b.score||0)-(a.score||0)});else if(S.sort==="old")r.sort(function(a,b){return a.year-b.year});else if(S.sort==="new")r.sort(function(a,b){return b.year-a.year});else if(S.sort==="name"||(S.group==="az"&&!S.sort))r.sort(function(a,b){return a.name.localeCompare(b.name)});
   document.getElementById("mv").textContent=S.min;
   document.querySelectorAll("[data-c]").forEach(function(b){var on=!!S.cats[b.dataset.c];b.classList.toggle("on",on);b.setAttribute("aria-pressed",on)});
