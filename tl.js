@@ -29,8 +29,8 @@ function tlKindLabel(k){return TLK[k]?TLK[k][1]:k}
 
 
 /* ---- crossover with the catalog ---- */
-function tlOwn(title){var t=String(title).toLowerCase();return ITEMS.filter(function(i){return i.name.toLowerCase()===t})[0]||null}
-function tlRowOfItem(it){var n=it.name.toLowerCase(),best=null;TL.forEach(function(r){var t=r[2].toLowerCase();if(t===n)best=r;else if(!best&&n.length>=6&&(t.indexOf(n)>=0||n.indexOf(t)>=0)&&t.length>=6)best=r});return best}
+function tlOwn(title){var t=String(title).toLowerCase();return ITEMS.filter(function(i){return i.name.toLowerCase()===t||(i.tl||"").toLowerCase()===t})[0]||null}
+function tlRowOfItem(it){if(it.tl){var lk=TL.filter(function(r){return r[2]===it.tl})[0];if(lk)return lk}var n=it.name.toLowerCase(),best=null;TL.forEach(function(r){var t=r[2].toLowerCase();if(t===n)best=r;else if(!best&&n.length>=6&&(t.indexOf(n)>=0||n.indexOf(t)>=0)&&t.length>=6)best=r});return best}
 /* ---- My trail: entries a visitor stars. Kept only in this browser. ---- */
 var TRAILMEM=[];
 function trailGet(){try{var a=JSON.parse(localStorage.getItem("cm-trail")||"[]");if(Array.isArray(a))return a.filter(function(x){return typeof x==="string"}).slice(0,100)}catch(e){}return TRAILMEM}
@@ -66,7 +66,8 @@ function tlCard(x,id,open){var r=tlRow(x),yr=dyear(x.d),main=x.k==="i"?x.i.name:
 
 
 
-function tlActs(x,tk){if(x.k==="p")return"";var on=trailHas(tk);return'<p class="tle-acts"><button class="btn" type="button" data-star="'+esc(tk)+'" aria-pressed="'+on+'">'+(on?"\u2605 On my trail":"\u2606 Add to my trail")+'</button> <button class="btn" type="button" data-link="'+esc(tk)+'" data-yr="'+dyear(x.d)+'">Copy link</button></p>'}
+function adminSeen(){try{return localStorage.getItem("cm-admin")==="1"}catch(e){return false}}
+function tlActs(x,tk){if(x.k==="p")return"";var on=trailHas(tk);return'<p class="tle-acts">'+(adminSeen()?'<a class="btn" href="#/admin/tle/'+encodeURIComponent(tk)+'">Edit entry (admin)</a> ':'')+'<button class="btn" type="button" data-star="'+esc(tk)+'" aria-pressed="'+on+'">'+(on?"\u2605 On my trail":"\u2606 Add to my trail")+'</button> <button class="btn" type="button" data-link="'+esc(tk)+'" data-yr="'+dyear(x.d)+'">Copy link</button></p>'}
 function tlFacts(title){var x=typeof TLX!=="undefined"?TLX[title]:null;var gp=typeof gxPanel==="function"?gxPanel(title):"";if(!x)return gp;var h="";
  if(x.detail)h+='<p>'+esc(x.detail)+'</p>';
  if(x.trivia&&x.trivia.length)h+='<div class="trv"><b>Did you know?</b><ul>'+x.trivia.map(function(s){return'<li>'+esc(s)+'</li>'}).join('')+'</ul></div>';

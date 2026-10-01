@@ -93,7 +93,16 @@ var app=document.getElementById("app");
 function ph(v){return typeof v==="string"&&/^(sample|example)\b/i.test(v.trim())}
 function unex(v){return typeof v==="string"?v.replace(/^(example|sample)( entry)?[:.]\s*/i,""):v}
 function guessCat(it){var t=(it.name+" "+(it.text||"")).toLowerCase(),m={"Computer":"Computers","Console or handheld":"Consoles and handhelds","Expansion card":"Expansion cards","Sound or MIDI":"Sound and MIDI","Peripheral":"Peripherals","Storage":"Storage","Monitor":"Monitors","Printer":"Printers","Game or software":"Games and software"};if(it.type&&m[it.type])return m[it.type];return/console|game boy|playstation|nintendo|sega|atari/.test(t)?"Consoles and handhelds":/sound|midi|synth/.test(t)?"Sound and MIDI":/keyboard|mouse|joystick|modem|scanner|webcam/.test(t)?"Peripherals":/game|software|program/.test(t)?"Games and software":/disk|drive|tape|storage/.test(t)?"Storage":"Computers"}
-function prepItems(){ITEMS.forEach(function(it){if(!it.cat||it.cat==="Other")it.cat=guessCat(it);if(!it.maker)it.maker="Unknown";if(!it.year&&it.rel)it.year=+String(it.rel).slice(0,4);
+/* An item linked to a timeline entry (it.tl) shows that entry's details wherever the item has none of its own.
+   Only descriptive facts are shared. The item's changelog, notes, photos and private fields never touch the timeline. */
+function tlInherit(it){delete it.tlShared;if(!it.tl||typeof TL==="undefined")return;var r=TL.filter(function(z){return z[2]===it.tl})[0];if(!r)return;var x=(typeof TLX!=="undefined"&&TLX[r[2]])||{},f=[];
+ if((!it.maker||it.maker==="Unknown")&&x.maker){it.maker=x.maker;f.push("maker")}
+ if(!it.rel&&!it.year){it.rel=r[0];it.year=+String(r[0]).slice(0,4);if(!r[5])it.relx=true;f.push("release date")}
+ if(!it.msrp&&r[3]){it.msrp=r[3];f.push("price")}
+ if(!it.text&&(r[4]||x.detail)){it.text=[r[4],x.detail].filter(Boolean).join(" ");f.push("description")}
+ var sp=x.specs||{};Object.keys(sp).forEach(function(k){it.specs=it.specs||{};if(!it.specs[k]){it.specs[k]=String(sp[k]);if(f.indexOf("specs")<0)f.push("specs")}});
+ it.tlShared=f}
+function prepItems(){ITEMS.forEach(function(it){tlInherit(it);if(!it.cat||it.cat==="Other")it.cat=guessCat(it);if(!it.maker)it.maker="Unknown";if(!it.year&&it.rel)it.year=+String(it.rel).slice(0,4);
  ["got","thoughts","cond","acquired"].forEach(function(k){if(ph(it[k])){if(/^(sample|example):/i.test(it[k].trim())&&k!=="thoughts"&&k!=="got"){it[k]=unex(it[k])}else delete it[k]}});
  if(it.text)it.text=unex(it.text);
  if(it.credit&&/replace it with/i.test(it.credit))it.credit="Illustration";
@@ -141,8 +150,8 @@ function today(){var d=new Date();return d.getFullYear()+"-"+String(d.getMonth()
 var TLK={i:["Museum items","Item"],hw:["Hardware","Hardware"],pe:["Peripherals","Peripheral"],sw:["Software","Software"],gt:["Top games","Top game"],gn:["Notable games","Notable game"],gc:["Comical and obscure games","Obscure game"],e:["Industry events","Industry"],m:["Movies","Movie"],w:["World events","World"],u:["US events","US"],p:["High-end PCs","PC"]};
 var TLF={},TLQ="";Object.keys(TLK).forEach(function(k){TLF[k]=1});
 function tlEntries(){var e=[];
- if(TLF.i)ITEMS.forEach(function(i){e.push({d:i.rel||String(i.year),k:"i",i:i})});
- var mine=ITEMS.map(function(i){return i.name.toLowerCase()});
+ if(TLF.i)ITEMS.forEach(function(i){var lr=i.tl?TL.filter(function(z){return z[2]===i.tl})[0]:null;e.push(lr?{d:lr[0],k:"i",i:i,n:lr[4]}:{d:i.rel||String(i.year),k:"i",i:i})});
+ var mine=ITEMS.map(function(i){return i.name.toLowerCase()}).concat(ITEMS.map(function(i){return(i.tl||"").toLowerCase()}).filter(Boolean));
  TL.forEach(function(r){var t=r[2].toLowerCase();if(TLF[r[1]]&&!mine.some(function(n){return t.indexOf(n)>=0||n.indexOf(t)>=0}))e.push({d:r[0],k:r[1],t:r[2],p:r[3],n:r[4],s:r[5]})});
  if(TLF.p)PCS.forEach(function(p){e.push({d:String(p.y),k:"p",t:"High-end PC of the year: "+p.cpu+", "+p.ram+" RAM, "+p.video+", "+p.sound,n:p.ex})});
  var q=TLQ.trim().toLowerCase();
@@ -379,7 +388,7 @@ function item(id){
  var wu=w?safeUrl(w.u,"link"):"";
  var wx=wikiMore(it);var src=w?'<div class="src"><b>From Wikipedia: '+esc(w.t)+'</b>'+(w.summary?'<p>'+esc(w.summary)+'</p>':'')+(wu?'<a href="'+esc(wu)+'" target="_blank" rel="noopener noreferrer">Read the full article</a>':'')+(w.summary?'<small>Summary text from Wikipedia, licensed CC BY-SA.</small>':'')+'</div>':"";
  var ident=tbl([["Maker",it.maker],["Model",it.model],["Part number",it.partno],["Revision",it.rev],["Barcode",it.upc],["Released",(it.rel?fmtDate(it.rel):(it.year||""))+(it.rel&&it.relx?"*":"")],["Discontinued",it.disc],["Original MSRP",it.msrp],["Made in",it.country],["Date code",it.made],["Category",it.cat],["Type",it.type]]);
- var coll=tbl([["Accession",it.acc],["Status",it.status?it.status+(it.qty>1?", quantity "+it.qty:""):""],["Condition",it.cond],["Working",it.works],["Includes",(it.has||[]).join(", ")],["Acquired",it.acquired],["Last changed",logsOf(it)[0]?fmtDate(logsOf(it)[0].d):""],["Where I got it",it.got],["Bought on",it.src?{h:srcBadge(it,true)}:""],["Tags",(it.tags||[]).length?{h:it.tags.map(function(t){return '<a href="#/tag/'+encodeURIComponent(t)+'">'+esc(t)+'</a>'}).join(", ")}:""],["Record complete",comp(it)+"%"]]);
+ var coll=tbl([["Accession",it.acc],["Status",it.status?it.status+(it.qty>1?", quantity "+it.qty:""):""],["Condition",it.cond],["Working",it.works],["Includes",(it.has||[]).join(", ")],["Acquired",it.acquired],["Last changed",logsOf(it)[0]?fmtDate(logsOf(it)[0].d):""],["Where I got it",it.got],["Timeline entry",it.tl?{h:'<a href="#/timeline" data-tl="'+esc(it.tl)+'">'+esc(it.tl)+'</a>'+((it.tlShared||[]).length?' <small class="tn">(shares '+esc(it.tlShared.join(", "))+')</small>':"")}:""],["Bought on",it.src?{h:srcBadge(it,true)}:""],["Tags",(it.tags||[]).length?{h:it.tags.map(function(t){return '<a href="#/tag/'+encodeURIComponent(t)+'">'+esc(t)+'</a>'}).join(", ")}:""],["Record complete",comp(it)+"%"]]);
  var picks=adPicks(it);
  app.innerHTML='<section class="itempage">'+pn(it)+adBar(picks)+heroStrip(it)+'<div class="detail"><div class="dl"><div class="ph">'+pic(it)+'</div>'+gal+(it.credit?'<small style="color:var(--mute)">'+esc(it.credit)+'</small>':(!(it.photos||[]).length&&wimg(it)?'<small style="color:var(--mute)">Image via Wikipedia. Check the article page for its license.</small>':(!(it.photos||[]).length&&typeof cimgCredit==="function"?cimgCredit(it.name):'')))+media+src+'</div><div class="dr">'
   +cmpSel(it)+(it.src?'<p class="srcrow">'+srcBadge(it,true)+'</p>':'')+sc+(it.text?'<p>'+esc(it.text)+'</p>':"")+(it.thoughts?sec("My take",'<p>'+esc(it.thoughts)+'</p>'):"")+sec("Identification and history",ident)+specSheet(it)+wx+connSec(it)+(typeof gxItemSec==="function"?gxItemSec(it):"")+sec("Collection record",coll)+exSec(it)+logSec(it)+(it.notes?sec("Repairs and mods",'<p>'+esc(it.notes)+'</p>'):"")+'</div></div>'

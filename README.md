@@ -154,3 +154,10 @@ Every timeline entry, ad and catalog item without a photo gets a picture drawn i
 - **Drafts.** Set `"draft": true` on an item (Admin: Draft checkbox, Drafts filter, Publish button). `draftfilter.js` hides drafts from the whole public site while keeping them in `items.js`, so they are still visible in the repository (hidden, not private). Catalog numbers (CM-0001...) come from the full list, so they do not shift when a draft is published.
 - **Source tags.** `"src": "ebay"` or `"shopgoodwill"` shows a neutral "Bought on ..." tag (item page, cards, Pro rows, book entries). The sites' real logos are trademarks, so a plain text tag with an original pixel gavel is used.
 - **Privacy.** Prices, sellers, order numbers and addresses are never put in `items.js`. They live in the private CSV logs, or in the encrypted private fields in Admin.
+
+## Timeline links (Round 7b)
+
+- An item can carry `"tl": "<exact timeline entry title>"`. Where the item leaves maker, release date, price, description or specs blank, the entry's values are shown (marked "shares ..." in the Collection record). The item's changelog, notes, photos and private fields are never sent to the timeline.
+- The timeline shows a linked item once, using the entry's date and note, and no longer lists the entry separately.
+- In Admin, the item form has a **Timeline link** box (suggest matches, fill my blanks, copy my details into the entry, and edit the entry's date, price, note, maker, developer, detail and specs). Edits are saved to `timeline-edits.js` (keyed by title) alongside `items.js`; the big timeline data files are untouched.
+- Once you have unlocked Admin on a device, timeline entries show an **Edit entry (admin)** button that opens the same editor (`#/admin/tle/<title>`). Visitors never see it.
