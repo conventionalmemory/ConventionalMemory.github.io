@@ -1,0 +1,45 @@
+/* Admin test with GitHub mocked: item link form, separate timeline editor, save writes only what changed.
+   Run: node tests/admin.js */
+const {chromium}=require('playwright');const fs=require('fs'),path=require('path'),http=require('http');
+const root=path.join(__dirname,'..');
+const srv=http.createServer((q,r)=>{let f=path.join(root,decodeURIComponent(q.url.split('?')[0]));if(f.endsWith('/'))f+='index.html';fs.readFile(f,(e,d)=>{if(e){r.writeHead(404);r.end();return}r.writeHead(200,{'Content-Type':f.endsWith('.js')?'text/javascript':f.endsWith('.html')?'text/html':'text/plain'});r.end(d)})});
+(async()=>{await new Promise(r=>srv.listen(0,r));const BASE='http://localhost:'+srv.address().port;const b=await chromium.launch({executablePath:process.env.PLAYWRIGHT_CHROMIUM||undefined});const pg=await (await b.newContext({viewport:{width:1100,height:1000}})).newPage();
+const errs=[],puts=[];pg.on('pageerror',e=>errs.push('PAGEERR '+e.message));
+let items=fs.readFileSync(path.join(root,'items.js'),'utf8');
+await pg.route('https://api.github.com/**',r=>{const u=r.request().url(),h=r.request().headers(),m=r.request().method();
+ if(m==='PUT'){const pd=JSON.parse(r.request().postData());puts.push({f:u.split('/contents/')[1],msg:pd.message,body:Buffer.from(pd.content,'base64').toString()});return r.fulfill({status:200,json:{content:{sha:'new'}}})}
+ const raw=/raw/.test(h.accept||'');
+ if(/contents\/items\.js/.test(u))return raw?r.fulfill({body:items,contentType:'text/plain'}):r.fulfill({json:{sha:'abc'}});
+ if(/contents\/timeline-edits\.js/.test(u))return r.fulfill({status:404,json:{message:'Not Found'}});
+ return r.fulfill({json:{permissions:{push:true}}})});
+const px='data:image/gif;base64,R0lGODlhAQABAAAAACw=';
+await pg.route('https://en.wikipedia.org/w/api.php**',r=>{const u=new URL(r.request().url()),t=u.searchParams.get('gsrsearch');
+ if(t)return r.fulfill({json:{query:{pages:{1:{title:t,pageimage:'A.jpg',thumbnail:{source:'https://upload.wikimedia.org/x/800px-A.jpg'}}}}}});
+ return r.fulfill({json:{query:{pages:{9:{imagerepository:'shared',imageinfo:[{extmetadata:{LicenseShortName:{value:'CC BY-SA'},Artist:{value:'Bob'}}}]}}}}})});
+await pg.route('https://commons.wikimedia.org/w/api.php**',r=>r.fulfill({json:{query:{pages:{}}}}));
+await pg.route('https://upload.wikimedia.org/**',r=>r.fulfill({status:200,contentType:'image/gif',body:Buffer.from('R0lGODlhAQABAAAAACw=','base64')}));
+await pg.goto(BASE+'/index.html#/admin');await pg.waitForTimeout(300);await pg.keyboard.press('Enter');await pg.waitForTimeout(800);
+await pg.fill('#tk','github_pat_'+'A'.repeat(40));await pg.click('#go');await pg.waitForTimeout(1500);
+await pg.fill('#aq','IBM Model M');await pg.waitForTimeout(300);await pg.click('[data-e]');await pg.waitForTimeout(500);
+const fail=[];const chk=(n,c)=>{console.log(c?'ok  ':'FAIL',n);if(!c)fail.push(n)};
+await pg.click('[data-sf=i]');await pg.waitForTimeout(1200);
+chk('stock candidates shown',await pg.evaluate(()=>document.querySelectorAll('[data-sa^="i:"]').length>0));
+await pg.click('[data-sa^="i:"]');await pg.waitForTimeout(400);
+await pg.fill('#pu_i','https://example.com/mine.jpg');await pg.click('[data-iu=i]');await pg.waitForTimeout(300);
+chk('two images',await pg.evaluate(()=>document.querySelectorAll('.imgs figure').length)===2);
+chk('mine badge present',await pg.evaluate(()=>document.querySelector('.imgs').innerText.includes('Mine')));
+await pg.click('[data-ik="i:mine"]');await pg.waitForTimeout(300);
+chk('mine is on the card',await pg.evaluate(()=>/Mine[\s\S]*On the card/.test(document.querySelector('.imgs figure.cov figcaption').innerText)));
+await pg.fill('#f_extras','DOS 2.1 disks | Have | boxed set');await pg.click('#xref');await pg.waitForTimeout(400);
+await pg.click('[data-xmk="0"]');await pg.waitForTimeout(500);
+await pg.click('#ok');await pg.waitForTimeout(400);
+await pg.click('#sv');await pg.waitForTimeout(300);await pg.click('#rvok');await pg.waitForTimeout(1200);
+const ip=puts.find(p=>/^items\.js/.test(p.f));
+chk('items.js saved',!!ip);
+const vm=require('vm');const ctx={};vm.createContext(ctx);vm.runInContext(ip.body,ctx);const I=ctx.ITEMS;
+const m=I.find(x=>x.id==='ibm-model-m'),a=I.find(x=>x.id==='dos-2-1-disks');
+chk('model m photos',m.photos.length===2&&/example\.com/.test(m.photos[0]));
+chk('meta marks stock',Object.values(m.photoMeta||{}).some(v=>v.k==='stock'));
+chk('accessory item created as draft with for',a&&a.draft&&a['for'].indexOf('ibm-model-m')>=0);
+chk('extra links to it',m.extras.some(x=>x.item==='dos-2-1-disks'));
+console.log(errs.join('\n')||'no errors');await b.close();srv.close();process.exit(fail.length||errs.length?1:0)})();

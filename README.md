@@ -176,3 +176,10 @@ Photo Safari (items and timeline) now searches Wikipedia article images and Comm
 - Timeline Safari can target hardware, software, games, or events/web/other; a button jumps to catalog items.
 - 69 of 74 items are drafts (hidden publicly) until verified; 5 test items stay live. Draft items still show in admin.
 - Research pass: eBay/ShopGoodwill and older items got confirmed maker/model/year/price/specs/text where sources agreed. Each has `refs` (shown as Sources), `verify` (what is unconfirmed, admin-side) and `conf` (high/med/low).
+
+### Round 9: image libraries, mine vs stock, accessories
+- Every item (and every accessory) can hold many images. Each is tagged Mine or Stock (`photoMeta`, keyed by image address; stock keeps its credit and file page). `photos[0]` is the card image: use "Use on card", or "Use my photo" / "Use stock photo".
+- The item editor's Images box has uploads, address, and "Find stock images" (same ranked, looser search as Photo Safari, with its own search box).
+- Accessory lines get an images box and an optional link to a catalog item. "Make it its own catalog item" creates a draft item tied back with `for`.
+- `for` on an item lists the items it works with (an item can belong to several). Their pages list it under Accessories and companions; its own page shows Works with.
+- Item pages credit stock photos and label gallery images Mine or Stock.
