@@ -358,6 +358,29 @@ html[data-motion=on] .adm .qboss.hit{animation:bosshit .4s steps(4)}@keyframes b
 .ph .cm-photo,.ph>img{transition:transform .45s ease}.ph:hover .cm-photo,.ph:hover>img{transform:scale(1.05)}
 .ph:has(.cm-photo)::after{content:"REAL PHOTO";position:absolute;left:0;bottom:0;background:var(--blue);color:var(--blue-ink);font:400 14px/1 "VT323",monospace;padding:3px 8px;letter-spacing:1px}
 .cm-credit{display:block;border:2px solid var(--line);border-top:0;background:var(--panel);color:var(--ink);padding:3px 8px;font-size:12px;line-height:1.35;margin:-2px 0 10px}.cm-credit a{color:var(--lk)}
+/* ---- CRT screen effects. Controlled by the Screen button: data-crt = off | on | max. All motion respects the Motion button. ---- */
+#crtfx{position:fixed;inset:0;pointer-events:none;z-index:16;overflow:hidden;box-shadow:inset 0 0 110px rgba(0,0,0,.2)}
+#crtfx i{position:absolute;display:block}
+.fx-noise{inset:-20px;opacity:.05;mix-blend-mode:multiply;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E")}
+.fx-roll{left:0;right:0;top:-18vh;height:16vh;background:linear-gradient(180deg,transparent,rgba(255,255,255,.06),transparent);opacity:0}
+html[data-crt=off] #crtfx,html[data-crt=off] body::after{display:none}
+html[data-crt=max] #crtfx{box-shadow:inset 0 0 190px rgba(0,0,0,.45),inset 0 0 0 2px rgba(0,0,0,.25);border-radius:22px}
+html[data-crt=max] .fx-noise{opacity:.09}html[data-crt=max] body::after{background:repeating-linear-gradient(0deg,rgba(0,0,0,.16) 0 1px,transparent 1px 3px)}
+html:not([data-crt=off]) h1,html:not([data-crt=off]) h2{text-shadow:0 0 7px color-mix(in srgb,var(--ink) 28%,transparent)}
+html[data-crt=max] h1,html[data-crt=max] h2{text-shadow:-1px 0 rgba(255,40,40,.5),1px 0 rgba(0,190,255,.5),0 0 9px color-mix(in srgb,var(--ink) 30%,transparent)}
+:root[data-theme=green]:not([data-crt=off]) main,:root[data-theme=amber]:not([data-crt=off]) main,:root[data-theme=ega]:not([data-crt=off]) main{text-shadow:0 0 3px color-mix(in srgb,var(--ink) 55%,transparent)}
+html[data-motion=on]:not([data-crt=off]) .fx-noise{animation:fxnoise .6s steps(6) infinite}
+@keyframes fxnoise{0%{transform:translate(0,0)}20%{transform:translate(-18px,9px)}40%{transform:translate(11px,-15px)}60%{transform:translate(-9px,-6px)}80%{transform:translate(15px,12px)}100%{transform:translate(0,0)}}
+html[data-motion=on]:not([data-crt=off]) .fx-roll{opacity:1;animation:fxroll 9s linear infinite}
+@keyframes fxroll{from{transform:translateY(0)}to{transform:translateY(130vh)}}
+html[data-motion=on][data-crt=max] body{animation:fxflick 5s steps(1) infinite}
+@keyframes fxflick{0%,92%,100%{opacity:1}93%{opacity:.965}95%{opacity:.99}97%{opacity:.97}}
+html[data-motion=on]:not([data-crt=off]) header,html[data-motion=on]:not([data-crt=off]) main,html[data-motion=on]:not([data-crt=off]) footer{animation:fxpower .75s cubic-bezier(.2,.8,.3,1) 1}
+@keyframes fxpower{0%{transform:scale(1,.004);filter:brightness(7);opacity:.9}35%{transform:scale(1,.004);filter:brightness(7)}60%{transform:scale(1,1.02);filter:brightness(2.4)}100%{transform:none;filter:none;opacity:1}}
+html[data-motion=on]:not([data-crt=off]) #app.crt h2:first-of-type{animation:fxtype .5s steps(14) 1}
+@keyframes fxtype{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+html[data-motion=on][data-crt=max] a:hover,html[data-motion=on][data-crt=max] .btn:hover{animation:fxglitch .22s steps(2) 1}
+@keyframes fxglitch{0%{text-shadow:2px 0 rgba(255,40,40,.7),-2px 0 rgba(0,190,255,.7)}50%{text-shadow:-2px 0 rgba(255,40,40,.7),2px 0 rgba(0,190,255,.7)}100%{text-shadow:none}}
 html[data-motion="off"] *,html[data-motion="off"] *::before,html[data-motion="off"] *::after{animation:none!important;transition:none!important}
 html[data-motion="on"] #app.crt{animation:crtin .32s steps(8) 1}
 @keyframes crtin{0%{opacity:.15;filter:brightness(2.2) contrast(1.4);transform:scaleY(.985)}45%{opacity:.8;filter:brightness(1.4)}100%{opacity:1;filter:none;transform:none}}
@@ -369,10 +392,11 @@ html[data-motion="on"] .pl-sq i{animation:plflip .5s backwards}html[data-motion=
 </style>
 </head>
 <body>
+<div id="crtfx" aria-hidden="true"><i class="fx-roll"></i><i class="fx-noise"></i></div>
 <div class="wrap">
 <header class="top">
 <a href="#/">C:\&gt;ConventionalMemory.io<span class="cur" aria-hidden="true">_</span></a>
-<nav><a href="#/catalog">Catalog</a><a href="#/timeline">Timeline</a><a href="#/play">Play<span class="new">NEW!</span></a><a href="#/search">Search</a><a href="#/wanted">Wanted</a><a href="#/follow">Follow</a><button class="btn" id="th" type="button" style="margin-left:16px">Theme</button> <button class="btn" id="mo" type="button" aria-pressed="true">Motion: on</button></nav>
+<nav><a href="#/catalog">Catalog</a><a href="#/timeline">Timeline</a><a href="#/play">Play<span class="new">NEW!</span></a><a href="#/search">Search</a><a href="#/wanted">Wanted</a><a href="#/follow">Follow</a><button class="btn" id="th" type="button" style="margin-left:16px">Theme</button> <button class="btn" id="mo" type="button" aria-pressed="true">Motion: on</button><button class="btn" id="cr" type="button" title="Screen effects: off, CRT, or max CRT">Screen: CRT</button></nav>
 </header>
 <main id="app"></main>
 <footer><div id="retro"></div><div class="prompt"><label for="cmd">C:\&gt;</label><input id="cmd" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Type a command: dir, mem, random, scale, timeline, quote, help"><div id="cout" aria-live="polite">Type help and press Enter.</div></div><a href="#/changes">Changes</a> &middot; <a href="#/quotes">Quotes</a> &middot; <a href="#/stats">Stats</a> &middot; <a href="#/scale">Scale</a> &middot; <a href="#/mem">Memory map</a> &middot; <a href="#/maze">Basement (staff only)</a><br> &copy; Conventional Memory LLC. Content on TikTok, YouTube, Instagram and Facebook.</footer>

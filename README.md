@@ -120,3 +120,5 @@ Every timeline entry, ad and catalog item without a photo gets a picture drawn i
 - **Search:** `#/search` (press `/` anywhere, or type `find voodoo` at the prompt) searches items, hardware and games. Item pages show a "Featured in video" row from the item's videos. The home page has a Random year button.
 - **Games:** Retro Bingo (`#/bingo`), Disk Error Hangman (`#/hangman`), and *Save to floppy* on the Trophy room to move progress between devices.
 - **Fun:** a bouncing-window screensaver after 2 idle minutes (or type `screensaver`), a dial-up modem (type `dial`), and the Konami code.
+
+**Screen effects:** the *Screen* button in the header cycles off, CRT and max CRT (saved on this device). CRT adds a vignette, film grain, a slow rolling bar, phosphor glow on headings, a power-on warp at page load and a typed-in page title. Max adds screen curvature, stronger scanlines, RGB fringing on titles, rare flicker and a glitch on link hover. Everything animated also stops when Motion is off, and the effects never intercept clicks.
