@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel>
+<title>Conventional Memory: recent changes</title>
+<link>https://conventionalmemory.github.io/#/changes</link>
+<description>New items, repairs, upgrades and notes from the Conventional Memory museum.</description>
+<language>en-us</language>
+<lastBuildDate>Sun, 20 Sep 2026 12:00:00 GMT</lastBuildDate>
+<atom:link href="https://conventionalmemory.github.io/feed.xml" rel="self" type="application/rss+xml"/>
+<item><title>Toshiba Libretto 110CT: Upgrade</title><link>https://conventionalmemory.github.io/#/item/toshiba-libretto-110ct</link><guid isPermaLink="false">toshiba-libretto-110ct|2026-09-20|Upgrade|Example: replaced the hard drive with an</guid><pubDate>Sun, 20 Sep 2026 12:00:00 GMT</pubDate><description>Example: replaced the hard drive with an 8 GB CompactFlash card.</description></item>
+<item><title>Toshiba Libretto 110CT: Clean</title><link>https://conventionalmemory.github.io/#/item/toshiba-libretto-110ct</link><guid isPermaLink="false">toshiba-libretto-110ct|2026-09-05|Clean|Example: removed the leaking CMOS batter</guid><pubDate>Sat, 05 Sep 2026 12:00:00 GMT</pubDate><description>Example: removed the leaking CMOS battery and cleaned the board.</description></item>
+<item><title>Toshiba Libretto 110CT: Note</title><link>https://conventionalmemory.github.io/#/item/toshiba-libretto-110ct</link><guid isPermaLink="false">toshiba-libretto-110ct|2026-08-24|Note|Example: planned the CompactFlash and Wi</guid><pubDate>Mon, 24 Aug 2026 12:00:00 GMT</pubDate><description>Example: planned the CompactFlash and Windows 98 SE conversion.</description></item>
+</channel></rss>

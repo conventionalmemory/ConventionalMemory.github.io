@@ -32,12 +32,19 @@ var CMFront=(function(){
    add("Time capsule","Pick a decade","#0000aa",dec[d0],dk.map(function(d){return'<button type="button" class="chip'+(d===d0?" on":"")+'" data-dec="'+d+'" aria-pressed="'+(d===d0)+'">'+d+'s <b>'+dec[d].length+'</b></button>'}).join(""))}
   add("Found in the wild","From auctions and thrift shelves","#008800",items.filter(function(i){return i.src}).slice(0,14));
   return out}
+ function health(items){if(!items.length)return"";var n=items.length;
+  function pc(f){return Math.round(items.filter(f).length/n*100)}
+  var R=[["Photos",pc(function(i){return(i.photos||[]).length})],["Specs",pc(function(i){return Object.keys(i.specs||{}).length>2})],["Description",pc(function(i){return i.text})],["Scored",pc(function(i){return i.score!=null})],["Sourced",pc(function(i){return(i.refs||[]).length||i.wiki})],["Story",pc(function(i){return i.story})]];
+  var all=Math.round(R.reduce(function(a,r){return a+r[1]},0)/R.length);
+  return'<h3 class="fh">Museum health</h3><div class="hlth"><div class="hl-top"><b>'+all+'%</b><span>of the published record is filled in</span></div>'+R.map(function(r){return'<div class="hl-r"><span>'+r[0]+'</span><i class="hl-b"><em style="width:'+r[1]+'%"></em></i><b>'+r[1]+'%</b></div>'}).join("")+'</div>'}
+ function queue(){var d=typeof DRAFTS!=="undefined"?DRAFTS:[];if(!d.length)return"";var show=d.slice(0,30);
+  return'<h3 class="fh">Coming soon</h3><div class="soon"><p>'+d.length+' more exhibit'+(d.length===1?" is":"s are")+' in the queue while I double-check the facts. Names only for now:</p><p class="sn">'+show.map(function(i){return'<span>'+(typeof pxCat==="function"?pxCat(i.cat,14):"")+E(i.name)+'</span>'}).join("")+(d.length>show.length?'<span class="sm">and '+(d.length-show.length)+' more</span>':"")+'</p></div>'}
  var TILES=[["cards","Browse everything","Every exhibit as cards","\u25a4"],["shelf","The shelf","Spines, tall = high score","\u2590"],["years","Time machine","Walk through the years","\u231a"],["next","Next up","What the collection is missing","\u2192"],["dir","DIR","A plain directory listing","C:"]];
  function html(items){
   var cats={},names=[];items.forEach(function(i){if(!cats[i.cat]){cats[i.cat]=0;names.push(i.cat)}cats[i.cat]++});
   var al=aisles(items);
   return'<div class="front">'+mem(items,cats,names)+dept(items,cats,names)+'<div class="fduo">'+spot(items)+crate()+'</div>'
-   +al.map(aisleHtml).join("")
+   +al.map(aisleHtml).join("")+health(items)+queue()
    +'<h3 class="fh">Other ways to browse</h3><div class="wtiles">'+TILES.map(function(t){return'<button type="button" class="wt" data-go="'+t[0]+'"><i aria-hidden="true">'+t[3]+'</i><b>'+t[1]+'</b><small>'+t[2]+'</small></button>'}).join("")+'</div>'
    +'<p class="fall"><button type="button" class="btn pri" data-go="cards">Browse all '+items.length+' exhibits</button></p></div>'}
  function wire(root,items,api){

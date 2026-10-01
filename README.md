@@ -203,3 +203,15 @@ Photo Safari (items and timeline) now searches Wikipedia article images and Comm
 ### Round 13: header and every screen size
 - Header is two rows that never wrap: brand and display settings (Theme, Motion, Screen) on top, a menu bar of the eight sections below. On phones the settings become icon plus value, and the menu bar scrolls sideways with a fade on the cut-off edge and keeps the current section in view.
 - `tests/widths.js` visits 16 pages at 320, 360, 390, 600, 768, 1024, 1280 and 1920 px and fails on any sideways scroll or element poking past the edge. It found the home title (320 to 360 px) and the item page's long previous/next names, both fixed. It is part of `npm test`.
+
+### Round 14: the ten recommendations
+1. **Publish queue** (Admin list, Publish queue button): steps through drafts, most trusted and most complete first. It shows a checklist (photo, year, maker, description, specs, sources, where I got it, condition), the research note ("What to verify"), the sources to check against, and Publish, Edit first, Skip. The public catalog front shows a **Coming soon** box that lists draft names only.
+2. The two IBM 5150 drafts are merged into one (`ibm-5150`, a draft): your unit's data plus the Wikipedia specs, text and MSRP.
+3. **Photos**: the admin home shows photo coverage for published items and drafts, and Photo Safari now takes published items first, then high-confidence drafts. Stock photos for the live items still need doing from the admin (this workspace cannot reach Wikimedia).
+4. **Story** field (`story`): "The story: why it is in the museum". It has its own box in the item editor, a Fill-in Quest card (25 XP) and a "The story" panel at the top of About.
+5. Home now has **Latest from the museum**: newest exhibit next to the latest video (the newest item that has one), then more new arrivals.
+6. **Collection report** (`#/report`, under Explore): totals, department table, working status, needs attention, still wanted, full inventory. Print or save as PDF, CSV download, and a switch to include drafts.
+7. **Share card** button on item pages: draws a 1200 x 630 PNG (photo or illustration, title, score bar) to download, share (where the browser supports it) or copy the link.
+8. **Museum health** on the catalog front: percent of published items with photos, specs, description, score, sources and a story.
+9. **RSS**: `feed.xml` (linked from the page head, the home page and the changelog) is built by `tools/build-feed.js`. `.github/workflows/feed.yml` rebuilds it whenever `items.js` changes.
+10. **Print**: the spec sheet now prints the header, About, Specs, My copy, History and Links (each with a heading), and leaves out the Era and Ad tabs, tab bar, buttons and related cards. `tests/print.js` checks this.

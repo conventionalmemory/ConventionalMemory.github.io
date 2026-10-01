@@ -339,18 +339,51 @@ var ITEMS=[
   "draft": true
  },
  {
+  "id": "ibm-dos-2-1-books-and-disks",
+  "type": "Game or software",
+  "name": "IBM PC DOS 2.1",
+  "cat": "Games and software",
+  "maker": "IBM",
+  "model": "DOS 2.1",
+  "qty": 1,
+  "cond": "Per listing: seller gives no warranty that the disks are readable.",
+  "tags": [
+   "DOS",
+   "IBM"
+  ],
+  "text": "IBM PC DOS 2.1 was released on November 1, 1983, about seven months after DOS 2.0. Its main purpose was to support the new IBM PCjr, and it also added support for half-height floppy drives.",
+  "specs": {
+   "Brand": "IBM",
+   "MPN": "DOS 2.1",
+   "Vintage": "Yes"
+  },
+  "src": "ebay",
+  "year": 1983,
+  "rel": "1983-11-01",
+  "refs": [
+   {
+    "t": "IBM PC DOS (Wikipedia)",
+    "u": "https://en.wikipedia.org/wiki/IBM_PC_DOS"
+   }
+  ],
+  "verify": "Original price and the part number of the listed package; whether the listed set is the PCjr edition is not confirmed.",
+  "conf": "high",
+  "draft": true
+ },
+ {
+  "id": "ibm-5150",
   "type": "Computer",
-  "photos": [],
-  "id": "ibm-personal-computer",
+  "name": "IBM 5150",
   "cat": "Computers",
-  "videos": [],
-  "audio": [],
-  "maker": "International Business Machines (IBM)",
-  "rel": "1981-08-12",
-  "year": 1981,
-  "msrp": "US$1,565 (equivalent to $5,540 in 2025)",
-  "disc": 1987,
-  "name": "IBM Personal Computer",
+  "maker": "IBM",
+  "model": "5150",
+  "qty": 1,
+  "works": "Not working",
+  "cond": "Per listing: parts or repair, does not power on, no power cord, needs some cleaning, minor dings.",
+  "tags": [
+   "IBM",
+   "Parts"
+  ],
   "text": "The IBM Personal Computer, model 5150, was released on August 12, 1981 and became the basis of the IBM PC compatible standard. It used an Intel 8088 at 4.77 MHz, built mostly from off-the-shelf parts, with 16 KB to 256 KB of RAM on the motherboard and five expansion slots.",
   "specs": {
    "OS shipped": "IBM BASIC / PC DOS 1.0; CP/M-86; UCSD p-System",
@@ -368,6 +401,23 @@ var ITEMS=[
    "Floppy drives": "5.25-inch, 160 KB or 320 KB",
    "Keyboard": "Model F, 83 keys"
   },
+  "src": "ebay",
+  "photos": [
+   "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f1/Ibm_pc_5150.jpg/960px-Ibm_pc_5150.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+  ],
+  "credit": "Photo: Ruben de Rijcke, CC BY-SA 3.0, via Wikimedia Commons",
+  "msrp": "US$1,565 (equivalent to $5,540 in 2025)",
+  "year": 1981,
+  "rel": "1981-08-12",
+  "refs": [
+   {
+    "t": "IBM Personal Computer (Wikipedia)",
+    "u": "https://en.wikipedia.org/wiki/IBM_Personal_Computer"
+   }
+  ],
+  "verify": "Merged the two IBM 5150 drafts. Specs, MSRP, discontinued year and text come from Wikipedia (IBM Personal Computer, model 5150). The configuration of this specific unit is unknown.",
+  "conf": "high",
+  "draft": true,
   "wiki": {
    "t": "IBM Personal Computer",
    "u": "https://en.wikipedia.org/wiki/IBM_Personal_Computer",
@@ -410,90 +460,7 @@ var ITEMS=[
     "Made in": "USA"
    }
   },
-  "model": "5150",
-  "refs": [
-   {
-    "t": "IBM Personal Computer (Wikipedia)",
-    "u": "https://en.wikipedia.org/wiki/IBM_Personal_Computer"
-   }
-  ],
-  "verify": "Part number not applicable. MSRP of $1,565 is the base launch price per Wikipedia; existing value kept.",
-  "conf": "high",
-  "draft": true
- },
- {
-  "id": "ibm-dos-2-1-books-and-disks",
-  "type": "Game or software",
-  "name": "IBM PC DOS 2.1",
-  "cat": "Games and software",
-  "maker": "IBM",
-  "model": "DOS 2.1",
-  "qty": 1,
-  "cond": "Per listing: seller gives no warranty that the disks are readable.",
-  "tags": [
-   "DOS",
-   "IBM"
-  ],
-  "text": "IBM PC DOS 2.1 was released on November 1, 1983, about seven months after DOS 2.0. Its main purpose was to support the new IBM PCjr, and it also added support for half-height floppy drives.",
-  "specs": {
-   "Brand": "IBM",
-   "MPN": "DOS 2.1",
-   "Vintage": "Yes"
-  },
-  "src": "ebay",
-  "year": 1983,
-  "rel": "1983-11-01",
-  "refs": [
-   {
-    "t": "IBM PC DOS (Wikipedia)",
-    "u": "https://en.wikipedia.org/wiki/IBM_PC_DOS"
-   }
-  ],
-  "verify": "Original price and the part number of the listed package; whether the listed set is the PCjr edition is not confirmed.",
-  "conf": "high",
-  "draft": true
- },
- {
-  "id": "ibm-5150-for-parts-or-repair",
-  "type": "Computer",
-  "name": "IBM 5150",
-  "cat": "Computers",
-  "maker": "IBM",
-  "model": "5150",
-  "qty": 1,
-  "works": "Not working",
-  "cond": "Per listing: parts or repair, does not power on, no power cord, needs some cleaning, minor dings.",
-  "tags": [
-   "IBM",
-   "Parts"
-  ],
-  "text": "The IBM 5150 is the original IBM Personal Computer, released on August 12, 1981. It used an Intel 8088 at 4.77 MHz in a wide, short steel case designed to hold a monitor on top.",
-  "specs": {
-   "Brand": "IBM",
-   "Model": "5150",
-   "Vintage": "Yes",
-   "CPU": "Intel 8088 @ 4.77 MHz",
-   "RAM installed": "16 KB to 256 KB on the motherboard",
-   "Expansion slots": "5 x 62-pin",
-   "Graphics": "MDA or CGA"
-  },
-  "src": "ebay",
-  "photos": [
-   "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f1/Ibm_pc_5150.jpg/960px-Ibm_pc_5150.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
-  ],
-  "credit": "Photo: Ruben de Rijcke, CC BY-SA 3.0, via Wikimedia Commons",
-  "msrp": "US$1,565",
-  "year": 1981,
-  "rel": "1981-08-12",
-  "refs": [
-   {
-    "t": "IBM Personal Computer (Wikipedia)",
-    "u": "https://en.wikipedia.org/wiki/IBM_Personal_Computer"
-   }
-  ],
-  "verify": "Configuration of this specific unit is unknown; MSRP is for the 1981 base system.",
-  "conf": "high",
-  "draft": true
+  "disc": 1987
  },
  {
   "id": "apple-m7332-45w-power-adapter-for-parts",

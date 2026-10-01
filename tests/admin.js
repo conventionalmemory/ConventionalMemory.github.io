@@ -22,6 +22,10 @@ console.log('has tl fieldset',await pg.evaluate(()=>!!document.querySelector('#f
 await pg.click('#tlsug');await pg.waitForTimeout(300);await pg.click('[data-tlp]');await pg.waitForTimeout(300);
 console.log('linked',await pg.inputValue('#f_tl'));
 await pg.click('#ok');await pg.waitForTimeout(300);await pg.click('#sv');await pg.waitForTimeout(300);await pg.click('#rvok');await pg.waitForTimeout(1200);
+{const before=await pg.evaluate(()=>/Publish queue \((\d+)\)/.exec(document.body.innerText)[1]);await pg.click('#gpq');await pg.waitForTimeout(300);
+ const t1=await pg.evaluate(()=>document.querySelector('.pqc')?.innerText||'NONE');console.log(/Item 1 of/.test(t1)?'ok   publish queue shows':'FAIL publish queue',t1.slice(0,60).replace(/\n/g,' '));if(!/Item 1 of/.test(t1))errs.push('publish queue view missing');
+ await pg.click('#pqpub');await pg.waitForTimeout(300);await pg.click('#bk');await pg.waitForTimeout(300);
+ const after=await pg.evaluate(()=>/Publish queue \((\d+)\)/.exec(document.body.innerText)[1]);console.log(+after===+before-1?'ok   publish clears a draft':'FAIL draft count '+before+' -> '+after);if(+after!==+before-1)errs.push('publish did not clear draft')}
 console.log('puts1',puts.map(p=>p.f));
 await pg.click('#gtle');await pg.waitForTimeout(400);console.log(await txt());
 await pg.fill('#tq','Apple I');await pg.waitForTimeout(300);await pg.click('[data-te]');await pg.waitForTimeout(400);
