@@ -71,7 +71,7 @@ function unlock(token,remember,pass){tok=token.trim();busy=true;render();
    if(!m.ok)throw new Error(errText(m));
    return gh(repo()+"/contents/"+FILE+"?ref="+encodeURIComponent(C.REPO.branch),{accept:"application/vnd.github.raw+json",text:true}).then(function(t){
     if(!t.ok)throw new Error(errText(t));return{sha:m.json.sha,items:parseItems(t.text)}})})
- }).then(function(d){S={sha:d.sha,items:d.items,dirty:!!d.created,photos:[],created:!!d.created};
+ }).then(function(d){S={sha:d.sha,items:d.items,orig:clone(d.items),cimgAdd:{},dirty:!!d.created,photos:[],created:!!d.created};
    if(pass){vaultSave(tok,pass).then(function(){note={t:'ok',m:'Unlocked, and the token is now saved encrypted on this device. Next time just type your passphrase.'};render()},function(e){note={t:'err',m:'Unlocked, but could not save the token: '+e.message};render()})}
    note=d.created?{t:"ok",m:"Unlocked. items.js is not in the repository yet, so the current page's items are loaded. Save to GitHub to create it."}:{t:"ok",m:"Unlocked. Loaded "+S.items.length+" items from GitHub."};
    view="list";bump()
@@ -83,7 +83,7 @@ function save(){if(!S||busy)return;busy=true;note={t:"ok",m:"Saving to GitHub...
  var chain=Promise.resolve();
  S.photos.forEach(function(p){chain=chain.then(function(){return gh(repo()+"/contents/"+p.path,{method:"PUT",body:{message:"Admin: add photo "+p.path,content:p.b64,branch:C.REPO.branch}}).then(function(r){if(!r.ok&&r.status!==422)throw new Error(errText(r))})})});
  chain.then(function(){var body={message:"Admin: update catalog ("+S.items.length+" items)",content:b64enc(serialize(S.items)),branch:C.REPO.branch};if(S.sha)body.sha=S.sha;return gh(repo()+"/contents/"+FILE,{method:"PUT",body:body})})
- .then(function(r){if(!r.ok)throw new Error(errText(r));S.sha=r.json.content.sha;S.dirty=false;S.qn=0;S.photos=[];S.created=false;
+ .then(function(r){if(!r.ok)throw new Error(errText(r));S.sha=r.json.content.sha;S.orig=clone(S.items);view="list";S.dirty=false;S.qn=0;S.photos=[];S.created=false;
    C.ITEMS.length=0;S.items.forEach(function(i){C.ITEMS.push(clone(i))});C.prep();
    note={t:"ok",m:"Saved. The public site updates in a minute or two. Refresh it then to see the change."}})
  .catch(function(e){note={t:"err",m:String(e.message||e)}}).then(function(){busy=false;render()})}
@@ -112,9 +112,9 @@ function listView(){var items=S.items,ql=q.toLowerCase(),tot=0,dn=0;
  var chips=[["all","All"],["inc","Incomplete"],["done","Complete"],["nophoto","No photo"]].map(function(c){return'<button class="chip'+(lf===c[0]?" on":"")+'" data-lf="'+c[0]+'" type="button">'+c[1]+'</button>'}).join("");
  return shell('<p>Signed in to <b>'+esc(C.REPO.owner+"/"+C.REPO.repo)+'</b>, branch '+esc(C.REPO.branch)+'. '+items.length+' items. '+(S.dirty?'<span class="tag want">Unsaved changes</span>':'<span class="tag">Saved</span>')+(S.photos.length?' <span class="tag">'+S.photos.length+' photo(s) waiting</span>':"")+'</p>'
  +'<div class="qhero"><div><b>Catalog completeness</b> '+mbar({done:dn,total:tot,pct:all100})+'<br><small class="tn">'+(tot-dn)+' blank fields across '+items.length+' items.</small></div><span><button class="btn pri" id="qgo" type="button">Start the Fill-in Quest</button> <button class="btn" id="qph" type="button">Photo Safari</button></span></div>'
- +qaddHtml()+'<p class="abar"><button class="btn pri" id="add" type="button">Add item (full form)</button> <button class="btn'+(S.dirty?' pri':'')+'" id="sv" type="button"'+(busy||!S.dirty&&!S.photos.length?" disabled":"")+'>Save to GitHub</button> <button class="btn" id="bulk" type="button" title="Fill every blank field the timeline knows an exact match for">Auto-fill from timeline</button> '
+ +qaddHtml()+'<p class="abar"><button class="btn pri" id="add" type="button">Add item (full form)</button> <button class="btn'+(S.dirty?' pri':'')+'" id="sv" type="button"'+(busy||!S.dirty&&!S.photos.length?" disabled":"")+'>Review and save</button> <button class="btn" id="bulk" type="button" title="Fill every blank field the timeline knows an exact match for">Auto-fill from timeline</button> '
  +(S.undo&&S.undo.length?'<button class="btn" id="ud" type="button">Undo delete ('+esc(S.undo[S.undo.length-1].it.name)+')</button> ':"")
- +'<button class="btn" id="dl" type="button">Download items.js backup</button> <button class="btn" id="lk" type="button">Lock</button></p>'
+ +'<button class="btn" id="gaudit" type="button">Photo audit</button> <button class="btn" id="ghealth" type="button">Health check</button> <button class="btn" id="dl" type="button">Download items.js backup</button> <button class="btn" id="lk" type="button">Lock</button></p>'
  +'<div class="tools"><input id="aq" type="search" placeholder="Search items" aria-label="Search items" value="'+esc(q)+'">'+chips+'<select id="ls" aria-label="Sort"><option value="az"'+(ls==="az"?" selected":"")+'>A to Z</option><option value="low"'+(ls==="low"?" selected":"")+'>Least complete first</option><option value="new"'+(ls==="new"?" selected":"")+'>Newest first</option></select></div>'
  +(vis.length?vis.map(function(x){var bl=qFields(x.it).filter(function(f){return!qNA(x.it,f)&&!qHas(x.it,f)}).map(qShort);
   return'<div class="row qrow"><span><b>'+esc(x.it.name)+'</b> <small class="tn">'+esc(x.it.maker||"")+', '+esc(x.it.rel||x.it.year||"")+'</small><br>'+mbar(x.m)+(bl.length?' <small class="tn">Missing: '+esc(bl.slice(0,3).join(", "))+(bl.length>3?" and "+(bl.length-3)+" more":"")+'</small>':' <small class="tn">All filled in</small>')+'</span>'
@@ -282,16 +282,17 @@ var AC=null;function snd(seq){if(!QT||QT.mute)return;try{AC=AC||new(window.Audio
 var WB="https://en.wikipedia.org/w/api.php?format=json&origin=*&redirects=1&";
 function wget(u){return fetch(u,{credentials:"omit",referrerPolicy:"no-referrer"}).then(function(r){if(!r.ok)throw new Error("Wikipedia answered "+r.status);return r.json()})}
 function enc(s){return encodeURIComponent(s)}
-function qWimg(it){var w=QW[it.id]=QW[it.id]||{};if(w.img)return;
- if(typeof CIMG!=="undefined"&&CIMG[it.name]&&typeof cimgUrl==="function"){w.img={s:"ok",url:cimgUrl(it.name,800),page:cimgPage(it.name),why:"A free-licensed Wikimedia Commons photo already on file for this name",free:true,credit:"Photo: Wikimedia Commons contributor, free license (see the file page)"};return}
- w.img={s:"load"};var t=(it.wiki&&it.wiki.t)||it.name;
- wget(WB+"action=query&generator=search&gsrlimit=1&prop=pageimages&piprop=thumbnail|name&pithumbsize=800&gsrsearch="+enc(t)).then(function(j){
+function wimgLoad(key,term,done){var w=QW[key]=QW[key]||{};w.img={s:"load"};
+ wget(WB+"action=query&generator=search&gsrlimit=1&prop=pageimages&piprop=thumbnail|name&pithumbsize=800&gsrsearch="+enc(term)).then(function(j){
   var pg=j.query&&j.query.pages?j.query.pages[Object.keys(j.query.pages)[0]]:null;if(!pg||!pg.thumbnail||!pg.pageimage){w.img={s:"none"};return}
   var fn=pg.pageimage;return wget(WB+"action=query&prop=imageinfo&iiprop=extmetadata&iiextmetadatafilter=LicenseShortName|Artist|NonFree&titles="+enc("File:"+fn)).then(function(k){
    var p2=k.query.pages[Object.keys(k.query.pages)[0]],md=(p2.imageinfo&&p2.imageinfo[0]&&p2.imageinfo[0].extmetadata)||{},lic=String((md.LicenseShortName||{}).value||"").slice(0,30),
     free=p2.imagerepository==="shared"&&!md.NonFree,art=String((md.Artist||{}).value||"").replace(/<[^>]*>/g,"").replace(/\s+/g," ").trim().slice(0,60);
-   w.img={s:"ok",url:pg.thumbnail.source,page:"https://en.wikipedia.org/wiki/File:"+enc(fn.replace(/ /g,"_")),why:'Lead image of the Wikipedia article "'+pg.title+'"',free:free,credit:"Photo: "+(art||"see the file page")+(lic?", "+lic:"")+", via Wikimedia"}})
- }).catch(function(e){w.img={s:"err",m:e.message}}).then(function(){qSide()})}
+   w.img={s:"ok",url:pg.thumbnail.source,fn:fn,atitle:pg.title,page:"https://en.wikipedia.org/wiki/File:"+enc(fn.replace(/ /g,"_")),why:'Lead image of the Wikipedia article "'+pg.title+'"',free:free,credit:"Photo: "+(art||"see the file page")+(lic?", "+lic:"")+", via Wikimedia"}})
+ }).catch(function(e){w.img={s:"err",m:e.message}}).then(done)}
+function qWimg(it){var w=QW[it.id]=QW[it.id]||{};if(w.img)return;
+ if(typeof CIMG!=="undefined"&&CIMG[it.name]&&typeof cimgUrl==="function"){w.img={s:"ok",url:cimgUrl(it.name,800),page:cimgPage(it.name),why:"A free-licensed Wikimedia Commons photo already on file for this name",free:true,credit:"Photo: Wikimedia Commons contributor, free license (see the file page)"};return}
+ wimgLoad(it.id,(it.wiki&&it.wiki.t)||it.name,qSide)}
 function qWfacts(it){var w=QW[it.id]=QW[it.id]||{};if(w.f)return;w.f={s:"load"};var t=(it.wiki&&it.wiki.t)||it.name;
  wget(WB+"action=query&list=search&srlimit=1&srsearch="+enc(t)).then(function(j){var h=j.query&&j.query.search&&j.query.search[0];if(!h)throw new Error("No Wikipedia article found");var ti=h.title;return wget(WB+"action=parse&prop=text&disablelimitreport=1&disableeditsection=1&page="+enc(ti)).then(function(p){w.f={s:"ok",title:ti,rows:wparse(p.parse&&p.parse.text?p.parse.text["*"]:"")}})})
  .catch(function(e){w.f={s:"err",m:e.message}}).then(function(){qSide()})}
@@ -335,7 +336,7 @@ function wireCand(it,f){var qu=$("qu");if(qu)qu.onclick=function(){qGo(it,f,qSug
  var np=$("qnp");if(np)np.onclick=function(){QW[it.id].img={s:"none"};QS.skip[it.id+"|photo"]=1;QS.msg={t:"ok",m:"Next one."};QS.pop=0;render()}}
 function qLoadDefaults(o){return Object.assign({xp:0,filled:0,streak:0,best:0,photos:0,full:0,specs:0,takes:0,days:0,goalHit:0,today:0,mute:false,badges:{}},o||{})}
 function questView(){if(!QT)QT=qLoad();var lv=qLvl(QT.xp),base=40*(lv-1)*(lv-1),nxt=40*lv*lv,pc=Math.round((QT.xp-base)*100/(nxt-base)),td=C.today(),tdn=QT.day===td?QT.today:0;
- var h='<p class="abar"><button class="btn" id="bk" type="button">Back to the list</button> <button class="btn'+(S.dirty?' pri':'')+'" id="sv" type="button"'+(busy||!S.dirty&&!S.photos.length?" disabled":"")+'>Save to GitHub'+(S.qn?' ('+S.qn+' answers)':'')+'</button> <button class="chip" id="qsn" type="button">Sound: '+(QT.mute?"off":"on")+'</button></p>'
+ var h='<p class="abar"><button class="btn" id="bk" type="button">Back to the list</button> <button class="btn'+(S.dirty?' pri':'')+'" id="sv" type="button"'+(busy||!S.dirty&&!S.photos.length?" disabled":"")+'>Review and save'+(S.qn?' ('+S.qn+' answers)':'')+'</button> <button class="chip" id="qsn" type="button">Sound: '+(QT.mute?"off":"on")+'</button></p>'
  +'<div class="qhud"><div class="qlv"><b>Level '+lv+': '+esc(QTITLES[Math.min(lv-1,QTITLES.length-1)])+'</b> <span class="mbar"><i style="width:'+pc+'%"></i></span> <small>'+QT.xp+' XP, '+(nxt-QT.xp)+' to next</small></div>'
  +'<div class="qstat"><span title="Answers in a row">Combo x'+QT.streak+'</span><span title="Fields filled today">Today '+Math.min(tdn,QGOAL)+'/'+QGOAL+'</span><span title="Days played in a row">Day streak '+(QT.days||0)+'</span><span>Total '+QT.filled+'</span></div>'
  +'<div class="qtrophy">'+QB.map(function(b){var on=QT.badges[b[0]];return'<span class="qbd'+(on?" on":"")+'" title="'+esc(b[1]+": "+b[2])+'">'+(on?qIc(b[3],18):'<small>?</small>')+'<small>'+esc(on?b[1]:"")+'</small></span>'}).join("")+'</div></div>';
@@ -364,7 +365,7 @@ function questView(){if(!QT)QT=qLoad();var lv=qLvl(QT.xp),base=40*(lv-1)*(lv-1),
  +'<div class="qkind">'+qIc(q[0],24)+' <b>'+esc(q[1])+'</b></div><h3 class="qq">'+esc(f.l)+' <span class="tag">+'+f.xp+' XP</span></h3><p class="qwh">'+esc(q[2])+'</p>'+(f.hint?'<p class="tn">'+esc(f.hint)+'</p>':"")
  +'<div id="qcand">'+qCandHtml(it,f)+'</div>'+inp
  +'<p class="abar"><button class="btn pri" id="qa" type="button">Save answer</button> <button class="btn" id="qs" type="button">Skip</button> <button class="btn" id="qn" type="button" title="Hide this field for this item">Does not apply</button></p></div></div>');QS.pop=0}
-function wireQuest(){QS.pop=0;$("bk").onclick=function(){view="list";QS.msg=null;render()};$("sv").onclick=save;
+function wireQuest(){QS.pop=0;$("bk").onclick=function(){view="list";QS.msg=null;render()};$("sv").onclick=review;
  $("qsn").onclick=function(){QT.mute=!QT.mute;qStore();snd([660]);render()};
  host.querySelectorAll("[data-qm]").forEach(function(b){b.onclick=function(){QS.mode=b.dataset.qm;QS.screen="play";QS.pin=null;QS.msg=null;QS.skip={};render()}});
  var sd=$("qsd");if(sd)sd.onclick=function(){QS.showDone=!QS.showDone;render()};
@@ -375,7 +376,7 @@ function wireQuest(){QS.pop=0;$("bk").onclick=function(){view="list";QS.msg=null
  $("qed").onclick=function(){editing={i:cur.i,it:clone(S.items[cur.i]),newPhotos:[],priv:{}};if(!editing.it.photos)editing.it.photos=[];view="edit";note=null;render();window.scrollTo(0,0)};
  $("qa").onclick=function(){qGo(it,f,$("qv").value)};
  $("qv").onkeydown=function(e){if(e.key==="Enter"&&(f.t!=="a"||e.ctrlKey||e.metaKey)){e.preventDefault();$("qa").click()}};
- host.onkeydown=function(e){if(/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName))return;var k=e.key.toLowerCase();if(k==="k"&&$("qk"))$("qk").click();else if(k==="n"&&$("qnp"))$("qnp").click()};
+
  wireCand(it,f);
  $("qs").onclick=function(){QS.skip[it.id+"|"+f.k]=1;QT.streak=0;qStore();QS.msg={t:"ok",m:"Skipped. It comes back next visit."};QS.pin=null;snd([220]);render()};
  $("qn").onclick=function(){it.na=(it.na||[]).concat([f.k]);S.dirty=true;QS.msg={t:"ok",m:"Marked as not applicable for "+it.name+"."};QS.pin=null;render()};
@@ -391,7 +392,90 @@ function qaddHtml(){var h='<div class="qadd"><label for="qan">Quick add: type a 
  if(QA){h+='<div class="qres"><p class="tn">Pick the closest timeline entry and I will pre-fill it, or create a blank one.</p>'+QA.res.map(function(x,i){return'<button class="btn" data-qr="'+i+'" type="button">'+esc(x.r[2])+' <small>('+esc(x.r[0])+')</small></button>'}).join(" ")
   +'<p><label for="qat">Blank item type</label> <select id="qat">'+Object.keys(C.SPEC_TYPES).map(function(k){return'<option'+(k==="Computer"?" selected":"")+'>'+esc(k)+'</option>'}).join("")+'</select> <button class="btn" id="qbk" type="button">Create blank "'+esc(QA.q)+'"</button></p></div>'}
  return h+'</div>'}
-function render(){if(!host)return;host.innerHTML=!tok||!S?lockedView():view==="edit"?editView():view==="quest"?questView():listView();wire()}
+/* ---------- GitHub text files, photo audit, timeline photo safari, health check, review ---------- */
+function ghText(path){var u=repo()+"/contents/"+path+"?ref="+enc(C.REPO.branch);return gh(u).then(function(m){if(!m.ok)throw new Error(errText(m));return gh(u,{accept:"application/vnd.github.raw+json",text:true}).then(function(t){if(!t.ok)throw new Error(errText(t));return{sha:m.json.sha,text:t.text}})})}
+function ghPut(path,text,sha,msg){return gh(repo()+"/contents/"+path,{method:"PUT",body:{message:msg,content:b64enc(text),branch:C.REPO.branch,sha:sha}}).then(function(r){if(!r.ok)throw new Error(errText(r));return r})}
+function cimgRemove(text,titles){var set={};titles.forEach(function(t){set[t]=1});var out=[];text.split("\n").forEach(function(l){var m=/^"((?:[^"\\]|\\.)*)":\[/.exec(l);if(m){var k;try{k=JSON.parse('"'+m[1]+'"')}catch(e){k=m[1]}if(set[k])return}out.push(l)});return out.join("\n").replace(/,(\s*\n\};)/,"$1")}
+function cimgAdd(text,map){var i=text.indexOf("var CIMG={"),j=text.indexOf("\n};",i);if(i<0||j<0)throw new Error("images-data.js has an unexpected layout");var add="";Object.keys(map).forEach(function(k){add+=",\n"+JSON.stringify(k)+":"+JSON.stringify(map[k])});return text.slice(0,j)+add+text.slice(j)}
+function imgTest(u,ms){return new Promise(function(res){var im=new Image(),done=false,t=setTimeout(function(){fin("timeout")},ms||15000);function fin(s){if(done)return;done=true;clearTimeout(t);res(s)}im.onload=function(){fin("ok")};im.onerror=function(){fin("broken")};im.referrerPolicy="no-referrer";im.src=u})}
+function pool(list,n,fn){var i=0;function run(){if(i>=list.length)return Promise.resolve();var k=i++;return fn(list[k],k).then(run)}var ws=[];for(var j=0;j<n;j++)ws.push(run());return Promise.all(ws)}
+function fin(m){note={t:"ok",m:m}}
+/* photo audit */
+var PA={res:{},run:0};
+function auditTargets(){var t=[];S.items.forEach(function(it){(it.photos||[]).forEach(function(p,i){var u=C.safeUrl(p,"img");if(u)t.push({k:"i:"+it.id+":"+i,u:u,label:it.name,kind:"item",id:it.id})})});if(typeof CIMG!=="undefined")Object.keys(CIMG).forEach(function(k){t.push({k:"c:"+k,u:cimgUrl(k,160),label:k,kind:"cimg"})});return t}
+function tlHw(){return C.TL.filter(function(r){return/^(hw|pe)$/.test(r[1])})}
+function auditView(){var ts=auditTargets(),done=ts.filter(function(t){return PA.res[t.k]}).length,bad=ts.filter(function(t){return PA.res[t.k]&&PA.res[t.k]!=="ok"}),nop=S.items.filter(function(it){return!(it.photos||[]).length}),hw=tlHw(),have=hw.filter(function(r){return typeof CIMG!=="undefined"&&CIMG[r[2]]}).length;
+ return shell('<p class="abar"><button class="btn" id="bk" type="button">Back to the list</button></p><h3 class="sub">Photo audit</h3>'
+ +'<div class="qhero"><div><b>Timeline hardware with a real photo</b> '+mbar({done:have,total:hw.length,pct:Math.round(have*100/Math.max(1,hw.length))})+'<br><small class="tn">'+have+' of '+hw.length+'. The rest show drawn art.</small></div><button class="btn pri" id="gtls" type="button">Find more (Timeline Photo Safari)</button></div>'
+ +'<p>Catalog items without a photo: <b>'+nop.length+'</b> of '+S.items.length+'. '+(nop.length?'<button class="btn" id="qph" type="button">Photo Safari for items</button>':"")+'</p>'
+ +'<p>The audit loads every photo link here, in your browser, where Wikimedia is reachable: '+ts.length+' images. '+(PA.run?'Testing '+done+' of '+ts.length+'...':'<button class="btn pri" id="parun" type="button">Run the audit</button>')+'</p>'
+ +(done?'<p><b>'+(done-bad.length)+'</b> load fine, <b>'+bad.length+'</b> do not.</p>':"")
+ +(bad.length?bad.map(function(t){return'<div class="row"><span><b>'+esc(t.label)+'</b> <small class="tn">'+(t.kind==="cimg"?"timeline photo":"catalog photo")+', '+esc(PA.res[t.k])+'</small></span>'+(t.kind==="item"?'<button class="btn" data-he="'+esc(t.id)+'" type="button">Edit</button>':"")+'</div>'}).join("")+(bad.some(function(t){return t.kind==="cimg"})?'<p><button class="btn danger" id="pafix" type="button">Remove the broken timeline photos from images-data.js</button></p>':""):""))}
+function auditRun(){var ts=auditTargets();PA.run=1;PA.res={};render();pool(ts,6,function(t){return imgTest(t.u).then(function(r){PA.res[t.k]=r;if(view==="audit"&&Object.keys(PA.res).length%15===0)render()})}).then(function(){PA.run=0;if(view==="audit")render()})}
+function auditFix(){var bad=auditTargets().filter(function(t){return t.kind==="cimg"&&PA.res[t.k]&&PA.res[t.k]!=="ok"}).map(function(t){return t.label});if(!bad.length||busy)return;if(!confirm("Remove "+bad.length+" broken photo links from images-data.js? They will show drawn art instead."))return;
+ busy=true;fin("Updating images-data.js...");render();ghText("images-data.js").then(function(f){return ghPut("images-data.js",cimgRemove(f.text,bad),f.sha,"Admin: remove "+bad.length+" broken photo links")}).then(function(){bad.forEach(function(k){delete CIMG[k]});fin("Removed "+bad.length+" broken links. The site updates in a minute or two.")}).catch(function(e){note={t:"err",m:String(e.message||e)}}).then(function(){busy=false;render()})}
+/* timeline photo safari: find a free Wikipedia/Commons photo for every timeline hardware entry */
+var TLS={rej:{},kept:0};
+function tlsQueue(){var ord={"Console or handheld":0,"Computer":1,"Digital camera":2,"Media player":3,"Expansion card":4,"Sound or MIDI":5},X=C.TLX||{};return tlHw().filter(function(r){return!(typeof CIMG!=="undefined"&&CIMG[r[2]])&&!TLS.rej[r[2]]}).map(function(r){var x=X[r[2]]||{};return{r:r,o:ord[x.type]!=null?ord[x.type]:9}}).sort(function(a,b){return a.o-b.o||(a.r[0]<b.r[0]?-1:1)})}
+function tlsCand(t){var g=(QW["t:"+t]||{}).img;if(!g||g.s==="load")return'<p class="tn">Searching Wikipedia...</p>';
+ if(g.s==="ok"){return'<figure class="qcimg"><img src="'+esc(C.safeUrl(g.url,"img"))+'" alt="Candidate photo" referrerpolicy="no-referrer"><figcaption><small>'+esc(g.why)+'. <a href="'+esc(C.safeUrl(g.page,"link"))+'" target="_blank" rel="noopener noreferrer">File page</a></small></figcaption></figure>'
+  +(g.free?'<p><button class="btn pri" id="tk" type="button">Yes, that is it (K)</button> <button class="btn" id="tn" type="button">Not it (N)</button></p>':'<p class="msg err">That image looks non-free, so it is not offered.</p><p><button class="btn" id="tn" type="button">Next (N)</button></p>')}
+ return'<p class="tn">'+(g.s==="err"?"Wikipedia is not reachable ("+esc(g.m||"")+").":"No free photo found.")+'</p><p><button class="btn" id="tn" type="button">Next (N)</button></p>'}
+function tlsView(){var q=tlsQueue(),cur=q[0],n=Object.keys(S.cimgAdd||{}).length,hw=tlHw(),have=hw.filter(function(r){return typeof CIMG!=="undefined"&&CIMG[r[2]]}).length;
+ var h='<p class="abar"><button class="btn" id="bk" type="button">Back to the list</button> <button class="btn'+(n?' pri':'')+'" id="tsave" type="button"'+(n&&!busy?"":" disabled")+'>Save '+n+' photo'+(n===1?"":"s")+' to GitHub</button></p><h3 class="sub">Timeline Photo Safari</h3>'
+ +'<div class="qhero"><div><b>Real photos on the timeline</b> '+mbar({done:have,total:hw.length,pct:Math.round(have*100/Math.max(1,hw.length))})+'<br><small class="tn">'+have+' of '+hw.length+' hardware entries. '+q.length+' left to try. Only free-licensed Wikimedia Commons images are offered.</small></div></div>';
+ if(!cur)return shell(h+'<div class="qcard"><h3 class="qq">Every hardware entry has been tried.</h3></div>');
+ var r=cur.r,x=(C.TLX||{})[r[2]]||{};
+ return shell(h+'<div class="qcard"><div class="qitem"><b>'+esc(r[2])+'</b> <small class="tn">'+esc(r[0])+' '+esc(x.maker||"")+' '+esc(x.type||"")+'</small></div><h3 class="qq">Is this a photo of it?</h3><p class="qwh">Check that it shows this product (or a close sibling). Wikipedia picks the article image, so family articles sometimes show a related model.</p><div id="tlcand">'+tlsCand(r[2])+'</div></div>')}
+function tlsRefresh(){var q=tlsQueue()[0];if(!q||view!=="tlsafari")return;var el=$("tlcand");if(!el)return;el.innerHTML=tlsCand(q.r[2]);wireTls(q.r[2])}
+function wireTls(t){var k=$("tk");if(k)k.onclick=function(){var g=QW["t:"+t].img;S.cimgAdd=S.cimgAdd||{};var cap=g.atitle&&g.atitle.toLowerCase()===t.toLowerCase()?"A "+t:'The Wikipedia photo for "'+(g.atitle||t)+'" (family or related model)';S.cimgAdd[t]=[g.fn,cap.replace(/[<>&"]/g,"")];if(typeof CIMG!=="undefined")CIMG[t]=S.cimgAdd[t];if(!QT)QT=qLoad();QT.xp+=8;QT.photos++;qStore();snd([660,880]);render()};
+ var n=$("tn");if(n)n.onclick=function(){TLS.rej[t]=1;render()}}
+function wireTlsView(){$("bk").onclick=function(){view="list";render()};$("tsave").onclick=tlsSave;
+ var q=tlsQueue()[0];if(!q)return;var t=q.r[2];wireTls(t);if(!QW["t:"+t])wimgLoad("t:"+t,t,tlsRefresh)}
+function tlsSave(){var m=S.cimgAdd||{},ks=Object.keys(m);if(!ks.length||busy)return;busy=true;fin("Saving "+ks.length+" photo links to images-data.js...");render();
+ ghText("images-data.js").then(function(f){return ghPut("images-data.js",cimgAdd(cimgRemove(f.text,ks),m),f.sha,"Admin: add "+ks.length+" timeline photos")}).then(function(){S.cimgAdd={};fin("Saved "+ks.length+" photo links. The site shows them in a minute or two.")}).catch(function(e){note={t:"err",m:String(e.message||e)}}).then(function(){busy=false;render()})}
+/* health check */
+function healthView(){var it=S.items,rows=[],nk2=function(s){return nk(s).replace(/ copy( \d+)?$/,"")};
+ function sec(t,why,list,fn){return'<h3 class="sub">'+esc(t)+' ('+list.length+')</h3><p class="tn">'+esc(why)+'</p>'+(list.length?list.slice(0,12).map(fn).join("")+(list.length>12?'<p class="tn">and '+(list.length-12)+' more.</p>':""):'<p class="tn">None. Nice.</p>')}
+ function irow(x,w){return'<div class="row"><span><b>'+esc(x.name)+'</b> <small class="tn">'+esc(w||"")+'</small></span><span class="rb"><button class="btn" data-hq="'+esc(x.id)+'" type="button">Quest</button> <button class="btn" data-he="'+esc(x.id)+'" type="button">Edit</button></span></div>'}
+ var seen={},dups=[];it.forEach(function(x){var k=nk2(x.name);if(seen[k])dups.push([seen[k],x]);else seen[k]=x});
+ var incomplete=it.map(function(x){return{x:x,m:qMeter(x)}}).filter(function(o){return o.m.pct<50}).sort(function(a,b){return a.m.pct-b.m.pct});
+ var names=it.map(function(x){return nk(x.name)});
+ var gap=tlHw().filter(function(r){var x=(C.TLX||{})[r[2]]||{};return/^(Computer|Console or handheld|Digital camera|Media player)$/.test(x.type)&&!names.some(function(n){var t=nk(r[2]);return n===t||n.indexOf(t)>=0||t.indexOf(n)>=0})}).sort(function(a,b){return(typeof CIMG!=="undefined"&&CIMG[b[2]]?1:0)-(typeof CIMG!=="undefined"&&CIMG[a[2]]?1:0)||(a[0]<b[0]?-1:1)});
+ var A=it.filter(function(x){return x.relx}),B=it.filter(function(x){return/estimat|\*\s*$|about|approx/i.test(x.msrp||"")}),Cn=it.filter(function(x){return!qTL(x)}),D=it.filter(function(x){return!(x.photos||[]).length});
+ return shell('<p class="abar"><button class="btn" id="bk" type="button">Back to the list</button></p><h3 class="sub">Health check</h3>'
+ +'<div class="qhero"><div><b>'+it.length+' items</b><br><small class="tn">'+D.length+' without a photo, '+incomplete.length+' under half complete, '+dups.length+' possible duplicates.</small></div></div>'
+ +sec("Under half complete","Quickest wins for the quest.",incomplete,function(o){return irow(o.x,o.m.pct+"% complete")})
+ +sec("Unconfirmed release dates","Marked with an asterisk on the site. Add a source and clear the flag.",A,function(x){return irow(x,x.rel||x.year)})
+ +sec("Estimated prices","The MSRP text says estimated, about or ends with a star.",B,function(x){return irow(x,x.msrp)})
+ +sec("Possible duplicates","Same name after removing 'copy'.",dups,function(p){return irow(p[1],"same name as "+p[0].id)})
+ +sec("Not found on the timeline","The quest cannot suggest answers for these. Check the spelling against the timeline title.",Cn,function(x){return irow(x,"no timeline match")})
+ +sec("No photo","Photo Safari finds free ones.",D,function(x){return irow(x,"")})
+ +'<h3 class="sub">On the timeline, not in your museum ('+gap.length+')</h3><p class="tn">Computers, consoles, cameras and players. Ones with a real photo are listed first.</p>'
+ +gap.slice(0,12).map(function(r){return'<div class="row"><span><b>'+esc(r[2])+'</b> <small class="tn">'+esc(r[0].slice(0,4))+((typeof CIMG!=="undefined"&&CIMG[r[2]])?", has a photo":"")+'</small></span><button class="btn" data-ha="'+esc(r[2])+'" type="button">Add to museum</button></div>'}).join(""))}
+/* review before saving, with per-item revert */
+function diffItems(){var o={},n={},d={add:[],del:[],chg:[]};S.orig.forEach(function(x){o[x.id]=x});S.items.forEach(function(x){n[x.id]=x;if(!o[x.id])d.add.push(x);else{var ch=[],a=o[x.id];Object.keys(Object.assign({},a,x)).forEach(function(k){if(k==="privEnc")return;var p=sj(a[k]),q=sj(x[k]);if(p!==q)ch.push([k,p,q])});if(ch.length)d.chg.push({it:x,ch:ch})}});S.orig.forEach(function(x){if(!n[x.id])d.del.push(x)});return d}
+function sj(v){return JSON.stringify(v,function(k,val){if(val&&typeof val==="object"&&!Array.isArray(val)){var o={};Object.keys(val).sort().forEach(function(x){o[x]=val[x]});return o}return val})}
+function sh(j){j=j==null?"(blank)":String(j);return j.length>90?j.slice(0,90)+"...":j}
+function reviewView(){var d=diffItems(),h='<p class="abar"><button class="btn" id="bk" type="button">Back</button> <button class="btn pri" id="rvok" type="button"'+(busy?" disabled":"")+'>Confirm: save to GitHub</button></p><h3 class="sub">Review before saving</h3>'
+ +'<p><b>'+d.add.length+'</b> added, <b>'+d.chg.length+'</b> changed, <b>'+d.del.length+'</b> removed'+(S.photos.length?', '+S.photos.length+' photo file(s) to upload':"")+'. Nothing is published until you confirm.</p>';
+ d.add.forEach(function(x){h+='<div class="row"><span>+ <b>'+esc(x.name)+'</b> <small class="tn">new item</small></span></div>'});
+ d.del.forEach(function(x){h+='<div class="row"><span>- <b>'+esc(x.name)+'</b> <small class="tn">removed</small></span><button class="btn" data-rs="'+esc(x.id)+'" type="button">Restore</button></div>'});
+ d.chg.forEach(function(c){h+='<details class="rvd" open><summary><b>'+esc(c.it.name)+'</b> <small class="tn">'+c.ch.length+' field'+(c.ch.length===1?"":"s")+' changed</small> <button class="btn" data-rv="'+esc(c.it.id)+'" type="button">Revert this item</button></summary><table class="rvt"><tbody>'+c.ch.map(function(f){return'<tr><th>'+esc(f[0])+'</th><td><del>'+esc(sh(f[1]))+'</del></td><td><ins>'+esc(sh(f[2]))+'</ins></td></tr>'}).join("")+'</tbody></table></details>'});
+ if(!d.add.length&&!d.del.length&&!d.chg.length)h+='<p class="empty">No item changes'+(S.photos.length?", only photo uploads":"")+'.</p>';return shell(h)}
+function review(){if(!S.dirty&&!S.photos.length)return;view="review";note=null;render();window.scrollTo(0,0)}
+function wireMisc(){var bk=$("bk");if(bk)bk.onclick=function(){view="list";render()};
+ host.querySelectorAll("[data-he]").forEach(function(b){b.onclick=function(){var i=S.items.findIndex(function(x){return x.id===b.dataset.he});if(i<0)return;editing={i:i,it:clone(S.items[i]),newPhotos:[],priv:{}};if(!editing.it.photos)editing.it.photos=[];view="edit";note=null;render();window.scrollTo(0,0)}});
+ host.querySelectorAll("[data-hq]").forEach(function(b){b.onclick=function(){QS.mode="item";QS.item=b.dataset.hq;QS.screen="play";QS.pin=null;QS.msg=null;QS.skip={};view="quest";render();window.scrollTo(0,0)}});
+ host.querySelectorAll("[data-ha]").forEach(function(b){b.onclick=function(){var r=C.TL.filter(function(x){return x[2]===b.dataset.ha})[0];if(r)qaddMake(r[2],r)}});
+ var g=$("gtls");if(g)g.onclick=function(){view="tlsafari";render();window.scrollTo(0,0)};
+ var p=$("qph");if(p)p.onclick=function(){QS.mode="photo";QS.screen="play";QS.skip={};QS.msg=null;view="quest";render()};
+ var pr=$("parun");if(pr)pr.onclick=auditRun;var pf=$("pafix");if(pf)pf.onclick=auditFix;
+ var ok=$("rvok");if(ok)ok.onclick=save;
+ var upd=function(){var d=diffItems();S.dirty=!!(d.add.length||d.del.length||d.chg.length);render()};
+ host.querySelectorAll("[data-rv]").forEach(function(b){b.onclick=function(){var i=S.items.findIndex(function(x){return x.id===b.dataset.rv}),o=S.orig.filter(function(x){return x.id===b.dataset.rv})[0];if(i>=0&&o){S.items[i]=clone(o);upd()}}});
+ host.querySelectorAll("[data-rs]").forEach(function(b){b.onclick=function(){var o=S.orig.filter(function(x){return x.id===b.dataset.rs})[0];if(o){S.items.push(clone(o));upd()}}})}
+function render(){if(!host)return;host.innerHTML=!tok||!S?lockedView():view==="edit"?editView():view==="quest"?questView():view==="audit"?auditView():view==="tlsafari"?tlsView():view==="health"?healthView():view==="review"?reviewView():listView();wire()}
 function $(id){return host.querySelector("#"+id)}
 function val(id){var e=$(id);return e?e.value.trim():""}
 function pairs(text,kind){var out=[],bad=null;text.split("\n").forEach(function(l,n){l=l.trim();if(!l)return;var p=l.split("|").map(function(x){return x.trim()});
@@ -434,6 +518,8 @@ function wire(){if(!host)return;host.oninput=bump;
  var vb=$("vback");if(vb)vb.onclick=function(){pasteMode=false;note=null;render()};
  var gn=$("gen");if(gn)gn.onclick=function(){var p=genPass();$("pp").value=p;$("genout").textContent="Save this in your password manager now: "+p};
  var g=$("go");if(g){var t=$("tk");g.onclick=function(){var pp=$("pp").value,tv=t.value;if(pp){var pr=passProblem(pp);if(pr){note={t:"err",m:pr};render();return}}pasteMode=false;t.value="";if(pp)PP=pp;unlock(tv,false,pp)};t.onkeydown=function(e){if(e.key==="Enter")g.click()};if(!busy)t.focus();return}
+ if(view==="audit"||view==="health"||view==="review"){wireMisc();return}
+ if(view==="tlsafari"){wireTlsView();return}
  if(view==="quest"){wireQuest();return}
  if(view==="edit"){
   $("nb").onclick=function(){var el=host.querySelector("input[data-bl]:placeholder-shown");if(el){el.scrollIntoView({block:"center"});el.focus()}else{$("ferr").innerHTML='<div class="msg ok">No blank basics or specs left.</div>'}};
@@ -460,7 +546,7 @@ function wire(){if(!host)return;host.oninput=bump;
   return}
  $("lk").onclick=function(){if(S.dirty&&!confirm("You have unsaved changes. Lock anyway and lose them?"))return;lock("Locked.")};
  $("add").onclick=function(){editing={i:-1,it:{type:"Other",photos:[]},newPhotos:[],priv:{}};if(PP){editing.privOk=true}view="edit";note=null;render()};
- $("sv").onclick=save;
+ $("sv").onclick=review;
  $("dl").onclick=function(){var b=new Blob([serialize(S.items)],{type:"text/javascript"}),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="items.js";document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(a.href)},2000)};
  var aq=$("aq");aq.oninput=function(){q=aq.value;var pos=aq.selectionStart;render();var n=$("aq");n.focus();try{n.setSelectionRange(pos,pos)}catch(e){}};
  host.querySelectorAll("[data-e]").forEach(function(b){b.onclick=function(){var i=+b.dataset.e;editing={i:i,it:clone(S.items[i]),newPhotos:[],priv:{}};if(!editing.it.photos)editing.it.photos=[];view="edit";note=null;render();window.scrollTo(0,0);if(PP&&editing.it.privEnc)decPriv(editing.it.privEnc,PP).then(function(o){editing.priv=o||{};editing.privOk=true;render()},function(){})}});
@@ -471,6 +557,7 @@ function wire(){if(!host)return;host.oninput=bump;
  host.querySelectorAll("[data-lf]").forEach(function(b){b.onclick=function(){lf=b.dataset.lf;render()}});
  $("ls").onchange=function(){ls=this.value;render()};
  $("qgo").onclick=function(){QS.mode="quick";QS.screen="map";QS.skip={};QS.msg=null;view="quest";note=null;render();window.scrollTo(0,0)};
+ $("gaudit").onclick=function(){view="audit";render()};$("ghealth").onclick=function(){view="health";render()};
  $("qph").onclick=function(){QS.mode="photo";QS.screen="play";QS.skip={};QS.msg=null;view="quest";note=null;render();window.scrollTo(0,0)};
  var qab=$("qab");qab.onclick=function(){var v=$("qan").value.trim();if(v.length<2)return;var res=tlMatches(v);if(res.length&&res[0].sc===100&&(!res[1]||res[1].sc<100)){qaddMake(res[0].r[2],res[0].r);return}QA={q:v,res:res};render();var n=$("qan");n.focus()};
  $("qan").onkeydown=function(e){if(e.key==="Enter")qab.click()};
@@ -479,8 +566,9 @@ function wire(){if(!host)return;host.oninput=bump;
  $("bulk").onclick=function(){if(confirm("Fill every blank field that has an exact timeline match? You can review the result before saving."))bulkFill()};
  var ud=$("ud");if(ud)ud.onclick=function(){var u=S.undo.pop();S.items.splice(Math.min(u.i,S.items.length),0,u.it);S.dirty=true;note={t:"ok",m:"Brought back "+u.it.name+"."};render()}}
 function collectSoft(){var r=null;try{r=collect().o}catch(e){}return r||editing.it}
-function mount(el,ctx){C=ctx;host=el;render();bump()}
-function unmount(){host=null}
+function kd(e){if(!host||/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)||e.ctrlKey||e.metaKey||e.altKey)return;var k=e.key.toLowerCase(),a=view==="tlsafari"?["tk","tn"]:view==="quest"?["qk","qnp"]:null;if(!a)return;var el=k==="k"?$(a[0]):k==="n"?$(a[1]):null;if(el)el.click()}
+function mount(el,ctx){C=ctx;host=el;document.addEventListener("keydown",kd);render();bump()}
+function unmount(){host=null;document.removeEventListener("keydown",kd)}
 window.addEventListener("beforeunload",function(e){if(S&&S.dirty){e.preventDefault();e.returnValue=""}});
 window.CMAdmin={mount:mount,unmount:unmount,_t:{serialize:serialize,parseItems:parseItems}};
 })();

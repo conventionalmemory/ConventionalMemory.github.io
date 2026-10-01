@@ -298,13 +298,30 @@ footer{margin-top:30px;padding:20px 0 30px;border-top:2px solid var(--line);font
 .adm .qadd{border:2px dashed var(--line);padding:8px 12px;margin:10px 0}.adm .qadd .abar input{flex:1 1 220px}.adm .qres .btn{margin:2px}
 @keyframes qfloat{from{transform:translateY(0);opacity:1}to{transform:translateY(-34px);opacity:0}}@keyframes qblink{50%{outline-color:transparent}}@keyframes qpulse{50%{background:var(--bg)}}
 @media (prefers-reduced-motion:reduce){.adm .qpop,.adm .qaward,.adm .qchip.now{animation:none}}
+
+/* play pages and admin review */
+.pl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}.pl-grid em{display:block;color:var(--lk);font-style:normal;margin-top:4px}
+.pl-hud{display:flex;flex-wrap:wrap;gap:6px 18px}.pl-hud span{border-bottom:2px solid var(--line)}
+.pl-case{max-width:420px}.pl-case .ph{border:3px double var(--line);position:relative}.pl-art{position:relative}.pl-art svg{width:100%;height:100%;display:block}
+.pl-q h3,.pl-res h3{font-size:26px;margin:10px 0}.pl-opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;max-width:760px}.pl-opts .btn{text-align:left;font-size:18px;padding:10px 14px}
+.pl-pip{display:inline-block;width:14px;height:14px;border:2px solid var(--line);margin-right:4px;vertical-align:middle}.pl-pip.on{background:var(--blue)}.pl-pip.now{outline:2px solid var(--blue)}
+.pl-sq{display:flex;gap:6px;margin:6px 0}.pl-sq i{width:30px;height:30px;border:2px solid var(--line)}.pl-sq i.ok{background:#00aa00}.pl-sq i.no{background:#aa0000}
+.pl-fb{padding-left:0;list-style:none}.pl-fb li{border-left:6px solid var(--line);padding:4px 10px;margin:6px 0}.pl-fb li.ok{border-color:#00aa00}.pl-fb li.no{border-color:#aa0000}
+.pl-share textarea{width:100%;max-width:520px;font:inherit;background:var(--panel);color:var(--ink);border:2px solid var(--line);padding:8px}
+.pl-slots{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}.pl-slot{border:2px solid var(--line);background:var(--panel);padding:8px 10px;margin:0}.pl-slot legend{padding:0 6px}
+.pl-opt{display:flex;gap:8px;align-items:flex-start;padding:6px;border:2px solid transparent;cursor:pointer}.pl-opt.on{border-color:var(--blue);background:color-mix(in srgb,var(--blue) 10%,var(--panel))}.pl-opt input{margin-top:5px}.pl-opt small{display:block;color:var(--mute)}.pl-cost{float:right;margin-left:10px;font-style:normal;border:2px solid var(--line);padding:0 6px;font-size:14px}
+.pl-meter{margin:10px 0;font-size:18px}.pl-meter.over{color:#aa0000}.pl-meter.over .mbar{border-color:#aa0000}
+.pl-games{list-style:none;padding:0;columns:2 280px}.pl-games li{padding:2px 8px;border-left:6px solid var(--line);margin:3px 0;break-inside:avoid}.pl-games li.great{border-color:#00aa00}.pl-games li.ok{border-color:#55aa55}.pl-games li.no{border-color:#aa0000}
+.pl-ctl{display:flex;flex-wrap:wrap;gap:12px}.pl-ctl fieldset{border:2px solid var(--line);background:var(--panel)}.pl-ctl label{display:block;padding:2px 0}
+.pl input[type=text],.pl input:not([type]),.pl select{max-width:100%;width:min(100%,460px);font:inherit}.pl-prev{border:3px double var(--line);max-width:760px;background:#888}.pl-prev>svg{width:100%;height:auto;display:block}
+.adm .rvd{border:2px solid var(--line);background:var(--panel);margin:8px 0;padding:6px 10px}.adm .rvt{border-collapse:collapse;width:100%}.adm .rvt th{text-align:left;width:130px;vertical-align:top;padding:3px 6px}.adm .rvt td{padding:3px 6px;word-break:break-word}.adm .rvt del{color:#aa0000}.adm .rvt ins{color:#007700;text-decoration:none}
 </style>
 </head>
 <body>
 <div class="wrap">
 <header class="top">
 <a href="#/">C:\&gt;ConventionalMemory.io<span class="cur" aria-hidden="true">_</span></a>
-<nav><a href="#/catalog">Catalog</a><a href="#/timeline">Timeline</a><a href="#/wanted">Wanted<span class="new">NEW!</span></a><a href="#/follow">Follow</a><button class="btn" id="th" type="button" style="margin-left:16px">Theme</button></nav>
+<nav><a href="#/catalog">Catalog</a><a href="#/timeline">Timeline</a><a href="#/play">Play<span class="new">NEW!</span></a><a href="#/wanted">Wanted</a><a href="#/follow">Follow</a><button class="btn" id="th" type="button" style="margin-left:16px">Theme</button></nav>
 </header>
 <main id="app"></main>
 <footer><div id="retro"></div><div class="prompt"><label for="cmd">C:\&gt;</label><input id="cmd" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Type a command: dir, mem, random, scale, timeline, quote, help"><div id="cout" aria-live="polite">Type help and press Enter.</div></div><a href="#/changes">Changes</a> &middot; <a href="#/quotes">Quotes</a> &middot; <a href="#/stats">Stats</a> &middot; <a href="#/scale">Scale</a> &middot; <a href="#/mem">Memory map</a> &middot; <a href="#/maze">Basement (staff only)</a><br> &copy; Conventional Memory LLC. Content on TikTok, YouTube, Instagram and Facebook.</footer>

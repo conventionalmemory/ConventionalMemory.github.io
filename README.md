@@ -20,6 +20,7 @@ A retro DOS-style museum catalog, timeline and trivia game. It is a plain static
 | `icons.js` | About 70 small pixel icons (12 x 12, EGA colors) and the tables that pick one by kind, category, genre or system |
 | `art.js` | Generated artwork: 40+ product drawings, 30+ game scenes, seeded abstract covers, packaging (PC box, cartridge, disc case, arcade cabinet, floppy), movie posters, front pages and badges |
 | `ads.js` | Tribute ads: product drawings and the per-item ad |
+| `play.js` | The Play pages, loaded on demand: Daily Dig (`#/daily`), Build Your Rig (`#/build`), Ad Lab (`#/adlab`) and the hub (`#/play`) |
 | `admin.js` | The Admin page (`#/admin`), including the Fill-in Quest |
 | `images-data.js` | `CIMG`: about 190 real photos hotlinked from Wikimedia Commons (https only), with a credit link to each Commons file page. If one fails to load it is hidden and the drawn art shows instead |
 
@@ -48,6 +49,21 @@ Every item gets a completeness meter: the share of useful fields (maker, date, M
 **Start the Fill-in Quest** opens a level-select map. Every item is a cartridge whose picture regains color as it is completed, with 1 to 3 stars. Pick one, or play Quick wins (fields the timeline can answer in one tap come first), **Photo Safari** (only photos), or Surprise me. Each card names the quest ("The Price Hunt", "Spec Sheet Dungeon"), says where the answer will show on the site, and has a checklist of every field on that item; click a blank tile to jump to it. Help is built in: **Use this** applies the timeline's answer, **Ask Wikipedia** reads the article's infobox for maker, date, price and specs, and the photo step searches for a free-licensed Commons image to keep or reject (K and N keys). Only free images are offered, and the credit is saved with the photo.
 
 Rewards: XP and 10 titled levels, a combo for answers in a row, a daily goal (5 fields), a day streak, 14 badges with pixel icons, loot drops every fifth answer, a confetti and ITEM RESTORED banner when an item hits 100%, and optional retro beeps (Sound toggle). Progress is kept in this browser only. Skip, or press Does not apply to hide a field for that item (stored as `na`). Photos can be added by https address or from a file. Nothing is published until you press Save to GitHub.
+
+## Admin tools for photos and data quality
+
+- **Review and save**: the Save button first shows a review: items added, removed and changed, with each changed field as old and new, and per-item Revert or Restore. Nothing is published until you confirm.
+- **Photo audit**: loads every photo link in your browser (where Wikimedia is reachable) and lists the ones that fail. One button removes the broken timeline photos from `images-data.js`.
+- **Timeline Photo Safari**: walks every timeline hardware entry that has no real photo, asks Wikipedia for its lead image, and offers it only if it is hosted on Wikimedia Commons (free license). Press K to keep or N to skip. Kept photos are saved to `images-data.js` in one commit.
+- **Health check**: items under half complete, unconfirmed dates, estimated prices, possible duplicates, items the timeline cannot match, items with no photo, and timeline hardware that is not in the museum yet (with an Add button).
+
+## Play pages
+
+- **Daily Dig** (`#/daily`): three questions a day from one timeline entry (year, price or maker, which came first). Same questions for everyone each day, a streak, and a copy-and-paste result line. `#/daily/practice` is unlimited and does not count.
+- **Build Your Rig** (`#/build/<year>`, 1991 to 2002): spend 10 points on a CPU, RAM, video and sound card, then each real game of the era with requirements on file is checked against your rig. Points are a game mechanic, not prices.
+- **Ad Lab** (`#/adlab`): pick any item or timeline entry, style (flyer, magazine, catalog), size and headline, and download the tribute ad as a PNG. The store and phone number are made up.
+
+Progress for these is kept in this browser only.
 
 ## Quick fill and private fields (Admin page)
 
