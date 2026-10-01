@@ -170,3 +170,9 @@ Every timeline entry, ad and catalog item without a photo gets a picture drawn i
 
 ### Round 7d: Photo Safari candidates
 Photo Safari (items and timeline) now searches Wikipedia article images and Commons files (several query variants incl. maker), scores them against the name/model tokens, drops logos/diagrams/screenshots/tiny images, and offers up to 8 ranked thumbnails to choose from. Needs `commons.wikimedia.org` in the CSP connect-src.
+
+### Round 8: looser Photo Safari, more photo areas, drafts, research pass
+- Photo Safari tries progressively looser searches (full name, simplified, core words, maker plus line, family) and marks "looser match" thumbnails. Every card has a "search for something else" box.
+- Timeline Safari can target hardware, software, games, or events/web/other; a button jumps to catalog items.
+- 69 of 74 items are drafts (hidden publicly) until verified; 5 test items stay live. Draft items still show in admin.
+- Research pass: eBay/ShopGoodwill and older items got confirmed maker/model/year/price/specs/text where sources agreed. Each has `refs` (shown as Sources), `verify` (what is unconfirmed, admin-side) and `conf` (high/med/low).

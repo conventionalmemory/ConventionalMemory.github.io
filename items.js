@@ -151,7 +151,19 @@ var ITEMS=[
    "u": "https://en.wikipedia.org/wiki/Toshiba_Libretto",
    "summary": ""
   },
-  "sample": true
+  "sample": true,
+  "refs": [
+   {
+    "t": "Toshiba press release: Libretto 110CT mini-notebook (3 Nov 1998, Neuss)",
+    "u": "https://criggie.org.nz/laptop/libretto110/Libretto110CT.pdf"
+   },
+   {
+    "t": "Toshiba Libretto (Wikipedia)",
+    "u": "https://en.wikipedia.org/wiki/Toshiba_Libretto"
+   }
+  ],
+  "verify": "Original US MSRP and the PA1280U-T2W98 part number were not confirmed from a cited page.",
+  "conf": "high"
  },
  {
   "id": "sound-blaster-16",
@@ -196,7 +208,20 @@ var ITEMS=[
    "u": "https://en.wikipedia.org/wiki/Sound_Blaster_16",
    "summary": ""
   },
-  "text": "Sample entry. An ISA sound card that defined PC audio for a generation of DOS games."
+  "text": "The Sound Blaster 16 was Creative's first Sound Blaster card with CD-quality 44 kHz, 16-bit digital audio sampling, released in June 1992. The first model was the CT1740, and early cards used a discrete Yamaha OPL3 chip for FM music.",
+  "model": "Sound Blaster 16",
+  "refs": [
+   {
+    "t": "DOS Days - Sound Blaster 16",
+    "u": "https://dosdays.co.uk/topics/Manufacturers/sb16.php"
+   },
+   {
+    "t": "Sound Blaster 16 (Wikipedia)",
+    "u": "https://en.wikipedia.org/wiki/Sound_Blaster_16"
+   }
+  ],
+  "verify": "Launch price and CT1740 specifics (IRQ/DMA defaults, ports) not confirmed on a fetched page; model number differs by revision so only the first model is recorded.",
+  "conf": "med"
  },
  {
   "id": "ibm-model-m",
@@ -224,7 +249,16 @@ var ITEMS=[
    "u": "https://en.wikipedia.org/wiki/Model_M_keyboard",
    "summary": ""
   },
-  "text": "Sample entry. The buckling-spring keyboard people still type on today."
+  "text": "The Model M is IBM's buckling-spring keyboard, introduced in 1985 as the IBM Enhanced Keyboard. The original 1391401 used a 101-key layout, with either an AT or a PS/2 connector, and most units until about 1993 had a detachable coiled cable.",
+  "partno": "1391401",
+  "refs": [
+   {
+    "t": "Model M keyboard (Wikipedia)",
+    "u": "https://en.wikipedia.org/wiki/Model_M_keyboard"
+   }
+  ],
+  "verify": "Exact release month, original price, and which variant this catalog item represents. Wikipedia notes the 101-key ANSI layout was standardized in 1988, so 'Layout' may apply to later units.",
+  "conf": "med"
  },
  {
   "id": "roland-mt-32",
@@ -249,11 +283,12 @@ var ITEMS=[
   "cond": "Sample",
   "specs": {
    "Synthesis": "Linear Arithmetic",
-   "Polyphony": "32 notes",
+   "Polyphony": "Up to 32 partials; 8 to 32 notes depending on sound complexity",
    "Channels": "8 melodic plus 1 rhythm",
    "Connectors": "MIDI In, MIDI Out/Thru, stereo line out, headphones",
    "Sample rate": "32 kHz",
-   "Compatible software": "Sierra, LucasArts, Origin and many other DOS games, through an MPU-401 interface"
+   "Compatible software": "Sierra, LucasArts, Origin and many other DOS games, through an MPU-401 interface",
+   "Preset sounds": "128 synth and 30 rhythm"
   },
   "name": "Roland MT-32",
   "cat": "MIDI",
@@ -271,7 +306,17 @@ var ITEMS=[
    "u": "https://en.wikipedia.org/wiki/Roland_MT-32",
    "summary": ""
   },
-  "text": "Sample entry. A MIDI sound module many DOS games were written to support."
+  "text": "The Roland MT-32 is a MIDI sound module using Linear Arithmetic synthesis, introduced in 1987 with a list price of $695. It has nine parts (eight melodic and one rhythm), a 32 kHz sample rate, and a preset library of 128 synth and 30 rhythm sounds with digital reverb. It was supported by many DOS games.",
+  "model": "MT-32",
+  "refs": [
+   {
+    "t": "Roland MT-32 (Wikipedia)",
+    "u": "https://en.wikipedia.org/wiki/Roland_MT-32"
+   }
+  ],
+  "verify": "Exact release month (existing rel 1987-06 not confirmed on the page); headphone jack exists only on later revision, so the existing 'headphones' connector may not apply to the original.",
+  "conf": "med",
+  "draft": true
  },
  {
   "type": "Computer",
@@ -286,7 +331,7 @@ var ITEMS=[
   "msrp": "US$1,565 (equivalent to $5,540 in 2025)",
   "disc": 1987,
   "name": "IBM Personal Computer",
-  "text": "The IBM Personal Computer (model 5150), often referred to as the IBM PC, is the first microcomputer released in the IBM PC model line and the basis for the IBM PC compatible de facto standard. Released on August 12, 1981, it was created by a team of engineers and designers at International Business Machines (IBM), directed by William C. Lowe and Philip Don Estridge in Boca Raton, Florida.",
+  "text": "The IBM Personal Computer, model 5150, was released on August 12, 1981 and became the basis of the IBM PC compatible standard. It used an Intel 8088 at 4.77 MHz, built mostly from off-the-shelf parts, with 16 KB to 256 KB of RAM on the motherboard and five expansion slots.",
   "specs": {
    "OS shipped": "IBM BASIC / PC DOS 1.0; CP/M-86; UCSD p-System",
    "CPU": "Intel 8088 @ 4.77 MHz",
@@ -294,11 +339,14 @@ var ITEMS=[
    "Display": "IBM 5151 Monochrome Display, IBM 5153 Color Display",
    "Graphics": "MDA, CGA",
    "Sound": "PC speaker 1-channel square-wave/1-bit digital (PWM-capable)",
-   "Input support": "XT-Keyboard",
+   "Input support": "Model F keyboard, 83 keys",
    "Ports": "Serial port, parallel port",
    "Power supply": "120/240 V AC ～",
    "Dimensions": "Approximately 20.25 in × 16.5 in × 5.5 in (51.4 cm × 41.9 cm × 14.0 cm) (width × depth × height)",
-   "Weight": "24–30 lb (11–14 kg)"
+   "Weight": "24–30 lb (11–14 kg)",
+   "Expansion slots": "5 x 62-pin",
+   "Floppy drives": "5.25-inch, 160 KB or 320 KB",
+   "Keyboard": "Model F, 83 keys"
   },
   "wiki": {
    "t": "IBM Personal Computer",
@@ -341,12 +389,22 @@ var ITEMS=[
     "Related": "List of IBM Personal Computer models",
     "Made in": "USA"
    }
-  }
+  },
+  "model": "5150",
+  "refs": [
+   {
+    "t": "IBM Personal Computer (Wikipedia)",
+    "u": "https://en.wikipedia.org/wiki/IBM_Personal_Computer"
+   }
+  ],
+  "verify": "Part number not applicable. MSRP of $1,565 is the base launch price per Wikipedia; existing value kept.",
+  "conf": "high",
+  "draft": true
  },
  {
   "id": "ibm-dos-2-1-books-and-disks",
   "type": "Game or software",
-  "name": "IBM DOS 2.1 books and disks",
+  "name": "IBM PC DOS 2.1 (manuals and disks)",
   "cat": "Games and software",
   "maker": "IBM",
   "model": "DOS 2.1",
@@ -356,13 +414,24 @@ var ITEMS=[
    "DOS",
    "IBM"
   ],
-  "text": "IBM DOS 2.1 manuals with disks. The listing names IBM as the brand and DOS 2.1 as the model.",
+  "text": "IBM PC DOS 2.1 was released on November 1, 1983, about seven months after DOS 2.0. Its main purpose was to support the new IBM PCjr, and it also added support for half-height floppy drives.",
   "specs": {
    "Brand": "IBM",
    "MPN": "DOS 2.1",
    "Vintage": "Yes"
   },
-  "src": "ebay"
+  "src": "ebay",
+  "year": 1983,
+  "rel": "1983-11-01",
+  "refs": [
+   {
+    "t": "IBM PC DOS (Wikipedia)",
+    "u": "https://en.wikipedia.org/wiki/IBM_PC_DOS"
+   }
+  ],
+  "verify": "Original price and the part number of the listed package; whether the listed set is the PCjr edition is not confirmed.",
+  "conf": "high",
+  "draft": true
  },
  {
   "id": "ibm-5150-for-parts-or-repair",
@@ -378,17 +447,33 @@ var ITEMS=[
    "IBM",
    "Parts"
   ],
-  "text": "An IBM 5150 listed for parts or repair. The seller says it does not power on and ships without a power cord.",
+  "text": "The IBM 5150 is the original IBM Personal Computer, released on August 12, 1981. It used an Intel 8088 at 4.77 MHz in a wide, short steel case designed to hold a monitor on top.",
   "specs": {
    "Brand": "IBM",
    "Model": "5150",
-   "Vintage": "Yes"
+   "Vintage": "Yes",
+   "CPU": "Intel 8088 @ 4.77 MHz",
+   "RAM installed": "16 KB to 256 KB on the motherboard",
+   "Expansion slots": "5 x 62-pin",
+   "Graphics": "MDA or CGA"
   },
   "src": "ebay",
   "photos": [
    "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f1/Ibm_pc_5150.jpg/960px-Ibm_pc_5150.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
   ],
-  "credit": "Photo: Ruben de Rijcke, CC BY-SA 3.0, via Wikimedia Commons"
+  "credit": "Photo: Ruben de Rijcke, CC BY-SA 3.0, via Wikimedia Commons",
+  "msrp": "US$1,565",
+  "year": 1981,
+  "rel": "1981-08-12",
+  "refs": [
+   {
+    "t": "IBM Personal Computer (Wikipedia)",
+    "u": "https://en.wikipedia.org/wiki/IBM_Personal_Computer"
+   }
+  ],
+  "verify": "Configuration of this specific unit is unknown; MSRP is for the 1981 base system.",
+  "conf": "high",
+  "draft": true
  },
  {
   "id": "apple-m7332-45w-power-adapter-for-parts",
@@ -407,35 +492,62 @@ var ITEMS=[
    "iBook",
    "PowerBook"
   ],
-  "text": "Apple 24 V, 1.875 A power adapter listed for iBook G3/G4 and PowerBook G4. Sold untested and for parts.",
+  "text": "The Apple M7332 is a 45 W power adapter with a 24 V, 1.875 A output, sold for iBook and PowerBook G4 era portables. A version with a larger plug was used with the iBook Clamshell, while an otherwise identical adapter with a smaller, darker plug went with the first white iBook and the PowerBook G4 Titanium.",
   "specs": {
    "Brand": "Apple",
    "MPN": "M7332",
    "Voltage": "24 V",
    "Output current": "1.875 A",
-   "Compatible product line": "Apple PowerBook, iBook"
+   "Compatible product line": "Apple PowerBook, iBook",
+   "Output power": "45 W",
+   "Style": "Yo-yo style adapter"
   },
-  "src": "ebay"
+  "src": "ebay",
+  "refs": [
+   {
+    "t": "YoYo Power Adapter M7332 - distinctive features (iBook Clamshell site)",
+    "u": "https://ibook-clamshell.com/index.php/en/trivia/474-yoyo-power-adapter-m7332-distinctive-features"
+   },
+   {
+    "t": "Authentic Apple M7332 Yoyo Style Power Adapter 45W 24V 1.875A (eBay listing)",
+    "u": "https://www.ebay.com/itm/305208729680"
+   }
+  ],
+  "verify": "Release year and MSRP; electrical ratings come from a seller listing only, and the plug-size claim should be checked against Apple documentation. Seller also gives ADP-45FH as an alternate model code.",
+  "conf": "low",
+  "draft": true
  },
  {
   "id": "alone-in-the-dark-big-box-pc",
   "type": "Game or software",
   "name": "Alone in the Dark Big Box (PC)",
   "cat": "Games and software",
-  "maker": "Unknown",
+  "maker": "Infogrames",
   "year": 1993,
   "qty": 1,
   "cond": "Per order email title: Big Box, PC, 1993. The listing page could not be matched to this purchase.",
   "tags": [
    "Big box"
   ],
-  "text": "A big-box PC edition of Alone in the Dark, titled as 1993 in the order.",
+  "text": "Alone in the Dark was developed by Infogrames, directed by Frederic Raynal, and released for MS-DOS in Europe in 1992. The North American release followed in 1993 through I-Motion and Interplay. It combines 3D character models with 2D backgrounds and is widely regarded as the first 3D survival horror game.",
   "specs": {
    "Platform": "PC",
    "Edition": "Big Box"
   },
   "src": "ebay",
-  "draft": true
+  "draft": true,
+  "refs": [
+   {
+    "t": "Alone in the Dark (1992 video game) (Wikipedia)",
+    "u": "https://en.wikipedia.org/wiki/Alone_in_the_Dark_(1992_video_game)"
+   },
+   {
+    "t": "Alone in the Dark (1992) - MobyGames",
+    "u": "https://www.mobygames.com/game/325/alone-in-the-dark/"
+   }
+  ],
+  "verify": "Which big-box edition (publisher, language, disk or CD) this copy is, exact release month, and MSRP.",
+  "conf": "med"
  },
  {
   "id": "shadow-warrior-1997-3d-realms-pc-cd-rom-with-manual",
@@ -450,14 +562,30 @@ var ITEMS=[
    "Shooter",
    "3D Realms"
   ],
-  "text": "Shadow Warrior, a 1997 3D Realms shooter on PC CD-ROM, bought with its manual.",
+  "text": "Shadow Warrior is a first-person shooter developed by 3D Realms on the Build engine. The shareware episode came out for MS-DOS on May 13, 1997 and the registered version followed on September 12, 1997, published by GT Interactive in North America.",
   "specs": {
    "Platform": "PC",
    "Format": "CD-ROM",
-   "Publisher or studio": "3D Realms (per title)"
+   "Publisher or studio": "Developer 3D Realms; publisher GT Interactive (North America), Eidos Interactive (Europe)",
+   "Engine": "Build",
+   "Genre": "First-person shooter",
+   "Publisher (North America)": "GT Interactive"
   },
   "src": "ebay",
-  "draft": true
+  "draft": true,
+  "rel": "1997-09-12",
+  "refs": [
+   {
+    "t": "Shadow Warrior (1997 video game) (Wikipedia)",
+    "u": "https://en.wikipedia.org/wiki/Shadow_Warrior_(1997_video_game)"
+   },
+   {
+    "t": "Shadow Warrior Releases - MobyGames",
+    "u": "https://www.mobygames.com/game/387/shadow-warrior/releases/"
+   }
+  ],
+  "verify": "MSRP, and whether this CD-ROM is the original GT Interactive retail release (rel date applies to the registered version).",
+  "conf": "med"
  },
  {
   "id": "apple-desktop-bus-mouse-ii-m2706",
@@ -475,20 +603,34 @@ var ITEMS=[
    "Macintosh",
    "Mouse"
   ],
-  "text": "Apple Desktop Bus Mouse II, model M2706, with an ADB connector, platinum gray. Two were bought.",
+  "text": "The Apple Desktop Bus Mouse II, model M2706, is a platinum gray mouse with an ADB connector. It kept the blocky footprint of the earlier Apple mouse but had a lower, triangular profile.",
   "specs": {
    "Brand": "Apple",
    "MPN": "M2706",
    "Connector": "ADB",
    "Color": "Platinum Gray",
    "Cord length": "2 ft (one listing)",
-   "Type": "Mouse"
+   "Type": "Mouse",
+   "Design": "Platinum gray with dark gray accents"
   },
   "src": "ebay",
   "photos": [
    "https://upload.wikimedia.org/wikipedia/commons/1/13/Apple_desktop_mouse_II_small.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled"
   ],
-  "credit": "Photo: Original by StephenEdmonds for http://popcorn.cx/computers/,, CC BY-SA 3.0, via Wikimedia Commons"
+  "credit": "Photo: Original by StephenEdmonds for http://popcorn.cx/computers/,, CC BY-SA 3.0, via Wikimedia Commons",
+  "refs": [
+   {
+    "t": "Apple Mouse (Wikipedia)",
+    "u": "https://en.wikipedia.org/wiki/Apple_Mouse"
+   },
+   {
+    "t": "Apple Desktop Bus (Wikipedia)",
+    "u": "https://en.wikipedia.org/wiki/Apple_Desktop_Bus"
+   }
+  ],
+  "verify": "Release date (the Wikipedia summary returned September 1986, which looks too early for the Mouse II and could not be independently verified, so it is omitted) and MSRP.",
+  "conf": "low",
+  "draft": true
  },
  {
   "id": "intel-play-qx3-computer-microscope-open-box",
@@ -504,14 +646,31 @@ var ITEMS=[
   "tags": [
    "Intel Play"
   ],
-  "text": "An Intel Play QX3+ computer microscope in an open box, missing the tweezer, eye drop and slides.",
+  "text": "The Intel Play QX3 is a USB computer microscope developed by Intel and Mattel, announced on February 3, 1999 at an approximate retail price of $99. It offers 10x, 60x and 200x magnification and captures images and video on a PC. Digital Blue continued the product after Intel Play was discontinued in 2002.",
   "specs": {
    "Brand": "Intel Play",
    "MPN": "837381",
    "Year": "2001",
-   "Recommended age": "8+"
+   "Recommended age": "8+",
+   "Magnification": "10x, 60x and 200x",
+   "Image sensor": "Vision CPiA CCD, 320 x 240",
+   "Interface": "USB"
   },
-  "src": "ebay"
+  "src": "ebay",
+  "msrp": "approx. $99 (QX3, announced 1999)",
+  "refs": [
+   {
+    "t": "Mattel and Intel Launch Intel Play Line of PC-Enhanced Toys (Intel press release)",
+    "u": "https://www.intel.com/pressroom/archive/releases/1999/toy20399.htm"
+   },
+   {
+    "t": "Intel Play (Wikipedia)",
+    "u": "https://en.wikipedia.org/wiki/Intel_Play"
+   }
+  ],
+  "verify": "QX3+ specifics, its release year and price; sources found only describe the original QX3. Part number 837381 not confirmed.",
+  "conf": "low",
+  "draft": true
  },
  {
   "id": "microsoft-nickelodeon-3d-movie-maker",
@@ -528,7 +687,7 @@ var ITEMS=[
    "Windows 95",
    "CD-ROM"
   ],
-  "text": "Microsoft Nickelodeon 3D Movie Maker on CD-ROM for Windows 95.",
+  "text": "3D Movie Maker is a children's animation program from Microsoft Kids (developed by Big Blue Dot) and published by Microsoft Home in 1995. Users place 3D characters and props in pre-rendered scenes and add actions, sound, music and text. It has 40 actors, 20 props and 12 scenes, and saves movies as .3mm files.",
   "specs": {
    "Brand": "Microsoft",
    "MPN": "000-37796",
@@ -539,7 +698,17 @@ var ITEMS=[
    "Minimum hard drive": "50 MB",
    "Language": "English"
   },
-  "src": "ebay"
+  "src": "ebay",
+  "year": 1995,
+  "refs": [
+   {
+    "t": "3D Movie Maker (Wikipedia)",
+    "u": "https://en.wikipedia.org/wiki/3D_Movie_Maker"
+   }
+  ],
+  "verify": "Exact release date (Wikipedia gives 1995, final release October 9, 1995), MSRP, and whether the Nickelodeon-branded edition and part number 000-37796 differ from the base release.",
+  "conf": "med",
+  "draft": true
  },
  {
   "id": "impact-m4896-ac-adapter-24-v-1-87-a-45-w",
@@ -554,14 +723,30 @@ var ITEMS=[
   "tags": [
    "Power"
   ],
-  "text": "A 24 V, 1.87 A, 45 W AC adapter with power cord. The listing names many compatible model numbers, including M4895, M5937, M6384LL-A, M6548G-A and M7387LL-A.",
+  "text": "A 24 V, 1.87 A, 45 W Apple-type AC adapter with power cord, sold by Impact Computers as a refurbished replacement for Apple M4896. Impact lists it as equivalent to Apple part numbers M4895, M5937, M6384LL-A and M7387LL-A, and notes it is not compatible with G4 units.",
   "specs": {
    "Brand": "Impact",
    "MPN": "M4896",
    "Output": "24 V, 1.87 A, 45 W",
-   "Includes": "Power cord"
+   "Includes": "Power cord",
+   "Center tip": "3 mm",
+   "Not compatible with": "G4 units (per Impact)",
+   "Condition sold by Impact": "Refurbished Apple-type adapter"
   },
-  "src": "ebay"
+  "src": "ebay",
+  "refs": [
+   {
+    "t": "Impact Computers M4896 AC adapter",
+    "u": "https://www.impactcomputers.com/m4896.html?cpidx=4013"
+   },
+   {
+    "t": "Genuine Apple M4896 Macintosh PowerBook 45 Watt AC Adapter (eBay catalog)",
+    "u": "https://www.ebay.com/p/1300243100"
+   }
+  ],
+  "verify": "Year, original Apple MSRP and exact Apple models using it not confirmed from an authoritative source; Impact (not Apple) is the seller-side brand.",
+  "conf": "med",
+  "draft": true
  },
  {
   "id": "vintage-5-port-metal-power-center-with-fax-modem-ports",
@@ -582,7 +767,10 @@ var ITEMS=[
    "Construction": "All metal",
    "Vintage": "Yes"
   },
-  "src": "ebay"
+  "src": "ebay",
+  "verify": "No maker, model or markings in listing; cannot identify product.",
+  "conf": "low",
+  "draft": true
  },
  {
   "id": "pc-accessories-36011-p10045-temporary-power-tap",
@@ -604,7 +792,10 @@ var ITEMS=[
    "MPN": "36011/P10045",
    "Outlets": "5"
   },
-  "src": "ebay"
+  "src": "ebay",
+  "verify": "Searches for PC Accessories 36011/P10045 not run to a confirmed page; no year, MSRP or maker history confirmed.",
+  "conf": "low",
+  "draft": true
  },
  {
   "id": "relocatable-power-tap-pc-0061-surge-suppressor",
@@ -626,7 +817,10 @@ var ITEMS=[
    "Outlets": "5",
    "Type": "Surge suppressor"
   },
-  "src": "ebay"
+  "src": "ebay",
+  "verify": "Unbranded; no source found to identify maker or release data for PC-0061.",
+  "conf": "low",
+  "draft": true
  },
  {
   "id": "microsoft-encarta-95",
@@ -634,7 +828,7 @@ var ITEMS=[
   "name": "Microsoft Encarta 95",
   "cat": "Games and software",
   "maker": "Microsoft",
-  "year": 1995,
+  "year": 1994,
   "qty": 1,
   "cond": "Per listing: like new, near mint disc. Testing not stated.",
   "tags": [
@@ -642,20 +836,42 @@ var ITEMS=[
    "CD-ROM",
    "Encyclopedia"
   ],
-  "text": "Microsoft Encarta 95, a multimedia encyclopedia on CD-ROM for Windows.",
+  "text": "Microsoft Encarta 95 is a multimedia encyclopedia on CD-ROM for Windows. It added a new version of MindMaze, an updated Timeline and new articles covering 1994 events such as the Jupiter comet impact and the World Cup.",
   "specs": {
    "Brand": "Microsoft",
    "Format": "CD",
    "Operating system": "Windows",
    "Year": "1995",
-   "Type": "Encyclopedia"
+   "Type": "Encyclopedia",
+   "Minimum processor": "386SX",
+   "Minimum RAM": "4 MB",
+   "Minimum hard drive": "3.5 MB",
+   "Display": "VGA, 256 colors",
+   "Drive": "2x CD-ROM, sound card, mouse"
   },
-  "src": "ebay"
+  "src": "ebay",
+  "refs": [
+   {
+    "t": "Microsoft Encarta 95 - Computer History Museum",
+    "u": "https://www.computerhistory.org/collections/catalog/102700909"
+   },
+   {
+    "t": "Encarta '95 - BetaWiki",
+    "u": "https://betawiki.net/wiki/Encarta_'95"
+   },
+   {
+    "t": "Encarta - Wikipedia",
+    "u": "https://en.wikipedia.org/wiki/Encarta"
+   }
+  ],
+  "verify": "Exact release date and US launch price of Encarta 95 not confirmed.",
+  "conf": "med",
+  "draft": true
  },
  {
   "id": "apple-a1152-wired-usb-optical-mouse",
   "type": "Peripheral",
-  "name": "Apple A1152 wired USB optical mouse",
+  "name": "Apple Mighty Mouse (A1152)",
   "cat": "Peripherals",
   "maker": "Apple",
   "model": "A1152",
@@ -666,21 +882,39 @@ var ITEMS=[
    "USB",
    "Mouse"
   ],
-  "text": "Apple A1152 wired USB optical mouse with a scroll wheel, white, 400 DPI, one button, per the order title.",
+  "text": "The A1152 is the wired USB model of Apple's Mighty Mouse, announced on August 2, 2005 at $49. It uses optical tracking and replaces mechanical buttons and a scroll wheel with touch sensors and a small Scroll Ball that scrolls in any direction.",
   "specs": {
    "Model": "A1152",
    "Interface": "Wired USB",
    "Resolution": "400 DPI",
-   "Buttons": "1",
-   "Color": "White"
+   "Buttons": "4 touch-sensitive controls (left, right, Scroll Ball click, side squeeze)",
+   "Color": "White",
+   "Tracking": "Optical",
+   "Controls": "Four touch-sensitive buttons plus Scroll Ball",
+   "Compatibility": "Mac OS X, Windows 2000, Windows XP"
   },
   "src": "ebay",
-  "draft": true
+  "draft": true,
+  "msrp": "$49",
+  "year": 2005,
+  "rel": "2005-08-02",
+  "refs": [
+   {
+    "t": "Apple Introduces Mighty Mouse (Apple Newsroom, 2005-08-02)",
+    "u": "https://www.apple.com/newsroom/2005/08/02Apple-Introduces-Mighty-Mouse/"
+   },
+   {
+    "t": "Apple Mighty Mouse - Wikipedia",
+    "u": "https://en.wikipedia.org/wiki/Apple_Mighty_Mouse"
+   }
+  ],
+  "verify": "400 DPI resolution not confirmed; white color per listing only.",
+  "conf": "high"
  },
  {
   "id": "sierra-home-master-cook-deluxe-5-0",
   "type": "Game or software",
-  "name": "Sierra Home Master Cook Deluxe 5.0",
+  "name": "MasterCook Deluxe 5.0",
   "cat": "Games and software",
   "maker": "Sierra Home",
   "model": "Cook Deluxe 5.0",
@@ -691,7 +925,7 @@ var ITEMS=[
    "CD-ROM",
    "Sierra"
   ],
-  "text": "Sierra Home Master Cook Deluxe 5.0 on CD for Windows.",
+  "text": "MasterCook Deluxe 5.0 is a recipe management program from Sierra for Windows on CD-ROM. It includes bundled recipe collections and tools for creating and organizing your own recipes.",
   "specs": {
    "Brand": "Sierra Home",
    "Format": "CD",
@@ -701,12 +935,22 @@ var ITEMS=[
    "Minimum processor": "66 MHz",
    "Language": "English"
   },
-  "src": "ebay"
+  "src": "ebay",
+  "year": 1998,
+  "refs": [
+   {
+    "t": "MasterCook Deluxe 5.0 - Internet Archive",
+    "u": "https://archive.org/details/mc-54-dlx"
+   }
+  ],
+  "verify": "Year 1998 is from one Internet Archive entry (another archive entry suggests 1999); MSRP and exact date not confirmed.",
+  "conf": "low",
+  "draft": true
  },
  {
   "id": "leisure-suit-larry-3-big-box-pc-3-5-inch-floppy",
   "type": "Game or software",
-  "name": "Leisure Suit Larry 3 Big Box (PC, 3.5-inch floppy)",
+  "name": "Leisure Suit Larry III: Passionate Patti in Pursuit of the Pulsating Pectorals",
   "cat": "Games and software",
   "maker": "Sierra",
   "qty": 1,
@@ -717,14 +961,29 @@ var ITEMS=[
    "Sierra",
    "Floppy"
   ],
-  "text": "Leisure Suit Larry 3 in a big box for IBM PCs and MS-DOS on 3.5-inch floppies, listed as Sierra and complete.",
+  "text": "Leisure Suit Larry III: Passionate Patti in Pursuit of the Pulsating Pectorals is a graphic adventure released by Sierra On-Line in November 1989. It was designed by Al Lowe and runs on Sierra's SCI0 engine.",
   "specs": {
    "Platform": "IBM PC / MS-DOS",
    "Format": "3.5-inch floppy",
-   "Edition": "Big Box"
+   "Edition": "Big Box",
+   "Developer": "Sierra On-Line",
+   "Designer": "Al Lowe",
+   "Engine": "SCI0",
+   "Platforms": "MS-DOS, Amiga, Atari ST"
   },
   "src": "ebay",
-  "draft": true
+  "draft": true,
+  "model": "Leisure Suit Larry III: Passionate Patti in Pursuit of the Pulsating Pectorals",
+  "year": 1989,
+  "rel": "1989-11",
+  "refs": [
+   {
+    "t": "Leisure Suit Larry III - Wikipedia",
+    "u": "https://en.wikipedia.org/wiki/Leisure_Suit_Larry_III:_Passionate_Patti_in_Pursuit_of_the_Pulsating_Pectorals"
+   }
+  ],
+  "verify": "US launch price and big box edition details not confirmed.",
+  "conf": "med"
  },
  {
   "id": "roland-ma-12c-powered-micro-monitor-speakers-pair",
@@ -740,15 +999,32 @@ var ITEMS=[
    "Speakers",
    "MIDI"
   ],
-  "text": "A pair of Roland MA-12C powered micro monitor speakers, gray.",
+  "text": "The Roland MA-12C is a powered stereo micro monitor with a 4 inch speaker and a 10 watt RMS amplifier per speaker. It has separate microphone, instrument and line inputs and is magnetically shielded so it can sit next to a CRT display. Roland lists it as discontinued.",
   "specs": {
    "Brand": "Roland",
    "Model": "MA-12C",
    "Type": "Monitor speaker",
    "Color": "Gray",
-   "Connectivity": "Wired"
+   "Connectivity": "Wired",
+   "Driver": "4 inch speaker",
+   "Amplifier": "10 W RMS per speaker",
+   "Inputs": "Microphone, instrument and line level",
+   "Shielding": "Magnetically shielded for use next to a CRT"
   },
-  "src": "ebay"
+  "src": "ebay",
+  "refs": [
+   {
+    "t": "Roland MA-12C product page",
+    "u": "https://www.roland.com/us/products/ma-12c/"
+   },
+   {
+    "t": "MA-12C Features - Roland Support",
+    "u": "https://support.roland.com/hc/en-us/articles/201962709-MA-12C-Features-of-the-MA-12C-Stereo-Micro-Monitor"
+   }
+  ],
+  "verify": "Release year and launch price not confirmed.",
+  "conf": "med",
+  "draft": true
  },
  {
   "id": "3dfx-voodoo-original-print-ad-lara-croft-1997",
@@ -765,39 +1041,66 @@ var ITEMS=[
    "Print ad",
    "Ephemera"
   ],
-  "text": "An original 1997 print ad for the 3dfx Voodoo graphics chip featuring Lara Croft.",
+  "text": "A print advertisement for 3dfx Voodoo graphics featuring Lara Croft of Tomb Raider. The Voodoo Graphics card (SST-1 chipset, 1996) was a 3D-only add-in that connected to a separate 2D VGA card by pass-through cable.",
   "specs": {
    "Brand": "3dfx Voodoo",
    "Type": "Print ad",
    "Date": "1997",
-   "Original or reproduction": "Original"
+   "Original or reproduction": "Original",
+   "Chipset": "3dfx SST-1 (Voodoo Graphics), released 1996"
   },
-  "src": "ebay"
+  "src": "ebay",
+  "refs": [
+   {
+    "t": "DOS Days - 3Dfx Voodoo Graphics (1996)",
+    "u": "https://dosdays.co.uk/topics/Manufacturers/3dfx/3dfx_voodoo.php"
+   },
+   {
+    "t": "3dfx - Wikipedia",
+    "u": "https://en.wikipedia.org/wiki/3dfx"
+   }
+  ],
+  "verify": "The ad's exact publication, magazine and date (1997) not confirmed; only the product is confirmed.",
+  "conf": "low",
+  "draft": true
  },
  {
   "id": "duke-nukem-3d-big-box-pc",
   "type": "Game or software",
   "name": "Duke Nukem 3D Big Box (PC)",
   "cat": "Games and software",
-  "maker": "Unknown",
+  "maker": "3D Realms",
   "qty": 1,
   "cond": "Order email only; the listing page showed no description.",
   "tags": [
    "Big box",
    "Shooter"
   ],
-  "text": "A big-box PC edition of Duke Nukem 3D, per the order title.",
+  "text": "Duke Nukem 3D was developed by 3D Realms on the Build engine. The shareware release came out January 29, 1996 and the full MS-DOS version on April 19, 1996, with FormGen as retail publisher.",
   "specs": {
    "Platform": "PC",
-   "Edition": "Big Box"
+   "Edition": "Big Box",
+   "Developer": "3D Realms",
+   "Retail publisher (MS-DOS)": "FormGen",
+   "Engine": "Build"
   },
   "src": "ebay",
-  "draft": true
+  "draft": true,
+  "year": 1996,
+  "rel": "1996-04-19",
+  "refs": [
+   {
+    "t": "Duke Nukem 3D - Wikipedia",
+    "u": "https://en.wikipedia.org/wiki/Duke_Nukem_3D"
+   }
+  ],
+  "verify": "Which big box edition (original, Atomic, or GT Interactive) the listing is; MSRP; box contents.",
+  "conf": "med"
  },
  {
   "id": "doom-ii-big-box-ibm-pc-3-5-inch-floppies",
   "type": "Game or software",
-  "name": "Doom II Big Box",
+  "name": "Doom II: Hell on Earth",
   "cat": "Games and software",
   "maker": "id Software",
   "qty": 1,
@@ -807,14 +1110,38 @@ var ITEMS=[
    "Floppy",
    "id Software"
   ],
-  "text": "Doom II in its big box for IBM PC on 3.5-inch floppies, with the box, 5 disks, manuals and paperwork.",
+  "text": "Doom II: Hell on Earth was released for MS-DOS in October 1994 and was the first id Software game sold in stores. It was distributed by GT Interactive and shipped on five 3.5-inch floppy disks or CD-ROM with 32 levels.",
   "specs": {
    "Platform": "IBM PC",
    "Format": "3.5-inch floppy",
    "Disks": "5",
-   "Includes": "Box, manuals, paperwork"
+   "Includes": "Box, manuals, paperwork",
+   "Publisher (US retail)": "GT Interactive",
+   "Minimum processor": "80386",
+   "Minimum RAM": "4 MB",
+   "Display": "VGA 320x200",
+   "Hard drive": "About 15 MB"
   },
-  "src": "ebay"
+  "src": "ebay",
+  "model": "Doom II: Hell on Earth",
+  "year": 1994,
+  "rel": "1994-10-10",
+  "refs": [
+   {
+    "t": "Doom II - Doom Wiki",
+    "u": "https://doomwiki.org/wiki/Doom_II"
+   },
+   {
+    "t": "Doom II - Wikipedia",
+    "u": "https://en.wikipedia.org/wiki/Doom_II"
+   },
+   {
+    "t": "DOS Days - Doom II: Hell on Earth (1994)",
+    "u": "https://www.dosdays.co.uk/topics/Games/game_doom2.php"
+   }
+  ],
+  "verify": "US MSRP not confirmed; exact date varies (Doom Wiki: Sept 30 release, Oct 10 launch; DOS Days lists August 1994).",
+  "conf": "med"
  },
  {
   "id": "doom-gold-medallion-shareware-3-5-inch-floppies",
@@ -829,21 +1156,36 @@ var ITEMS=[
    "Floppy",
    "id Software"
   ],
-  "text": "Original Doom shareware from id Software on two 3.5-inch floppy discs.",
+  "text": "Doom was first released as shareware on December 10, 1993. Gold Medallion Software distributed a retail shareware edition of the first episode, Knee-Deep in the Dead.",
   "specs": {
    "Platform": "PC",
    "Publisher": "id Software",
    "Format": "3.5-inch floppy, 2 discs",
-   "Type": "Original shareware"
+   "Type": "Original shareware",
+   "Publisher of disk edition": "Gold Medallion Software",
+   "Content": "Episode One shareware"
   },
-  "src": "ebay"
+  "src": "ebay",
+  "refs": [
+   {
+    "t": "Doom - Doom Wiki",
+    "u": "https://doomwiki.org/wiki/Doom"
+   },
+   {
+    "t": "Doom Shareware Episode One (Gold Medallion Software) - Internet Archive",
+    "u": "https://archive.org/details/Doom_Shareware_Episode_One_Knee_Deep_In_The_Dead_Gold_Medallion_Software_ID_Soft"
+   }
+  ],
+  "verify": "Date and version of the specific Gold Medallion 2-disk floppy edition and its price not confirmed.",
+  "conf": "low",
+  "draft": true
  },
  {
   "id": "hp-200lx-palmtop-2-mb-dos-with-accessories",
   "type": "Computer",
   "name": "HP 200LX Palmtop",
   "cat": "Computers",
-  "maker": "Hewlett Packard",
+  "maker": "Hewlett-Packard",
   "model": "200LX",
   "qty": 1,
   "cond": "Per listing: good condition. Accessories are included but not itemized. Testing not stated.",
@@ -853,14 +1195,39 @@ var ITEMS=[
    "Palmtop",
    "Handheld"
   ],
-  "text": "A Hewlett Packard 200LX palmtop with 2 MB RAM running DOS, sold with accessories.",
+  "text": "The HP 200LX is a DOS palmtop computer announced by Hewlett-Packard in August 1994 as the successor to the 100LX. The 2 MB model launched at $699 in the US, and the 1 MB model at $549.",
   "specs": {
    "Brand": "Hewlett Packard",
    "Type": "Pocket computer",
    "RAM": "2 MB",
-   "Operating system": "DOS"
+   "Operating system": "DOS",
+   "CPU": "80186-compatible, about 7.91 MHz",
+   "Display": "640x200 monochrome LCD",
+   "Expansion": "PCMCIA Type II slot",
+   "Ports": "Serial, infrared"
   },
-  "src": "ebay"
+  "src": "ebay",
+  "partno": "F1061A",
+  "msrp": "699",
+  "year": 1994,
+  "rel": "1994-08",
+  "refs": [
+   {
+    "t": "HP 200LX - Wikipedia",
+    "u": "https://en.wikipedia.org/wiki/HP_200LX"
+   },
+   {
+    "t": "NEWS: HP's New 200LX Palmtop PC Replaces the 100LX (PalmtopPaper)",
+    "u": "https://www.palmtoppaper.com/PTPHTML/16/pt160007.htm"
+   },
+   {
+    "t": "HP Computer Museum - HP 200LX",
+    "u": "https://www.hpmuseum.net/display_item.php?hw=199"
+   }
+  ],
+  "verify": "Exact model number of the unit sold (F1061A is the 2MB model per HP Computer Museum; Wikipedia also lists F1216A).",
+  "conf": "high",
+  "draft": true
  },
  {
   "id": "toshiba-libretto-l5-japanese",
@@ -876,14 +1243,33 @@ var ITEMS=[
    "Libretto",
    "Japanese"
   ],
-  "text": "A Toshiba Libretto L5 ultraportable, a Japanese model, per the order title.",
+  "text": "The Toshiba Libretto L5 is a subnotebook of the Libretto L series, built around an 800 MHz Transmeta Crusoe processor and a 10 inch wide display. A Toshiba comparison table lists its release date as 26 April 2002.",
   "specs": {
    "Brand": "Toshiba",
    "Model": "Libretto L5",
-   "Language": "Japanese (per title)"
+   "Language": "Japanese (per title)",
+   "CPU": "Transmeta Crusoe TM5800 800 MHz",
+   "RAM": "256 MB standard, 512 MB max",
+   "Storage": "20 GB Ultra ATA hard drive",
+   "Display": "10 inch wide TFT, 1280x600",
+   "Weight": "About 1.1 kg with standard battery"
   },
   "src": "ebay",
-  "draft": true
+  "draft": true,
+  "year": 2002,
+  "rel": "2002-04-26",
+  "refs": [
+   {
+    "t": "Toshiba Libretto L series (Info.in.th)",
+    "u": "https://sgio.tripod.com/pda/TL.html"
+   },
+   {
+    "t": "Toshiba Libretto - Wikipedia",
+    "u": "https://en.wikipedia.org/wiki/Toshiba_Libretto"
+   }
+  ],
+  "verify": "Launch price not found. Release date from a single fan site table; Wikipedia only gives May 2001 for the L series start.",
+  "conf": "med"
  },
  {
   "id": "toshiba-libretto-110ct-purchased-unit",
@@ -898,13 +1284,32 @@ var ITEMS=[
    "Toshiba",
    "Libretto"
   ],
-  "text": "The Toshiba Libretto 110CT bought as a vintage mini laptop. This entry holds only what the order shows; the sample 110CT entry holds the researched specs.",
+  "text": "The Toshiba Libretto 110CT is a mini notebook with a 233 MHz Pentium MMX processor and a 7.1 inch color TFT display, weighing about 1 kg. Toshiba Europe announced it in a press release dated 3 November 1998.",
   "specs": {
    "Brand": "Toshiba",
-   "Model": "Libretto 110CT"
+   "Model": "Libretto 110CT",
+   "CPU": "Intel Pentium MMX 233 MHz",
+   "RAM": "32 MB standard, 64 MB max",
+   "Storage": "4.3 GB hard drive",
+   "Display": "7.1 inch TFT color",
+   "Weight": "About 1 kg",
+   "Operating system": "Windows 95 or 98"
   },
   "src": "ebay",
-  "draft": true
+  "draft": true,
+  "year": 1998,
+  "refs": [
+   {
+    "t": "Toshiba press release: Libretto 110CT (PDF)",
+    "u": "https://criggie.org.nz/laptop/libretto110/Libretto110CT.pdf"
+   },
+   {
+    "t": "Toshiba Libretto 110CT - Computing History",
+    "u": "https://www.computinghistory.org.uk/det/39871/Toshiba-Libretto-110CT/"
+   }
+  ],
+  "verify": "Sources conflict: Computing History says 1996 (April 17), the European press release is dated Nov 1998 (likely European launch, not original Japan launch). US MSRP not found.",
+  "conf": "low"
  },
  {
   "id": "kodak-serial-cable-dc40-dc50-dc120-dc240-dc2800",
@@ -921,14 +1326,26 @@ var ITEMS=[
    "Serial",
    "Cable"
   ],
-  "text": "A 6 ft beige serial cable for Kodak DC40, DC50, DC120, DC240 and DC2800 cameras.",
+  "text": "A serial data cable sold by PCCables.com as part 87001, with a Mini-DIN 8 male connector for the camera and a DB9 female connector for the computer. It is listed for several Kodak DC series cameras.",
   "specs": {
    "Brand": "PCCABLES.com",
    "MPN": "PCC-87001",
    "Length": "6 ft",
-   "Color": "Beige"
+   "Color": "Beige",
+   "Connectors": "Mini-DIN 8 male to DB9 female",
+   "Compatible": "Kodak DC40, DC50, DC120, DC240, DC280; RCA CDS4100; Vivitar ViviCam 3500",
+   "Generic part number": "DCS-1"
   },
-  "src": "ebay"
+  "src": "ebay",
+  "refs": [
+   {
+    "t": "PCCABLES.COM - KODAK Camera Serial Cable DC40 DC50 DC120 DC240 DC2800 DCS1",
+    "u": "https://www.pccables.com/products/87001.html"
+   }
+  ],
+  "verify": "Length and color not shown on the page I could read; DC2800 is in the title but the page body lists DC280 (likely same). Not a period product, so no original MSRP.",
+  "conf": "med",
+  "draft": true
  },
  {
   "id": "kodak-dc40-digital-camera-0-4-mp",
@@ -943,15 +1360,35 @@ var ITEMS=[
    "Kodak",
    "Digital camera"
   ],
-  "text": "A Kodak DC40 0.4 MP digital camera in black, per the order title.",
+  "text": "The Kodak DC40 was announced on 28 March 1995 and is regarded as Kodak's first consumer digital camera. It stores images in 4 MB of internal memory and transfers them to a computer over a serial connection.",
   "specs": {
    "Brand": "Kodak",
    "Model": "DC40",
    "Resolution": "0.4 MP (per title)",
-   "Color": "Black"
+   "Color": "Black",
+   "Memory": "4 MB internal",
+   "Lens": "Fixed 42 mm, f/2.8",
+   "Interface": "Serial",
+   "Shutter": "1/175 s to 1 s",
+   "Weight": "500 g"
   },
   "src": "ebay",
-  "draft": true
+  "draft": true,
+  "msrp": "899",
+  "year": 1995,
+  "rel": "1995-03-28",
+  "refs": [
+   {
+    "t": "Kodak DC40 - Digital Kamera Museum",
+    "u": "https://www.digitalkameramuseum.de/en/cameras/item/kodak-dc40"
+   },
+   {
+    "t": "Kodak DC Series - Wikipedia",
+    "u": "https://en.wikipedia.org/wiki/Kodak_DC_Series"
+   }
+  ],
+  "verify": "Price conflict: Digital Kamera Museum says $899, Wikipedia says $1,000. Used $899. Color (black) not verified.",
+  "conf": "med"
  },
  {
   "id": "sony-cyber-shot-2-1-mp-with-128-mb-memory-stick",
@@ -974,7 +1411,9 @@ var ITEMS=[
    "Media": "Memory Stick"
   },
   "src": "ebay",
-  "draft": true
+  "draft": true,
+  "verify": "Model not identifiable from the listing (2.1 MP, 6.4-19.2 mm f/3.8). Searches did not confirm a specific DSC model.",
+  "conf": "low"
  },
  {
   "id": "sony-mavica-mvc-fd200-for-parts",
@@ -991,13 +1430,34 @@ var ITEMS=[
    "Mavica",
    "Parts"
   ],
-  "text": "A Sony Mavica MVC-FD200 digital camera sold for parts, per the order title.",
+  "text": "The Sony Mavica MVC-FD200 was announced at CES on 7 January 2002 for about $500, with sales starting in February 2002. It records to either a 3.5-inch floppy disk or a Memory Stick and has a 3x zoom lens.",
   "specs": {
    "Brand": "Sony",
-   "Model": "MVC-FD200"
+   "Model": "MVC-FD200",
+   "Resolution": "2.0 MP effective (1600x1200 max)",
+   "Lens": "3x optical zoom, f/3.8-3.9",
+   "Media": "3.5-inch floppy disk and Memory Stick",
+   "Connectivity": "USB, video out",
+   "Display": "2.5 inch LCD",
+   "Battery": "InfoLithium NP-F330"
   },
   "src": "ebay",
-  "draft": true
+  "draft": true,
+  "msrp": "500",
+  "year": 2002,
+  "rel": "2002-01-07",
+  "refs": [
+   {
+    "t": "Two new Sony Mavica's (DPReview)",
+    "u": "https://www.dpreview.com/articles/2685459113/sonyfd100fd200/"
+   },
+   {
+    "t": "Sony Mavica FD-200 Specs (DPReview)",
+    "u": "https://www.dpreview.com/products/sony/compacts/sony_fd200/specifications"
+   }
+  ],
+  "verify": "Exact US MSRP given only as approximately $500.",
+  "conf": "high"
  },
  {
   "id": "sony-mavica-mvc-fd81-with-battery-and-case",
@@ -1013,15 +1473,35 @@ var ITEMS=[
    "Sony",
    "Mavica"
   ],
-  "text": "A Sony Mavica MVC-FD81 digital still camera with battery and case, no charger, untested.",
+  "text": "The Sony Mavica MVC-FD81 is a floppy disk digital camera from 1998 with a 3x zoom lens and a 2.5 inch LCD. It supports MPEG movie recording to floppy disk.",
   "specs": {
    "Brand": "Sony",
    "Model": "MVC-FD81",
    "Includes": "Battery, case",
-   "Not included": "Charger"
+   "Not included": "Charger",
+   "Resolution": "1024x768 pixels",
+   "Lens": "5.2-15.6 mm f/2.0-2.1, 3x optical zoom",
+   "Media": "3.5-inch floppy disk",
+   "Display": "2.5 inch LCD",
+   "Weight": "About 540 g"
   },
   "src": "ebay",
-  "draft": true
+  "draft": true,
+  "msrp": "899",
+  "year": 1998,
+  "rel": "1998-08-25",
+  "refs": [
+   {
+    "t": "Sony MVC-FD81 - Digital Kamera Museum",
+    "u": "https://www.digitalkameramuseum.de/en/cameras/item/sony-mvc-fd81"
+   },
+   {
+    "t": "Sony Mavica FD81 - Camera-wiki.org",
+    "u": "https://camera-wiki.org/wiki/Sony_Mavica_FD81"
+   }
+  ],
+  "verify": "The $899 price and the exact date come from one source only (Digital Kamera Museum), which gives $899 for several unrelated cameras, so treat the price with caution.",
+  "conf": "med"
  },
  {
   "id": "sony-mavica-mvc-fd7-floppy-disk-camera",
@@ -1038,16 +1518,36 @@ var ITEMS=[
    "Mavica",
    "Floppy"
   ],
-  "text": "A Sony Mavica MVC-FD7 digital camera that records to 3.5-inch floppy disks, silver.",
+  "text": "The Sony Mavica MVC-FD7 is a 1997 digital camera that saves 640x480 JPEG images to a standard 3.5-inch floppy disk. It has a 10x zoom lens with autofocus and a 2.5 inch LCD.",
   "specs": {
    "Brand": "Sony",
    "Series": "Mavica",
    "MPN": "MVC-FD7",
    "Color": "Silver",
    "Connectivity": "USB",
-   "Charger included": "No"
+   "Charger included": "No",
+   "Resolution": "640x480 pixels",
+   "Zoom": "10x with autofocus",
+   "Media": "3.5-inch floppy disk",
+   "Display": "2.5 inch LCD",
+   "Battery": "InfoLithium NP-F330"
   },
-  "src": "ebay"
+  "src": "ebay",
+  "msrp": "899",
+  "year": 1997,
+  "refs": [
+   {
+    "t": "Sony MVC-FD7 - Digital Kamera Museum",
+    "u": "https://www.digitalkameramuseum.de/en/cameras/item/sony-mvc-fd7"
+   },
+   {
+    "t": "MVC-FD7 - Mavicazine",
+    "u": "https://www.mavicazine.com/fd7/"
+   }
+  ],
+  "verify": "The listing's USB connectivity and silver color were not confirmed; neither source mentions USB. Exact release month not found. Sources conflict on some specs (weight 500 vs 590 g), so omitted.",
+  "conf": "med",
+  "draft": true
  },
  {
   "id": "lexar-128-mb-memory-stick-full-size",
@@ -1069,7 +1569,10 @@ var ITEMS=[
    "Capacity": "128 MB",
    "Compatible brand": "Sony"
   },
-  "src": "ebay"
+  "src": "ebay",
+  "verify": "Search found only retail listings (Lexar MS128-281 on Amazon, blocked from fetch); no launch date or MSRP confirmed.",
+  "conf": "low",
+  "draft": true
  },
  {
   "id": "floppy-disk-lot-with-locking-storage-file-50-disks",
@@ -1090,7 +1593,10 @@ var ITEMS=[
    "Features": "Recordable",
    "Count": "50"
   },
-  "src": "ebay"
+  "src": "ebay",
+  "verify": "Unbranded lot; no product to identify.",
+  "conf": "low",
+  "draft": true
  },
  {
   "id": "roland-p-55-sc-55-replacement-dc-charger-adapter",
@@ -1105,12 +1611,25 @@ var ITEMS=[
    "Power",
    "SC-55"
   ],
-  "text": "A replacement DC power adapter and cord listed for the Roland P-55 SonicCell and SC-55/SC-55mkII, per the order title.",
+  "text": "An aftermarket 9 V DC power adapter marketed as a replacement for the Roland SC-55, SC-55mkII, P-55 and SonicCell modules.",
   "specs": {
-   "Compatible": "Roland P-55 SonicCell, SC-55, SC-55mkII (per title)"
+   "Compatible": "Roland P-55 SonicCell, SC-55, SC-55mkII (per title)",
+   "Output": "9 V DC"
   },
   "src": "ebay",
-  "draft": true
+  "draft": true,
+  "refs": [
+   {
+    "t": "Silverline Audio Replacement Power Supply for Roland SC-55 / SC-55 MKII / P-55 (Amazon)",
+    "u": "https://www.amazon.com/Replacement-Supply-Adapter-Roland-Products/dp/B00CGBEOLW"
+   },
+   {
+    "t": "9V Negative Polarity AC-DC Power Adaptor for Roland SC-55",
+    "u": "https://www.acadaptorsrus.co.uk/products/9v-negative-polarity-ac-dc-power-adaptor-for-roland-sc-55-sc-55k-sound-canvas"
+   }
+  ],
+  "verify": "Maker and exact model unknown; 9 V and polarity taken from search result titles only (page bodies not fetched), so verify before publishing. Not a period product.",
+  "conf": "low"
  },
  {
   "id": "roland-sound-canvas-sc-55mkii",
@@ -1126,22 +1645,39 @@ var ITEMS=[
    "MIDI",
    "Sound Canvas"
   ],
-  "text": "A Roland Sound Canvas SC-55mkII MIDI sound module, a Japanese market unit per the order title.",
+  "text": "The Roland SC-55mkII is a General MIDI and GS sound module released in 1993 as an update to the original SC-55. It has 28-voice polyphony, 16 parts and 354 tones.",
   "specs": {
    "Brand": "Roland",
    "Model": "SC-55mkII",
    "Type": "MIDI sound module",
-   "Market": "Japan (per title)"
+   "Market": "Japan (per title)",
+   "Polyphony": "28 voices",
+   "Parts": "16",
+   "Tones": "354",
+   "Audio": "18-bit DAC, 32 kHz"
   },
   "src": "ebay",
-  "draft": true
+  "draft": true,
+  "year": 1993,
+  "refs": [
+   {
+    "t": "Roland Sound Canvas - Wikipedia",
+    "u": "https://en.wikipedia.org/wiki/Roland_Sound_Canvas"
+   },
+   {
+    "t": "Roland SC-55 - Wikipedia",
+    "u": "https://en.wikipedia.org/wiki/Roland_SC-55"
+   }
+  ],
+  "verify": "Original launch price and exact release month not found. Japan-market status is per the listing.",
+  "conf": "med"
  },
  {
   "id": "official-duke-nukem-3d-level-design-handbook",
   "type": "Game or software",
   "name": "Official Duke Nukem 3D Level Design Handbook",
   "cat": "Books and magazines",
-  "maker": "Unknown",
+  "maker": "Sybex",
   "qty": 1,
   "cond": "Order email only; no CD-ROM per the title.",
   "tags": [
@@ -1149,13 +1685,30 @@ var ITEMS=[
    "Duke Nukem",
    "Level design"
   ],
-  "text": "The Official Duke Nukem 3D Level Design Handbook, a video game guide book without a CD-ROM.",
+  "text": "The Duke Nukem 3D Level Design Handbook is a 335-page guide by Matt Tagliaferri, published by Sybex in San Francisco in 1996. It covers building custom levels for Duke Nukem 3D. Open Library lists it under ISBN 0782118690.",
   "specs": {
    "Format": "Book",
-   "CD-ROM": "Not included"
+   "CD-ROM": "Not included",
+   "Author": "Matt Tagliaferri",
+   "Publisher": "Sybex",
+   "Pages": "335",
+   "ISBN": "0782118690"
   },
   "src": "ebay",
-  "draft": true
+  "draft": true,
+  "year": 1996,
+  "refs": [
+   {
+    "t": "The Duke Nukem 3D level design handbook - Open Library",
+    "u": "https://openlibrary.org/books/OL1016680M/The_Duke_Nukem_3D_level_design_handbook"
+   },
+   {
+    "t": "Duke Nukem 3D Level Design Handbook - Duke Nukem Wiki",
+    "u": "https://dukenukem.fandom.com/wiki/Duke_Nukem_3D_Level_Design_Handbook"
+   }
+  ],
+  "verify": "US cover price and exact release month not confirmed; page count/ISBN taken from Open Library only",
+  "conf": "med"
  },
  {
   "id": "midi-15-pin-joystick-game-port-to-5-pin-din-breakout-adapter",
@@ -1170,13 +1723,26 @@ var ITEMS=[
    "Game port",
    "Cable"
   ],
-  "text": "A 5 ft vintage-style adapter cable from a 15-pin game port to MIDI 5-pin DIN breakout, per the order title.",
+  "text": "A cable adapter that breaks out the MIDI signals on a PC sound card's 15-pin game port to standard 5-pin DIN MIDI In and Out connectors. Creative Labs introduced MIDI on pins 12 and 15 of the game port with the Sound Blaster in 1989, and this passive-style adapter became a common way to reach MIDI devices.",
   "specs": {
    "Length": "5 ft",
-   "Ends": "15-pin joystick game port, 5-pin DIN"
+   "Ends": "15-pin joystick game port, 5-pin DIN",
+   "MIDI pins": "Game port pin 12 (MIDI TX) and pin 15 (MIDI RX), 31.25 kbaud"
   },
   "src": "ebay",
-  "draft": true
+  "draft": true,
+  "refs": [
+   {
+    "t": "PC MIDI + game port - AllPinouts",
+    "u": "https://allpinouts.org/pinouts/connectors/input_device/pc-midi-game-port/"
+   },
+   {
+    "t": "Game port - Wikipedia",
+    "u": "https://en.wikipedia.org/wiki/Game_port"
+   }
+  ],
+  "verify": "Maker, model and price unknown (generic); Wikipedia says adapters typically include opto-isolation hardware, so 'passive' wording in text should be checked",
+  "conf": "med"
  },
  {
   "id": "yamaha-tg100-tone-generator",
@@ -1192,15 +1758,31 @@ var ITEMS=[
    "Yamaha",
    "MIDI"
   ],
-  "text": "A Yamaha TG100 MIDI tone generator sound module, with cord.",
+  "text": "The Yamaha TG100 is a General MIDI tone module with 28-note polyphony and 16 multitimbral parts, using 12-bit samples stored in a 2 MB ROM. Soundprogramming.net lists it at US$449 and describes it as a competitor to the Roland MT-32 and SC-55.",
   "specs": {
    "Brand": "Yamaha",
    "Model": "TG100",
    "Type": "Tone generator",
-   "I/O": "MIDI DIN in and out"
+   "I/O": "MIDI DIN in and out",
+   "Polyphony": "28 notes",
+   "Multitimbral parts": "16",
+   "Presets": "192 voices, 64 user, 10 drum kits",
+   "Waveform ROM": "2 MB, 140 waveforms",
+   "Sample depth": "12-bit",
+   "Display": "16-character LCD"
   },
   "src": "ebay",
-  "draft": true
+  "draft": true,
+  "msrp": "449",
+  "year": 1991,
+  "refs": [
+   {
+    "t": "Yamaha TG100 - soundprogramming.net",
+    "u": "https://soundprogramming.net/synthesizers/yamaha/yamaha-tg-100/"
+   }
+  ],
+  "verify": "Release year (1991 per soundprogramming.net; a Sept 1992 magazine review exists) and price rest on a single source; exact month not found",
+  "conf": "med"
  },
  {
   "id": "commodore-64-serial-cable-6-pin-din-for-1541-1571-c128",
@@ -1216,32 +1798,63 @@ var ITEMS=[
    "Serial",
    "Cable"
   ],
-  "text": "A 6-pin DIN serial cable for Commodore computers and peripherals such as the 1541 and 1571 disk drives.",
+  "text": "A cable for the Commodore serial (IEC) bus, which uses a 6-pin DIN connector and links the C64 and related computers to disk drives and printers. The bus carries SRQ, GND, ATN, CLK, DATA and RESET lines.",
   "specs": {
    "Brand": "Commodore (compatible)",
    "Type": "Cable",
-   "Connector": "6-pin DIN serial"
+   "Connector": "6-pin DIN serial",
+   "Connector standard": "6-pin DIN (DIN 45322)",
+   "Bus": "Commodore serial (IEC/CBM) bus"
   },
-  "src": "ebay"
+  "src": "ebay",
+  "refs": [
+   {
+    "t": "Serial Port - C64-Wiki",
+    "u": "https://www.c64-wiki.com/wiki/Serial_Port"
+   },
+   {
+    "t": "Commodore bus - Wikipedia",
+    "u": "https://en.wikipedia.org/wiki/Commodore_bus"
+   }
+  ],
+  "verify": "Actual manufacturer of this cable",
+  "conf": "med",
+  "draft": true
  },
  {
   "id": "diablo-pc-1996",
   "type": "Game or software",
   "name": "Diablo (PC, 1996)",
   "cat": "Games and software",
-  "maker": "Unknown",
+  "maker": "Blizzard Entertainment",
   "year": 1996,
   "qty": 1,
   "cond": "Order email only; the listing page could not be read.",
   "tags": [
    "PC"
   ],
-  "text": "Diablo for PC, titled as 1996 in the order.",
+  "text": "Diablo is an action role-playing game developed by Blizzard North and published by Blizzard Entertainment. It went gold on December 26, 1996, and some retailers shipped it on December 31, 1996 while others in early January 1997.",
   "specs": {
-   "Platform": "PC"
+   "Platform": "PC",
+   "Developer": "Blizzard North",
+   "Publisher": "Blizzard Entertainment",
+   "Genre": "Action role-playing"
   },
   "src": "ebay",
-  "draft": true
+  "draft": true,
+  "rel": "1996-12-31",
+  "refs": [
+   {
+    "t": "Unraveling the mystery behind Diablo's multiple release dates - Shacknews",
+    "u": "https://www.shacknews.com/article/128154/unraveling-the-mystery-behind-diablos-multiple-release-dates"
+   },
+   {
+    "t": "Diablo (video game) - Wikipedia",
+    "u": "https://en.wikipedia.org/wiki/Diablo_(video_game)"
+   }
+  ],
+  "verify": "US MSRP not found; Wikipedia lists Windows NA release as 1997-01-03 (conflicts with 1996-12-31, so exact date left as 1996-12-31 per Shacknews retail shipment, not 'rel' if strict)",
+  "conf": "high"
  },
  {
   "id": "altec-lansing-acs45-multimedia-speaker-system-with-subwoofer",
@@ -1256,14 +1869,28 @@ var ITEMS=[
    "Altec Lansing",
    "Speakers"
   ],
-  "text": "An Altec Lansing ACS45 multimedia computer speaker system with subwoofer.",
+  "text": "The Altec Lansing ACS45 (ACS 45 PowerCube) is a three-piece multimedia speaker system with two 3 in satellites and a 4 in subwoofer. HardwareZone reviewed it in July 1998.",
   "specs": {
    "Brand": "Altec Lansing",
    "Model": "ACS45",
-   "Type": "Computer speakers with subwoofer"
+   "Type": "Computer speakers with subwoofer",
+   "Components": "2 satellites + 1 subwoofer",
+   "Satellite driver": "3 in full-range, magnetically shielded",
+   "Subwoofer driver": "4 in long-throw",
+   "Frequency response": "42 Hz to 18 kHz",
+   "Power": "6 W per satellite, 20 W subwoofer (0.8% THD)"
   },
   "src": "ebay",
-  "draft": true
+  "draft": true,
+  "year": 1998,
+  "refs": [
+   {
+    "t": "Altec Lansing ACS 45 PowerCube - HardwareZone",
+    "u": "https://assets.hardwarezone.com/2009/reviews/others/acs45/acs45.htm"
+   }
+  ],
+  "verify": "US MSRP and exact release date not found (review price S$85 is Singapore); year 1998 is the review date, so release was no later than 1998",
+  "conf": "med"
  },
  {
   "id": "pcmcia-to-usb-2-0-cardbus-dual-port-adapter",
@@ -1287,7 +1914,10 @@ var ITEMS=[
    "Speed": "480 Mbps",
    "USB power": "+5 V, 100 mA per port without adapter; 500 mA with adapter"
   },
-  "src": "ebay"
+  "src": "ebay",
+  "verify": "No source confirming SODIAL PC5782; searches only returned generic CardBus USB 2.0 listings. Existing values left as is",
+  "conf": "low",
+  "draft": true
  },
  {
   "id": "sharp-lq61d133-lcd-panel-used-and-tested",
@@ -1303,14 +1933,31 @@ var ITEMS=[
    "Sharp",
    "LCD"
   ],
-  "text": "A used and tested Sharp LQ61D133 LCD screen panel.",
+  "text": "The Sharp LQ61D133 is a 6.1 in 640 x 480 a-Si TFT color LCD module with a CCFL backlight and a parallel RGB interface.",
   "specs": {
    "Brand": "Sharp",
    "Model": "LQ61D133",
    "Type": "LCD screen panel",
-   "Operating temperature": "-20 to 60 C"
+   "Operating temperature": "0 to 50 C operating; -20 to 60 C storage",
+   "Size": "6.1 in",
+   "Resolution": "640 x 480",
+   "Panel type": "a-Si TFT-LCD, TN, normally white, transmissive",
+   "Interface": "Parallel RGB, 31 pins",
+   "Brightness": "90 cd/m2 typ.",
+   "Backlight": "1 CCFL",
+   "Contrast": "250:1 typ.",
+   "Input voltage": "5.0 V"
   },
-  "src": "ebay"
+  "src": "ebay",
+  "refs": [
+   {
+    "t": "SHARP 6.1 LQ61D133 Specification - Taiwan Screen",
+    "u": "https://www.twscreen.com/en/lcdpanel/18036/sharp/lq61d133/6.1/640x480"
+   }
+  ],
+  "verify": "Release year and original price; spec source is a reseller page, not the Sharp datasheet. Search results elsewhere call it 10.4-inch (eBay), but resolution and datasheet title say 6.1 in",
+  "conf": "med",
+  "draft": true
  },
  {
   "id": "dim-bulb-tester-with-volt-and-amp-meter-v2",
@@ -1324,13 +1971,22 @@ var ITEMS=[
    "Repair",
    "Tool"
   ],
-  "text": "A dim bulb tester, version 2, with volt and amp meters and a dual-mode toggle switch, for vintage radio and amplifier repair.",
+  "text": "A dim bulb tester places an incandescent bulb in series with the AC supply to the device under test, limiting current if the device has a short circuit. It is used to power up vintage radios and amplifiers more safely after repair.",
   "specs": {
    "Type": "Current limiter",
    "Includes": "60 W bulb, circuit diagram, quick start guide",
    "Meters": "Volt and amp"
   },
-  "src": "ebay"
+  "src": "ebay",
+  "refs": [
+   {
+    "t": "Powering Your Radio Safely with a Dim-bulb Tester - Antique Radio",
+    "u": "https://antiqueradio.org/dimbulb.htm"
+   }
+  ],
+  "verify": "Specific product maker/model (V2) not identified; generic item",
+  "conf": "med",
+  "draft": true
  },
  {
   "id": "the-colonel-s-bequest-a-laura-bow-mystery-big-box-incomplete",
@@ -1345,14 +2001,34 @@ var ITEMS=[
    "Big box",
    "Sierra"
   ],
-  "text": "The Colonel's Bequest, a 1989 Sierra Laura Bow mystery in a big box. The title says incomplete.",
+  "text": "The Colonel's Bequest: A Laura Bow Mystery is a 1989 Sierra On-Line mystery adventure built on the SCI0 engine. Roberta Williams and Chris Iden directed it and Jacqueline Austin is credited as designer. Amiga and Atari ST versions followed in 1990.",
   "specs": {
    "Platform": "PC",
    "Publisher": "Sierra Online, Inc.",
    "Release year": "1989",
-   "Genre": "Mystery adventure"
+   "Genre": "Mystery adventure",
+   "Developer": "Sierra On-Line",
+   "Engine": "SCI0",
+   "Graphics": "EGA 320x200, 16 colors",
+   "Audio": "PC speaker, AdLib, Roland MT-32 and others",
+   "Media": "Ten 5.25 in or four 3.5 in floppies",
+   "Minimum RAM": "512 KB"
   },
-  "src": "ebay"
+  "src": "ebay",
+  "rel": "1989-10",
+  "refs": [
+   {
+    "t": "The Colonel's Bequest - Wikipedia",
+    "u": "https://en.wikipedia.org/wiki/The_Colonel%27s_Bequest"
+   },
+   {
+    "t": "DOS Days - Laura Bow: The Colonel's Bequest (1989)",
+    "u": "https://www.dosdays.co.uk/topics/Games/game_colonel.php"
+   }
+  ],
+  "verify": "US MSRP not found",
+  "conf": "high",
+  "draft": true
  },
  {
   "id": "pc-gamer-november-1997-with-cd-rom",
@@ -1368,7 +2044,7 @@ var ITEMS=[
    "PC Gamer",
    "CD-ROM"
   ],
-  "text": "PC Gamer, Volume 4 Issue 11, November 1997, with a CD-ROM. Features include a Duke Nukem Forever preview and a Hexen II demo.",
+  "text": "The November 1997 issue of PC Gamer (US) carried a cover story on Duke Nukem Forever, an 8-page feature with screenshots and sidebars on Max Payne and Prey, according to a 3D Realms news post.",
   "specs": {
    "Publication": "PC Gamer",
    "Publisher": "Imagine Publishing, Inc.",
@@ -1377,7 +2053,16 @@ var ITEMS=[
    "Pages": "448",
    "Includes": "CD-ROM"
   },
-  "src": "ebay"
+  "src": "ebay",
+  "refs": [
+   {
+    "t": "3D Realms News: PC Gamer Cover Article about Duke Nukem Forever",
+    "u": "https://legacy.3drealms.com/news/1997/10/pc_gamer_cover.html"
+   }
+  ],
+  "verify": "Publisher (Imagine Media vs Imagine Publishing), page count, cover price, and Hexen II demo not independently confirmed",
+  "conf": "low",
+  "draft": true
  },
  {
   "id": "aol-america-online-version-2-0-3-5-inch-floppy-sealed",
@@ -1400,7 +2085,16 @@ var ITEMS=[
    "Color": "Ivory",
    "Original or reproduction": "Original"
   },
-  "src": "ebay"
+  "src": "ebay",
+  "refs": [
+   {
+    "t": "WinWorld: America Online 2.x",
+    "u": "https://winworldpc.com/product/aol/20"
+   }
+  ],
+  "verify": "Could not confirm AOL 2.0 release date; WinWorld lists 2.x as 1995 (Windows), CHM collection lists floppy media, but no page confirms 1994 vs 1995 for version 2.0",
+  "conf": "low",
+  "draft": true
  },
  {
   "id": "replacement-rtc-bios-cmos-battery-for-toshiba-libretto",
@@ -1415,13 +2109,26 @@ var ITEMS=[
    "Libretto",
    "Battery"
   ],
-  "text": "A replacement RTC/BIOS CMOS battery sold for the Toshiba Libretto, Tecra and Qosmio lines. Three were bought for Libretto 50CT/110CT/L5 variants.",
+  "text": "A RomeTech replacement RTC/CMOS backup battery sold for the Toshiba Libretto 110CT. It is a 2.4 V, 15 mAh rechargeable NiMH cell with a short lead.",
   "specs": {
    "Brand": "RomeTech",
    "Type": "CMOS battery",
-   "Compatible": "Toshiba Libretto, Tecra, Qosmio"
+   "Compatible": "Toshiba Libretto, Tecra, Qosmio",
+   "Voltage": "2.4 V",
+   "Chemistry": "NiMH",
+   "Capacity": "15 mAh",
+   "Cable length": "4 cm"
   },
-  "src": "ebay"
+  "src": "ebay",
+  "refs": [
+   {
+    "t": "RTC CMOS Battery for Toshiba Libretto 110CT - RomeTech",
+    "u": "https://rometechbatteries.com/products/rtc-cmos-battery-for-toshiba-libretto-110ct"
+   }
+  ],
+  "verify": "RomeTech part number and connector type; specs from the 110CT listing, which may differ from the multi-model listing bought",
+  "conf": "med",
+  "draft": true
  },
  {
   "id": "toshiba-satellite-4015cds-laptop",
@@ -1437,11 +2144,25 @@ var ITEMS=[
    "Toshiba",
    "Laptop"
   ],
-  "text": "A Toshiba Satellite 4015CDS notebook. The listing title calls it a vintage laptop and says it is untested.",
+  "text": "The Satellite 4015CDS is a Toshiba notebook built around a 266 MHz Mobile Pentium II with 32 MB of standard RAM. Toshiba's specification sheet lists a 12.1 inch 800x600 display and a companion 4015CDT model.",
   "specs": {
-   "Model": "Satellite 4015CDS"
+   "Model": "Satellite 4015CDS",
+   "CPU": "Intel Mobile Pentium II 266 MHz",
+   "RAM": "32 MB standard, expandable to 160 MB",
+   "Display": "12.1 in, 800x600 (dual scan or TFT active matrix variants)",
+   "Video memory": "2 MB",
+   "Chipset": "Intel 440BX"
   },
-  "src": "shopgoodwill"
+  "src": "shopgoodwill",
+  "refs": [
+   {
+    "t": "Toshiba Satellite 4015CDS Specification Sheet (ManualsLib)",
+    "u": "https://www.manualslib.com/manual/549710/Toshiba-Satellite-4015cds.html"
+   }
+  ],
+  "verify": "Release year and original US price not confirmed. Spec sheet lists two display options (CDS vs CDT mapping not clear) and storage of about 4.1 GB; not included.",
+  "conf": "med",
+  "draft": true
  },
  {
   "id": "hp-omnibook-300-with-accessories",
@@ -1458,11 +2179,33 @@ var ITEMS=[
    "OmniBook",
    "Laptop"
   ],
-  "text": "A vintage 9-inch HP OmniBook 300 with accessories. The listing title says it was power tested.",
+  "text": "The HP OmniBook 300 was a subnotebook introduced in 1993 with a 9 inch monochrome VGA display and a pop-up pointing device. It shipped with MS-DOS 5.0, Windows 3.1 and Microsoft Word and Excel in ROM.",
   "specs": {
-   "Model": "OmniBook 300"
+   "Model": "OmniBook 300",
+   "CPU": "AMD 386SX-LV 20 MHz",
+   "RAM": "2 MB, expandable to 10 MB",
+   "Display": "9 in monochrome VGA STN",
+   "Storage": "None, 10 MB flash, or 40 MB hard disk (by configuration)",
+   "Weight": "2.9 lb",
+   "Expansion": "Two PCMCIA slots"
   },
-  "src": "shopgoodwill"
+  "src": "shopgoodwill",
+  "msrp": "1515",
+  "year": 1993,
+  "rel": "1993-06",
+  "refs": [
+   {
+    "t": "HP OmniBook (Wikipedia)",
+    "u": "https://en.wikipedia.org/wiki/HP_OmniBook"
+   },
+   {
+    "t": "Omnibook 300 (HP Museum)",
+    "u": "https://www.hpmuseum.net/display_item.php?hw=123"
+   }
+  ],
+  "verify": "msrp 1515 is the no-storage base model; other configs were $1,950 (40 MB HD) and $2,375 (10 MB flash). Sources differ on CPU naming (Intel 386SXLV per HP Museum, AMD 386SX-LV per Wikipedia); AMD listed here.",
+  "conf": "med",
+  "draft": true
  },
  {
   "id": "apple-powerbook-1400c-166",
@@ -1478,12 +2221,34 @@ var ITEMS=[
    "PowerBook",
    "Mac OS 8.5"
   ],
-  "text": "An Apple Macintosh PowerBook 1400c/166. The listing title mentions Mac OS 8.5, a floppy drive and a modem.",
+  "text": "The PowerBook 1400c/166 was introduced by Apple on July 14, 1997 with a 166 MHz PowerPC 603e and an 11.3 inch active matrix display. The 1400 series was the first PowerBook with a built-in CD-ROM drive.",
   "specs": {
    "Model": "PowerBook 1400c/166",
-   "OS (per title)": "Mac OS 8.5"
+   "OS (per title)": "Mac OS 8.5",
+   "CPU": "PowerPC 603e 166 MHz",
+   "RAM": "16 MB standard, expandable to 64 MB",
+   "Display": "11.3 in active matrix SVGA, 800x600",
+   "Weight": "6.6 lb",
+   "Optical drive": "Internal CD-ROM"
   },
-  "src": "shopgoodwill"
+  "src": "shopgoodwill",
+  "partno": "M4909LL/A",
+  "msrp": "3499",
+  "year": 1997,
+  "rel": "1997-07-14",
+  "refs": [
+   {
+    "t": "PowerBook 1400c/166 Specs (EveryMac.com)",
+    "u": "https://everymac.com/systems/apple/powerbook/specs/mac_powerbook1400c_166.html"
+   },
+   {
+    "t": "PowerBook 1400 (Wikipedia)",
+    "u": "https://en.wikipedia.org/wiki/PowerBook_1400"
+   }
+  ],
+  "verify": "Hard drive size conflicts between sources (2.0 GB EveryMac vs 1 GB Wikipedia); omitted. Price is $3,500 on EveryMac and $3,499 on Wikipedia. Part number M4909LL/A is for the 8X CD-ROM configuration.",
+  "conf": "high",
+  "draft": true
  },
  {
   "id": "compaq-lte-elite-4-40c-no-hard-drive",
@@ -1499,11 +2264,26 @@ var ITEMS=[
    "LTE",
    "Laptop"
   ],
-  "text": "A vintage Compaq LTE Elite 4/40C laptop sold without a hard drive. The listing title says it powers on.",
+  "text": "The LTE Elite 4/40C is the entry-level model of Compaq's LTE Elite notebook line, released in 1994 with a 40 MHz 486DX2. The LTE Elite line included an internal AC adapter in the chassis.",
   "specs": {
-   "Model": "LTE Elite 4/40C"
+   "Model": "LTE Elite 4/40C",
+   "CPU": "Intel 486DX2 40 MHz",
+   "RAM": "4 MB standard, expandable to 20 MB",
+   "Display": "9.5 in passive matrix color LCD, 640x480",
+   "Pointing": "Built-in trackball",
+   "Expansion": "PC Card slots"
   },
-  "src": "shopgoodwill"
+  "src": "shopgoodwill",
+  "year": 1994,
+  "rel": "1994-03",
+  "refs": [
+   {
+    "t": "Compaq LTE Elite (Wikipedia)",
+    "u": "https://en.wikipedia.org/wiki/Compaq_LTE_Elite"
+   }
+  ],
+  "verify": "Original price for the 4/40C not confirmed. Source lists a 170 MB hard drive for the base config; not included since this unit is sold without a drive. Release date of March 1994 is from a single page.",
+  "conf": "med"
  },
  {
   "id": "iomega-zip-100-external-drive-parallel-port-boxed",
@@ -1519,11 +2299,28 @@ var ITEMS=[
    "Zip",
    "Parallel"
   ],
-  "text": "An Iomega Zip 100 external drive for the parallel port, listed as complete in box.",
+  "text": "The Zip 100 is Iomega's 100 MB removable disk drive, which began shipping in 1995 at about US$200 with one cartridge. The parallel port model attaches through a parallel-to-SCSI controller and passes through to a printer.",
   "specs": {
-   "Interface": "Parallel port"
+   "Interface": "Parallel port",
+   "Capacity": "100 MB"
   },
-  "src": "shopgoodwill"
+  "src": "shopgoodwill",
+  "partno": "Z100P2",
+  "msrp": "200",
+  "year": 1995,
+  "refs": [
+   {
+    "t": "Zip drive (Wikipedia)",
+    "u": "https://en.wikipedia.org/wiki/Zip_drive"
+   },
+   {
+    "t": "Iomega Zip Drive 100 Parallel (Computing History)",
+    "u": "https://www.computinghistory.org.uk/det/22978/Iomega-Zip-Drive-100-Parallel/"
+   }
+  ],
+  "verify": "Wikipedia gives launch price as US$200 (the $199 figure is not directly confirmed; msrp set to 200 would be the cited value). Computing History lists this parallel unit as 1996 and part Z100P2; the exact parallel-port unit in the lot may differ. Exact month not confirmed.",
+  "conf": "med",
+  "draft": true
  },
  {
   "id": "sony-digital-mavica-mvc-fd91-bundle",
@@ -1539,11 +2336,35 @@ var ITEMS=[
    "Mavica",
    "Floppy"
   ],
-  "text": "A Sony Digital Mavica MVC-FD91 floppy disk camera bundle, per the listing title.",
+  "text": "The Sony Mavica MVC-FD91 is a digital camera that records images to 3.5 inch floppy disks. It has a 14x optical zoom lens with image stabilization and manual exposure and focus controls.",
   "specs": {
-   "Model": "MVC-FD91"
+   "Model": "MVC-FD91",
+   "Resolution": "0.7 MP effective (1024x768 max)",
+   "Zoom": "14x optical",
+   "Storage": "3.5 in floppy disk",
+   "LCD": "2.5 in",
+   "Weight": "950 g"
   },
-  "src": "shopgoodwill"
+  "src": "shopgoodwill",
+  "year": 1999,
+  "rel": "1999-01",
+  "refs": [
+   {
+    "t": "Sony Mavica FD-91 Specs (DPReview)",
+    "u": "https://www.dpreview.com/products/sony/compacts/mavica_fd91/specifications"
+   },
+   {
+    "t": "Sony Mavica (Wikipedia)",
+    "u": "https://en.wikipedia.org/wiki/Sony_Mavica"
+   },
+   {
+    "t": "Sony Mavica FD-91 Review (DPReview)",
+    "u": "https://www.dpreview.com/reviews/sonyfd91"
+   }
+  ],
+  "verify": "Original US price not confirmed. Announcement date January 1999 per DPReview spec page. Retail listings call it 0.8 MP; DPReview says 0.7 MP effective.",
+  "conf": "med",
+  "draft": true
  },
  {
   "id": "sony-mavica-mvc-fd200-shopgoodwill",
@@ -1559,12 +2380,31 @@ var ITEMS=[
    "Mavica",
    "Floppy"
   ],
-  "text": "A Sony Mavica MVC-FD200 2.0 MP camera. The listing title says it takes floppy and Memory Stick media.",
+  "text": "The Sony Mavica MVC-FD200 is a 2.0 megapixel digital camera that can save to 3.5 inch floppy disks or Memory Stick media. It is closely related to the 1.2 MP FD100 and adds MPEG movie recording and USB.",
   "specs": {
    "Model": "MVC-FD200",
-   "Resolution (per title)": "2.0 MP"
+   "Resolution (per title)": "2.0 MP",
+   "Resolution": "2.0 MP effective",
+   "Storage": "3.5 in floppy disk or Memory Stick",
+   "Zoom": "3x optical"
   },
-  "src": "shopgoodwill"
+  "src": "shopgoodwill",
+  "msrp": "500",
+  "year": 2002,
+  "rel": "2002-02",
+  "refs": [
+   {
+    "t": "Two new Sony Mavicas (DPReview)",
+    "u": "https://www.dpreview.com/articles/2685459113/sonyfd100fd200/"
+   },
+   {
+    "t": "Sony Mavica (Wikipedia)",
+    "u": "https://en.wikipedia.org/wiki/Sony_Mavica"
+   }
+  ],
+  "verify": "Price $500 and Feb 2002 date from the DPReview announcement summary only.",
+  "conf": "med",
+  "draft": true
  },
  {
   "id": "tdk-mf-2hd-floppies-and-maxell-8mm-tape-lot",
@@ -1579,9 +2419,20 @@ var ITEMS=[
    "Floppy",
    "TDK"
   ],
-  "text": "Listed as: TDK MF-2HD micro floppy disks IBM PS/2 format, Maxell 8mm GX-MP video cassette.",
+  "text": "MF-2HD is the TDK product code for 3.5 inch high density 1.44 MB floppy disks, sold pre-formatted for IBM compatibles. The lot also contains a Maxell GX-MP metal particle 8mm camcorder cassette.",
   "src": "shopgoodwill",
-  "draft": true
+  "draft": true,
+  "specs": {
+   "Format": "3.5 in high density, 1.44 MB, IBM PC formatted"
+  },
+  "refs": [
+   {
+    "t": "TDK MF-2HD 1.44 MB listing (Tabone Computer Centre)",
+    "u": "https://w.tabone.com/10-floppy-disks-3-5-inch-tdk.html"
+   }
+  ],
+  "verify": "Only retailer and listing pages found; no authoritative source for release year, MSRP, or Maxell GX-MP history. Two unrelated items in one lot.",
+  "conf": "low"
  },
  {
   "id": "game-boy-advance-game-lot-nemo-medal-of-honor-tiger-namco-su",
@@ -1596,74 +2447,147 @@ var ITEMS=[
   ],
   "text": "Listed as: GBA lot: Nemo, Medal of Honor, Tiger, Namco, Sum of All Fears.",
   "src": "shopgoodwill",
-  "draft": true
+  "draft": true,
+  "verify": "Multi-title lot with unspecified titles and makers; no single product to confirm. Maker 'Unknown' is a placeholder, titles would need to be split into separate entries.",
+  "conf": "low"
  },
  {
   "id": "nintendo-game-boy-pocket-2022-order",
   "type": "Game console",
   "name": "Nintendo Game Boy Pocket (2022 order)",
   "cat": "Game consoles",
-  "maker": "Unknown",
+  "maker": "Nintendo",
   "qty": 1,
   "cond": "Per order email title: winning-bid email title only: Nintendo Game Boy Pocket (2022 order).",
   "tags": [
    "Retro gaming"
   ],
-  "text": "Listed as: winning-bid email title only: Nintendo Game Boy Pocket (2022 order).",
+  "text": "The Game Boy Pocket is a smaller redesign of the original Game Boy released by Nintendo, with a clearer black and white screen and two AAA batteries. It launched in Japan on July 20, 1996 and in North America on September 2, 1996.",
   "src": "shopgoodwill",
-  "draft": true
+  "draft": true,
+  "model": "Game Boy Pocket",
+  "msrp": "69.99",
+  "year": 1996,
+  "rel": "1996-09-02",
+  "specs": {
+   "Power": "2 x AAA batteries",
+   "Battery life": "Up to 10 hours",
+   "Display": "FSTN LCD",
+   "Dimensions": "127.6 x 77.6 x 25.3 mm",
+   "Weight": "125 g"
+  },
+  "refs": [
+   {
+    "t": "Game Boy (Wikipedia)",
+    "u": "https://en.wikipedia.org/wiki/Game_Boy"
+   }
+  ],
+  "verify": "Model number MGB-001 not verified in fetched page.",
+  "conf": "high"
  },
  {
   "id": "nintendo-wii-console-rvl-001-with-remote-and-nunchuk",
   "type": "Game console",
   "name": "Nintendo Wii console RVL-001 with remote and nunchuk",
   "cat": "Game consoles",
-  "maker": "Unknown",
+  "maker": "Nintendo",
   "qty": 1,
   "cond": "Per order email title: winning-bid email title only: Nintendo Wii console RVL-001 with remote and nunchuk.",
   "tags": [
    "Retro gaming"
   ],
-  "text": "Listed as: winning-bid email title only: Nintendo Wii console RVL-001 with remote and nunchuk.",
+  "text": "The Wii is a Nintendo home console whose North American launch was November 19, 2006 at US$249.99. The RVL-001 is the original model and plays GameCube discs as well as Wii discs.",
   "src": "shopgoodwill",
-  "draft": true
+  "draft": true,
+  "model": "Wii (RVL-001)",
+  "msrp": "249.99",
+  "year": 2006,
+  "rel": "2006-11-19",
+  "specs": {
+   "CPU": "IBM Broadway 729 MHz",
+   "GPU": "ATI Hollywood 243 MHz",
+   "RAM": "88 MB (24 MB 1T-SRAM + 64 MB GDDR3)",
+   "Storage": "512 MB flash, SD card slot",
+   "Media": "Wii optical discs, GameCube discs"
+  },
+  "refs": [
+   {
+    "t": "Wii (Wikipedia)",
+    "u": "https://en.wikipedia.org/wiki/Wii"
+   }
+  ],
+  "verify": "RVL-001 as the original-model code was in the fetched summary; the bundle included remote and nunchuk is per listing.",
+  "conf": "high"
  },
  {
   "id": "white-nintendo-wii-console-with-cables-and-sensor-bar",
   "type": "Game console",
   "name": "White Nintendo Wii console with cables and sensor bar",
   "cat": "Game consoles",
-  "maker": "Unknown",
+  "maker": "Nintendo",
   "qty": 1,
   "cond": "Per order email title: winning-bid email title only: White Nintendo Wii console with cables and sensor bar.",
   "tags": [
    "Retro gaming"
   ],
-  "text": "Listed as: winning-bid email title only: White Nintendo Wii console with cables and sensor bar.",
+  "text": "The Wii is a Nintendo home console launched in North America on November 19, 2006 at US$249.99. It uses motion-sensing controllers read through a sensor bar.",
   "src": "shopgoodwill",
-  "draft": true
+  "draft": true,
+  "model": "Wii",
+  "msrp": "249.99",
+  "year": 2006,
+  "rel": "2006-11-19",
+  "specs": {
+   "CPU": "IBM Broadway 729 MHz",
+   "GPU": "ATI Hollywood 243 MHz",
+   "RAM": "88 MB (24 MB 1T-SRAM + 64 MB GDDR3)",
+   "Storage": "512 MB flash, SD card slot"
+  },
+  "refs": [
+   {
+    "t": "Wii (Wikipedia)",
+    "u": "https://en.wikipedia.org/wiki/Wii"
+   }
+  ],
+  "verify": "Exact model code not confirmed from listing; sensor bar detail is common knowledge not in the fetched text.",
+  "conf": "med"
  },
  {
   "id": "nes-mike-tyson-s-punch-out-game-only",
   "type": "Game console",
   "name": "NES Mike Tyson's Punch-Out (game only)",
   "cat": "Game consoles",
-  "maker": "Unknown",
+  "maker": "Nintendo",
   "qty": 1,
   "cond": "Per order email title: winning-bid email title only: NES Mike Tyson's Punch-Out (game only).",
   "tags": [
    "Retro gaming"
   ],
-  "text": "Listed as: winning-bid email title only: NES Mike Tyson's Punch-Out (game only).",
+  "text": "Mike Tyson's Punch-Out!! is a 1987 boxing game developed and published by Nintendo for the NES. It adapted the 1984 Punch-Out!! arcade games and added Mike Tyson as the final opponent.",
   "src": "shopgoodwill",
-  "draft": true
+  "draft": true,
+  "model": "Mike Tyson's Punch-Out!!",
+  "year": 1987,
+  "specs": {
+   "Platform": "Nintendo Entertainment System",
+   "Developer": "Nintendo R&D3",
+   "Publisher": "Nintendo"
+  },
+  "refs": [
+   {
+    "t": "Punch-Out!! (NES) (Wikipedia)",
+    "u": "https://en.wikipedia.org/wiki/Punch-Out!!_(NES)"
+   }
+  ],
+  "verify": "Exact NA release month and original US price not confirmed.",
+  "conf": "med"
  },
  {
   "id": "two-sony-playstation-3-controllers",
   "type": "Game console",
   "name": "Two Sony PlayStation 3 controllers",
   "cat": "Game consoles",
-  "maker": "Unknown",
+  "maker": "Sony",
   "qty": 1,
   "cond": "Per order email title: winning-bid email title only: Two Sony PlayStation 3 controllers.",
   "tags": [
@@ -1671,119 +2595,249 @@ var ITEMS=[
   ],
   "text": "Listed as: winning-bid email title only: Two Sony PlayStation 3 controllers.",
   "src": "shopgoodwill",
-  "draft": true
+  "draft": true,
+  "refs": [
+   {
+    "t": "DualShock - Wikipedia",
+    "u": "https://en.wikipedia.org/wiki/DualShock"
+   },
+   {
+    "t": "PlayStation 3 - Wikipedia",
+    "u": "https://en.wikipedia.org/wiki/PlayStation_3"
+   }
+  ],
+  "verify": "Listing does not say Sixaxis or DualShock 3, so model, year and price cannot be pinned down.",
+  "conf": "low"
  },
  {
   "id": "game-boy-color-parts-and-repair-with-game",
   "type": "Game console",
   "name": "Game Boy Color (parts and repair) with game",
   "cat": "Game consoles",
-  "maker": "Unknown",
+  "maker": "Nintendo",
   "qty": 1,
   "cond": "Per order email title: winning-bid email title only: Game Boy Color (parts and repair) with game.",
   "tags": [
    "Retro gaming"
   ],
-  "text": "Listed as: winning-bid email title only: Game Boy Color (parts and repair) with game.",
+  "text": "The Game Boy Color is a handheld console from Nintendo released in 1998 as the color successor to the Game Boy, with backward compatibility for original Game Boy games. It uses a Sharp SM83 CPU with a 2.3-inch reflective color LCD.",
   "src": "shopgoodwill",
-  "draft": true
+  "draft": true,
+  "model": "CGB-001",
+  "msrp": "$79.95",
+  "year": 1998,
+  "rel": "1998-11-18",
+  "specs": {
+   "cpu": "Sharp SM83 at 4.2/8.4 MHz",
+   "ram": "32 KB",
+   "display": "2.3-inch reflective TFT LCD, 160x144",
+   "colors": "Up to 56 on screen from a palette of 32,768",
+   "power": "2 AA batteries"
+  },
+  "refs": [
+   {
+    "t": "Game Boy Color - Wikipedia",
+    "u": "https://en.wikipedia.org/wiki/Game_Boy_Color"
+   }
+  ],
+  "verify": "Included game title and condition not identified. rel is North American date (Japan 1998-10-21).",
+  "conf": "high"
  },
  {
   "id": "super-nintendo-final-fantasy-iii-cartridge",
   "type": "Game console",
-  "name": "Super Nintendo Final Fantasy III cartridge",
+  "name": "Final Fantasy III (Final Fantasy VI), Super NES cartridge",
   "cat": "Game consoles",
-  "maker": "Unknown",
+  "maker": "Square",
   "qty": 1,
   "cond": "Per order email title: winning-bid email title only: Super Nintendo Final Fantasy III cartridge.",
   "tags": [
    "Retro gaming"
   ],
-  "text": "Listed as: winning-bid email title only: Super Nintendo Final Fantasy III cartridge.",
+  "text": "Final Fantasy III is the North American title of Final Fantasy VI, a role-playing game developed and published by Square for the Super NES. It was released in North America in October 1994 and was numbered III because only two earlier games in the series had been localized there.",
   "src": "shopgoodwill",
-  "draft": true
+  "draft": true,
+  "year": 1994,
+  "rel": "1994-10-11",
+  "specs": {
+   "platform": "Super NES"
+  },
+  "refs": [
+   {
+    "t": "Final Fantasy VI - Wikipedia",
+    "u": "https://en.wikipedia.org/wiki/Final_Fantasy_VI"
+   }
+  ],
+  "verify": "Original MSRP and cartridge part number not confirmed.",
+  "conf": "high"
  },
  {
   "id": "nintendo-game-boy-color-purple",
   "type": "Game console",
   "name": "Nintendo Game Boy Color, purple",
   "cat": "Game consoles",
-  "maker": "Unknown",
+  "maker": "Nintendo",
   "qty": 1,
   "cond": "Per order email title: winning-bid email title only: Nintendo Game Boy Color, purple.",
   "tags": [
    "Retro gaming"
   ],
-  "text": "Listed as: winning-bid email title only: Nintendo Game Boy Color, purple.",
+  "text": "The Game Boy Color is a handheld console from Nintendo released in 1998 as the color successor to the Game Boy, with backward compatibility for original Game Boy games. It uses a Sharp SM83 CPU with a 2.3-inch reflective color LCD.",
   "src": "shopgoodwill",
-  "draft": true
+  "draft": true,
+  "model": "CGB-001",
+  "msrp": "$79.95",
+  "year": 1998,
+  "rel": "1998-11-18",
+  "specs": {
+   "cpu": "Sharp SM83 at 4.2/8.4 MHz",
+   "ram": "32 KB",
+   "display": "2.3-inch reflective TFT LCD, 160x144",
+   "colors": "Up to 56 on screen from a palette of 32,768",
+   "power": "2 AA batteries"
+  },
+  "refs": [
+   {
+    "t": "Game Boy Color - Wikipedia",
+    "u": "https://en.wikipedia.org/wiki/Game_Boy_Color"
+   }
+  ],
+  "verify": "Purple could be Grape or translucent Atomic Purple; both existed at launch, listing does not say which.",
+  "conf": "med"
  },
  {
   "id": "red-nintendo-game-boy-pocket-mgb-001",
   "type": "Game console",
   "name": "Red Nintendo Game Boy Pocket MGB-001",
   "cat": "Game consoles",
-  "maker": "Unknown",
+  "maker": "Nintendo",
   "qty": 1,
   "cond": "Per order email title: winning-bid email title only: Red Nintendo Game Boy Pocket MGB-001.",
   "tags": [
    "Retro gaming"
   ],
-  "text": "Listed as: winning-bid email title only: Red Nintendo Game Boy Pocket MGB-001.",
+  "text": "The Game Boy Pocket is a smaller redesign of the original Game Boy from Nintendo, launched in Japan on 1996-07-20 and in North America on 1996-09-02. It runs on two AAA batteries and has a film-compensated super-twisted nematic LCD with a black and white image instead of the original green tint.",
   "src": "shopgoodwill",
-  "draft": true
+  "draft": true,
+  "model": "MGB-001",
+  "msrp": "$69.99",
+  "year": 1996,
+  "rel": "1996-09-02",
+  "specs": {
+   "display": "FSTN LCD, true black and white",
+   "power": "2 AAA batteries, about 10 hours"
+  },
+  "refs": [
+   {
+    "t": "Game Boy Pocket - Wikipedia",
+    "u": "https://en.wikipedia.org/wiki/Game_Boy_Pocket"
+   }
+  ],
+  "verify": "Red was a later color revision; its exact release date not confirmed. rel is the North American launch of the model.",
+  "conf": "high"
  },
  {
   "id": "playstation-game-lot-spyro-crash-bandicoot-ctr",
   "type": "Game console",
   "name": "PlayStation game lot (Spyro, Crash Bandicoot, CTR)",
   "cat": "Game consoles",
-  "maker": "Unknown",
+  "maker": "Sony Computer Entertainment",
   "qty": 1,
   "cond": "Per order email title: winning-bid email title only: PlayStation game lot (Spyro, Crash Bandicoot, CTR).",
   "tags": [
    "Retro gaming"
   ],
-  "text": "Listed as: winning-bid email title only: PlayStation game lot (Spyro, Crash Bandicoot, CTR).",
+  "text": "A lot of three PlayStation games, all published by Sony Computer Entertainment in North America: Crash Bandicoot (1996, Naughty Dog), Spyro the Dragon (1998, Insomniac Games) and Crash Team Racing (1999, Naughty Dog).",
   "src": "shopgoodwill",
-  "draft": true
+  "draft": true,
+  "specs": {
+   "platform": "PlayStation",
+   "spyro": "Spyro the Dragon, Insomniac Games, NA 1998-09-09",
+   "crash": "Crash Bandicoot, Naughty Dog, NA 1996-09-09",
+   "ctr": "Crash Team Racing, Naughty Dog, NA 1999-10-19"
+  },
+  "refs": [
+   {
+    "t": "Spyro the Dragon - Wikipedia",
+    "u": "https://en.wikipedia.org/wiki/Spyro_the_Dragon"
+   },
+   {
+    "t": "Crash Bandicoot (video game) - Wikipedia",
+    "u": "https://en.wikipedia.org/wiki/Crash_Bandicoot_(video_game)"
+   },
+   {
+    "t": "Crash Team Racing - Wikipedia",
+    "u": "https://en.wikipedia.org/wiki/Crash_Team_Racing"
+   }
+  ],
+  "verify": "Lot is multi-item, so no single year or MSRP; which Spyro/Crash titles (sequels) are included is assumed from listing title.",
+  "conf": "med"
  },
  {
   "id": "lot-of-30-assorted-playstation-3-games",
   "type": "Game console",
   "name": "Lot of 30 assorted PlayStation 3 games",
   "cat": "Game consoles",
-  "maker": "Unknown",
+  "maker": "Sony",
   "qty": 1,
   "cond": "Per order email title: winning-bid email title only: Lot of 30 assorted PlayStation 3 games.",
   "tags": [
    "Retro gaming"
   ],
-  "text": "Listed as: winning-bid email title only: Lot of 30 assorted PlayStation 3 games.",
+  "text": "A lot of assorted games for the PlayStation 3, which Sony launched in North America on 2006-11-17.",
   "src": "shopgoodwill",
-  "draft": true
+  "draft": true,
+  "specs": {
+   "platform": "PlayStation 3"
+  },
+  "refs": [
+   {
+    "t": "PlayStation 3 - Wikipedia",
+    "u": "https://en.wikipedia.org/wiki/PlayStation_3"
+   }
+  ],
+  "verify": "Individual titles unknown, so no per-game year, publisher or MSRP.",
+  "conf": "low"
  },
  {
   "id": "game-boy-advance-sp",
   "type": "Game console",
   "name": "Game Boy Advance SP",
   "cat": "Game consoles",
-  "maker": "Unknown",
+  "maker": "Nintendo",
   "qty": 1,
   "cond": "Per order email title: winning-bid email title only: Game Boy Advance SP.",
   "tags": [
    "Retro gaming"
   ],
-  "text": "Listed as: winning-bid email title only: Game Boy Advance SP.",
+  "text": "The Game Boy Advance SP is a clamshell redesign of the Game Boy Advance from Nintendo with a frontlit screen and rechargeable battery. The AGS-001 launched in Japan on 2003-02-14 and in North America on 2003-03-23.",
   "src": "shopgoodwill",
-  "draft": true
+  "draft": true,
+  "model": "AGS-001",
+  "msrp": "$99.99",
+  "year": 2003,
+  "rel": "2003-03-23",
+  "specs": {
+   "cpu": "16.78 MHz ARM7TDMI plus Sharp SM83",
+   "display": "2.9-inch reflective TFT LCD with frontlight",
+   "power": "Rechargeable lithium-ion, about 10 h light on / 18 h off",
+   "size": "84 x 82 x 24.4 mm closed, 142 g"
+  },
+  "refs": [
+   {
+    "t": "Game Boy Advance SP - Wikipedia",
+    "u": "https://en.wikipedia.org/wiki/Game_Boy_Advance_SP"
+   }
+  ],
+  "verify": "Listing does not say if it is AGS-001 (frontlit) or later AGS-101 (backlit); rel is NA launch of the AGS-001.",
+  "conf": "high"
  },
  {
   "id": "bulk-lot-of-nintendo-handheld-console-cases",
   "type": "Game console",
   "name": "Bulk lot of Nintendo handheld console cases",
   "cat": "Game consoles",
-  "maker": "Unknown",
+  "maker": "Nintendo",
   "qty": 1,
   "cond": "Per order email title: winning-bid email title only: Bulk lot of Nintendo handheld console cases.",
   "tags": [
@@ -1791,6 +2845,8 @@ var ITEMS=[
   ],
   "text": "Listed as: winning-bid email title only: Bulk lot of Nintendo handheld console cases.",
   "src": "shopgoodwill",
-  "draft": true
+  "draft": true,
+  "verify": "Generic mixed lot; no specific products identified.",
+  "conf": "low"
  }
 ];
