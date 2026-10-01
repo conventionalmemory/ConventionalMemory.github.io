@@ -14,7 +14,7 @@ A retro DOS-style museum catalog, timeline and trivia game. It is a plain static
 | `catalog.js` | The interactive catalog (chips, score slider, Cards, Shelf, Time machine and DIR views) |
 | `quotes.js` | Quotes |
 | `game.js` | The Memory Maze game (`#/maze`) |
-| `tl.js` | The timeline page (chart, year view, search) |
+| `tl.js` | The timeline page (chart, year view, price map, My trail, filters, connection web, deep links) |
 | `ads.js` | Tribute ads: product drawings and the per-item ad |
 | `admin.js` | The Admin page (`#/admin`) |
 
@@ -42,6 +42,8 @@ To avoid pasting the token every visit, type a passphrase (8+ characters) in the
 ## Timeline data
 
 Each row is `[date, kind, title, price, note, source]`. An empty source shows an asterisk on the date, meaning unconfirmed. A price ending in `*` is an estimate. `timeline-extra.js` (`TLX`) is keyed by title and holds `maker`, `dev`, `type`, `specs`, `detail`, `links` (`[other title, relation]`) and `conf` (high, med, low).
+
+Timeline links: open an entry and press **Copy link** to get an address like `#/timeline/1989/Sound%20Blaster%20(original)` that opens that entry. **My trail** is a visitor's own starred list, kept in that browser only. Item pages show their timeline connections and which connected pieces are in the museum; the catalog's **Next up** view lists connected pieces that are not in the collection yet.
 
 ## Security notes
 
