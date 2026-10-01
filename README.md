@@ -122,3 +122,21 @@ Every timeline entry, ad and catalog item without a photo gets a picture drawn i
 - **Fun:** a bouncing-window screensaver after 2 idle minutes (or type `screensaver`), a dial-up modem (type `dial`), and the Konami code.
 
 **Screen effects:** the *Screen* button in the header cycles off, CRT and max CRT (saved on this device). CRT adds a vignette, film grain, a slow rolling bar, phosphor glow on headings, a power-on warp at page load and a typed-in page title. Max adds screen curvature, stronger scanlines, RGB fringing on titles, rare flicker and a glitch on link hover. Everything animated also stops when Motion is off, and the effects never intercept clicks.
+
+## Round 5: the "More" hub (`#/more`)
+
+`more.js` is lazy-loaded and holds these pages:
+
+- **Tours** (`#/tours`): seven guided museum tours with a progress bar; finishing one gives XP.
+- **Explorer** (`#/explore`): filter, sort and compare up to 4 items, with bars for numeric specs.
+- **Timeline**: zoom timeline (`#/zoom`, six lanes, drag, minimap), what-was-happening day view (`#/day/1995-08-24`).
+- **Era Mode** (`#/era/1995`): the whole site dresses as a year (theme, banner); leave from the banner.
+- **My stuff** (`#/mine`): own / want / trade lists, saved in this browser, with missing-from-a-family reports.
+- **Jukebox** (`#/jukebox`): three tracks and four sound-card imitations, all synthesized (approximations, not recordings). Click sounds toggle with `cm-sfx`.
+- **Community** (`#/community`): no server. Visitors send memories and corrections as prefilled GitHub issues. Approved ones go in `memories-data.js` (`MEMORIES`, `FIXES`).
+- **Theater** (`#/theater`): a retro TV. It plays your own item videos first (the `videos` field on an item, `{t,u}` YouTube links), then `theater-data.js` (`THEATER`), then the visitor's queue. It ships with no embeds: add community or your own video links there. Embeds use youtube-nocookie.
+- **Shorts** (`#/shorts/<id>`): vertical cards as PNG for Shorts / Reels.
+- **Install** (`#/install`): PWA install, offline cache (`sw.js`, https only) and a calendar `.ics`.
+- Item pages also have *Print spec sheet*, *Add to my collection* and *Suggest a correction*.
+
+**Admin additions:** *Bulk tools* (full JSON backup, CSV export and import with preview, bulk edit, duplicate finder, activity log), *Studio* (video plan sheet per item and a 28-day posting calendar with `.ics` export), photo drop zone and optional crop (4:3, square, 16:9).

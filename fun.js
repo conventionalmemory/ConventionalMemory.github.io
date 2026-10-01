@@ -37,5 +37,13 @@ function startSaver(){if(saver||!motionOk())return;var N=names(),c=document.crea
  saver={stop:stop};setTimeout(function(){["mousemove","keydown","mousedown","touchstart","wheel"].forEach(function(ev){addEventListener(ev,stop,true)})},600);requestAnimationFrame(frame)}
 function arm(){clearTimeout(idle);if(saver)return;idle=setTimeout(function(){if(/#\/(admin|builder|maze)/.test(location.hash)||document.hidden){arm();return}startSaver()},IDLE_MS)}
 ["mousemove","keydown","mousedown","touchstart","scroll"].forEach(function(ev){addEventListener(ev,arm,{passive:true})});arm();
-window.CMFun={saver:startSaver,modem:modem};
+/* ---- era mode banner (set on the Era page) ---- */
+function eraThemeName(y){return y<=1983?"amber":y<=1989?"green":y<=1995?"ega":""}
+function era(){var y=null;try{y=sessionStorage.getItem("cm-era")}catch(e){}var o=document.querySelector(".fx-era");if(o)o.remove();if(!y)return;var n=eraThemeName(+y),r=document.documentElement;if(n)r.setAttribute("data-theme",n);else r.removeAttribute("data-theme");var b=document.createElement("div");b.className="fx-era";b.setAttribute("role","status");b.innerHTML="ERA MODE "+y+' <a href="#/era/'+y+'">change</a> <button type="button">exit</button>';b.querySelector("button").onclick=eraOff;document.body.appendChild(b)}
+function eraOff(){var t=0;try{sessionStorage.removeItem("cm-era");t=+localStorage.getItem("cm-theme")||0}catch(e){}if(typeof setTheme==="function")setTheme(t);var o=document.querySelector(".fx-era");if(o)o.remove()}
+/* ---- optional click sounds (Jukebox page turns them on) ---- */
+var sfxOn=false,sctx=null;function sfx(){try{sfxOn=localStorage.getItem("cm-sfx")==="1"}catch(e){sfxOn=false}}
+document.addEventListener("click",function(e){if(!sfxOn||!e.target.closest||!e.target.closest(".btn,button,a"))return;try{sctx=sctx||new(window.AudioContext||window.webkitAudioContext)();var o=sctx.createOscillator(),g=sctx.createGain(),t=sctx.currentTime;o.type="square";o.frequency.setValueAtTime(880,t);o.frequency.setValueAtTime(1320,t+.03);g.gain.setValueAtTime(.04,t);g.gain.exponentialRampToValueAtTime(.001,t+.08);o.connect(g);g.connect(sctx.destination);o.start(t);o.stop(t+.09)}catch(x){}},true);
+sfx();era();
+window.CMFun={saver:startSaver,modem:modem,era:era,eraOff:eraOff,sfx:sfx};
 })();
