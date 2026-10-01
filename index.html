@@ -315,13 +315,41 @@ footer{margin-top:30px;padding:20px 0 30px;border-top:2px solid var(--line);font
 .pl-ctl{display:flex;flex-wrap:wrap;gap:12px}.pl-ctl fieldset{border:2px solid var(--line);background:var(--panel)}.pl-ctl label{display:block;padding:2px 0}
 .pl input[type=text],.pl input:not([type]),.pl select{max-width:100%;width:min(100%,460px);font:inherit}.pl-prev{border:3px double var(--line);max-width:760px;background:#888}.pl-prev>svg{width:100%;height:auto;display:block}
 .adm .rvd{border:2px solid var(--line);background:var(--panel);margin:8px 0;padding:6px 10px}.adm .rvt{border-collapse:collapse;width:100%}.adm .rvt th{text-align:left;width:130px;vertical-align:top;padding:3px 6px}.adm .rvt td{padding:3px 6px;word-break:break-word}.adm .rvt del{color:#aa0000}.adm .rvt ins{color:#007700;text-decoration:none}
+.sg[data-theme="default"],.sg[data-theme="clean"]{--bg:#d6d1c4;--panel:#e8e4d8;--ink:#15151a;--mute:#54524a;--blue:#0000aa;--blue-ink:#fff;--line:#15151a;--lk:#0a1fb4;--lk-v:#5b1a9c;--lk-h:#b00d1e}
+.sg[data-theme="dark"]{--bg:#0d1230;--panel:#161c44;--ink:#eceefb;--mute:#a4a9d0;--blue:#55ffff;--blue-ink:#0d1230;--line:#eceefb;--lk:#8fe3ff;--lk-v:#d7b8ff;--lk-h:#ffe14d}
+.sg[data-theme="green"]{--bg:#031403;--panel:#082408;--ink:#4dff6e;--mute:#2fb84a;--blue:#4dff6e;--blue-ink:#031403;--line:#2fb84a;--lk:#b4ffc2;--lk-v:#7be28f;--lk-h:#ffffff}
+.sg[data-theme="amber"]{--bg:#140c00;--panel:#221400;--ink:#ffb000;--mute:#b87d00;--blue:#ffb000;--blue-ink:#140c00;--line:#b87d00;--lk:#ffd978;--lk-v:#e0a63c;--lk-h:#ffffff}
+.sg[data-theme="ega"]{--bg:#0000aa;--panel:#0000c8;--ink:#fff;--mute:#aaf;--blue:#55ffff;--blue-ink:#000080;--line:#fff;--lk:#ffff6a;--lk-v:#ffb3ff;--lk-h:#ffffff}
+.sg{background:var(--bg);color:var(--ink);padding:14px;border:3px solid var(--line);margin:14px 0}.sg[data-theme="green"],.sg[data-theme="amber"],.sg[data-theme="ega"]{font-family:"VT323","Courier New",monospace;font-size:21px}
+.sg h3{margin:0 0 8px}.sg-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0}.sg a{color:var(--lk)}.sg a:visited{color:var(--lk-v)}
+.sg .btn{background:var(--panel);color:var(--ink);border:2px solid var(--line)}.sg .btn.pri{background:var(--blue);color:var(--blue-ink)}.sg .mbar{border-color:var(--line);background:var(--bg)}.sg .mbar i{background:var(--blue)}
+.sg .qchip{font:inherit;font-size:13px;color:var(--ink);background:var(--bg);border:2px dashed var(--line);padding:1px 6px}.sg .qchip.done{border-style:solid;background:var(--blue);color:var(--blue-ink)}
+.sg .qbd{display:inline-block;font-size:13px;padding:1px 8px;border:2px dashed var(--line)}.sg .qbd.on{border-style:solid;background:var(--blue);color:var(--blue-ink)}
+.sg .msg{padding:8px 12px;border:2px solid var(--line);background:var(--panel);margin:8px 0}.sg .msg.err{border-color:#ff5555}.sg .msg.ok{border-color:#55cc55}
+.sg .cz{min-height:80px;overflow:hidden}.sg-sw{display:flex;flex-wrap:wrap;gap:4px}.sg-sw i{width:70px;padding:10px 4px;border:2px solid var(--line);font-style:normal;font-size:12px;text-align:center}
+/* item hero, photo placards, motion */
+.ihero{border:3px double var(--line);background:var(--panel);padding:12px 16px;margin:12px 0}.ihero .tb{margin-bottom:6px}.ihero h2{font-size:44px;line-height:1;margin:2px 0 10px}
+.ibs{display:flex;flex-wrap:wrap;gap:8px}.ib{display:inline-flex;align-items:center;gap:6px;border:2px solid var(--line);background:var(--bg);color:var(--ink);padding:2px 10px;font-size:15px}.ib small{color:inherit;opacity:.75;text-transform:uppercase;letter-spacing:.5px;font-size:11px}.ib b{font-weight:600}
+.ihs{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;margin-top:12px;padding-top:10px;border-top:2px dashed var(--line);font-size:15px}.ihs>b{font-family:"VT323",monospace;font-size:20px;font-weight:400}.ihs a:not(.btn){display:inline-flex;align-items:center;gap:5px;border:2px solid var(--line);padding:1px 8px;background:var(--bg);text-decoration:none}.ihs a small{opacity:.7}
+.dl .ph,.detail .ph{border:3px double var(--line);box-shadow:6px 6px 0 color-mix(in srgb,var(--line) 70%,transparent)}
+.ph .cm-photo,.ph>img{transition:transform .45s ease}.ph:hover .cm-photo,.ph:hover>img{transform:scale(1.05)}
+.ph:has(.cm-photo)::after{content:"REAL PHOTO";position:absolute;left:0;bottom:0;background:var(--blue);color:var(--blue-ink);font:400 14px/1 "VT323",monospace;padding:3px 8px;letter-spacing:1px}
+.cm-credit{display:block;border:2px solid var(--line);border-top:0;background:var(--panel);color:var(--ink);padding:3px 8px;font-size:12px;line-height:1.35;margin:-2px 0 10px}.cm-credit a{color:var(--lk)}
+html[data-motion="off"] *,html[data-motion="off"] *::before,html[data-motion="off"] *::after{animation:none!important;transition:none!important}
+html[data-motion="on"] #app.crt{animation:crtin .32s steps(8) 1}
+@keyframes crtin{0%{opacity:.15;filter:brightness(2.2) contrast(1.4);transform:scaleY(.985)}45%{opacity:.8;filter:brightness(1.4)}100%{opacity:1;filter:none;transform:none}}
+html[data-motion="on"] .card:hover,html[data-motion="on"] .hm-tile:hover{transform:translateY(-3px)}html[data-motion="on"] .card,html[data-motion="on"] .hm-tile{transition:transform .15s}
+html[data-motion="on"] .cm-photo{animation:cmfade .6s}@keyframes cmfade{from{opacity:0}to{opacity:1}}
+html[data-motion="on"] .pl-res{animation:plpop .5s}@keyframes plpop{0%{transform:scale(.96);opacity:.3}100%{transform:none;opacity:1}}
+html[data-motion="on"] .pl-sq i{animation:plflip .5s backwards}html[data-motion="on"] .pl-sq i:nth-child(2){animation-delay:.15s}html[data-motion="on"] .pl-sq i:nth-child(3){animation-delay:.3s}@keyframes plflip{from{transform:rotateX(90deg)}to{transform:none}}
+.pl-stars{display:inline-block;color:var(--blue);letter-spacing:2px}html[data-motion="on"] .pl-stars{animation:plstar .7s cubic-bezier(.3,1.6,.5,1)}@keyframes plstar{from{transform:scale(0)}to{transform:none}}
 </style>
 </head>
 <body>
 <div class="wrap">
 <header class="top">
 <a href="#/">C:\&gt;ConventionalMemory.io<span class="cur" aria-hidden="true">_</span></a>
-<nav><a href="#/catalog">Catalog</a><a href="#/timeline">Timeline</a><a href="#/play">Play<span class="new">NEW!</span></a><a href="#/wanted">Wanted</a><a href="#/follow">Follow</a><button class="btn" id="th" type="button" style="margin-left:16px">Theme</button></nav>
+<nav><a href="#/catalog">Catalog</a><a href="#/timeline">Timeline</a><a href="#/play">Play<span class="new">NEW!</span></a><a href="#/wanted">Wanted</a><a href="#/follow">Follow</a><button class="btn" id="th" type="button" style="margin-left:16px">Theme</button> <button class="btn" id="mo" type="button" aria-pressed="true">Motion: on</button></nav>
 </header>
 <main id="app"></main>
 <footer><div id="retro"></div><div class="prompt"><label for="cmd">C:\&gt;</label><input id="cmd" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Type a command: dir, mem, random, scale, timeline, quote, help"><div id="cout" aria-live="polite">Type help and press Enter.</div></div><a href="#/changes">Changes</a> &middot; <a href="#/quotes">Quotes</a> &middot; <a href="#/stats">Stats</a> &middot; <a href="#/scale">Scale</a> &middot; <a href="#/mem">Memory map</a> &middot; <a href="#/maze">Basement (staff only)</a><br> &copy; Conventional Memory LLC. Content on TikTok, YouTube, Instagram and Facebook.</footer>

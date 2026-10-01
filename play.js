@@ -24,13 +24,28 @@ function wireShare(text){var b=$("#plcp");if(!b)return;b.onclick=function(){var 
  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(function(){done("Copied.")},function(){ta.select();done("Press Ctrl+C to copy.")})}else{ta.select();done("Press Ctrl+C to copy.")}}}
 function artHtml(r){var h='<div class="ph pl-art">'+(typeof artFor==="function"?artFor(r,320,240,"pl"):"");if(typeof cimg==="function"&&typeof CIMG!=="undefined"&&CIMG[r[2]])h+=cimg(r[2],640);h+='</div>';return h+(typeof cimgCredit==="function"&&typeof CIMG!=="undefined"&&CIMG[r[2]]?cimgCredit(r[2]):"")}
 
+
+/* ================= Style guide: every shared component in every theme ================= */
+function boom(){var h='<div class="qboom" aria-hidden="true">';for(var i=0;i<26;i++)h+='<i style="--x:'+Math.round(Math.random()*100)+'%;--d:'+Math.round(Math.random()*500)+'ms;--c:'+["#ff5555","#55ff55","#ffff55","#55ffff","#ff55ff","#5555ff"][i%6]+'"></i>';return h+'</div>'}
+function styleguide(){var T=[["default","Default"],["dark","Dark (system dark mode)"],["green","Green phosphor"],["amber","Amber"],["ega","EGA blue"],["clean","Clean"]],glyphs=["tower","laptop","console","handheld","cart","card","chip","floppy","ipod","mavica","trophy","star"],sample={id:"sample",name:"Sample item",maker:"Acme Computing",year:1993,score:520,type:"Computer",cat:"Computers",photos:[],status:"Display",text:"A sample card."};
+ var out='<section><h2>Style guide</h2><p>Every shared component in every theme, side by side. If something is unreadable in one panel, it is a bug in the shared styles. Colors come from tokens (<code>--bg --panel --ink --mute --blue --line --lk</code>), so fixing a token fixes the whole site.</p><p class="tn"><a href="#/play">Back to Play</a></p>';
+ T.forEach(function(t){var th=t[0];out+='<div class="sg" data-theme="'+th+'"><h3>'+E(t[1])+'</h3>'
+  +'<div class="sg-sw"><i style="background:var(--bg);color:var(--ink)">bg</i><i style="background:var(--panel);color:var(--ink)">panel</i><i style="background:var(--ink);color:var(--bg)">ink</i><i style="background:var(--mute);color:var(--bg)">mute</i><i style="background:var(--blue);color:var(--blue-ink)">blue</i><i style="background:var(--lk);color:var(--bg)">link</i></div>'
+  +'<div class="sg-row"><button class="btn" type="button">Button</button><button class="btn pri" type="button">Primary</button><button class="btn danger" type="button">Danger</button><a href="#/styleguide">A link</a><span class="tag">tag</span><span class="tag want">want</span></div>'
+  +'<div class="sg-row"><span class="mbar"><i style="width:60%"></i></span> <small>60%</small> <span>★★☆</span><span class="qchip done">done</span><span class="qchip">blank</span><span class="qbd on">Badge</span><span class="qbd">?</span></div>'
+  +'<div class="sg-row">'+[100,300,500,620].map(function(n){var tr=tier(n);return'<span class="ib" style="background:'+tr.c+';color:'+inkOn(tr.c)+';border-color:'+tr.c+'">'+glyph("trophy",16)+'<small>Score</small><b>'+n+'K '+E(tr.l)+'</b></span>'}).join("")+'<span class="ib">'+glyph("clock",16)+'<small>Released</small><b>1993</b></span></div>'
+  +'<div class="sg-row">'+glyphs.map(function(g){return glyph(g,24)}).join("")+'</div>'
+  +'<div class="msg ok">A success message.</div><div class="msg err">An error message.</div>'
+  +'<div class="sg-row"><div style="max-width:260px">'+(function(){try{return card(sample)}catch(e){return""}})()+'</div><div class="cz" style="padding:8px;max-width:300px">'+(typeof czLogo==="function"?czLogo("Bargain Bytes Software"):"")+(typeof czFlag==="function"?czFlag({t:"$299",est:false}):"")+'</div></div></div>'});
+ app.innerHTML=out+'</section>'}
+
 /* ================= hub ================= */
 function hub(){var d=ld("cm-daily",{streak:0}),t=today();
  var cards=[["#/daily","Daily Dig","Three questions a day from the timeline. Keep your streak alive.",d.streak?"Streak: "+d.streak+(d.hist&&d.hist[t]&&d.hist[t].length>=3?" (done today)":" (play today)"):"New: play today","bulb"],
   ["#/build","Build Your Rig","Pick a year, spend your points on a CPU, RAM and video card, and see which real games you can run.","","tower"],
   ["#/adlab","Ad Lab","Make a retro tribute ad for any item and download it as a picture.","","news"],
   ["#/maze","Memory Maze","The original: run the maze, grab the Ks, dodge the crashes.","","ghost"]];
- app.innerHTML='<section><h2>Play</h2><p>Small games built from the museum and the timeline.</p><div class="pl-grid">'+cards.map(function(c){return'<a class="hm-tile" href="'+c[0]+'"><i class="hm-ic">'+glyph(c[4],28)+'</i><b>'+E(c[1])+'</b><span>'+E(c[2])+(c[3]?' <em>'+E(c[3])+'</em>':"")+'</span></a>'}).join("")+'</div></section>'}
+ app.innerHTML='<section><h2>Play</h2><p>Small games built from the museum and the timeline.</p><div class="pl-grid">'+cards.map(function(c){return'<a class="hm-tile" href="'+c[0]+'"><i class="hm-ic">'+glyph(c[4],28)+'</i><b>'+E(c[1])+'</b><span>'+E(c[2])+(c[3]?' <em>'+E(c[3])+'</em>':"")+'</span></a>'}).join("")+'</div><p class="tn"><a href="#/styleguide">Style guide</a></p></section>'}
 
 /* ================= Daily Dig ================= */
 var DK="cm-daily";
@@ -54,7 +69,7 @@ function daily(arg){var practice=arg==="practice",t=today(),seed=practice?Math.f
   +'<div class="pl-case">'+artHtml(G.e)+'<p class="tn">'+(done?"":"Today's mystery find. Look closely.")+'</p></div>';
   if(!done){var q=G.Q[step];h+='<div class="pl-q"><p class="pl-step">Question '+(step+1)+' of '+G.Q.length+' '+G.Q.map(function(_,i){return'<i class="pl-pip'+(i<step?" on":i===step?" now":"")+'"></i>'}).join("")+'</p><h3>'+E(q.p)+'</h3><div class="pl-opts">'+q.o.map(function(o,i){return'<button class="btn" type="button" data-o="'+i+'">'+E(o)+'</button>'}).join("")+'</div></div>'}
   else{var good=G.Q.filter(function(q,i){return ans[i]===q.a}).length,sq=G.Q.map(function(q,i){return ans[i]===q.a?"■":"□"}).join(""),txt="Daily Dig "+(practice?"practice":t)+" "+good+"/"+G.Q.length+" "+sq+(practice?"":"  Streak "+D.streak)+"\nhttps://conventionalmemory.github.io/#/daily";
-   h+='<div class="pl-res"><h3>'+good+' of '+G.Q.length+(good===G.Q.length?" — perfect dig!":good?" — nice digging":" — better luck tomorrow")+'</h3><div class="pl-sq">'+G.Q.map(function(q,i){return'<i class="'+(ans[i]===q.a?"ok":"no")+'"></i>'}).join("")+'</div>'
+   h+=(good===G.Q.length?boom():"")+'<div class="pl-res"><h3>'+(good===G.Q.length?'<span class="pl-stars">★★★</span> ':"")+good+' of '+G.Q.length+(good===G.Q.length?" — perfect dig!":good?" — nice digging":" — better luck tomorrow")+'</h3><div class="pl-sq">'+G.Q.map(function(q,i){return'<i class="'+(ans[i]===q.a?"ok":"no")+'"></i>'}).join("")+'</div>'
    +'<ul class="pl-fb">'+G.Q.map(function(q,i){return'<li class="'+(ans[i]===q.a?"ok":"no")+'"><b>'+E(q.p)+'</b> You said '+E(q.o[ans[i]])+(ans[i]===q.a?"":". Answer: "+E(q.o[q.a]))+'. '+E(q.f)+'</li>'}).join("")+'</ul>'
    +'<div class="pl-about"><h4>About '+E(G.e[2])+'</h4><p>'+E(G.e[4]||"")+' '+E(((G.x.detail||"").slice(0,420))+((G.x.detail||"").length>420?"...":""))+'</p><p><a class="btn" href="#/timeline/'+G.y+'/'+encodeURIComponent(G.e[2])+'">See it on the timeline</a></p></div>'
    +sharePanel(txt)+'<p>'+(practice?'<a class="btn pri" href="#/daily/practice" id="again">Another practice dig</a> ':'<a class="btn" href="#/daily/practice">Practice dig</a> ')+'<a class="btn" href="#/play">All games</a></p></div>'}
@@ -93,7 +108,7 @@ function build(arg){var P=ld(RK,{best:{}}),year=+arg||1996;year=Math.max(1991,Ma
   if(res){var pct=best?Math.round(res.score*100/best):100,stars=pct>=100?3:pct>=75?2:pct>=45?1:0,prev=P.best[year]||0;if(res.score>prev){P.best[year]=res.score;sv(RK,P)}
    var snd=pick[3]>0?" with "+O.snd[pick[3]].k:" with a PC speaker";
    var txt="Build Your Rig "+year+": "+res.ok+"/"+games.length+" games run "+"★".repeat(stars)+"☆".repeat(3-stars)+"\n"+O.cpu[pick[0]].l+", "+O.ram[pick[1]].l+", "+O.vid[pick[2]].l+snd+"\nhttps://conventionalmemory.github.io/#/build/"+year;
-   h+='<div class="pl-res"><h3>'+('★'.repeat(stars)+'☆'.repeat(3-stars))+' '+res.ok+' of '+games.length+' games run</h3><p>'+res.great+' meet the recommended specs too. Score <b>'+res.score+'</b>'+(best?' of a best possible <b>'+best+'</b> for this budget':"")+'. Your best here: <b>'+Math.max(prev,res.score)+'</b>.'+(pct>=100?" That is the best build the budget allows!":"")+'</p>'
+   h+=(stars===3?boom():"")+'<div class="pl-res"><h3><span class="pl-stars">'+('★'.repeat(stars)+'☆'.repeat(3-stars))+'</span> '+res.ok+' of '+games.length+' games run</h3><p>'+res.great+' meet the recommended specs too. Score <b>'+res.score+'</b>'+(best?' of a best possible <b>'+best+'</b> for this budget':"")+'. Your best here: <b>'+Math.max(prev,res.score)+'</b>.'+(pct>=100?" That is the best build the budget allows!":"")+'</p>'
     +'<ul class="pl-games">'+res.det.sort(function(a,b){return(b.ok===true)-(a.ok===true)}).map(function(d){return'<li class="'+(d.ok===true?(d.great?"great":"ok"):d.ok===false?"no":"unk")+'"><b>'+E(d.t)+'</b> '+(d.ok===true?(d.great?"runs great":"runs"):d.ok===false?"needs: "+E(d.miss.join("; ")):"requirements unclear")+'</li>'}).join("")+'</ul>'+sharePanel(txt)+'</div>'}
   app.innerHTML=h+'</section>';
   $$("input[type=radio]").forEach(function(r){r.onchange=function(){pick[+r.name.slice(1)]=+r.value;showRes=false;draw()}});
@@ -167,5 +182,5 @@ function adlab(arg){if(arg&&!AD.src){var f=adSources(decodeURIComponent(arg))[0]
    im.onerror=function(){n.textContent="Your browser could not render this ad to a picture."};im.src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(svg)}}
  draw()}
 
-window.CMPlay={mount:function(el,page,args){app=el;try{if(page==="daily")daily(args[0]);else if(page==="build")build(args[0]);else if(page==="adlab")adlab(args[0]);else hub()}catch(e){app.innerHTML='<section><h2>Play</h2><p class="empty">Something went wrong loading this game ('+E(e.message)+').</p>'+bk()+'</section>'}},unmount:function(){}};
+window.CMPlay={mount:function(el,page,args){app=el;try{if(page==="daily")daily(args[0]);else if(page==="build")build(args[0]);else if(page==="adlab")adlab(args[0]);else if(page==="styleguide")styleguide();else hub()}catch(e){app.innerHTML='<section><h2>Play</h2><p class="empty">Something went wrong loading this game ('+E(e.message)+').</p>'+bk()+'</section>'}},unmount:function(){}};
 })();

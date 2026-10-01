@@ -95,6 +95,13 @@ The timeline has a Peripherals kind (about 340 entries): mice, keyboards, contro
 
 Colors come from tokens (`--bg --panel --ink --mute --blue --line`, plus link tokens `--lk --lk-v --lk-h` and paper tokens `--paper-lk --ink-on-paper`) that are redefined in every theme, so links and badges stay readable on any background. Tribute ads use their own newsprint palette so they look the same in every theme.
 
+## Visual system
+
+- **Item page**: a header with the title, badges (release, maker, MSRP, score, working, status, type) and an "Also in <year>" strip of other launches that year. Photos sit in a double-border frame with a REAL PHOTO tag and a credit placard; the drawn picture stays underneath as the placeholder if a photo is missing or fails.
+- **Motion**: a Motion toggle in the header (default follows the system's reduced-motion setting). When on: a short CRT flicker between pages, card lift on hover, photo fade-in, and reward animations on Daily Dig and Build Your Rig. When off, all animation and transitions are disabled site-wide.
+- **Style guide**: `#/styleguide` shows every shared component (buttons, tags, bars, stars, badges, score chips, icons, messages, cards, ad logo plate) in all six themes at once. Fix colors through the tokens, not per page.
+- **Contrast sweep**: a script checked about 20 pages in every theme for text under 3.5:1 contrast. The only real finding was the Build Your Rig star color, now fixed. (The timeline window title bar is reported by the checker but uses a gradient behind white text, so it is fine.)
+
 ## Icons and generated art
 
 Every timeline entry, ad and catalog item without a photo gets a picture drawn in code (no image files). `art.js` chooses by kind, title words, genre and the system the game debuted on (a PC game is a box, an NES game a cartridge, a PlayStation game a disc case, and so on) and is seeded by the title, so each one is stable. Small pixel icons from `icons.js` appear on kind pills, category chips, system chips, catalog cards and spines, tables and home tiles. To add an icon, add a 12-row string array to `PXG` in `icons.js` and a rule in `PXKIND`, `PXSUB`, `PXGENRE` or `PXCAT`. To add a product drawing, add a regex to `ICON_KINDS` and a branch to `prodObj2` in `art.js`.
