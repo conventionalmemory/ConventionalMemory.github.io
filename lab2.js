@@ -96,7 +96,13 @@ function cardPng(){var c=check(),b=board(),cpu=cpuOpt(),g=rigGames(c.rig),W=1200
  var lines=[b.n,gxRam(ramOpt())+" RAM, "+osOf().n].concat(parts().map(function(d){return"+ "+d.n}));lines.slice(0,9).forEach(function(l,i){x.fillText(l.length>52?l.slice(0,50)+"...":l,50,190+i*40)});
  x.fillStyle=c.errs.length?"#aa0000":"#007700";x.font="bold 36px 'Courier New',monospace";x.fillText(c.errs.length?c.errs.length+" conflict"+(c.errs.length>1?"s":""):"Boots clean",720,170);x.fillStyle="#000";x.font="30px 'Courier New',monospace";x.fillText(g.run+g.ok+" games run",720,230);x.fillText("("+g.run+" well, "+g.ok+" minimum)",720,270);
  x.fillStyle="#000080";x.font="bold 30px 'Courier New',monospace";x.fillText("ConventionalMemory.io",50,570);return cv.toDataURL("image/png")}
-function rigs(){
+function b64(x){return btoa(unescape(encodeURIComponent(x))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"")}
+function unb64(x){x=String(x).replace(/-/g,"+").replace(/_/g,"/");while(x.length%4)x+="=";return decodeURIComponent(escape(atob(x)))}
+function rigCode(){return b64(JSON.stringify({b:RS.board,c:RS.ci,r:RS.ri,o:RS.os,v:RS.video,d:RS.devs,q:RS.irq}))}
+function applyCode(code){try{var j=JSON.parse(unb64(code)),bd=BOARDS.filter(function(x){return x.id===j.b})[0];if(!bd||typeof j.o!=="string"||!Array.isArray(j.d))return false;
+  var ids={};DEVS.forEach(function(d){ids[d.id]=1});RS.board=bd.id;RS.ci=Math.max(0,Math.min(bd.mhz.length-1,+j.c||0));RS.ri=Math.max(0,Math.min(bd.ram.length-1,+j.r||0));if(OSES.some(function(o){return o.id===j.o}))RS.os=j.o;
+  RS.video=ids[j.v]?j.v:RS.video;RS.devs=j.d.filter(function(x){return ids[x]}).slice(0,16);RS.irq={};if(j.q&&typeof j.q==="object")Object.keys(j.q).forEach(function(k){if(ids[k]&&isFinite(+j.q[k]))RS.irq[k]=+j.q[k]});return true}catch(e){return false}}
+function rigs(arg){var shared=arg?applyCode(arg):false;
  fixVideo();
  function draw(){var b=board(),c=check(),cpu=cpuOpt(),mus=ITEMS.map(gxParseItemRig).filter(Boolean),g=rigGames(c.rig),os=osOf();
   function sel(id,label,opts,cur){return'<label>'+label+' <select id="'+id+'">'+opts.map(function(o){return'<option value="'+E(o[0])+'"'+(String(o[0])===String(cur)?" selected":"")+'>'+E(o[1])+'</option>'}).join("")+'</select></label>'}
@@ -104,7 +110,7 @@ function rigs(){
   var jump=parts().filter(function(d){return d.irqs&&d.bus!=="PCI"&&d.bus!=="AGP"}).map(function(d){return'<label>'+E(d.n)+' IRQ <select data-j="'+d.id+'">'+d.irqs.map(function(q){return'<option'+(q===myIrq(d)?" selected":"")+'>'+q+'</option>'}).join("")+'</select></label>'}).join(" ");
   var irqRows=[];for(var q=0;q<16;q++){var l=c.irq[q]||[],real=l.filter(function(x){return!x.d.soft}),bad=real.length>1;irqRows.push('<tr class="'+(bad?"rg-bad":real.length?"rg-used":"")+'"><td>'+q+'</td><td>'+(l.length?l.map(function(x){return E(x.d.n)}).join(", "):'<span class="tn">free</span>')+(bad?' <b>CONFLICT</b>':"")+'</td></tr>')}
   var saved=RS.saved;
-  app.innerHTML='<section class="rigs"><h2>Dream rig</h2><p>Wire up a period PC. Pick a board, CPU, RAM, an OS and the cards, then watch the resource map: two ISA cards on the same IRQ will fight, just like they did. Games on file are checked against the CPU, RAM and video memory you chose. Resource defaults are the common factory settings.</p>'
+  app.innerHTML='<section class="rigs"><h2>Dream rig</h2>'+(shared?'<p class="msg ok" role="status">This is a build someone shared. Change anything you like, or save it as your own.</p>':'')+'<p>Wire up a period PC. Pick a board, CPU, RAM, an OS and the cards, then watch the resource map: two ISA cards on the same IRQ will fight, just like they did. Games on file are checked against the CPU, RAM and video memory you chose. Resource defaults are the common factory settings.</p>'
    +'<div class="rg-top">'+sel("rb","Board",BOARDS.map(function(x){return[x.id,x.n+" ("+x.y+")"]}),RS.board)+' '+sel("rcpu","CPU",b.mhz.map(function(m,i){return[i,b.cpu+" "+m+" MHz"]}),RS.ci)+' '+sel("rram","RAM",b.ram.map(function(m,i){return[i,gxRam(m)]}),RS.ri)+' '+sel("ros","OS",OSES.map(function(o){return[o.id,o.n]}),RS.os)
    +(mus.length?' <label>Start from a museum machine <select id="rmu"><option value="">...</option>'+mus.map(function(r,i){return'<option value="'+i+'">'+E(r.n)+'</option>'}).join("")+'</select></label>':"")+'</div>'
    +'<div class="rg-cols"><div>'+devPick("video","Video card")+devPick("sound","Sound card")+devPick("extra","Other cards and ports")+'</div><div>'
@@ -113,7 +119,7 @@ function rigs(){
    +'<p class="tn">Slots used: ISA '+c.used.ISA+'/'+b.isa+(b.pci?', PCI '+c.used.PCI+'/'+b.pci:"")+(b.agp?', AGP '+c.used.AGP+'/'+b.agp:"")+(b.vlb?', VLB '+c.used.VLB+'/'+b.vlb:"")+'</p>'
    +'<h3 class="sub">IRQ map</h3><div class="mx-wrap"><table class="ctab rg-t"><thead><tr><th>IRQ</th><th>Used by</th></tr></thead><tbody>'+irqRows.join("")+'</tbody></table></div></div></div>'
    +'<h3 class="sub">What it can play</h3><p>'+(g.run+g.ok)+' of the games on file run on this rig: <b>'+g.run+'</b> well, <b>'+g.ok+'</b> at minimum, <b>'+g.no+'</b> not yet. <a href="#/runs">Open the full checker</a>.</p><p class="chips">'+g.list.filter(function(x){return x[1]===2}).sort(function(a,b){return(gxDebut(b[2])[1]||"")>(gxDebut(a[2])[1]||"")?1:-1}).slice(0,8).map(function(x){return'<a class="btn" href="#/timeline/'+String(gxDebut(x[2])[1]).slice(0,4)+'/'+encodeURIComponent(x[0])+'">'+E(x[0])+'</a>'}).join(" ")+'</p>'
-   +'<h3 class="sub noprint">Save and share</h3><p class="noprint"><input id="rn" placeholder="Name this build" size="22"> <button class="btn" id="rsv" type="button">Save</button> <button class="btn" id="rcp" type="button">Copy as text</button> <button class="btn" id="rpng" type="button">Download card (PNG)</button> <span class="tn" id="rm" role="status"></span></p>'
+   +'<h3 class="sub noprint">Save and share</h3><p class="noprint"><input id="rn" placeholder="Name this build" size="22"> <button class="btn" id="rsv" type="button">Save</button> <button class="btn" id="rcp" type="button">Copy as text</button> <button class="btn" id="rlink" type="button">Copy link to this build</button> <button class="btn" id="rpng" type="button">Download card (PNG)</button> <span class="tn" id="rm" role="status"></span></p>'
    +(saved.length?'<ul class="rg-sv noprint">'+saved.map(function(s,i){return'<li><button class="btn" data-ld="'+i+'" type="button">Load</button> '+E(s.n)+' <button class="btn" data-dl="'+i+'" type="button" aria-label="Delete '+E(s.n)+'">&times;</button></li>'}).join("")+'</ul>':"")+back()+'</section>';wire()}
  function wire(){
   $("#rb").onchange=function(){RS.board=this.value;RS.ci=1;RS.ri=1;fixVideo();draw()};$("#rcpu").onchange=function(){RS.ci=+this.value;draw()};$("#rram").onchange=function(){RS.ri=+this.value;draw()};$("#ros").onchange=function(){RS.os=this.value;draw()};
@@ -122,9 +128,10 @@ function rigs(){
   $$("select[data-j]").forEach(function(s){s.onchange=function(){RS.irq[s.dataset.j]=+s.value;draw()}});
   $("#rauto").onclick=function(){autoResolve();draw()};
   $("#rrand").onclick=function(){var b=BOARDS[Math.floor(Math.random()*BOARDS.length)];RS.board=b.id;RS.ci=Math.floor(Math.random()*b.mhz.length);RS.ri=Math.floor(Math.random()*b.ram.length);RS.os=OSES[Math.min(OSES.length-1,Math.max(0,b.cls-2+Math.floor(Math.random()*2)))].id;RS.irq={};RS.devs=[];fixVideo();RS.video=availDevs("video")[Math.floor(Math.random()*availDevs("video").length)].id;[["sound",1],["extra",2]].forEach(function(p){var av=availDevs(p[0]);for(var i=0;i<p[1]&&av.length;i++){var d=av[Math.floor(Math.random()*av.length)];if(RS.devs.indexOf(d.id)<0)RS.devs.push(d.id)}});draw()};
-  $("#rsv").onclick=function(){var n=$("#rn").value.trim()||"Build "+(RS.saved.length+1);if(RS.saved.length>=8)RS.saved.shift();RS.saved.push({n:n,s:JSON.parse(JSON.stringify({board:RS.board,ci:RS.ci,ri:RS.ri,os:RS.os,video:RS.video,devs:RS.devs,irq:RS.irq}))});sv("cm-rigs",{l:RS.saved});draw()};
+  $("#rsv").onclick=function(){var n=$("#rn").value.trim()||"Build "+(RS.saved.length+1);if(RS.saved.length>=8)RS.saved.shift();RS.saved.push({n:n,r:check().rig,s:JSON.parse(JSON.stringify({board:RS.board,ci:RS.ci,ri:RS.ri,os:RS.os,video:RS.video,devs:RS.devs,irq:RS.irq}))});sv("cm-rigs",{l:RS.saved});draw()};
   $$("[data-ld]").forEach(function(b){b.onclick=function(){var s=RS.saved[+b.dataset.ld].s;RS.board=s.board;RS.ci=s.ci;RS.ri=s.ri;RS.os=s.os;RS.video=s.video;RS.devs=s.devs.slice();RS.irq=Object.assign({},s.irq);fixVideo();draw()}});
   $$("[data-dl]").forEach(function(b){b.onclick=function(){RS.saved.splice(+b.dataset.dl,1);sv("cm-rigs",{l:RS.saved});draw()}});
+  $("#rlink").onclick=function(){var u=location.origin+location.pathname+"#/rigs/"+rigCode(),m=$("#rm");if(navigator.clipboard)navigator.clipboard.writeText(u).then(function(){m.textContent="Link copied."},function(){m.textContent=u});else m.textContent=u};
   $("#rcp").onclick=function(){var t=summary(),m=$("#rm");if(navigator.clipboard)navigator.clipboard.writeText(t).then(function(){m.textContent="Copied."},function(){m.textContent=t});else m.textContent=t};
   $("#rpng").onclick=function(){var a=document.createElement("a");a.href=cardPng();a.download="dream-rig.png";document.body.appendChild(a);a.click();a.remove()}}
  draw()}
@@ -156,5 +163,5 @@ function walk(arg){var y=Math.max(1977,Math.min(2012,+arg||1995)),chap=0;
  if(!window.__wkOn){window.__wkOn=1;document.addEventListener("keydown",function(e){if(window.__wkKey)window.__wkKey(e)})}
  draw()}
 
-window.CMLab2={mount:function(el,page,args){app=el;try{if(page==="rigs")rigs();else if(page==="walk")walk(args[0])}catch(e){app.innerHTML='<section><h2>Something broke</h2><p class="empty">This page could not load ('+E(e.message)+').</p>'+back()+'</section>'}}};
+window.CMLab2={mount:function(el,page,args){app=el;try{if(page==="rigs")rigs(args[0]);else if(page==="walk")walk(args[0])}catch(e){app.innerHTML='<section><h2>Something broke</h2><p class="empty">This page could not load ('+E(e.message)+').</p>'+back()+'</section>'}}};
 })();

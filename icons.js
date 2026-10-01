@@ -104,3 +104,14 @@ function pxRow(r,size){return px(pxOfRow(r),size||16)}
 function pxCat(cat,size){return px(pxPick(PXCAT,cat,"box"),size||16)}
 function pxPlat(plat,size){var f=typeof gxFam==="function"?gxFam(plat):"oth";return px(PXPLAT[f]||"chip",size||12)}
 function pxGenre(g,size){return px(pxPick(PXGENRE,g,"gamepad"),size||12)}
+
+/* "Mem", the museum's original mascot: a friendly memory chip. mascot(size, mood) mood: happy, wow, oops. Skin comes from the prize counter. */
+var MEMSKINS={green:["#1f9d55","#0b4a28","#ffd54a"],blue:["#2f6fe0","#10306b","#ffd54a"],gold:["#e0b030","#6b4d08","#ffffff"],pink:["#e0509a","#6b1a45","#ffe8a0"]};
+function mascot(size,mood,skin){size=size||64;if(!skin){try{skin=(JSON.parse(localStorage.getItem("cm-prizes")||"{}")).skin}catch(e){}}var c=MEMSKINS[skin]||MEMSKINS.green,b=c[0],d=c[1],p=c[2],o='<svg class="mascot" viewBox="0 0 16 16" width="'+size+'" height="'+size+'" shape-rendering="crispEdges" role="img" aria-label="Mem, the museum mascot" xmlns="http://www.w3.org/2000/svg">';
+ function r(x,y,w,h,f){o+='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" fill="'+f+'"/>'}
+ for(var i=0;i<5;i++){r(2+i*3,1,1,2,p);r(2+i*3,13,1,2,p)}
+ r(1,3,14,10,d);r(2,4,12,8,b);r(2,4,12,1,"#ffffff33");
+ if(mood==="oops"){r(4,6,3,1,"#fff");r(5,5,1,3,"#fff");r(9,6,3,1,"#fff");r(10,5,1,3,"#fff");r(6,10,4,1,d);r(5,11,1,1,d);r(10,11,1,1,d)}
+ else if(mood==="wow"){r(4,5,3,3,"#fff");r(9,5,3,3,"#fff");r(5,6,1,2,"#000");r(10,6,1,2,"#000");r(7,10,2,2,d)}
+ else{r(4,5,3,3,"#fff");r(9,5,3,3,"#fff");r(5,6,2,2,"#000");r(10,6,2,2,"#000");r(5,10,1,1,d);r(6,11,4,1,d);r(10,10,1,1,d)}
+ r(0,6,1,2,p);r(15,6,1,2,p);return o+'</svg>'}

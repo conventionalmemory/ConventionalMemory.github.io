@@ -35,7 +35,7 @@ function startSaver(){if(saver||!motionOk())return;var N=names(),c=document.crea
   var col=cols[hue];g.fillStyle=flash>0&&flash%6<3?"#fff":"#c0c0c0";g.fillRect(x,y,bw,bh);g.fillStyle=col==="#ffffff"?"#0000aa":"#000080";g.fillRect(x,y,bw,24);g.fillStyle=col;g.font="bold 15px 'Courier New',monospace";g.fillText("C:\\MUSEUM\\"+(cur[1]||"ITEM")+".ITM",x+6,y+17);g.fillStyle="#000";g.font="bold 22px 'Courier New',monospace";g.fillText(cur[0],x+16,y+58);if(flash>0)flash--;requestAnimationFrame(frame)}
  function stop(){run=0;removeEventListener("resize",size);c.remove();saver=null;["mousemove","keydown","mousedown","touchstart","wheel"].forEach(function(ev){removeEventListener(ev,stop,true)});arm()}
  saver={stop:stop};setTimeout(function(){["mousemove","keydown","mousedown","touchstart","wheel"].forEach(function(ev){addEventListener(ev,stop,true)})},600);requestAnimationFrame(frame)}
-function arm(){clearTimeout(idle);if(saver)return;idle=setTimeout(function(){if(/#\/(admin|builder|maze)/.test(location.hash)||document.hidden){arm();return}startSaver()},IDLE_MS)}
+function arm(){clearTimeout(idle);if(saver)return;idle=setTimeout(function(){if(/#\/(admin|builder|maze|kiosk)/.test(location.hash)||document.hidden){arm();return}startSaver()},IDLE_MS)}
 ["mousemove","keydown","mousedown","touchstart","scroll"].forEach(function(ev){addEventListener(ev,arm,{passive:true})});arm();
 /* ---- era mode banner (set on the Era page) ---- */
 function eraThemeName(y){return y<=1983?"amber":y<=1989?"green":y<=1995?"ega":""}

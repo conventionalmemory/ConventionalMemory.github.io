@@ -228,3 +228,29 @@ Photo Safari (items and timeline) now searches Wikipedia article images and Comm
 9. **What next?** (`#/advisor`): ranks 23 collecting milestones against what the museum already holds and what the wanted list is missing, with search links.
 10. **Swap-meet mode** (`#/hunt`): fast lookup (type, scan a barcode where the browser supports it) of "do I already have this?", a price ceiling checker and a hunt list kept on the phone. `sw.js` (now `cm-v13`) precaches the pages and data on install so it works with no signal; visit once on Wi-Fi first.
 - `tests/lab.js` covers rig conflicts, the walk, trade form, journal slider, video chapters and benchmarks; `npm test` now runs it.
+
+### Round 16: stuck states, merges, and the toy aisle
+**Stuck states fixed**
+- Catalog filters now live in the address (`#/catalog?c=Laptops&d=1990&v=shelf`). The Catalog menu link (plain `#/catalog`) always returns to the front, Back from an item restores the filters, and a filtered address can be bookmarked or shared. `#/catalog/cat/<Dept>` still works.
+- Unknown addresses show a real not-found page (with Mem, a "did you mean", and a search box). A year outside the timeline says so instead of silently showing another year.
+- Era mode no longer restyles Admin. The Zoom timeline renders only the entries near the screen (about 500 buttons instead of 2,000+). Community forms have a **Copy it instead** button for people without a GitHub account.
+
+**Merged and tidied**
+- Related pages share a tab bar (`TABSETS` in app.js): Museum stats (numbers, report, memory map, 640K scale), Daily (Dig, Today's find, Bingo), What's new (changes, follow), A year (era, walk, day, zoom), Machines (does it run, dream rig, benchmarks, rig challenge), My lists (collection, wish list, swap-meet, what next, back up). Hubs are grouped under sub-headings.
+- Item pages have 6 tabs: About, Specs, Video (only when there is one), Era and ad, My copy and history, Links.
+- Catalog: Sort, Group and Show as (Big/List/Table) moved into **Filters and display**. "Time machine" is now **By year**, "Next up" is **Not here yet**.
+- **Back up my stuff** (`#/backup`): one file with everything saved in the browser (collection, wish list, hunt list, rigs, progress, prizes, settings). Admin tokens and passphrases are never included; restore only accepts known keys.
+- Saved Dream rigs appear in Does it run? ("My dream rigs"), and `#/rigs/<code>` shares a build by link.
+- All styles moved out of `index.html` into `style.css` (same cascade order). Admin buttons are grouped into Edit, Review and Tools.
+
+**The toy aisle**
+- **Mem**, an original pixel mascot (`mascot()` in icons.js), in four colors.
+- **Wish list** (`#/wish`, `toys.js`): one live list over circled items, "Want" marks in My collection and the swap-meet list. Max price per item, eBay and ShopGoodwill search links, a printable Dear Santa letter, and a share link (`#/wish/<code>`, up to 40 items, no server). In the mail-order catalog every entry has a red **Circle it** button; item pages have **Add to wish list**.
+- **Demo kiosk** (`#/kiosk`): attract mode with slides, "PRESS START", a big-button menu on any key or touch, back to the slides after 45 idle seconds, Escape to leave, optional full screen.
+- **Prize counter** (`#/prizes`): every 3 XP is a ticket plus one free ticket a day. Spend them on stickers, new Mem colors, and the Golden Floppy.
+- **Store intercom** on the home page ("Attention shoppers..." lines built from the day's exhibit, counts, and the timeline) and **aisle numbers** on the catalog department signs.
+- Tests: `tests/nav.js` (stuck states, not-found, zoom) and `tests/toys.js` (wish, backup, prizes, kiosk, tab bars). `tests/widths.js` accepts `WROUTES=a,b,c` to check a few pages.
+
+- **Makers** (`#/maker`, `#/maker/IBM`): every company with exhibits and timeline hardware; item pages link to their maker. **Manuals and references** (`#/manuals`) collects every link by exhibit. **Print labels** (`#/labels`): a sheet of item-number labels with the web address as text (no QR codes yet). **Start here** (`#/start`): six "how do you feel" paths with Mem.
+
+**Not done**: one shared streak across the three daily games (they share a tab bar but keep their own streaks), unified search results, printable QR labels, visitor photo submissions, walk audio, a full accessibility pass.

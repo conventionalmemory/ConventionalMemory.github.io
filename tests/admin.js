@@ -2,7 +2,7 @@
    Run: node tests/admin.js */
 const {chromium}=require('playwright');const fs=require('fs'),path=require('path'),http=require('http');
 const root=path.join(__dirname,'..');
-const srv=http.createServer((q,r)=>{let f=path.join(root,decodeURIComponent(q.url.split('?')[0]));if(f.endsWith('/'))f+='index.html';fs.readFile(f,(e,d)=>{if(e){r.writeHead(404);r.end();return}r.writeHead(200,{'Content-Type':f.endsWith('.js')?'text/javascript':f.endsWith('.html')?'text/html':'text/plain'});r.end(d)})});
+const srv=http.createServer((q,r)=>{let f=path.join(root,decodeURIComponent(q.url.split('?')[0]));if(f.endsWith('/'))f+='index.html';fs.readFile(f,(e,d)=>{if(e){r.writeHead(404);r.end();return}r.writeHead(200,{'Content-Type':f.endsWith('.js')?'text/javascript':f.endsWith('.html')?'text/html':f.endsWith('.css')?'text/css':'text/plain'});r.end(d)})});
 (async()=>{await new Promise(r=>srv.listen(0,r));const BASE='http://localhost:'+srv.address().port;const b=await chromium.launch({executablePath:process.env.PLAYWRIGHT_CHROMIUM||undefined});const pg=await (await b.newContext({viewport:{width:1100,height:1000}})).newPage();
 const errs=[],puts=[];pg.on('pageerror',e=>errs.push('PAGEERR '+e.message));
 let items=fs.readFileSync(path.join(root,'items.js'),'utf8');

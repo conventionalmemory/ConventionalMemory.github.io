@@ -14,7 +14,7 @@ var CMFront=(function(){
    +'<div class="memt"><span><b>'+n+'</b> exhibits</span><span><b>'+names.length+'</b> departments</span><span><b>'+pcs+'</b> pieces</span><span><b>'+(avg==null?"--":outOf10(avg))+'</b> avg /10</span><span class="memf">Largest free block: <b>640K</b></span></div></div>'}
  function dept(items,cats,names){
   return'<h3 class="fh">Pick a department</h3><div class="depts">'+names.map(function(c){var l=items.filter(function(i){return i.cat===c}),s=l.filter(function(i){return i.score!=null}),a=s.length?s.reduce(function(x,i){return x+i.score},0)/s.length:null;
-   return'<button type="button" class="dept" data-dept="'+E(c)+'" style="--dc:'+col(c)+'"><i class="dr" aria-hidden="true"></i><span class="di">'+(typeof pxCat==="function"?pxCat(c,32):"")+'</span><b>'+E(c)+'</b><small>'+cats[c]+(cats[c]===1?" exhibit":" exhibits")+'</small>'+(a!=null?'<span class="mb"><i style="width:'+(a/640*100)+'%;background:'+tier(a).c+'"></i></span>':'')+'</button>'}).join("")+'</div>'}
+   return'<button type="button" class="dept" data-dept="'+E(c)+'" style="--dc:'+col(c)+'"><i class="dr" aria-hidden="true"></i><small class="aisle-n">AISLE '+(names.indexOf(c)+1)+'</small><span class="di">'+(typeof pxCat==="function"?pxCat(c,32):"")+'</span><b>'+E(c)+'</b><small>'+cats[c]+(cats[c]===1?" exhibit":" exhibits")+'</small>'+(a!=null?'<span class="mb"><i style="width:'+(a/640*100)+'%;background:'+tier(a).c+'"></i></span>':'')+'</button>'}).join("")+'</div>'}
  function spot(items){
   var pool=items.filter(function(i){return i.photos&&i.photos.length});if(!pool.length)pool=items;var it=pool[today()%pool.length];
   var t=String(it.text||"").replace(/\s+/g," ");if(t.length>230)t=t.slice(0,230).replace(/\s+\S*$/,"")+"\u2026";
@@ -39,7 +39,7 @@ var CMFront=(function(){
   return'<h3 class="fh">Museum health</h3><div class="hlth"><div class="hl-top"><b>'+all+'%</b><span>of the published record is filled in</span></div>'+R.map(function(r){return'<div class="hl-r"><span>'+r[0]+'</span><i class="hl-b"><em style="width:'+r[1]+'%"></em></i><b>'+r[1]+'%</b></div>'}).join("")+'</div>'}
  function queue(){var d=typeof DRAFTS!=="undefined"?DRAFTS:[];if(!d.length)return"";var show=d.slice(0,30);
   return'<h3 class="fh">Coming soon</h3><div class="soon"><p>'+d.length+' more exhibit'+(d.length===1?" is":"s are")+' in the queue while I double-check the facts. Names only for now:</p><p class="sn">'+show.map(function(i){return'<span>'+(typeof pxCat==="function"?pxCat(i.cat,14):"")+E(i.name)+'</span>'}).join("")+(d.length>show.length?'<span class="sm">and '+(d.length-show.length)+' more</span>':"")+'</p></div>'}
- var TILES=[["cards","Browse everything","Every exhibit as cards","\u25a4"],["shelf","The shelf","Spines, tall = high score","\u2590"],["years","Time machine","Walk through the years","\u231a"],["next","Next up","What the collection is missing","\u2192"],["dir","DIR","A plain directory listing","C:"]];
+ var TILES=[["cards","Browse everything","Every exhibit as cards","\u25a4"],["shelf","The shelf","Spines, tall = high score","\u2590"],["years","By year","Every exhibit, year by year","\u231a"],["next","Not here yet","Timeline pieces the collection is missing","\u2192"],["dir","DIR","A plain directory listing","C:"]];
  function html(items){
   var cats={},names=[];items.forEach(function(i){if(!cats[i.cat]){cats[i.cat]=0;names.push(i.cat)}cats[i.cat]++});
   var al=aisles(items);

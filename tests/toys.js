@@ -1,0 +1,53 @@
+/* Toy-store features: wish list (add, share link, Dear Santa letter, Circle it in the catalog book), backup and restore,
+   prize counter, demo kiosk, related-page tab bars, mascot.   Run: node tests/toys.js */
+const http=require("http"),fs=require("fs"),path=require("path");const {chromium}=require("playwright");
+const root=path.join(__dirname,"..");const types={".html":"text/html",".js":"text/javascript",".css":"text/css",".json":"application/json",".png":"image/png",".svg":"image/svg+xml"};
+const srv=http.createServer((q,r)=>{let f=path.join(root,decodeURIComponent(q.url.split("?")[0]));if(f.endsWith("/"))f+="index.html";fs.readFile(f,(e,d)=>{if(e){r.writeHead(404);r.end();return}r.writeHead(200,{"content-type":types[path.extname(f)]||"application/octet-stream"});r.end(d)})});
+(async()=>{await new Promise(r=>srv.listen(0,r));const base="http://localhost:"+srv.address().port+"/index.html#/";
+ const b=await chromium.launch({executablePath:process.env.PLAYWRIGHT_CHROMIUM||undefined});const ctx=await b.newContext({viewport:{width:1100,height:900},acceptDownloads:true});const p=await ctx.newPage();
+ const fails=[],errs=[];p.on("pageerror",e=>errs.push(e.message));
+ const ok=(c,m)=>{console.log((c?"ok   ":"FAIL ")+m);if(!c)fails.push(m)};const go=async h=>{await p.goto(base+h);await p.waitForTimeout(600)};const txt=()=>p.evaluate(()=>document.getElementById("app").innerText);
+ await go("");await p.evaluate(()=>{localStorage.clear();sessionStorage.clear()});
+ // wish list
+ await go("wish");ok(/My wish list/.test(await txt()),"wish page renders");
+ await p.fill("#wq","Sound Blaster");await p.waitForTimeout(300);await p.click("#wres [data-add]");await p.waitForTimeout(300);
+ await p.fill("#wq","Game Boy");await p.waitForTimeout(300);await p.click('#wres [data-add^="c:"]');await p.waitForTimeout(300);
+ ok(await p.evaluate(()=>document.querySelectorAll(".wsh-l li").length)===2,"two things on the wish list");
+ await p.fill('[data-max]',"40");await p.dispatchEvent('[data-max]',"change");ok(await p.evaluate(()=>JSON.parse(localStorage.getItem("cm-wish")).some(w=>w.max==="40")),"price ceiling saved");
+ await p.click("#wsan");await p.waitForTimeout(200);ok(/Dear Santa/.test(await p.evaluate(()=>document.getElementById("wsanta").innerText)),"Dear Santa letter is written");
+ const code=await p.evaluate(()=>{const k=wishLoad().map(w=>w.k);return location.origin+location.pathname+"#/wish/"+(function(){return btoa(unescape(encodeURIComponent(JSON.stringify(k)))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"")})()});
+ await p.goto(code);await p.waitForTimeout(600);ok(/A wish list from a friend/.test(await txt())&&await p.evaluate(()=>document.querySelectorAll(".wsh-l li").length)===2,"shared list link opens a friend's list");
+ await p.goto(base+"wish/!!notacode");await p.waitForTimeout(500);ok(/damaged/.test(await txt()),"a bad shared link is rejected");
+ await go("wish");await p.click("[data-rm]");await p.waitForTimeout(200);ok(await p.evaluate(()=>document.querySelectorAll(".wsh-l li").length)===1,"remove works");
+ // item page button
+ await go("");const id=await p.evaluate(()=>ITEMS[0].id);await go("item/"+id);await p.click("#wishb");ok(await p.evaluate(id=>wishHas("i:"+id),id),"item page adds to wish list");
+ // Wish Book circle
+ await go("catalog");await p.evaluate(()=>localStorage.setItem("cm-catmode","book"));await p.reload();await p.waitForTimeout(1000);
+ for(let i=0;i<6&&!(await p.$(".bk-wish"));i++){const n=await p.$("#bkn");if(!n)break;await n.click();await p.waitForTimeout(900)}const circ=await p.$(".bk-wish");if(circ){await circ.click({force:true});await p.waitForTimeout(200);ok(await p.evaluate(()=>/#\/catalog/.test(location.hash)&&!!document.querySelector(".bk-wish.on")),"Circle it marks the item and stays on the catalog")}else ok(false,"book has a Circle it button");
+ await p.evaluate(()=>localStorage.removeItem("cm-catmode"));
+ // prizes
+ await go("prizes");ok(/Prize counter/.test(await txt()),"prize counter renders");await p.click("#pzfree");await p.waitForTimeout(200);ok(/\b1\s*\n?\s*tickets/.test(await txt())&&/claimed/i.test(await txt()),"free daily ticket");
+ await p.evaluate(()=>localStorage.setItem("cm-play",JSON.stringify({xp:60,badges:{},st:{}})));await go("backup");await go("prizes");await p.click('[data-buy="st-star"]');await p.waitForTimeout(200);ok(/Gold star sticker/.test(await p.evaluate(()=>document.querySelector(".pz-shelf")?.innerText||"")),"redeeming a prize puts it on the shelf");
+ // backup
+ await go("backup");const [dlf]=await Promise.all([p.waitForEvent("download"),p.click("#bsave")]);const fp=await dlf.path();const saved=JSON.parse(fs.readFileSync(fp,"utf8"));
+ ok(saved.app==="conventionalmemory"&&saved.data["cm-wish"]&&saved.data["cm-prizes"]&&!Object.keys(saved.data).some(k=>/admin|vault/.test(k)),"backup file has the saved stuff and never admin data");
+ const bad=path.join(__dirname,"_bad.json");fs.writeFileSync(bad,JSON.stringify({app:"conventionalmemory",v:1,data:{"cm-admin":"x","cm-wish":"[]","evil":"1"}}));await p.setInputFiles("#bfile",bad);await p.waitForTimeout(400);
+ ok(/1 items found/.test(await p.evaluate(()=>document.getElementById("bprev").innerText))&&/2 skipped/.test(await p.evaluate(()=>document.getElementById("bprev").innerText)),"restore skips keys that are not allowed");fs.unlinkSync(bad);
+ await p.setInputFiles("#bfile",{name:"x.json",mimeType:"application/json",buffer:Buffer.from("not json")});await p.waitForTimeout(300);ok(/not a backup/.test(await p.evaluate(()=>document.getElementById("bprev").innerText)),"garbage file is rejected");
+ // kiosk
+ await go("kiosk");await p.click("#kgo");await p.waitForTimeout(400);ok(await p.evaluate(()=>!!document.getElementById("kiosk")&&document.getElementById("kscr").innerText.length>5),"kiosk shows a slide");
+ await p.keyboard.press("a");await p.waitForTimeout(200);ok(await p.evaluate(()=>document.querySelectorAll(".k-menu a").length>=5),"any key opens the big-button menu");
+ await p.keyboard.press("Escape");await p.waitForTimeout(300);ok(await p.evaluate(()=>!document.getElementById("kiosk")),"Escape leaves the kiosk");
+ await go("kiosk/go");await p.waitForTimeout(300);await p.keyboard.press("x");await p.click('.k-menu a[href="#/daily"]');await p.waitForTimeout(500);ok(await p.evaluate(()=>!document.getElementById("kiosk")&&/#\/daily/.test(location.hash)),"kiosk menu button navigates and closes the kiosk");
+ // tab bars + mascot
+ for(const [r,t] of [["stats","Collection report"],["daily","Today's find"],["changes","Follow"],["runs","Dream rig"],["mine","Wish list"]]){await go(r);ok(await p.evaluate(t=>[...document.querySelectorAll(".tbar a")].some(a=>a.textContent===t),t),"tab bar on #/"+r+" links to "+t)}
+ await go("nowhere");ok(await p.evaluate(()=>!!document.querySelector(".nf svg.mascot")),"not-found page shows Mem");
+ // makers, manuals, labels, start here
+ await go("maker");ok(/Makers/.test(await txt())&&await p.evaluate(()=>document.querySelectorAll("#app .chips a").length)>3,"makers index lists companies");
+ await p.click("#app .chips a.pri");await p.waitForTimeout(400);ok(await p.evaluate(()=>/#\/maker\//.test(location.hash)&&document.querySelectorAll("#app .card").length>0),"a maker page shows its exhibits");
+ await go("item/"+await p.evaluate(()=>ITEMS.filter(i=>i.maker&&i.maker!=="Unknown")[0].id));ok(await p.evaluate(()=>!!document.querySelector('.ihero a.ib[href^="#/maker/"]')),"item page links the maker");
+ await go("manuals");ok(/Manuals and references/.test(await txt()),"manuals page renders");
+ await go("labels");ok(await p.evaluate(()=>document.querySelectorAll(".lbl-c").length)>=4,"label sheet has a label per exhibit");await p.click(".lbl-k");ok(await p.evaluate(()=>document.querySelectorAll(".lbl-c.off").length===1),"a label can be switched off");
+ await go("start");ok(await p.evaluate(()=>document.querySelectorAll(".st .hm-tile").length===6&&!!document.querySelector(".st svg.mascot")),"start here page has six paths and Mem");
+ ok(!errs.length,"no script errors"+(errs.length?": "+errs.join("|"):""));
+ await b.close();srv.close();if(fails.length){console.error("FAILED "+fails.length);process.exit(1)}console.log("OK toys")})();

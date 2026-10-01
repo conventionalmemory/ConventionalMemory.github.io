@@ -18,18 +18,19 @@ function catalog(){
  window.CATRE=catalog;
  if(mode==="book"&&window.CMBook){app.innerHTML='<section class="catw">'+head+'<div id="bkmount"></div></section>';wireMode();CMBook.mount(document.getElementById("bkmount"));return}
  function wireMode(){document.querySelector(".cmode").onclick=function(e){var b=e.target.closest("[data-m]");if(b&&b.dataset.m!==catMode())setMode(b.dataset.m)}}
- var VIEWS=[["cards","Cards"],["shelf","Shelf"],["years","Time machine"],["next","Next up"],["dir","DIR"]];
+ var SORTSEL='<select id="s" aria-label="Sort"><option value="">Catalog order</option><option value="score">Highest score</option><option value="old">Oldest first</option><option value="new">Newest first</option><option value="name">Name A to Z</option></select>',GRPSEL='<select id="gp" aria-label="Group by"><option value="none">No grouping</option><option value="cat">Group by category</option><option value="dec">Group by decade</option><option value="az">Group by letter</option></select>',DENS='<span class="cdens" role="group" aria-label="Density"><button type="button" class="btn" data-n="cards" aria-pressed="false">Big</button><button type="button" class="btn" data-n="rows" aria-pressed="false">List</button><button type="button" class="btn" data-n="table" aria-pressed="false">Table</button></span>';
+ var VIEWS=[["cards","Cards"],["shelf","Shelf"],["years","By year"],["next","Not here yet"],["dir","DIR"]];
  app.innerHTML='<section class="catw">'+head
-  +'<div class="tools ctb"><input id="q" type="search" placeholder="Search the catalog (press /)" aria-label="Search" value="'+esc(S.q)+'"><select id="s" aria-label="Sort"><option value="">Catalog order</option><option value="score">Highest score</option><option value="old">Oldest first</option><option value="new">Newest first</option><option value="name">Name A to Z</option></select>'
-  +'<select id="gp" aria-label="Group by"><option value="none">No grouping</option><option value="cat">Group by category</option><option value="dec">Group by decade</option><option value="az">Group by letter</option></select>'
-  +'<button class="btn" id="fb" type="button" aria-expanded="false" aria-controls="fp">Filters</button><button class="btn" id="sur" type="button">Surprise me</button></div>'
-  +'<div id="fp" class="cpanel" hidden>'
+  +'<div class="tools ctb"><input id="q" type="search" placeholder="Search the catalog (press /)" aria-label="Search" value="'+esc(S.q)+'">'
+  +''
+  +'<button class="btn" id="fb" type="button" aria-expanded="false" aria-controls="fp">Filters and display</button><button class="btn" id="sur" type="button">Surprise me</button></div>'
+  +'<div id="fp" class="cpanel" hidden><div class="cdisp"><label>Sort '+SORTSEL+'</label><label>Group '+GRPSEL+'</label><span class="cdl">Show as</span>'+DENS+'</div>'
   +tagBrowse()
   +'<div class="cchips" id="cd" role="group" aria-label="Decades and status">'+Object.keys(decs).sort().map(function(d){return'<button type="button" class="chip dec" data-d="'+d+'" aria-pressed="false">'+d+'s <b>'+decs[d]+'</b></button>'}).join("")+Object.keys(sts).map(function(t){return'<button type="button" class="chip st" data-t="'+esc(t)+'" aria-pressed="false">'+esc(t)+' <b>'+sts[t]+'</b></button>'}).join("")+'</div>'
   +'<label class="cmin">Minimum score: <b id="mv">0</b>K <input id="mn" type="range" min="0" max="600" step="50" value="'+S.min+'" aria-label="Minimum score"></label></div>'
   +'<div id="fr"></div><div id="res"><div class="cback"><button class="btn" id="bk" type="button">\u25c4 Back to the aisles</button></div>'
   +'<div class="cchips cstrip" id="cc" role="group" aria-label="Categories">'+Object.keys(cats).map(function(c){return'<button type="button" class="chip" data-c="'+esc(c)+'" aria-pressed="false">'+(typeof pxCat==="function"?pxCat(c,14):"")+esc(c)+' <b>'+cats[c]+'</b></button>'}).join("")+'</div>'
-  +'<div class="crow"><span class="cviews" role="group" aria-label="View">'+VIEWS.map(function(v){return'<button type="button" class="btn" data-v="'+v[0]+'" aria-pressed="false">'+v[1]+'</button>'}).join("")+'</span><span class="cdens" role="group" aria-label="Density"><button type="button" class="btn" data-n="cards" aria-pressed="false">Big</button><button type="button" class="btn" data-n="rows" aria-pressed="false">List</button><button type="button" class="btn" data-n="table" aria-pressed="false">Table</button></span></div>'
+  +'<div class="crow"><span class="cviews" role="group" aria-label="View">'+VIEWS.map(function(v){return'<button type="button" class="btn" data-v="'+v[0]+'" aria-pressed="false">'+v[1]+'</button>'}).join("")+'</span></div>'
   +'<div id="af" class="cact"></div><p id="cn" class="tn" role="status"></p><div id="jm"></div><div id="g"></div><p id="more" class="cmore"></p></div></section>';
  wireMode();
  var q=document.getElementById("q"),so=document.getElementById("s"),g=document.getElementById("g"),mn=document.getElementById("mn"),gp=document.getElementById("gp"),fp=document.getElementById("fp"),fb=document.getElementById("fb");so.value=S.sort;gp.value=S.group;

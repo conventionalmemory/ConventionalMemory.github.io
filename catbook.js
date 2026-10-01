@@ -27,11 +27,12 @@ var CMBook=(function(){
  /* ---------- one catalog entry ---------- */
  function stickers(it,pick){var h="";if(pick)h+='<span class="bk-stk">Staff pick</span>';if(isNew(it))h+='<span class="bk-stk new">NEW!</span>';return h?'<span class="bk-stks">'+h+'</span>':""}
  function entry(it,mode,i,pick){var sp=(typeof pickSpecs==="function"?pickSpecs(it,it.type):[]).slice(0,mode==="big"?5:3),t=it.score!=null?tier(it.score):null;
-  return'<a class="bk-it bk-m-'+mode+'" href="#/item/'+E(it.id)+'" style="--i:'+i+';--c:'+col(it.cat)+'"><div class="bk-ph">'+String(pic(it)).replace(/xMidYMid slice/g,"xMidYMid meet")+stickers(it,pick)+(t?'<span class="bk-burst" style="background:'+t.c+';color:'+inkOn(t.c)+'"><b>'+it.score+'K</b><i>'+E(t.l)+'</i></span>':"")+'</div>'
+  return'<a class="bk-it bk-m-'+mode+(wishOn(it)?" wished":"")+'" href="#/item/'+E(it.id)+'" style="--i:'+i+';--c:'+col(it.cat)+'"><div class="bk-ph">'+String(pic(it)).replace(/xMidYMid slice/g,"xMidYMid meet")+stickers(it,pick)+(t?'<span class="bk-burst" style="background:'+t.c+';color:'+inkOn(t.c)+'"><b>'+it.score+'K</b><i>'+E(t.l)+'</i></span>':"")+'</div>'
    +'<div class="bk-tx"><small class="bk-no">Item No. '+itemNo(it)+(it.status?' &middot; '+E(it.status):"")+'</small><h4>'+E(it.name)+'</h4><p class="bk-mk">'+E(it.maker||"")+(it.year?', '+it.year:"")+'</p>'
    +(mode==="big"?'<p class="bk-bl">'+E(blurb(it))+'</p>':"")
    +(sp.length&&mode!=="list"?'<ul>'+sp.map(function(x){return'<li><b>'+E(x[0])+':</b> '+E(String(x[1]).slice(0,34))+'</li>'}).join("")+'</ul>':(mode==="list"?'<p class="bk-bl">'+E(blurb(it))+'</p>':""))
-   +srcSm(it)+'<span class="bk-go">See the exhibit &raquo;</span></div></a>'}
+   +srcSm(it)+'<span class="bk-go">See the exhibit &raquo;</span></div><span class="bk-wish'+(wishOn(it)?" on":"")+'" role="button" tabindex="0" data-wish="'+E(it.id)+'" aria-pressed="'+wishOn(it)+'" title="Circle it to add it to your wish list">'+(wishOn(it)?"&#9829; Circled!":"&#9825; Circle it")+'</span></a>'}
+ function wishOn(it){return typeof wishHas==="function"&&wishHas("i:"+it.id)}
  /* ---------- the whole book as a list of pages ---------- */
  function build(){
   var cats=[],by={};ITEMS.forEach(function(i){if(!by[i.cat]){by[i.cat]=[];cats.push(i.cat)}by[i.cat].push(i)});
@@ -177,6 +178,8 @@ var CMBook=(function(){
   bm.onclick=function(){var p=pair(ST.s),here=mark>=0&&(p[0]===mark||p[1]===mark);mark=here?-1:(p[0]!=null&&p[0]>=0?p[0]:p[1]);try{localStorage.setItem("cm-bkmark",String(mark))}catch(e){}chrome(ST.s)};
   bg.onclick=function(){if(mark>=0)go(sOf(mark))};
   bz.onclick=function(){try{localStorage.setItem("cm-booksnd",sndOn()?"0":"1")}catch(e){}chrome(ST.s);if(sndOn())swish(0.5)};
+  function circle(e){var w=e.target.closest&&e.target.closest(".bk-wish");if(!w)return false;e.preventDefault();e.stopPropagation();var on=wishToggle("i:"+w.dataset.wish);w.classList.toggle("on",on);w.setAttribute("aria-pressed",on);w.innerHTML=on?"&#9829; Circled!":"&#9825; Circle it";var a=w.closest(".bk-it");if(a)a.classList.toggle("wished",on);return true}
+  el.addEventListener("click",function(e){circle(e)},true);el.addEventListener("keydown",function(e){if((e.key==="Enter"||e.key===" ")&&e.target.classList&&e.target.classList.contains("bk-wish")){circle(e)}},true);
   el.addEventListener("click",function(e){if(moved){e.preventDefault();e.stopPropagation();moved=false;return}
    var a=e.target.closest("[data-p]");if(a){e.preventDefault();go(sOf(+a.dataset.p));return}
    if(e.target.closest("a,button,select,input,label"))return;var pg=e.target.closest(".bk-pg");if(!pg)return;var r=pg.getBoundingClientRect(),inR=!!pg.closest("#bkr");
