@@ -183,3 +183,8 @@ Photo Safari (items and timeline) now searches Wikipedia article images and Comm
 - Accessory lines get an images box and an optional link to a catalog item. "Make it its own catalog item" creates a draft item tied back with `for`.
 - `for` on an item lists the items it works with (an item can belong to several). Their pages list it under Accessories and companions; its own page shows Works with.
 - Item pages credit stock photos and label gallery images Mine or Stock.
+
+### Round 10: clean titles, copies, folder item pages
+- Item names are just the item: no year, store, condition or lot contents (those live in specs, condition and the record). 47 renamed.
+- Owning more than one: one catalog item with Quantity set, plus a `units` list (one entry per copy: source, working, condition). Five pairs were merged this way (Libretto 110CT, Mavica FD200, Game Boy Pocket, Wii, Game Boy Color). The editor has a Copies box.
+- Item pages are now a folder with DOS function-key tabs: 1 About, 2 Specs, 3 My copy, 4 History, 5 Links (press the number keys). Specs sit in titled cards, long text folds under Read more, photos are a contact sheet under the main picture, and the era and ad blocks are collapsed "[+]" drawers.

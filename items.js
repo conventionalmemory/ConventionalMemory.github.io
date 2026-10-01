@@ -62,7 +62,7 @@ var ITEMS=[
    }
   ],
   "status": "Repair",
-  "qty": 1,
+  "qty": 2,
   "cond": "Example: good, light case wear",
   "works": "Working",
   "acquired": "Example: 2025",
@@ -76,24 +76,31 @@ var ITEMS=[
    "Win98",
    "Handheld",
    "Conversion project",
-   "CompactFlash"
+   "CompactFlash",
+   "Toshiba",
+   "Libretto"
   ],
   "score": 540,
   "text": "A pocket-sized Toshiba subnotebook from the Libretto line: a Pentium MMX 233 with a 7.1-inch 800 x 480 screen, small enough for a coat pocket yet able to run full Windows 95 or 98. Toshiba announced it in Europe in November 1998.",
   "notes": "Conversion plan: replace the original hard drive with an 8 GB CompactFlash card, then install Windows 98 SE trimmed down with 98lite (Sleek profile), plus the Unofficial Windows 98SE Service Pack (USP3) and KernelEx. Partition with a Windows ME boot disk to sidestep the Win98SE FDISK 64 GB bug. Watch list: the NiMH CMOS battery can leak, and RAM tops out at 64 MB officially.",
   "thoughts": "Example: Tiny, strange and a lot of fun. The pointing stick takes getting used to, but the OPL3 sound makes it a great little DOS and early Windows game machine.",
   "specs": {
+   "Brand": "Toshiba",
+   "Model": "Libretto 110CT",
    "CPU": "Intel Pentium with MMX",
+   "RAM": "32 MB standard, 64 MB max",
+   "Storage": "4.32 GB hard disk, 8.45 mm high (original)",
+   "Display": "7.1-inch TFT color",
+   "Weight": "About 950 g",
+   "Operating system": "Windows 95 or 98",
    "CPU speed": "233 MHz (66 MHz bus), 1.6 V core",
    "Cache": "32 KB on chip (16 KB code, 16 KB data)",
    "RAM installed": "32 MB EDO DRAM (standard)",
    "RAM maximum": "64 MB officially; 96 MB with a modded RAM module",
    "RAM type": "EDO DRAM",
-   "Storage": "4.32 GB hard disk, 8.45 mm high (original)",
    "Floppy drives": "External 3.5-inch 1.44 MB / 720 KB via PC Card",
    "Optical drive": "Optional 10x mobile CD-ROM via PC Card",
    "Removable media": "PC Card slots, CardBus",
-   "Display": "7.1-inch TFT color",
    "Resolution": "800 x 480 internal; external up to 1024 x 768 (65,536 colors)",
    "Colors": "16.7 million (internal)",
    "Graphics": "NeoMagic NM2160, 128-bit accelerator",
@@ -106,7 +113,6 @@ var ITEMS=[
    "Modem": "PC Card high-speed modem (optional)",
    "Power supply": "Autosensing 100 to 240 V AC adapter",
    "Battery": "Removable lithium-ion, up to 4 hours with the high-capacity battery",
-   "Weight": "About 950 g",
    "Dimensions": "210 x 132 x 35 mm",
    "Form factor": "Subnotebook",
    "OS shipped": "Windows 95 or Windows 98 (selectable install)",
@@ -160,10 +166,24 @@ var ITEMS=[
    {
     "t": "Toshiba Libretto (Wikipedia)",
     "u": "https://en.wikipedia.org/wiki/Toshiba_Libretto"
+   },
+   {
+    "t": "Toshiba Libretto 110CT - Computing History",
+    "u": "https://www.computinghistory.org.uk/det/39871/Toshiba-Libretto-110CT/"
    }
   ],
   "verify": "Original US MSRP and the PA1280U-T2W98 part number were not confirmed from a cited page.",
-  "conf": "high"
+  "conf": "high",
+  "units": [
+   {
+    "cond": "Example: good, light case wear",
+    "works": "Working"
+   },
+   {
+    "src": "ebay",
+    "cond": "Order email only; the listing no longer exists."
+   }
+  ]
  },
  {
   "id": "sound-blaster-16",
@@ -404,7 +424,7 @@ var ITEMS=[
  {
   "id": "ibm-dos-2-1-books-and-disks",
   "type": "Game or software",
-  "name": "IBM PC DOS 2.1 (manuals and disks)",
+  "name": "IBM PC DOS 2.1",
   "cat": "Games and software",
   "maker": "IBM",
   "model": "DOS 2.1",
@@ -520,7 +540,7 @@ var ITEMS=[
  {
   "id": "alone-in-the-dark-big-box-pc",
   "type": "Game or software",
-  "name": "Alone in the Dark Big Box (PC)",
+  "name": "Alone in the Dark",
   "cat": "Games and software",
   "maker": "Infogrames",
   "year": 1993,
@@ -552,7 +572,7 @@ var ITEMS=[
  {
   "id": "shadow-warrior-1997-3d-realms-pc-cd-rom-with-manual",
   "type": "Game or software",
-  "name": "Shadow Warrior (1997) 3D Realms PC CD-ROM with manual",
+  "name": "Shadow Warrior",
   "cat": "Games and software",
   "maker": "3D Realms",
   "year": 1997,
@@ -569,7 +589,8 @@ var ITEMS=[
    "Publisher or studio": "Developer 3D Realms; publisher GT Interactive (North America), Eidos Interactive (Europe)",
    "Engine": "Build",
    "Genre": "First-person shooter",
-   "Publisher (North America)": "GT Interactive"
+   "Publisher (North America)": "GT Interactive",
+   "Edition": "PC CD-ROM with manual"
   },
   "src": "ebay",
   "draft": true,
@@ -590,7 +611,7 @@ var ITEMS=[
  {
   "id": "apple-desktop-bus-mouse-ii-m2706",
   "type": "Peripheral",
-  "name": "Apple Desktop Bus Mouse II (M2706)",
+  "name": "Apple Desktop Bus Mouse II",
   "cat": "Peripherals",
   "maker": "Apple",
   "model": "Desktop Bus Mouse II",
@@ -775,7 +796,7 @@ var ITEMS=[
  {
   "id": "pc-accessories-36011-p10045-temporary-power-tap",
   "type": "Peripheral",
-  "name": "PC Accessories 36011/P10045 temporary power tap",
+  "name": "PC Accessories power tap",
   "cat": "Power protection",
   "maker": "PC Accessories",
   "model": "36011/P10045",
@@ -800,7 +821,7 @@ var ITEMS=[
  {
   "id": "relocatable-power-tap-pc-0061-surge-suppressor",
   "type": "Peripheral",
-  "name": "Relocatable power tap PC-0061",
+  "name": "Relocatable power tap",
   "cat": "Power protection",
   "maker": "Unbranded",
   "model": "PC-0061",
@@ -871,7 +892,7 @@ var ITEMS=[
  {
   "id": "apple-a1152-wired-usb-optical-mouse",
   "type": "Peripheral",
-  "name": "Apple Mighty Mouse (A1152)",
+  "name": "Apple Mighty Mouse",
   "cat": "Peripherals",
   "maker": "Apple",
   "model": "A1152",
@@ -950,7 +971,7 @@ var ITEMS=[
  {
   "id": "leisure-suit-larry-3-big-box-pc-3-5-inch-floppy",
   "type": "Game or software",
-  "name": "Leisure Suit Larry III: Passionate Patti in Pursuit of the Pulsating Pectorals",
+  "name": "Leisure Suit Larry III",
   "cat": "Games and software",
   "maker": "Sierra",
   "qty": 1,
@@ -988,7 +1009,7 @@ var ITEMS=[
  {
   "id": "roland-ma-12c-powered-micro-monitor-speakers-pair",
   "type": "Sound or MIDI",
-  "name": "Roland MA-12C micro monitor speakers",
+  "name": "Roland MA-12C speakers",
   "cat": "MIDI",
   "maker": "Roland",
   "model": "MA-12C",
@@ -1029,7 +1050,7 @@ var ITEMS=[
  {
   "id": "3dfx-voodoo-original-print-ad-lara-croft-1997",
   "type": "Game or software",
-  "name": "3Dfx Voodoo original print ad (Lara Croft, 1997)",
+  "name": "3Dfx Voodoo print ad",
   "cat": "Ephemera",
   "maker": "3dfx",
   "year": 1997,
@@ -1047,7 +1068,8 @@ var ITEMS=[
    "Type": "Print ad",
    "Date": "1997",
    "Original or reproduction": "Original",
-   "Chipset": "3dfx SST-1 (Voodoo Graphics), released 1996"
+   "Chipset": "3dfx SST-1 (Voodoo Graphics), released 1996",
+   "Ad": "Lara Croft, 1997"
   },
   "src": "ebay",
   "refs": [
@@ -1067,7 +1089,7 @@ var ITEMS=[
  {
   "id": "duke-nukem-3d-big-box-pc",
   "type": "Game or software",
-  "name": "Duke Nukem 3D Big Box (PC)",
+  "name": "Duke Nukem 3D",
   "cat": "Games and software",
   "maker": "3D Realms",
   "qty": 1,
@@ -1100,7 +1122,7 @@ var ITEMS=[
  {
   "id": "doom-ii-big-box-ibm-pc-3-5-inch-floppies",
   "type": "Game or software",
-  "name": "Doom II: Hell on Earth",
+  "name": "Doom II",
   "cat": "Games and software",
   "maker": "id Software",
   "qty": 1,
@@ -1146,7 +1168,7 @@ var ITEMS=[
  {
   "id": "doom-gold-medallion-shareware-3-5-inch-floppies",
   "type": "Game or software",
-  "name": "DOOM Gold Medallion shareware",
+  "name": "DOOM Gold Medallion",
   "cat": "Games and software",
   "maker": "id Software",
   "qty": 1,
@@ -1232,7 +1254,7 @@ var ITEMS=[
  {
   "id": "toshiba-libretto-l5-japanese",
   "type": "Computer",
-  "name": "Toshiba Libretto L5 (Japanese)",
+  "name": "Toshiba Libretto L5",
   "cat": "Laptops",
   "maker": "Toshiba",
   "model": "Libretto L5",
@@ -1252,7 +1274,8 @@ var ITEMS=[
    "RAM": "256 MB standard, 512 MB max",
    "Storage": "20 GB Ultra ATA hard drive",
    "Display": "10 inch wide TFT, 1280x600",
-   "Weight": "About 1.1 kg with standard battery"
+   "Weight": "About 1.1 kg with standard battery",
+   "Region": "Japanese"
   },
   "src": "ebay",
   "draft": true,
@@ -1270,46 +1293,6 @@ var ITEMS=[
   ],
   "verify": "Launch price not found. Release date from a single fan site table; Wikipedia only gives May 2001 for the L series start.",
   "conf": "med"
- },
- {
-  "id": "toshiba-libretto-110ct-purchased-unit",
-  "type": "Computer",
-  "name": "Toshiba Libretto 110CT (purchased unit)",
-  "cat": "Laptops",
-  "maker": "Toshiba",
-  "model": "Libretto 110CT",
-  "qty": 1,
-  "cond": "Order email only; the listing no longer exists.",
-  "tags": [
-   "Toshiba",
-   "Libretto"
-  ],
-  "text": "The Toshiba Libretto 110CT is a mini notebook with a 233 MHz Pentium MMX processor and a 7.1 inch color TFT display, weighing about 1 kg. Toshiba Europe announced it in a press release dated 3 November 1998.",
-  "specs": {
-   "Brand": "Toshiba",
-   "Model": "Libretto 110CT",
-   "CPU": "Intel Pentium MMX 233 MHz",
-   "RAM": "32 MB standard, 64 MB max",
-   "Storage": "4.3 GB hard drive",
-   "Display": "7.1 inch TFT color",
-   "Weight": "About 1 kg",
-   "Operating system": "Windows 95 or 98"
-  },
-  "src": "ebay",
-  "draft": true,
-  "year": 1998,
-  "refs": [
-   {
-    "t": "Toshiba press release: Libretto 110CT (PDF)",
-    "u": "https://criggie.org.nz/laptop/libretto110/Libretto110CT.pdf"
-   },
-   {
-    "t": "Toshiba Libretto 110CT - Computing History",
-    "u": "https://www.computinghistory.org.uk/det/39871/Toshiba-Libretto-110CT/"
-   }
-  ],
-  "verify": "Sources conflict: Computing History says 1996 (April 17), the European press release is dated Nov 1998 (likely European launch, not original Japan launch). US MSRP not found.",
-  "conf": "low"
  },
  {
   "id": "kodak-serial-cable-dc40-dc50-dc120-dc240-dc2800",
@@ -1350,7 +1333,7 @@ var ITEMS=[
  {
   "id": "kodak-dc40-digital-camera-0-4-mp",
   "type": "Peripheral",
-  "name": "Kodak DC40 digital camera (0.4 MP)",
+  "name": "Kodak DC40",
   "cat": "Cameras",
   "maker": "Kodak",
   "model": "DC40",
@@ -1393,7 +1376,7 @@ var ITEMS=[
  {
   "id": "sony-cyber-shot-2-1-mp-with-128-mb-memory-stick",
   "type": "Peripheral",
-  "name": "Sony Cyber-shot 2.1 MP with 128 MB Memory Stick",
+  "name": "Sony Cyber-shot",
   "cat": "Cameras",
   "maker": "Sony",
   "qty": 1,
@@ -1418,30 +1401,33 @@ var ITEMS=[
  {
   "id": "sony-mavica-mvc-fd200-for-parts",
   "type": "Peripheral",
-  "name": "Sony Mavica MVC-FD200 (parts unit)",
+  "name": "Sony Mavica MVC-FD200",
   "cat": "Cameras",
   "maker": "Sony",
   "model": "MVC-FD200",
-  "qty": 1,
+  "qty": 2,
   "works": "Not working",
   "cond": "Per order email title: for parts.",
   "tags": [
    "Sony",
    "Mavica",
-   "Parts"
+   "Parts",
+   "Floppy"
   ],
   "text": "The Sony Mavica MVC-FD200 was announced at CES on 7 January 2002 for about $500, with sales starting in February 2002. It records to either a 3.5-inch floppy disk or a Memory Stick and has a 3x zoom lens.",
   "specs": {
-   "Brand": "Sony",
    "Model": "MVC-FD200",
+   "Resolution (per title)": "2.0 MP",
    "Resolution": "2.0 MP effective (1600x1200 max)",
+   "Storage": "3.5 in floppy disk or Memory Stick",
+   "Zoom": "3x optical",
+   "Brand": "Sony",
    "Lens": "3x optical zoom, f/3.8-3.9",
    "Media": "3.5-inch floppy disk and Memory Stick",
    "Connectivity": "USB, video out",
    "Display": "2.5 inch LCD",
    "Battery": "InfoLithium NP-F330"
   },
-  "src": "ebay",
   "draft": true,
   "msrp": "500",
   "year": 2002,
@@ -1454,15 +1440,30 @@ var ITEMS=[
    {
     "t": "Sony Mavica FD-200 Specs (DPReview)",
     "u": "https://www.dpreview.com/products/sony/compacts/sony_fd200/specifications"
+   },
+   {
+    "t": "Sony Mavica (Wikipedia)",
+    "u": "https://en.wikipedia.org/wiki/Sony_Mavica"
    }
   ],
   "verify": "Exact US MSRP given only as approximately $500.",
-  "conf": "high"
+  "conf": "high",
+  "units": [
+   {
+    "src": "ebay",
+    "cond": "Per order email title: for parts.",
+    "works": "Not working"
+   },
+   {
+    "src": "shopgoodwill",
+    "cond": "Per order email title: 2.0 MP, floppy and Memory Stick dual media."
+   }
+  ]
  },
  {
   "id": "sony-mavica-mvc-fd81-with-battery-and-case",
   "type": "Peripheral",
-  "name": "Sony Mavica MVC-FD81 with battery and case",
+  "name": "Sony Mavica MVC-FD81",
   "cat": "Cameras",
   "maker": "Sony",
   "model": "MVC-FD81",
@@ -1506,7 +1507,7 @@ var ITEMS=[
  {
   "id": "sony-mavica-mvc-fd7-floppy-disk-camera",
   "type": "Peripheral",
-  "name": "Sony Mavica MVC-FD7 floppy disk camera",
+  "name": "Sony Mavica MVC-FD7",
   "cat": "Cameras",
   "maker": "Sony",
   "model": "MVC-FD7",
@@ -1577,7 +1578,7 @@ var ITEMS=[
  {
   "id": "floppy-disk-lot-with-locking-storage-file-50-disks",
   "type": "Storage",
-  "name": "Floppy disk lot (50 disks)",
+  "name": "Floppy disk lot",
   "cat": "Storage",
   "maker": "Unbranded",
   "qty": 1,
@@ -1601,7 +1602,7 @@ var ITEMS=[
  {
   "id": "roland-p-55-sc-55-replacement-dc-charger-adapter",
   "type": "Peripheral",
-  "name": "Roland P-55 / SC-55 replacement DC charger adapter",
+  "name": "Roland SC-55 power adapter",
   "cat": "Cables and adapters",
   "maker": "Unknown",
   "qty": 1,
@@ -1675,7 +1676,7 @@ var ITEMS=[
  {
   "id": "official-duke-nukem-3d-level-design-handbook",
   "type": "Game or software",
-  "name": "Official Duke Nukem 3D Level Design Handbook",
+  "name": "Duke Nukem 3D Level Design Handbook",
   "cat": "Books and magazines",
   "maker": "Sybex",
   "qty": 1,
@@ -1713,7 +1714,7 @@ var ITEMS=[
  {
   "id": "midi-15-pin-joystick-game-port-to-5-pin-din-breakout-adapter",
   "type": "Peripheral",
-  "name": "MIDI 15-pin joystick game port to 5-pin DIN breakout adapter cable",
+  "name": "MIDI game port adapter",
   "cat": "Cables and adapters",
   "maker": "Unknown",
   "qty": 1,
@@ -1747,7 +1748,7 @@ var ITEMS=[
  {
   "id": "yamaha-tg100-tone-generator",
   "type": "Sound or MIDI",
-  "name": "Yamaha TG100 tone generator",
+  "name": "Yamaha TG100",
   "cat": "MIDI",
   "maker": "Yamaha",
   "model": "TG100",
@@ -1787,7 +1788,7 @@ var ITEMS=[
  {
   "id": "commodore-64-serial-cable-6-pin-din-for-1541-1571-c128",
   "type": "Peripheral",
-  "name": "Commodore serial cable (6-pin DIN)",
+  "name": "Commodore serial cable",
   "cat": "Cables and adapters",
   "maker": "Commodore",
   "qty": 1,
@@ -1824,7 +1825,7 @@ var ITEMS=[
  {
   "id": "diablo-pc-1996",
   "type": "Game or software",
-  "name": "Diablo (PC, 1996)",
+  "name": "Diablo",
   "cat": "Games and software",
   "maker": "Blizzard Entertainment",
   "year": 1996,
@@ -1859,7 +1860,7 @@ var ITEMS=[
  {
   "id": "altec-lansing-acs45-multimedia-speaker-system-with-subwoofer",
   "type": "Sound or MIDI",
-  "name": "Altec Lansing ACS45 multimedia speaker system with subwoofer",
+  "name": "Altec Lansing ACS45",
   "cat": "Audio",
   "maker": "Altec Lansing",
   "model": "ACS45",
@@ -1895,7 +1896,7 @@ var ITEMS=[
  {
   "id": "pcmcia-to-usb-2-0-cardbus-dual-port-adapter",
   "type": "Peripheral",
-  "name": "PCMCIA to USB 2.0 CardBus dual-port adapter",
+  "name": "PCMCIA to USB 2.0 adapter",
   "cat": "Cables and adapters",
   "maker": "SODIAL",
   "model": "PC5782",
@@ -1962,7 +1963,7 @@ var ITEMS=[
  {
   "id": "dim-bulb-tester-with-volt-and-amp-meter-v2",
   "type": "Peripheral",
-  "name": "Dim bulb tester (V2)",
+  "name": "Dim bulb tester",
   "cat": "Parts and tools",
   "maker": "Unbranded",
   "qty": 1,
@@ -1991,7 +1992,7 @@ var ITEMS=[
  {
   "id": "the-colonel-s-bequest-a-laura-bow-mystery-big-box-incomplete",
   "type": "Game or software",
-  "name": "The Colonel's Bequest (Big Box)",
+  "name": "The Colonel's Bequest",
   "cat": "Games and software",
   "maker": "Sierra",
   "year": 1989,
@@ -2033,7 +2034,7 @@ var ITEMS=[
  {
   "id": "pc-gamer-november-1997-with-cd-rom",
   "type": "Game or software",
-  "name": "PC Gamer, November 1997",
+  "name": "PC Gamer magazine",
   "cat": "Books and magazines",
   "maker": "Imagine Publishing",
   "year": 1997,
@@ -2067,7 +2068,7 @@ var ITEMS=[
  {
   "id": "aol-america-online-version-2-0-3-5-inch-floppy-sealed",
   "type": "Game or software",
-  "name": "America Online 2.0 (3.5-inch floppy)",
+  "name": "America Online 2.0",
   "cat": "Games and software",
   "maker": "AOL",
   "model": "Version 2.0",
@@ -2099,7 +2100,7 @@ var ITEMS=[
  {
   "id": "replacement-rtc-bios-cmos-battery-for-toshiba-libretto",
   "type": "Peripheral",
-  "name": "Libretto CMOS battery (replacement)",
+  "name": "Toshiba Libretto CMOS battery",
   "cat": "Parts and tools",
   "maker": "RomeTech",
   "qty": 3,
@@ -2133,7 +2134,7 @@ var ITEMS=[
  {
   "id": "toshiba-satellite-4015cds-laptop",
   "type": "Laptop",
-  "name": "Toshiba Satellite 4015CDS laptop",
+  "name": "Toshiba Satellite 4015CDS",
   "cat": "Laptops",
   "maker": "Toshiba",
   "model": "Satellite 4015CDS",
@@ -2288,7 +2289,7 @@ var ITEMS=[
  {
   "id": "iomega-zip-100-external-drive-parallel-port-boxed",
   "type": "Storage",
-  "name": "Iomega Zip 100 (parallel port)",
+  "name": "Iomega Zip 100",
   "cat": "Storage",
   "maker": "Iomega",
   "model": "Zip 100",
@@ -2367,49 +2368,9 @@ var ITEMS=[
   "draft": true
  },
  {
-  "id": "sony-mavica-mvc-fd200-shopgoodwill",
-  "type": "Camera",
-  "name": "Sony Mavica MVC-FD200",
-  "cat": "Cameras",
-  "maker": "Sony",
-  "model": "MVC-FD200",
-  "qty": 1,
-  "cond": "Per order email title: 2.0 MP, floppy and Memory Stick dual media.",
-  "tags": [
-   "Sony",
-   "Mavica",
-   "Floppy"
-  ],
-  "text": "The Sony Mavica MVC-FD200 is a 2.0 megapixel digital camera that can save to 3.5 inch floppy disks or Memory Stick media. It is closely related to the 1.2 MP FD100 and adds MPEG movie recording and USB.",
-  "specs": {
-   "Model": "MVC-FD200",
-   "Resolution (per title)": "2.0 MP",
-   "Resolution": "2.0 MP effective",
-   "Storage": "3.5 in floppy disk or Memory Stick",
-   "Zoom": "3x optical"
-  },
-  "src": "shopgoodwill",
-  "msrp": "500",
-  "year": 2002,
-  "rel": "2002-02",
-  "refs": [
-   {
-    "t": "Two new Sony Mavicas (DPReview)",
-    "u": "https://www.dpreview.com/articles/2685459113/sonyfd100fd200/"
-   },
-   {
-    "t": "Sony Mavica (Wikipedia)",
-    "u": "https://en.wikipedia.org/wiki/Sony_Mavica"
-   }
-  ],
-  "verify": "Price $500 and Feb 2002 date from the DPReview announcement summary only.",
-  "conf": "med",
-  "draft": true
- },
- {
   "id": "tdk-mf-2hd-floppies-and-maxell-8mm-tape-lot",
   "type": "Game or software",
-  "name": "TDK MF-2HD floppies and Maxell 8mm tape lot",
+  "name": "Floppy and 8mm tape lot",
   "cat": "Storage",
   "maker": "TDK",
   "model": "MF-2HD",
@@ -2423,7 +2384,8 @@ var ITEMS=[
   "src": "shopgoodwill",
   "draft": true,
   "specs": {
-   "Format": "3.5 in high density, 1.44 MB, IBM PC formatted"
+   "Format": "3.5 in high density, 1.44 MB, IBM PC formatted",
+   "Contents": "TDK MF-2HD floppies and Maxell 8mm tape"
   },
   "refs": [
    {
@@ -2437,7 +2399,7 @@ var ITEMS=[
  {
   "id": "game-boy-advance-game-lot-nemo-medal-of-honor-tiger-namco-su",
   "type": "Game or software",
-  "name": "Game Boy Advance game lot (Nemo, Medal of Honor, Tiger, Namco, Sum of All Fears)",
+  "name": "Game Boy Advance game lot",
   "cat": "Games and software",
   "maker": "Unknown",
   "qty": 1,
@@ -2449,15 +2411,18 @@ var ITEMS=[
   "src": "shopgoodwill",
   "draft": true,
   "verify": "Multi-title lot with unspecified titles and makers; no single product to confirm. Maker 'Unknown' is a placeholder, titles would need to be split into separate entries.",
-  "conf": "low"
+  "conf": "low",
+  "specs": {
+   "Contents": "Nemo, Medal of Honor, Tiger, Namco, Sum of All Fears"
+  }
  },
  {
   "id": "nintendo-game-boy-pocket-2022-order",
   "type": "Game console",
-  "name": "Nintendo Game Boy Pocket (2022 order)",
+  "name": "Nintendo Game Boy Pocket",
   "cat": "Game consoles",
   "maker": "Nintendo",
-  "qty": 1,
+  "qty": 2,
   "cond": "Per order email title: winning-bid email title only: Nintendo Game Boy Pocket (2022 order).",
   "tags": [
    "Retro gaming"
@@ -2470,6 +2435,8 @@ var ITEMS=[
   "year": 1996,
   "rel": "1996-09-02",
   "specs": {
+   "display": "FSTN LCD, true black and white",
+   "power": "2 AAA batteries, about 10 hours",
    "Power": "2 x AAA batteries",
    "Battery life": "Up to 10 hours",
    "Display": "FSTN LCD",
@@ -2480,18 +2447,32 @@ var ITEMS=[
    {
     "t": "Game Boy (Wikipedia)",
     "u": "https://en.wikipedia.org/wiki/Game_Boy"
+   },
+   {
+    "t": "Game Boy Pocket - Wikipedia",
+    "u": "https://en.wikipedia.org/wiki/Game_Boy_Pocket"
    }
   ],
   "verify": "Model number MGB-001 not verified in fetched page.",
-  "conf": "high"
+  "conf": "high",
+  "units": [
+   {
+    "src": "shopgoodwill",
+    "cond": "Per order email title: winning-bid email title only: Nintendo Game Boy Pocket (2022 order)."
+   },
+   {
+    "src": "shopgoodwill",
+    "cond": "Per order email title: winning-bid email title only: Red Nintendo Game Boy Pocket MGB-001."
+   }
+  ]
  },
  {
   "id": "nintendo-wii-console-rvl-001-with-remote-and-nunchuk",
   "type": "Game console",
-  "name": "Nintendo Wii console RVL-001 with remote and nunchuk",
+  "name": "Nintendo Wii",
   "cat": "Game consoles",
   "maker": "Nintendo",
-  "qty": 1,
+  "qty": 2,
   "cond": "Per order email title: winning-bid email title only: Nintendo Wii console RVL-001 with remote and nunchuk.",
   "tags": [
    "Retro gaming"
@@ -2517,45 +2498,22 @@ var ITEMS=[
    }
   ],
   "verify": "RVL-001 as the original-model code was in the fetched summary; the bundle included remote and nunchuk is per listing.",
-  "conf": "high"
- },
- {
-  "id": "white-nintendo-wii-console-with-cables-and-sensor-bar",
-  "type": "Game console",
-  "name": "White Nintendo Wii console with cables and sensor bar",
-  "cat": "Game consoles",
-  "maker": "Nintendo",
-  "qty": 1,
-  "cond": "Per order email title: winning-bid email title only: White Nintendo Wii console with cables and sensor bar.",
-  "tags": [
-   "Retro gaming"
-  ],
-  "text": "The Wii is a Nintendo home console launched in North America on November 19, 2006 at US$249.99. It uses motion-sensing controllers read through a sensor bar.",
-  "src": "shopgoodwill",
-  "draft": true,
-  "model": "Wii",
-  "msrp": "249.99",
-  "year": 2006,
-  "rel": "2006-11-19",
-  "specs": {
-   "CPU": "IBM Broadway 729 MHz",
-   "GPU": "ATI Hollywood 243 MHz",
-   "RAM": "88 MB (24 MB 1T-SRAM + 64 MB GDDR3)",
-   "Storage": "512 MB flash, SD card slot"
-  },
-  "refs": [
+  "conf": "high",
+  "units": [
    {
-    "t": "Wii (Wikipedia)",
-    "u": "https://en.wikipedia.org/wiki/Wii"
+    "src": "shopgoodwill",
+    "cond": "Per order email title: winning-bid email title only: Nintendo Wii console RVL-001 with remote and nunchuk."
+   },
+   {
+    "src": "shopgoodwill",
+    "cond": "Per order email title: winning-bid email title only: White Nintendo Wii console with cables and sensor bar."
    }
-  ],
-  "verify": "Exact model code not confirmed from listing; sensor bar detail is common knowledge not in the fetched text.",
-  "conf": "med"
+  ]
  },
  {
   "id": "nes-mike-tyson-s-punch-out-game-only",
   "type": "Game console",
-  "name": "NES Mike Tyson's Punch-Out (game only)",
+  "name": "NES Mike Tyson's Punch-Out",
   "cat": "Game consoles",
   "maker": "Nintendo",
   "qty": 1,
@@ -2585,10 +2543,10 @@ var ITEMS=[
  {
   "id": "two-sony-playstation-3-controllers",
   "type": "Game console",
-  "name": "Two Sony PlayStation 3 controllers",
+  "name": "Sony PlayStation 3 controller",
   "cat": "Game consoles",
   "maker": "Sony",
-  "qty": 1,
+  "qty": 2,
   "cond": "Per order email title: winning-bid email title only: Two Sony PlayStation 3 controllers.",
   "tags": [
    "Retro gaming"
@@ -2610,43 +2568,9 @@ var ITEMS=[
   "conf": "low"
  },
  {
-  "id": "game-boy-color-parts-and-repair-with-game",
-  "type": "Game console",
-  "name": "Game Boy Color (parts and repair) with game",
-  "cat": "Game consoles",
-  "maker": "Nintendo",
-  "qty": 1,
-  "cond": "Per order email title: winning-bid email title only: Game Boy Color (parts and repair) with game.",
-  "tags": [
-   "Retro gaming"
-  ],
-  "text": "The Game Boy Color is a handheld console from Nintendo released in 1998 as the color successor to the Game Boy, with backward compatibility for original Game Boy games. It uses a Sharp SM83 CPU with a 2.3-inch reflective color LCD.",
-  "src": "shopgoodwill",
-  "draft": true,
-  "model": "CGB-001",
-  "msrp": "$79.95",
-  "year": 1998,
-  "rel": "1998-11-18",
-  "specs": {
-   "cpu": "Sharp SM83 at 4.2/8.4 MHz",
-   "ram": "32 KB",
-   "display": "2.3-inch reflective TFT LCD, 160x144",
-   "colors": "Up to 56 on screen from a palette of 32,768",
-   "power": "2 AA batteries"
-  },
-  "refs": [
-   {
-    "t": "Game Boy Color - Wikipedia",
-    "u": "https://en.wikipedia.org/wiki/Game_Boy_Color"
-   }
-  ],
-  "verify": "Included game title and condition not identified. rel is North American date (Japan 1998-10-21).",
-  "conf": "high"
- },
- {
   "id": "super-nintendo-final-fantasy-iii-cartridge",
   "type": "Game console",
-  "name": "Final Fantasy III (Final Fantasy VI), Super NES cartridge",
+  "name": "Final Fantasy III",
   "cat": "Game consoles",
   "maker": "Square",
   "qty": 1,
@@ -2674,10 +2598,10 @@ var ITEMS=[
  {
   "id": "nintendo-game-boy-color-purple",
   "type": "Game console",
-  "name": "Nintendo Game Boy Color, purple",
+  "name": "Nintendo Game Boy Color",
   "cat": "Game consoles",
   "maker": "Nintendo",
-  "qty": 1,
+  "qty": 2,
   "cond": "Per order email title: winning-bid email title only: Nintendo Game Boy Color, purple.",
   "tags": [
    "Retro gaming"
@@ -2703,43 +2627,22 @@ var ITEMS=[
    }
   ],
   "verify": "Purple could be Grape or translucent Atomic Purple; both existed at launch, listing does not say which.",
-  "conf": "med"
- },
- {
-  "id": "red-nintendo-game-boy-pocket-mgb-001",
-  "type": "Game console",
-  "name": "Red Nintendo Game Boy Pocket MGB-001",
-  "cat": "Game consoles",
-  "maker": "Nintendo",
-  "qty": 1,
-  "cond": "Per order email title: winning-bid email title only: Red Nintendo Game Boy Pocket MGB-001.",
-  "tags": [
-   "Retro gaming"
-  ],
-  "text": "The Game Boy Pocket is a smaller redesign of the original Game Boy from Nintendo, launched in Japan on 1996-07-20 and in North America on 1996-09-02. It runs on two AAA batteries and has a film-compensated super-twisted nematic LCD with a black and white image instead of the original green tint.",
-  "src": "shopgoodwill",
-  "draft": true,
-  "model": "MGB-001",
-  "msrp": "$69.99",
-  "year": 1996,
-  "rel": "1996-09-02",
-  "specs": {
-   "display": "FSTN LCD, true black and white",
-   "power": "2 AAA batteries, about 10 hours"
-  },
-  "refs": [
+  "conf": "med",
+  "units": [
    {
-    "t": "Game Boy Pocket - Wikipedia",
-    "u": "https://en.wikipedia.org/wiki/Game_Boy_Pocket"
+    "src": "shopgoodwill",
+    "cond": "Per order email title: winning-bid email title only: Nintendo Game Boy Color, purple."
+   },
+   {
+    "src": "shopgoodwill",
+    "cond": "Per order email title: winning-bid email title only: Game Boy Color (parts and repair) with game."
    }
-  ],
-  "verify": "Red was a later color revision; its exact release date not confirmed. rel is the North American launch of the model.",
-  "conf": "high"
+  ]
  },
  {
   "id": "playstation-game-lot-spyro-crash-bandicoot-ctr",
   "type": "Game console",
-  "name": "PlayStation game lot (Spyro, Crash Bandicoot, CTR)",
+  "name": "PlayStation game lot",
   "cat": "Game consoles",
   "maker": "Sony Computer Entertainment",
   "qty": 1,
@@ -2754,7 +2657,8 @@ var ITEMS=[
    "platform": "PlayStation",
    "spyro": "Spyro the Dragon, Insomniac Games, NA 1998-09-09",
    "crash": "Crash Bandicoot, Naughty Dog, NA 1996-09-09",
-   "ctr": "Crash Team Racing, Naughty Dog, NA 1999-10-19"
+   "ctr": "Crash Team Racing, Naughty Dog, NA 1999-10-19",
+   "Contents": "Spyro, Crash Bandicoot, CTR"
   },
   "refs": [
    {
@@ -2776,7 +2680,7 @@ var ITEMS=[
  {
   "id": "lot-of-30-assorted-playstation-3-games",
   "type": "Game console",
-  "name": "Lot of 30 assorted PlayStation 3 games",
+  "name": "PlayStation 3 game lot",
   "cat": "Game consoles",
   "maker": "Sony",
   "qty": 1,
@@ -2788,7 +2692,8 @@ var ITEMS=[
   "src": "shopgoodwill",
   "draft": true,
   "specs": {
-   "platform": "PlayStation 3"
+   "platform": "PlayStation 3",
+   "Contents": "30 assorted games"
   },
   "refs": [
    {
@@ -2835,7 +2740,7 @@ var ITEMS=[
  {
   "id": "bulk-lot-of-nintendo-handheld-console-cases",
   "type": "Game console",
-  "name": "Bulk lot of Nintendo handheld console cases",
+  "name": "Nintendo handheld case lot",
   "cat": "Game consoles",
   "maker": "Nintendo",
   "qty": 1,
