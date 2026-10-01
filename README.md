@@ -167,3 +167,6 @@ Every timeline entry, ad and catalog item without a photo gets a picture drawn i
 - Pro cleanup: compact stats, tags collapsed under "Browse by tag", a scrolling category strip, grouped by category by default, clamped card titles, shorter search box.
 - Editing a catalog item never writes to the timeline. A linked item only inherits blank fields from its entry.
 - Timeline entries are edited in a separate admin tool (Timeline editor), saved to `timeline-edits.js`.
+
+### Round 7d: Photo Safari candidates
+Photo Safari (items and timeline) now searches Wikipedia article images and Commons files (several query variants incl. maker), scores them against the name/model tokens, drops logos/diagrams/screenshots/tiny images, and offers up to 8 ranked thumbnails to choose from. Needs `commons.wikimedia.org` in the CSP connect-src.
