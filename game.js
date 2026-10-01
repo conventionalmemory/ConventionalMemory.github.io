@@ -81,7 +81,7 @@ function qItem(it){var t=R(),o=[],y=it.year;
 /* ---- extra question kinds: drawn from the timeline, its detail data, and the museum's own items ---- */
 function tx(r){return(D.x&&D.x[r[2]])||null}
 function cleanPrice(p){return/^\$[\d,.]+( \([^)]*\))?$/.test(p||"")?p:""}
-function qMaker(list){var c=list.filter(function(r){var x=tx(r);return x&&x.maker&&(r[1]==="hw"||r[1]==="sw"||group(r[1])==="g")});if(c.length<6)return null;var r=pick(c),x=tx(r),ms=[];
+function qMaker(list){var c=list.filter(function(r){var x=tx(r);return x&&x.maker&&(r[1]==="hw"||r[1]==="pe"||r[1]==="sw"||group(r[1])==="g")});if(c.length<6)return null;var r=pick(c),x=tx(r),ms=[];
  shuf(c).forEach(function(z){var m=tx(z).maker;if(group(z[1])===group(r[1])&&m!==x.maker&&ms.indexOf(m)<0&&ms.length<3)ms.push(m)});if(ms.length<3)return null;
  return mk((group(r[1])==="g"?'Which company published the game "':'Which company made the "')+nameOf(r)+'"?',x.maker,ms,"maker")}
 function qDev(list){var c=list.filter(function(r){var x=tx(r);return x&&x.dev&&group(r[1])==="g"});if(c.length<6)return null;var r=pick(c),x=tx(r),ms=[];
@@ -97,7 +97,7 @@ function qSeries(list){var c=[];list.forEach(function(r){var x=tx(r);if(x&&x.lin
  var p=pick(c),g=group(p[1][1]),w=[];shuf(D.tl.filter(function(z){return group(z[1])===g&&z[2]!==p[1][2]&&z[2]!==p[0][2]&&Math.abs(yr(z[0])-yr(p[1][0]))<=6})).forEach(function(z){if(w.length<3&&w.indexOf(nameOf(z))<0)w.push(nameOf(z))});if(w.length<3)return null;
  return mk('Which of these followed "'+nameOf(p[0])+'"?',nameOf(p[1]),w,"series")}
 function pnum(p){var m=String(p).replace(/,/g,"").match(/[\d.]+/);return m?+m[0]||1:1}
-function qPriceX(list){var c=list.filter(function(r){return cleanPrice(r[3])&&(r[1]==="hw"||r[1]==="sw"||group(r[1])==="g")});if(c.length<8)return null;var r=pick(c),w=[];
+function qPriceX(list){var c=list.filter(function(r){return cleanPrice(r[3])&&(r[1]==="hw"||r[1]==="pe"||r[1]==="sw"||group(r[1])==="g")});if(c.length<8)return null;var r=pick(c),w=[];
  shuf(c.filter(function(z){var a=pnum(z[3]),b=pnum(r[3]);return group(z[1])===group(r[1])&&a>b/5&&a<b*5})).forEach(function(z){if(z[3]!==r[3]&&w.indexOf(z[3])<0&&w.length<3)w.push(z[3])});if(w.length<3)return null;
  return mk('What was the launch price of "'+nameOf(r)+'"?',r[3],w,"price")}
 function qDetail(list){var c=list.filter(function(r){var x=tx(r);return x&&x.detail&&x.detail.length>50&&x.detail.length<170&&x.conf!=="low"});if(!c.length)return null;var r=pick(c),x=tx(r),w=[];
@@ -169,7 +169,7 @@ function newGame(who,sd){
  var dp=depths();S.mx=dp.mx;
  var names=shuf(NAMES),pool=[],real=D.items.slice();
  shuf(real).forEach(function(it){pool.push({kind:"item",it:it,title:it.name,year:it.year,note:it.thoughts&&!it.sample?it.thoughts:(it.text||"")})});
- var hw=shuf(D.tl.filter(function(r){return r[5]&&(r[1]==="hw"||r[1]==="sw")}));
+ var hw=shuf(D.tl.filter(function(r){return r[5]&&(r[1]==="hw"||r[1]==="pe"||r[1]==="sw")}));
  S.rooms.forEach(function(rm){
   rm.depth=dp.d[rm.i];rm.era=Math.round(1981+rm.depth/S.mx*29);rm.wall=pick([["b","k"],["g","k"],["r","k"],["m","k"],["d","k"]]);rm.floor=pick([["n","k"],["n","r"],["d","n"]]);rm.decor=[];
   rm.name=rm.i===S.start?"Front Hall":rm.i===S.goal?"The Vault":names.pop();

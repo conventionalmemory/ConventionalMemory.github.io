@@ -72,7 +72,7 @@ function themeScene(idx,R,sk){var o="",i,x;
   o+=srect(0,120,180,30,"#3a2a1a")+'<polygon points="60,120 66,96 88,96 94,120" fill="#333" stroke="#000" stroke-width="2"/><rect x="66" y="80" width="22" height="18" fill="#556b2f" stroke="#000" stroke-width="2"/><rect x="88" y="86" width="34" height="5" fill="#222" stroke="#000"/><circle cx="130" cy="88" r="3" fill="#ffff55"/><circle cx="138" cy="88" r="2" fill="#ffaa00"/>'}
  return o}
 function adArtX(r,w,h,uid){var kind=r[1];
- if(kind==="hw"||kind==="sw"&&/os|windows|dos/i.test(r[2])){if(kind==="hw"){var k=hwKindOfTitle(r[2]);return prodSvg({name:r[2],cat:k==="laptop"?"laptop":k,type:"",model:""},w,h,uid)}return null}
+ if(kind==="hw"||kind==="pe"||kind==="sw"&&/os|windows|dos/i.test(r[2])){if(kind==="hw"||kind==="pe"){var k=hwKindOfTitle(r[2]);return prodSvg({name:r[2],cat:k==="laptop"?"laptop":k,type:"",model:""},w,h,uid)}return null}
  if(kind!=="gt"&&kind!=="gn"&&kind!=="sw")return null;var idx=themeOf(r[2]);if(idx<0||idx===0)return null;
  var R=rng(hstr(r[2])),sk=AD_SKY[Math.floor(R()*AD_SKY.length)],g="ag"+uid,o='<svg viewBox="0 0 180 150" width="'+w+'" height="'+h+'" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Generated artwork for '+esc(r[2])+'" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="'+g+'" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+(idx===3?"#000":sk[0])+'"/><stop offset="1" stop-color="'+sk[1]+'"/></linearGradient></defs><rect width="180" height="150" fill="url(#'+g+')"/>',i;
  for(i=0;i<16;i++)o+=srect(Math.floor(R()*178),Math.floor(R()*60),1,1,"#fff");

@@ -9,7 +9,7 @@ A retro DOS-style museum catalog, timeline and trivia game. It is a plain static
 | `index.html` | The page shell, styles and security policy |
 | `app.js` | The site code. Socials, wanted list and settings are at the top |
 | `items.js` | The museum items. Rewritten by the Admin page |
-| `timeline-data.js` | The timeline (about 1,380 dated entries, 1974 to 2010) |
+| `timeline-data.js` | The timeline (about 1,650 dated entries, 1974 to 2010) |
 | `games-data.js` | Per-system release dates, genre and PC requirements for about 530 games |
 | `games.js` | Games views: system chips, release-by-system table, requirements, the Games by system tab, the Rig checker |
 | `timeline-extra.js` | Extra detail per timeline entry: maker, specs, description, connections. Used by the timeline, the game and the admin autofill |
@@ -57,3 +57,7 @@ Timeline links: open an entry and press **Copy link** to get an address like `#/
 Open any game on the timeline to see which systems it came out on, the release date for each system and region, how long each port took, and the minimum and recommended PC requirements where they are on file. The **Games by system** tab has a year-by-system heat map, filters (system, kind of system, genre, decade, has requirements, 3+ systems), sort options, and lists such as most ported and longest wait for a port. The **Rig checker** picks an era PC or a museum machine and lists the games it can run. Item pages for computers and consoles list games from their era on that platform.
 
 `games-data.js` format: `GX[title] = {r:[[system, date, region]], g:genre, n:minimum, m:recommended, s:source, c:confidence}`. Requirements marked as general knowledge are not checked against a source; the display says so. About 20% of games have requirements on file.
+
+## Peripherals
+
+The timeline has a Peripherals kind (about 340 entries): mice, keyboards, controllers, sound and graphics cards, drives, modems, printers, console accessories. Each has a category, how it connects (`Connection`), and the systems it worked with (`plat` in `timeline-extra.js`). The **Peripherals** tab filters by category, system and decade. Item pages list games and peripherals from the item's launch window (six months before to two years after) for the system it runs, and for computers with CPU speed and RAM in their specs they show which of those games the machine can run. Game cards list peripherals linked to them. Dates and prices without a source show an asterisk.

@@ -134,7 +134,7 @@ var MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"
 function fmtDate(d){var p=String(d).split("-");return p.length===3?MON[+p[1]-1]+" "+(+p[2])+", "+p[0]:p.length===2?MON[+p[1]-1]+" "+p[0]:p[0]}
 function dyear(d){return +String(d).slice(0,4)}
 function today(){var d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
-var TLK={i:["Museum items","Item"],hw:["Hardware","Hardware"],sw:["Software","Software"],gt:["Top games","Top game"],gn:["Notable games","Notable game"],gc:["Comical and obscure games","Obscure game"],e:["Industry events","Industry"],m:["Movies","Movie"],w:["World events","World"],u:["US events","US"],p:["High-end PCs","PC"]};
+var TLK={i:["Museum items","Item"],hw:["Hardware","Hardware"],pe:["Peripherals","Peripheral"],sw:["Software","Software"],gt:["Top games","Top game"],gn:["Notable games","Notable game"],gc:["Comical and obscure games","Obscure game"],e:["Industry events","Industry"],m:["Movies","Movie"],w:["World events","World"],u:["US events","US"],p:["High-end PCs","PC"]};
 var TLF={},TLQ="";Object.keys(TLK).forEach(function(k){TLF[k]=1});
 function tlEntries(){var e=[];
  if(TLF.i)ITEMS.forEach(function(i){e.push({d:i.rel||String(i.year),k:"i",i:i})});
@@ -159,7 +159,7 @@ function pcFor(y){var r=null;PCS.forEach(function(p){if(p.y<=y)r=p});return r}
 function hstr(s){var h=2166136261;for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}
 function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;var t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 var AD_SKY=[["#0000aa","#aa00aa","#ffff55"],["#000000","#0000aa","#55ffff"],["#aa0000","#ff5555","#ffff55"],["#00aaaa","#0000aa","#ffffff"],["#aa00aa","#ff55ff","#55ffff"],["#00aa00","#005555","#ffff55"],["#aa5500","#aa0000","#ffff55"]];
-function adArt(r,w,h,uid){var ax=adArtX(r,w,h,uid);if(ax)return ax;var R=rng(hstr(r[2])),sk=AD_SKY[Math.floor(R()*AD_SKY.length)],soft=r[1]!=="hw",g="ag"+uid,o='<svg viewBox="0 0 180 150" width="'+w+'" height="'+h+'" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Generated artwork for '+esc(r[2])+'" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="'+g+'" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+sk[0]+'"/><stop offset="1" stop-color="'+sk[1]+'"/></linearGradient></defs><rect width="180" height="150" fill="url(#'+g+')"/>',i;
+function adArt(r,w,h,uid){var ax=adArtX(r,w,h,uid);if(ax)return ax;var R=rng(hstr(r[2])),sk=AD_SKY[Math.floor(R()*AD_SKY.length)],soft=r[1]!=="hw"&&r[1]!=="pe",g="ag"+uid,o='<svg viewBox="0 0 180 150" width="'+w+'" height="'+h+'" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Generated artwork for '+esc(r[2])+'" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="'+g+'" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+sk[0]+'"/><stop offset="1" stop-color="'+sk[1]+'"/></linearGradient></defs><rect width="180" height="150" fill="url(#'+g+')"/>',i;
  if(soft){var style=Math.floor(R()*2),x;
   for(i=0;i<22;i++)o+='<rect x="'+Math.floor(R()*178)+'" y="'+Math.floor(R()*80)+'" width="'+(R()<.2?2:1)+'" height="'+(R()<.2?2:1)+'" fill="#fff"/>';
   if(style===0){x=40+Math.floor(R()*100);o+='<circle cx="'+x+'" cy="78" r="30" fill="'+sk[2]+'"/>';for(i=0;i<6;i++)o+='<rect x="'+(x-32)+'" y="'+(80+i*5)+'" width="64" height="'+(1+i*.5)+'" fill="'+sk[1]+'"/>';
@@ -173,15 +173,15 @@ function adArt(r,w,h,uid){var ax=adArtX(r,w,h,uid);if(ax)return ax;var R=rng(hst
   o+='<rect x="76" y="94" width="28" height="8" fill="#aaa" stroke="#000"/><rect x="52" y="102" width="76" height="12" rx="2" fill="#aaa" stroke="#000" stroke-width="2"/>';for(i=0;i<9;i++)o+='<rect x="'+(56+i*8)+'" y="105" width="6" height="3" fill="#555"/>';
   o+='<rect y="126" width="180" height="24" fill="#000" opacity=".6"/>'}
  return o+'</svg>'}
-function adStore(r){return r[1]==="hw"?"Bit Barn Computers":"Bargain Bytes Software"}
+function adStore(r){return r[1]==="hw"||r[1]==="pe"?"Bit Barn Computers":"Bargain Bytes Software"}
 var AD_TAGS_SW=["Clear some room on your hard drive.","Sound card recommended. Volume knob required.","Your mouse will thank you.","Loads high. Plays higher.","Now in glorious 256 colors.","Save often. Trust nobody.","Insert disk 1 to begin."];
 var AD_TAGS_HW=["More megahertz than you can shake a floppy at.","The future fits on your desk.","Upgrade before your neighbor does.","Plug in. Power up. Play.","Now with a turbo button, probably."];
-function adTag(r){var p=r[1]==="hw"?AD_TAGS_HW:AD_TAGS_SW;return p[hstr(r[2]+"t")%p.length]}
+function adTag(r){var p=r[1]==="hw"||r[1]==="pe"?AD_TAGS_HW:AD_TAGS_SW;return p[hstr(r[2]+"t")%p.length]}
 function adBurst(pr){var t=pr.t,m=t.match(/[$£¥][\d,.]+/);var big=pr.est?(m?m[0]:"TBA"):(t.length<=11?t:(m?m[0]:t.slice(0,10)));return '<span class="ad-burst" aria-label="Price '+esc(t)+'"><i>'+(pr.est?"EST.":"ONLY")+'</i><b>'+esc(big)+(pr.est&&big.slice(-1)!=="*"&&/\*/.test(t)?"*":"")+'</b></span>'}
 function dnum(d,up){var p=String(d).split("-"),y=+p[0],m=p[1]?+p[1]:up?12:1,dd=p[2]?+p[2]:up?28:1;return y*372+(m-1)*31+dd-1}
 function fine(d){return String(d).length>=7}
 function guessPrice(r,y){if(r[3])return {t:r[3],est:/\*$/.test(r[3])};
- if(r[1]==="hw")return {t:"Price TBA*",est:true};
+ if(r[1]==="hw"||r[1]==="pe")return {t:"Price TBA*",est:true};
  var pr=y<1990?"$29.95 to $49.95*":y<1996?"$39.95 to $59.95*":y<2000?"$39.99 to $54.99*":y<2006?"$29.99 to $49.99*":"$39.99 to $59.99*";return {t:pr,est:true}}
 function adPicks(it){var d0=it.rel||String(it.year);if(!it.year)return [];var a=dnum(d0,false),out=[];
  TL.forEach(function(r){if(["gt","gn","hw","sw"].indexOf(r[1])<0||!fine(r[0]))return;if(r[1]==="hw"&&/game boy|playstation|nintendo|sega|xbox|dreamcast|atari|neo geo|turbografx|3do|jaguar|famicom|genesis|saturn|gamecube|wii|ds\b|psp|kinect|iphone|ipod|kindle|ipad/i.test(r[2]))return;var n=dnum(r[0],false);if(n<=a||n>a+31*9)return;
@@ -193,11 +193,13 @@ function adPicks(it){var d0=it.rel||String(it.year);if(!it.year)return [];var a=
  return pick.slice(0,3).sort(function(x,y){return x.n-y.n}).map(function(x){return x.r})}
 function adWhen(r){return "COMING "+fmtDate(r[0]).toUpperCase()+(r[5]?"":"*")}
 function eraSec(it){if(!it.year)return "";var cols=[],d0=it.rel||String(it.year),a=dnum(d0,false),b=dnum(d0,true);
+ if(typeof gxEra==="function"){var ge=gxEra(it);if(ge)cols.push(ge)}
  if(it.type==="Game or software"){var p=pcFor(it.year);if(p)cols.push('<div><h3 class="sub">A high-end PC then</h3>'+tbl([["As of",p.y],["CPU",p.cpu],["RAM",p.ram],["Video",p.video],["Sound",p.sound],["Storage",p.storage],["Example",p.ex]])+'<small class="tn">Curated summary, approximate and general.</small></div>')}
- var near=TL.filter(function(r){var n=dnum(r[0],false);return(r[1]==="gt"||r[1]==="gn")&&fine(r[0])&&n>=a-31*6&&n<=a+31*3});
+ var hasGx=cols.some(function(c){return c.indexOf("gxera")>=0});
+ var near=hasGx?[]:TL.filter(function(r){var n=dnum(r[0],false);return(r[1]==="gt"||r[1]==="gn")&&fine(r[0])&&n>=a-31*6&&n<=a+31*3});
  near.sort(function(x,y){return(x[1]==="gt"?0:1)-(y[1]==="gt"?0:1)});near=near.slice(0,10).sort(function(x,y){return dnum(x[0])-dnum(y[0])});
  if(near.length)cols.push('<div><h3 class="sub">Games out around then</h3>'+near.map(function(r){var x=dnum(r[0],false);return '<p class="tl">'+esc(r[2])+' <small class="tn">'+esc(fmtDate(r[0]))+(r[5]?'':'*')+(x>b?', after':x<a?', before':'')+'</small></p>'}).join("")+'</div>');
- else{var g=gamesFor(it.year);if(g)cols.push('<div><h3 class="sub">Games around '+g.y+'</h3><p>'+g.l.slice(0,10).map(function(r){return esc(r[2])}).join(", ")+'</p></div>')}
+ else if(!hasGx){var g=gamesFor(it.year);if(g)cols.push('<div><h3 class="sub">Games around '+g.y+'</h3><p>'+g.l.slice(0,10).map(function(r){return esc(r[2])}).join(", ")+'</p></div>')}
  var ev=TL.filter(function(r){return(r[1]==="e"||r[1]==="hw"||r[1]==="sw")&&fine(r[0])&&Math.abs(dnum(r[0],false)-a)<=31*6&&r[2]!==it.name});
  ev.sort(function(x,y){return(x[1]==="e"?0:1)-(y[1]==="e"?0:1)});ev=ev.slice(0,8).sort(function(x,y){return dnum(x[0])-dnum(y[0])});
  if(ev.length)cols.push('<div><h3 class="sub">Industry and tech nearby</h3>'+ev.map(function(r){return '<p class="tl">'+esc(r[2])+' <small class="tn">'+esc(fmtDate(r[0]))+(r[5]?'':'*')+'</small></p>'}).join("")+'</div>');

@@ -143,7 +143,7 @@ function fillFromTL(r){var x=(C.TLX||{})[r[2]]||{},it=collectSoft(),n={};
  if(ty==="Game or software"){if(x.maker&&!src.Publisher)src.Publisher=x.maker;if(x.dev&&!src.Developer)src.Developer=x.dev}
  Object.keys(src).forEach(function(k){if(!sp[k])sp[k]=String(src[k])});
  it.specs=sp;it.type=ty;
- var tg=(it.tags||[]).slice();var dec=String(r[0]).slice(0,3)+"0s";[dec,r[1]==="hw"?"hardware":"software"].forEach(function(t){if(tg.indexOf(t)<0)tg.push(t)});it.tags=tg;
+ var tg=(it.tags||[]).slice();var dec=String(r[0]).slice(0,3)+"0s";[dec,r[1]==="hw"||r[1]==="pe"?"hardware":"software"].forEach(function(t){if(tg.indexOf(t)<0)tg.push(t)});it.tags=tg;
  editing.it=it;editing.lookupNote="Filled from the timeline entry \""+r[2]+"\". Check every field, then adjust.";render()}
 function wikiOk(u){return/^https:\/\/en\.wikipedia\.org\/wiki\/[^\s]+$/.test(u||"")}
 function wikiSearch(q){var u="https://en.wikipedia.org/w/api.php?action=opensearch&format=json&origin=*&limit=5&namespace=0&search="+encodeURIComponent(q);
