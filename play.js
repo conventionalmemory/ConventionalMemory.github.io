@@ -7,6 +7,7 @@
    It uses the globals from the other scripts (TL, TLX, GX, ITEMS, CIMG, esc, fmtDate, hstr ...). */
 (function(){
 "use strict";
+var TLXS=typeof TLX!=="undefined"?TLX:{};
 var app;
 function $(s,r){return(r||app).querySelector(s)}
 function $$(s,r){return Array.prototype.slice.call((r||app).querySelectorAll(s))}
@@ -53,16 +54,16 @@ function hub(){var d=ld("cm-daily",{streak:0}),t=today(),H=ld("cm-higher",{raw:0
 
 /* ================= Daily Dig ================= */
 var DK="cm-daily";
-function dpool(){return TL.filter(function(r){var y=+r[0].slice(0,4);return/^(hw|sw|gt|gn|gc)$/.test(r[1])&&y>=1975&&y<=2012&&r[2]&&((TLX[r[2]]||{}).maker||r[3])})}
+function dpool(){return TL.filter(function(r){var y=+r[0].slice(0,4);return/^(hw|sw|gt|gn|gc)$/.test(r[1])&&y>=1975&&y<=2012&&r[2]&&((TLXS[r[2]]||{}).maker||r[3])})}
 function yearOpts(y,R){var offs=shuf([-1,1,-2,2,-3,3,-4,4,-6,6,-9,9],R),o=[y];for(var i=0;i<offs.length&&o.length<4;i++){var v=y+offs[i];if(v>=TLMIN&&v<=2012&&o.indexOf(v)<0)o.push(v)}return o.sort(function(a,b){return a-b})}
 function niceMoney(v){var m=v<100?5:v<1000?25:100;return Math.max(m,Math.round(v/m)*m)}
-function buildDaily(seed){var R=prng(seed),P=dpool(),e=P[Math.floor(R()*P.length)],x=TLX[e[2]]||{},y=+e[0].slice(0,4),Q=[];
+function buildDaily(seed){var R=prng(seed),P=dpool(),e=P[Math.floor(R()*P.length)],x=TLXS[e[2]]||{},y=+e[0].slice(0,4),Q=[];
  var yo=yearOpts(y,R);Q.push({p:"Which year did this come out?",o:yo.map(String),a:yo.indexOf(y),f:"It came out in "+fmtDate(e[0])+(e[5]?"":" (the exact date is not confirmed)")+"."});
  var pr=usdOf(e[3]);
  if(pr>0){var mult=shuf([.35,.5,.7,1.5,2.2,3.5],R).slice(0,3),vals=[pr].concat(mult.map(function(m){return niceMoney(pr*m)})),seen={},u=[];vals.forEach(function(v){var k=Math.round(v);if(!seen[k]){seen[k]=1;u.push(v)}});
   while(u.length<4)u.push(niceMoney(pr*(2+u.length)));u=u.slice(0,4).sort(function(a,b){return a-b});
   Q.push({p:"What did it cost at launch?",o:u.map(money),a:u.indexOf(pr)>=0?u.indexOf(pr):0,f:"Launch price: "+e[3].replace(/\*$/," (an estimate)")+"."+(inflNote(e[3],y)?" That is "+inflNote(e[3],y)+".":"")})}
- else if(x.maker){var mk=[],sm={};sm[x.maker]=1;shuf(P,R).forEach(function(r){var m=(TLX[r[2]]||{}).maker;if(m&&!sm[m]&&mk.length<3){sm[m]=1;mk.push(m)}});var mo=shuf([x.maker].concat(mk),R);Q.push({p:"Who made it?",o:mo,a:mo.indexOf(x.maker),f:"Made by "+x.maker+"."})}
+ else if(x.maker){var mk=[],sm={};sm[x.maker]=1;shuf(P,R).forEach(function(r){var m=(TLXS[r[2]]||{}).maker;if(m&&!sm[m]&&mk.length<3){sm[m]=1;mk.push(m)}});var mo=shuf([x.maker].concat(mk),R);Q.push({p:"Who made it?",o:mo,a:mo.indexOf(x.maker),f:"Made by "+x.maker+"."})}
  else{Q.push({p:"Was it released before or after 1990?",o:["Before 1990","1990 or later"],a:y<1990?0:1,f:"It came out in "+y+"."})}
  var others=P.filter(function(r){return r[2]!==e[2]&&Math.abs(+r[0].slice(0,4)-y)>=2}),e2=others[Math.floor(R()*others.length)],pair=R()<.5?[e,e2]:[e2,e];
  Q.push({p:"Which came first?",o:[pair[0][2],pair[1][2]],a:+pair[0][0].slice(0,4)<+pair[1][0].slice(0,4)?0:1,f:pair[0][2]+" came out in "+pair[0][0].slice(0,4)+", "+pair[1][2]+" in "+pair[1][0].slice(0,4)+"."});
@@ -99,8 +100,8 @@ var RK="cm-rig",RBUD=10;
 function rigWindow(year){return GXRIGS.filter(function(r){return r.y<=year}).slice(-4)}
 function rigOptions(year){var t=rigWindow(year);while(t.length<4)t.unshift(t[0]);
  var snd=[["PC speaker beeps",0,"Every PC had one. Every beep was a feature."]];
- var cards=TL.filter(function(r){var x=TLX[r[2]]||{},y=+r[0].slice(0,4);return x.type==="Sound or MIDI"&&y<=year&&y>=year-6&&/blaster|adlib|ultrasound|spectrum|awe|sc-55|mt-32|sc-88/i.test(r[2])}).sort(function(a,b){return a[0]<b[0]?1:-1}).slice(0,2);
- cards.forEach(function(r,i){snd.push([r[2],i+1,(TLX[r[2]]||{}).detail?String((TLX[r[2]]||{}).detail).slice(0,110):"A real sound card of the era."])});
+ var cards=TL.filter(function(r){var x=TLXS[r[2]]||{},y=+r[0].slice(0,4);return x.type==="Sound or MIDI"&&y<=year&&y>=year-6&&/blaster|adlib|ultrasound|spectrum|awe|sc-55|mt-32|sc-88/i.test(r[2])}).sort(function(a,b){return a[0]<b[0]?1:-1}).slice(0,2);
+ cards.forEach(function(r,i){snd.push([r[2],i+1,(TLXS[r[2]]||{}).detail?String((TLXS[r[2]]||{}).detail).slice(0,110):"A real sound card of the era."])});
  return{cpu:t.map(function(r,i){return{k:r.n,c:i+1,v:{cls:r.cls,mhz:r.mhz},l:GXCLS[r.cls]+", "+r.mhz+" MHz"}}),ram:t.map(function(r,i){return{k:gxRam(r.ram),c:i+1,v:r.ram,l:gxRam(r.ram)}}),vid:t.map(function(r,i){return{k:gxRam(r.vram),c:i+1,v:r.vram,l:r.vram?gxRam(r.vram)+" video memory":"Basic video"}}),snd:snd.map(function(s,i){return{k:s[0],c:s[1],l:s[0],d:s[2]}})}}
 function rigGames(year,seed){var R=prng(seed),out=[];Object.keys(GX).forEach(function(t){var x=GX[t];if(!x.n||(x.n.cls==null&&x.n.mhz==null&&x.n.ramMB==null))return;var pc=typeof gxPc==="function"?gxPc(x):null;if(!pc)return;var y=+pc[1].slice(0,4);if(y<year-1||y>year)return;out.push(t)});
  return shuf(out,R).slice(0,16)}
@@ -144,7 +145,7 @@ var AD={stk:[],src:null,style:"flyer",fmt:"land",store:0,head:"",tag:"",price:""
 function adSources(q){q=q.toLowerCase().trim();var out=[];if(q.length<2)return out;ITEMS.forEach(function(it){if((it.name+" "+(it.maker||"")).toLowerCase().indexOf(q)>=0)out.push({kind:"item",it:it,t:it.name,sub:"in the museum"})});
  TL.forEach(function(r){if(out.length>=14||!/^(hw|pe|sw|gt|gn|gc)$/.test(r[1]))return;if(r[2].toLowerCase().indexOf(q)>=0&&!out.some(function(o){return o.t===r[2]}))out.push({kind:"tl",r:r,t:r[2],sub:"timeline "+r[0].slice(0,4)})});return out.slice(0,12)}
 function adData(s){if(s.kind==="item"){var it=s.it,k=prodKind(it),sp=pickSpecs(it,k).slice(0,3).map(function(x){return x[0]+": "+String(x[1]).slice(0,26)}),p=priceOf(it);return{title:it.name,maker:it.maker||"",year:it.year,price:p.t||"",est:!!p.est,specs:sp,art:prodSvg(it,400,300,"al")}}
- var r=s.r,x=TLX[r[2]]||{},p=guessPrice(r,+r[0].slice(0,4));return{title:r[2],maker:x.maker||"",year:+r[0].slice(0,4),price:p.t||"",est:!!p.est,specs:Object.keys(x.specs||{}).slice(0,3).map(function(k){return k+": "+String(x.specs[k]).slice(0,26)}),art:artFor(r,400,300,"al")}}
+ var r=s.r,x=TLXS[r[2]]||{},p=guessPrice(r,+r[0].slice(0,4));return{title:r[2],maker:x.maker||"",year:+r[0].slice(0,4),price:p.t||"",est:!!p.est,specs:Object.keys(x.specs||{}).slice(0,3).map(function(k){return k+": "+String(x.specs[k]).slice(0,26)}),art:artFor(r,400,300,"al")}}
 function headFor(d,n){var R=prng(hstr(d.title)+n*7919);return HEADS[Math.floor(R()*HEADS.length)].replace("{n}",d.title.replace(/\s*\(.*\)\s*/," ").trim())}
 function wrap(t,n){var w=String(t).split(/\s+/),l=[],c="";w.forEach(function(x){if((c+" "+x).trim().length>n&&c){l.push(c);c=x}else c=(c+" "+x).trim()});if(c)l.push(c);return l}
 function xesc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
@@ -255,7 +256,7 @@ function tsort(){var P=dpool(),G;
  function draw(){var h='<section class="pl"><h2>Timeline Sort</h2><p>Tap the five finds in order, <b>oldest first</b>. Each round the years sit closer together.</p><p class="pl-hud"><span>Round <b>'+Math.min(G.round+1,5)+'</b> of 5</span><span>Score <b>'+G.total+'</b> of 25</span><span>Gap '+SGAP[Math.min(G.round,4)]+'+ years</span></p>';
   if(G.over){var txt="Timeline Sort: "+G.total+"/25\nhttps://conventionalmemory.github.io/#/sort";return app.innerHTML=h+(G.total>=20?boom():"")+'<div class="pl-res"><h3>'+G.total+' of 25 '+(G.total>=20?"— historian!":G.total>=12?"— solid":"— keep digging")+'</h3>'+awardHtml(G.aw)+sharePanel(txt)+'<p><button class="btn pri" id="so-again" type="button">Play again</button> <a class="btn" href="#/play">All games</a></p></div></section>',wireShare(txt),$("#so-again").onclick=function(){init();draw()}}
   var sorted=G.set.slice().sort(function(a,b){return a[0]<b[0]?-1:a[0]>b[0]?1:0});
-  h+='<div class="pl-sort">'+G.show.map(function(r){var i=G.pick.indexOf(r[2]),x=TLX[r[2]]||{},ok=G.rev&&sorted.indexOf(r)===i;return'<button class="pl-sc'+(i>=0?" on":"")+(G.rev?(ok?" ok":" no"):"")+'" type="button" data-s="'+E(r[2])+'"'+(i>=0||G.rev?" disabled":"")+'><i>'+(i>=0?i+1:"")+'</i><b>'+E(r[2])+'</b><small>'+E(x.type||"")+(G.rev?" · "+E(fmtDate(r[0])):"")+'</small></button>'}).join("")+'</div>';
+  h+='<div class="pl-sort">'+G.show.map(function(r){var i=G.pick.indexOf(r[2]),x=TLXS[r[2]]||{},ok=G.rev&&sorted.indexOf(r)===i;return'<button class="pl-sc'+(i>=0?" on":"")+(G.rev?(ok?" ok":" no"):"")+'" type="button" data-s="'+E(r[2])+'"'+(i>=0||G.rev?" disabled":"")+'><i>'+(i>=0?i+1:"")+'</i><b>'+E(r[2])+'</b><small>'+E(x.type||"")+(G.rev?" · "+E(fmtDate(r[0])):"")+'</small></button>'}).join("")+'</div>';
   if(!G.rev)h+='<p class="abar"><button class="btn" id="so-undo" type="button"'+(G.pick.length?"":" disabled")+'>Undo</button> <span class="tn">'+G.pick.length+' of 5 placed</span></p>';
   else{var sc=G.pick.filter(function(t,i){return sorted[i][2]===t}).length;h+='<p class="pl-fb1 '+(sc===5?"ok":"no")+'" role="status"><b>'+sc+' of 5 in the right place.</b> Correct order: '+sorted.map(function(r){return E(r[2])+" ("+r[0].slice(0,4)+")"}).join(", then ")+'.</p><p><button class="btn pri" id="so-next" type="button">'+(G.round>=4?"See results":"Next round")+'</button></p>'}
   app.innerHTML=h+'</section>';
@@ -267,7 +268,7 @@ function tsort(){var P=dpool(),G;
 var MBL=[16,8,3];
 function mpool(){return TL.filter(function(r){return/^(hw|pe)$/.test(r[1])&&r[2]&&typeof CIMG!=="undefined"&&CIMG[r[2]]})}
 function mystery(){var P=mpool(),G;
- function round(){var r=P[Math.floor(Math.random()*P.length)],ty=(TLX[r[2]]||{}).type,same=P.filter(function(o){return o[2]!==r[2]&&(TLX[o[2]]||{}).type===ty}),oth=P.filter(function(o){return o[2]!==r[2]}),pool=same.length>=3?same:oth,o=[r];shuf(pool,Math.random).forEach(function(x){if(o.length<4)o.push(x)});return{r:r,o:shuf(o,Math.random),step:0,ans:null}}
+ function round(){var r=P[Math.floor(Math.random()*P.length)],ty=(TLXS[r[2]]||{}).type,same=P.filter(function(o){return o[2]!==r[2]&&(TLXS[o[2]]||{}).type===ty}),oth=P.filter(function(o){return o[2]!==r[2]}),pool=same.length>=3?same:oth,o=[r];shuf(pool,Math.random).forEach(function(x){if(o.length<4)o.push(x)});return{r:r,o:shuf(o,Math.random),step:0,ans:null}}
  function init(){G={n:0,total:0,cur:round(),over:0,aw:null,used:{}}}
  function draw(){var c=G.cur,h='<section class="pl"><h2>Mystery Photo</h2><p>A real photo from the timeline starts blurry. Name it before it gets clear. Fewer clears means more points: 3, 2 or 1.</p><p class="pl-hud"><span>Photo <b>'+Math.min(G.n+1,8)+'</b> of 8</span><span>Score <b>'+G.total+'</b> of 24</span></p>';
   if(G.over){var txt="Mystery Photo: "+G.total+"/24\nhttps://conventionalmemory.github.io/#/mystery";return app.innerHTML=h+(G.total>=18?boom():"")+'<div class="pl-res"><h3>'+G.total+' of 24 '+(G.total>=20?"— eagle eye!":G.total>=12?"— sharp":"— a bit blurry")+'</h3>'+awardHtml(G.aw)+sharePanel(txt)+'<p><button class="btn pri" id="my-again" type="button">Play again</button> <a class="btn" href="#/play">All games</a></p></div></section>',wireShare(txt),$("#my-again").onclick=function(){init();draw()}}
