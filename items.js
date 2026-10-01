@@ -3,6 +3,7 @@
 var ITEMS=[
  {
   "id": "toshiba-libretto-110ct",
+  "cm": 1,
   "type": "Computer",
   "name": "Toshiba Libretto 110CT",
   "cat": "Laptops",
@@ -187,6 +188,7 @@ var ITEMS=[
  },
  {
   "id": "sound-blaster-16",
+  "cm": 2,
   "type": "Expansion card",
   "rel": "1992-06",
   "extras": [
@@ -245,6 +247,7 @@ var ITEMS=[
  },
  {
   "id": "ibm-model-m",
+  "cm": 3,
   "type": "Peripheral",
   "cond": "Sample",
   "specs": {
@@ -282,6 +285,7 @@ var ITEMS=[
  },
  {
   "id": "roland-mt-32",
+  "cm": 4,
   "type": "Sound or MIDI",
   "rel": "1987-06",
   "msrp": "$695",
@@ -340,6 +344,7 @@ var ITEMS=[
  },
  {
   "id": "ibm-dos-2-1-books-and-disks",
+  "cm": 5,
   "type": "Game or software",
   "name": "IBM PC DOS 2.1",
   "cat": "Games and software",
@@ -372,6 +377,7 @@ var ITEMS=[
  },
  {
   "id": "ibm-5150",
+  "cm": 6,
   "type": "Computer",
   "name": "IBM 5150",
   "cat": "Computers",
@@ -464,6 +470,7 @@ var ITEMS=[
  },
  {
   "id": "apple-m7332-45w-power-adapter-for-parts",
+  "cm": 7,
   "type": "Peripheral",
   "name": "Apple M7332 45W power adapter",
   "cat": "Cables and adapters",
@@ -506,6 +513,7 @@ var ITEMS=[
  },
  {
   "id": "alone-in-the-dark-big-box-pc",
+  "cm": 8,
   "type": "Game or software",
   "name": "Alone in the Dark",
   "cat": "Games and software",
@@ -538,6 +546,7 @@ var ITEMS=[
  },
  {
   "id": "shadow-warrior-1997-3d-realms-pc-cd-rom-with-manual",
+  "cm": 9,
   "type": "Game or software",
   "name": "Shadow Warrior",
   "cat": "Games and software",
@@ -577,6 +586,7 @@ var ITEMS=[
  },
  {
   "id": "apple-desktop-bus-mouse-ii-m2706",
+  "cm": 10,
   "type": "Peripheral",
   "name": "Apple Desktop Bus Mouse II",
   "cat": "Peripherals",
@@ -622,6 +632,7 @@ var ITEMS=[
  },
  {
   "id": "intel-play-qx3-computer-microscope-open-box",
+  "cm": 11,
   "type": "Peripheral",
   "name": "Intel Play QX3+ Computer Microscope",
   "cat": "Peripherals",
@@ -662,6 +673,7 @@ var ITEMS=[
  },
  {
   "id": "microsoft-nickelodeon-3d-movie-maker",
+  "cm": 12,
   "type": "Game or software",
   "name": "Microsoft Nickelodeon 3D Movie Maker",
   "cat": "Games and software",
@@ -700,6 +712,7 @@ var ITEMS=[
  },
  {
   "id": "impact-m4896-ac-adapter-24-v-1-87-a-45-w",
+  "cm": 13,
   "type": "Peripheral",
   "name": "Impact M4896 AC adapter",
   "cat": "Cables and adapters",
@@ -738,6 +751,7 @@ var ITEMS=[
  },
  {
   "id": "vintage-5-port-metal-power-center-with-fax-modem-ports",
+  "cm": 14,
   "type": "Peripheral",
   "name": "5-port metal power center",
   "cat": "Power protection",
@@ -762,6 +776,7 @@ var ITEMS=[
  },
  {
   "id": "pc-accessories-36011-p10045-temporary-power-tap",
+  "cm": 15,
   "type": "Peripheral",
   "name": "PC Accessories power tap",
   "cat": "Power protection",
@@ -787,6 +802,7 @@ var ITEMS=[
  },
  {
   "id": "relocatable-power-tap-pc-0061-surge-suppressor",
+  "cm": 16,
   "type": "Peripheral",
   "name": "Relocatable power tap",
   "cat": "Power protection",
@@ -812,6 +828,7 @@ var ITEMS=[
  },
  {
   "id": "microsoft-encarta-95",
+  "cm": 17,
   "type": "Game or software",
   "name": "Microsoft Encarta 95",
   "cat": "Games and software",
@@ -858,6 +875,7 @@ var ITEMS=[
  },
  {
   "id": "apple-a1152-wired-usb-optical-mouse",
+  "cm": 18,
   "type": "Peripheral",
   "name": "Apple Mighty Mouse",
   "cat": "Peripherals",
@@ -901,6 +919,7 @@ var ITEMS=[
  },
  {
   "id": "sierra-home-master-cook-deluxe-5-0",
+  "cm": 19,
   "type": "Game or software",
   "name": "MasterCook Deluxe 5.0",
   "cat": "Games and software",
@@ -937,6 +956,7 @@ var ITEMS=[
  },
  {
   "id": "leisure-suit-larry-3-big-box-pc-3-5-inch-floppy",
+  "cm": 20,
   "type": "Game or software",
   "name": "Leisure Suit Larry III",
   "cat": "Games and software",
@@ -975,6 +995,7 @@ var ITEMS=[
  },
  {
   "id": "roland-ma-12c-powered-micro-monitor-speakers-pair",
+  "cm": 21,
   "type": "Sound or MIDI",
   "name": "Roland MA-12C speakers",
   "cat": "MIDI",
@@ -1016,6 +1037,7 @@ var ITEMS=[
  },
  {
   "id": "3dfx-voodoo-original-print-ad-lara-croft-1997",
+  "cm": 22,
   "type": "Game or software",
   "name": "3Dfx Voodoo print ad",
   "cat": "Ephemera",
@@ -1055,6 +1077,7 @@ var ITEMS=[
  },
  {
   "id": "duke-nukem-3d-big-box-pc",
+  "cm": 23,
   "type": "Game or software",
   "name": "Duke Nukem 3D",
   "cat": "Games and software",
@@ -1088,6 +1111,7 @@ var ITEMS=[
  },
  {
   "id": "doom-ii-big-box-ibm-pc-3-5-inch-floppies",
+  "cm": 24,
   "type": "Game or software",
   "name": "Doom II",
   "cat": "Games and software",
@@ -1134,6 +1158,7 @@ var ITEMS=[
  },
  {
   "id": "doom-gold-medallion-shareware-3-5-inch-floppies",
+  "cm": 25,
   "type": "Game or software",
   "name": "DOOM Gold Medallion",
   "cat": "Games and software",
@@ -1171,6 +1196,7 @@ var ITEMS=[
  },
  {
   "id": "hp-200lx-palmtop-2-mb-dos-with-accessories",
+  "cm": 26,
   "type": "Computer",
   "name": "HP 200LX Palmtop",
   "cat": "Computers",
@@ -1220,6 +1246,7 @@ var ITEMS=[
  },
  {
   "id": "toshiba-libretto-l5-japanese",
+  "cm": 27,
   "type": "Computer",
   "name": "Toshiba Libretto L5",
   "cat": "Laptops",
@@ -1263,6 +1290,7 @@ var ITEMS=[
  },
  {
   "id": "kodak-serial-cable-dc40-dc50-dc120-dc240-dc2800",
+  "cm": 28,
   "type": "Peripheral",
   "name": "Kodak digital camera serial cable",
   "cat": "Cables and adapters",
@@ -1299,6 +1327,7 @@ var ITEMS=[
  },
  {
   "id": "kodak-dc40-digital-camera-0-4-mp",
+  "cm": 29,
   "type": "Peripheral",
   "name": "Kodak DC40",
   "cat": "Cameras",
@@ -1342,6 +1371,7 @@ var ITEMS=[
  },
  {
   "id": "sony-cyber-shot-2-1-mp-with-128-mb-memory-stick",
+  "cm": 30,
   "type": "Peripheral",
   "name": "Sony Cyber-shot",
   "cat": "Cameras",
@@ -1367,6 +1397,7 @@ var ITEMS=[
  },
  {
   "id": "sony-mavica-mvc-fd200-for-parts",
+  "cm": 31,
   "type": "Peripheral",
   "name": "Sony Mavica MVC-FD200",
   "cat": "Cameras",
@@ -1429,6 +1460,7 @@ var ITEMS=[
  },
  {
   "id": "sony-mavica-mvc-fd81-with-battery-and-case",
+  "cm": 32,
   "type": "Peripheral",
   "name": "Sony Mavica MVC-FD81",
   "cat": "Cameras",
@@ -1473,6 +1505,7 @@ var ITEMS=[
  },
  {
   "id": "sony-mavica-mvc-fd7-floppy-disk-camera",
+  "cm": 33,
   "type": "Peripheral",
   "name": "Sony Mavica MVC-FD7",
   "cat": "Cameras",
@@ -1519,6 +1552,7 @@ var ITEMS=[
  },
  {
   "id": "lexar-128-mb-memory-stick-full-size",
+  "cm": 34,
   "type": "Storage",
   "name": "Lexar 128 MB Memory Stick",
   "cat": "Storage",
@@ -1544,6 +1578,7 @@ var ITEMS=[
  },
  {
   "id": "floppy-disk-lot-with-locking-storage-file-50-disks",
+  "cm": 35,
   "type": "Storage",
   "name": "Floppy disk lot",
   "cat": "Storage",
@@ -1568,6 +1603,7 @@ var ITEMS=[
  },
  {
   "id": "roland-p-55-sc-55-replacement-dc-charger-adapter",
+  "cm": 36,
   "type": "Peripheral",
   "name": "Roland SC-55 power adapter",
   "cat": "Cables and adapters",
@@ -1601,6 +1637,7 @@ var ITEMS=[
  },
  {
   "id": "roland-sound-canvas-sc-55mkii",
+  "cm": 37,
   "type": "Sound or MIDI",
   "name": "Roland Sound Canvas SC-55mkII",
   "cat": "MIDI",
@@ -1642,6 +1679,7 @@ var ITEMS=[
  },
  {
   "id": "official-duke-nukem-3d-level-design-handbook",
+  "cm": 38,
   "type": "Game or software",
   "name": "Duke Nukem 3D Level Design Handbook",
   "cat": "Books and magazines",
@@ -1680,6 +1718,7 @@ var ITEMS=[
  },
  {
   "id": "midi-15-pin-joystick-game-port-to-5-pin-din-breakout-adapter",
+  "cm": 39,
   "type": "Peripheral",
   "name": "MIDI game port adapter",
   "cat": "Cables and adapters",
@@ -1714,6 +1753,7 @@ var ITEMS=[
  },
  {
   "id": "yamaha-tg100-tone-generator",
+  "cm": 40,
   "type": "Sound or MIDI",
   "name": "Yamaha TG100",
   "cat": "MIDI",
@@ -1754,6 +1794,7 @@ var ITEMS=[
  },
  {
   "id": "commodore-64-serial-cable-6-pin-din-for-1541-1571-c128",
+  "cm": 41,
   "type": "Peripheral",
   "name": "Commodore serial cable",
   "cat": "Cables and adapters",
@@ -1791,6 +1832,7 @@ var ITEMS=[
  },
  {
   "id": "diablo-pc-1996",
+  "cm": 42,
   "type": "Game or software",
   "name": "Diablo",
   "cat": "Games and software",
@@ -1826,6 +1868,7 @@ var ITEMS=[
  },
  {
   "id": "altec-lansing-acs45-multimedia-speaker-system-with-subwoofer",
+  "cm": 43,
   "type": "Sound or MIDI",
   "name": "Altec Lansing ACS45",
   "cat": "Audio",
@@ -1862,6 +1905,7 @@ var ITEMS=[
  },
  {
   "id": "pcmcia-to-usb-2-0-cardbus-dual-port-adapter",
+  "cm": 44,
   "type": "Peripheral",
   "name": "PCMCIA to USB 2.0 adapter",
   "cat": "Cables and adapters",
@@ -1889,6 +1933,7 @@ var ITEMS=[
  },
  {
   "id": "sharp-lq61d133-lcd-panel-used-and-tested",
+  "cm": 45,
   "type": "Monitor",
   "name": "Sharp LQ61D133 LCD panel",
   "cat": "Displays",
@@ -1929,6 +1974,7 @@ var ITEMS=[
  },
  {
   "id": "dim-bulb-tester-with-volt-and-amp-meter-v2",
+  "cm": 46,
   "type": "Peripheral",
   "name": "Dim bulb tester",
   "cat": "Parts and tools",
@@ -1958,6 +2004,7 @@ var ITEMS=[
  },
  {
   "id": "the-colonel-s-bequest-a-laura-bow-mystery-big-box-incomplete",
+  "cm": 47,
   "type": "Game or software",
   "name": "The Colonel's Bequest",
   "cat": "Games and software",
@@ -2000,6 +2047,7 @@ var ITEMS=[
  },
  {
   "id": "pc-gamer-november-1997-with-cd-rom",
+  "cm": 48,
   "type": "Game or software",
   "name": "PC Gamer magazine",
   "cat": "Books and magazines",
@@ -2034,6 +2082,7 @@ var ITEMS=[
  },
  {
   "id": "aol-america-online-version-2-0-3-5-inch-floppy-sealed",
+  "cm": 49,
   "type": "Game or software",
   "name": "America Online 2.0",
   "cat": "Games and software",
@@ -2066,6 +2115,7 @@ var ITEMS=[
  },
  {
   "id": "replacement-rtc-bios-cmos-battery-for-toshiba-libretto",
+  "cm": 50,
   "type": "Peripheral",
   "name": "Toshiba Libretto CMOS battery",
   "cat": "Parts and tools",
@@ -2100,6 +2150,7 @@ var ITEMS=[
  },
  {
   "id": "toshiba-satellite-4015cds-laptop",
+  "cm": 51,
   "type": "Laptop",
   "name": "Toshiba Satellite 4015CDS",
   "cat": "Laptops",
@@ -2134,6 +2185,7 @@ var ITEMS=[
  },
  {
   "id": "hp-omnibook-300-with-accessories",
+  "cm": 52,
   "type": "Laptop",
   "name": "HP OmniBook 300",
   "cat": "Laptops",
@@ -2177,6 +2229,7 @@ var ITEMS=[
  },
  {
   "id": "apple-powerbook-1400c-166",
+  "cm": 53,
   "type": "Laptop",
   "name": "Apple PowerBook 1400c/166",
   "cat": "Laptops",
@@ -2220,6 +2273,7 @@ var ITEMS=[
  },
  {
   "id": "compaq-lte-elite-4-40c-no-hard-drive",
+  "cm": 54,
   "type": "Laptop",
   "name": "Compaq LTE Elite 4/40C",
   "cat": "Laptops",
@@ -2255,6 +2309,7 @@ var ITEMS=[
  },
  {
   "id": "iomega-zip-100-external-drive-parallel-port-boxed",
+  "cm": 55,
   "type": "Storage",
   "name": "Iomega Zip 100",
   "cat": "Storage",
@@ -2292,6 +2347,7 @@ var ITEMS=[
  },
  {
   "id": "sony-digital-mavica-mvc-fd91-bundle",
+  "cm": 56,
   "type": "Camera",
   "name": "Sony Digital Mavica MVC-FD91",
   "cat": "Cameras",
@@ -2336,6 +2392,7 @@ var ITEMS=[
  },
  {
   "id": "tdk-mf-2hd-floppies-and-maxell-8mm-tape-lot",
+  "cm": 57,
   "type": "Game or software",
   "name": "Floppy and 8mm tape lot",
   "cat": "Storage",
@@ -2365,6 +2422,7 @@ var ITEMS=[
  },
  {
   "id": "game-boy-advance-game-lot-nemo-medal-of-honor-tiger-namco-su",
+  "cm": 58,
   "type": "Game or software",
   "name": "Game Boy Advance game lot",
   "cat": "Games and software",
@@ -2385,6 +2443,7 @@ var ITEMS=[
  },
  {
   "id": "nintendo-game-boy-pocket-2022-order",
+  "cm": 59,
   "type": "Game console",
   "name": "Nintendo Game Boy Pocket",
   "cat": "Game consoles",
@@ -2435,6 +2494,7 @@ var ITEMS=[
  },
  {
   "id": "nintendo-wii-console-rvl-001-with-remote-and-nunchuk",
+  "cm": 60,
   "type": "Game console",
   "name": "Nintendo Wii",
   "cat": "Game consoles",
@@ -2479,6 +2539,7 @@ var ITEMS=[
  },
  {
   "id": "nes-mike-tyson-s-punch-out-game-only",
+  "cm": 61,
   "type": "Game console",
   "name": "NES Mike Tyson's Punch-Out",
   "cat": "Game consoles",
@@ -2509,6 +2570,7 @@ var ITEMS=[
  },
  {
   "id": "two-sony-playstation-3-controllers",
+  "cm": 62,
   "type": "Game console",
   "name": "Sony PlayStation 3 controller",
   "cat": "Game consoles",
@@ -2536,6 +2598,7 @@ var ITEMS=[
  },
  {
   "id": "super-nintendo-final-fantasy-iii-cartridge",
+  "cm": 63,
   "type": "Game console",
   "name": "Final Fantasy III",
   "cat": "Game consoles",
@@ -2564,6 +2627,7 @@ var ITEMS=[
  },
  {
   "id": "nintendo-game-boy-color-purple",
+  "cm": 64,
   "type": "Game console",
   "name": "Nintendo Game Boy Color",
   "cat": "Game consoles",
@@ -2608,6 +2672,7 @@ var ITEMS=[
  },
  {
   "id": "playstation-game-lot-spyro-crash-bandicoot-ctr",
+  "cm": 65,
   "type": "Game console",
   "name": "PlayStation game lot",
   "cat": "Game consoles",
@@ -2646,6 +2711,7 @@ var ITEMS=[
  },
  {
   "id": "lot-of-30-assorted-playstation-3-games",
+  "cm": 66,
   "type": "Game console",
   "name": "PlayStation 3 game lot",
   "cat": "Game consoles",
@@ -2673,6 +2739,7 @@ var ITEMS=[
  },
  {
   "id": "game-boy-advance-sp",
+  "cm": 67,
   "type": "Game console",
   "name": "Game Boy Advance SP",
   "cat": "Game consoles",
@@ -2706,6 +2773,7 @@ var ITEMS=[
  },
  {
   "id": "bulk-lot-of-nintendo-handheld-console-cases",
+  "cm": 68,
   "type": "Game console",
   "name": "Nintendo handheld case lot",
   "cat": "Game consoles",

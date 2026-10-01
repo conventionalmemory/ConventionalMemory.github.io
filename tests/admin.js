@@ -40,6 +40,7 @@ console.log('puts2',puts.map(p=>p.f));const tp=puts.find(p=>/timeline-edits/.tes
  const tv=await pg.evaluate(()=>document.querySelector('.adm').innerText);const okv=/\$25\b/.test(tv)&&/\$60\b/.test(tv);console.log(okv?'ok   value tracker totals':'FAIL value tracker totals',tv.slice(0,200).replace(/\n+/g,' | '));if(!okv)errs.push('value tracker');
  await pg.click('#bk');await pg.waitForTimeout(300);await pg.click('#sv');await pg.waitForTimeout(300);await pg.click('#rvok');await pg.waitForTimeout(1200);
  const ip=puts.slice(n0).find(p=>/items\.js/.test(p.f));const leak=!ip||/Swap Meet Sam|Shelf 2/.test(ip.body)||!/privEnc/.test(ip.body);console.log(leak?'FAIL private data leaked or not encrypted':'ok   private data saved encrypted only');if(leak)errs.push('priv leak')}
+{const lp=puts.filter(p=>/items\.js/.test(p.f)).pop();let okc=false;try{const arr=JSON.parse(lp.body.slice(lp.body.lastIndexOf('var ITEMS=')+10).replace(/;\s*$/,''));const cs=arr.map(i=>i.cm);okc=cs.every(n=>Number.isInteger(n)&&n>0)&&new Set(cs).size===cs.length}catch(e){}console.log(okc?'ok   saved items all carry a unique label number':'FAIL saved items missing label numbers');if(!okc)errs.push('label numbers')}
 // standalone tle view
 await pg.goto(BASE+'/index.html#/admin/tle/'+encodeURIComponent('Apple I'));await pg.waitForTimeout(800);console.log('hash view',await txt());
 console.log(errs.join('\n')||'no errors');await b.close();srv.close();process.exit(errs.length||!puts.some(p=>/timeline-edits/.test(p.f))?1:0)})();

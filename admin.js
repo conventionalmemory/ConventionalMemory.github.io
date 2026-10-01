@@ -14,6 +14,7 @@ var CORE=[["name","Name",1],["maker","Maker or publisher"],["year","Release year
 var LONG=[["text","Description"],["story","The story: why it is in the museum"],["thoughts","My take"],["notes","Repairs, mods and history of this unit"]];
 var LISTS=[["has","Includes (comma separated)"],["tags","Tags (comma separated)"]];
 function esc(s){return C.esc(s)}
+function tagAll(items){var mx=0,seen={},n=0;items.forEach(function(i){if(i.cm>mx)mx=i.cm});items.forEach(function(i){if(!i.cm||seen[i.cm]){i.cm=++mx;n++;var o={};Object.keys(i).forEach(function(k){if(k!=="cm")o[k]=i[k];if(k==="id")o.cm=i.cm});Object.keys(i).forEach(function(k){delete i[k]});Object.keys(o).forEach(function(k){i[k]=o[k]})}seen[i.cm]=1});return n}
 function clone(o){return JSON.parse(JSON.stringify(o))}
 function b64enc(str){var b=new TextEncoder().encode(str),s="";for(var i=0;i<b.length;i+=0x8000)s+=String.fromCharCode.apply(null,b.subarray(i,i+0x8000));return btoa(s)}
 function slug(s){return String(s).toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")}
@@ -83,7 +84,7 @@ function lock(m){tok=null;PP=null;S=null;VT.rows=null;VT.msg=null;VT.csv="";QC={
 var hid=0;document.addEventListener("visibilitychange",function(){if(document.hidden){hid=setTimeout(function(){if(tok&&!(S&&S.dirty))lock("Locked after the tab was in the background for 5 minutes.")},5*60*1000)}else clearTimeout(hid)});
 function bump(){clearTimeout(idle);if(tok)idle=setTimeout(function(){if(S&&S.dirty){bump();return}lock("Locked after 20 minutes of no activity.")},20*60*1000)}
 function save(){if(!S||busy)return;busy=true;note={t:"ok",m:"Saving to GitHub..."};render();
- var chain=Promise.resolve();
+ tagAll(S.items);var chain=Promise.resolve();
  S.photos.forEach(function(p){chain=chain.then(function(){return gh(repo()+"/contents/"+p.path,{method:"PUT",body:{message:"Admin: add photo "+p.path,content:p.b64,branch:C.REPO.branch}}).then(function(r){if(!r.ok&&r.status!==422)throw new Error(errText(r))})})});
  chain.then(function(){if(!S.photos.length&&!S.created&&JSON.stringify(S.items)===JSON.stringify(S.orig))return{ok:true,skip:true};var body={message:"Admin: update catalog ("+S.items.length+" items)",content:b64enc(serialize(S.items)),branch:C.REPO.branch};if(S.sha)body.sha=S.sha;return gh(repo()+"/contents/"+FILE,{method:"PUT",body:body})})
  .then(function(r){if(!r.ok)throw new Error(errText(r));if(!r.skip)S.sha=r.json.content.sha;return putTle()}).then(function(){try{alog(diffItems(),S.photos.length)}catch(e){}S.orig=clone(S.items);view="list";S.dirty=false;S.qn=0;S.photos=[];S.created=false;

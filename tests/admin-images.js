@@ -41,5 +41,6 @@ const m=I.find(x=>x.id==='ibm-model-m'),a=I.find(x=>x.id==='dos-2-1-disks');
 chk('model m photos',m.photos.length===2&&/example\.com/.test(m.photos[0]));
 chk('meta marks stock',Object.values(m.photoMeta||{}).some(v=>v.k==='stock'));
 chk('accessory item created as draft with for',a&&a.draft&&a['for'].indexOf('ibm-model-m')>=0);
+chk('new item gets the next permanent label number',a&&Number.isInteger(a.cm)&&a.cm===Math.max(...I.map(x=>x.cm||0))&&I.filter(x=>x.cm===a.cm).length===1);
 chk('extra links to it',m.extras.some(x=>x.item==='dos-2-1-disks'));
 console.log(errs.join('\n')||'no errors');await b.close();srv.close();process.exit(fail.length||errs.length?1:0)})();

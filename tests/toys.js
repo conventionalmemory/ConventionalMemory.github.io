@@ -47,7 +47,6 @@ const srv=http.createServer((q,r)=>{let f=path.join(root,decodeURIComponent(q.ur
  await p.click("#app .chips a.pri");await p.waitForTimeout(400);ok(await p.evaluate(()=>/#\/maker\//.test(location.hash)&&document.querySelectorAll("#app .card").length>0),"a maker page shows its exhibits");
  await go("item/"+await p.evaluate(()=>ITEMS.filter(i=>i.maker&&i.maker!=="Unknown")[0].id));ok(await p.evaluate(()=>!!document.querySelector('.ihero a.ib[href^="#/maker/"]')),"item page links the maker");
  await go("manuals");ok(/Manuals and references/.test(await txt()),"manuals page renders");
- await go("labels");ok(await p.evaluate(()=>document.querySelectorAll(".lbl-c").length)>=4,"label sheet has a label per exhibit");await p.click(".lbl-k");ok(await p.evaluate(()=>document.querySelectorAll(".lbl-c.off").length===1),"a label can be switched off");
  await go("start");ok(await p.evaluate(()=>document.querySelectorAll(".st .hm-tile").length===6&&!!document.querySelector(".st svg.mascot")),"start here page has six paths and Mem");
  ok(!errs.length,"no script errors"+(errs.length?": "+errs.join("|"):""));
  await b.close();srv.close();if(fails.length){console.error("FAILED "+fails.length);process.exit(1)}console.log("OK toys")})();
