@@ -112,6 +112,13 @@ function qItemX(it){var t=R(),o=[];
  return null}
 function qMuseum(ok){if(!D.items.length||ok.length<3)return null;var it=pick(D.items),w=shuf(ok.filter(function(r){return nameOf(r)!==it.name})).slice(0,3).map(nameOf);if(w.length<3)return null;return mk("Which of these is actually in the museum's collection?",it.name,w,"item")}
 function qStatic(){var s=pick(STATIC);return mk(s[0],s[1],s[2],"dos")}
+function qGame(list){var c=list.filter(function(r){return D.gx&&D.gx[r[2]]&&D.gx[r[2]].c!=="low"&&group(r[1])==="g"});if(c.length<3)return null;var r=pick(c),x=D.gx[r[2]],pl=[],i;x.r.forEach(function(q){if(pl.indexOf(q[0])<0)pl.push(q[0])});
+ var all=[];Object.keys(D.gx).forEach(function(t){D.gx[t].r.forEach(function(q){if(all.indexOf(q[0])<0&&q[0]!=="Other")all.push(q[0])})});
+ var kind=R();
+ if(kind<.4){var f=x.r[0][0];if(f==="Other")return null;var w=shuf(all.filter(function(p){return pl.indexOf(p)<0})).slice(0,3);if(w.length<3)return null;return mk('Which system was "'+nameOf(r)+'" first released for?',f,w,"firstsys")}
+ if(kind<.7&&pl.length>=3){var last=x.r[x.r.length-1][0];if(last==="Other"||last===x.r[0][0])return null;var w2=shuf(all.filter(function(p){return p!==last&&p!==x.r[0][0]})).slice(0,3);if(w2.length<3)return null;return mk('Which of these systems got "'+nameOf(r)+'" last?',last,w2,"lastsys")}
+ if(x.n&&x.c==="high"&&!/knowledge/i.test(x.s||"")&&x.n.ramMB!=null&&x.n.ramMB>=1){var ram=x.n.ramMB,o=[ram*2,ram*4,Math.max(1,ram/2),ram*8].filter(function(v,j,a){return v!==ram&&a.indexOf(v)===j}).slice(0,3);if(o.length<3)return null;var f2=function(v){return v+" MB"};return mk('About how much RAM did "'+nameOf(r)+'" list as its minimum on a PC?',f2(ram),o.map(f2),"minram")}
+ return null}
 function nextQ(era,lvl){
  var wide=[4,6,9][lvl>=0?Math.min(lvl,2):0]+0,ok=D.tl.filter(function(r){return Math.abs(yr(r[0])-era)<=4}),okw=D.tl.filter(function(r){return Math.abs(yr(r[0])-era)<=9}),tries=0,q=null;
  while(!q&&tries++<40){var t=R();
@@ -125,7 +132,8 @@ function nextQ(era,lvl){
   else if(t<.73)q=qDev(okw);
   else if(t<.80)q=qSpec(okw);
   else if(t<.85)q=qSeries(okw);
-  else if(t<.90)q=qDetail(okw);
+  else if(t<.88)q=qDetail(okw);
+  else if(t<.95)q=qGame(okw);
   else if(ok.length)q=qYear(pick(ok),lvl);
   if(q&&S.used[q.q])q=null}
  if(!q){q=qStatic();var n=0;while(S.used[q.q]&&n++<40)q=qStatic()}
@@ -239,7 +247,7 @@ function talk(){var rm=room(),n=S.npcs[rm.i];if(S.mode!=="play")return;S.acts.pu
  else say(pick(n==="matt"?MATT_LINES:TONY_LINES));hud()}
 /* ---------- run codes: every finished game can be replayed and checked ---------- */
 function fnv(t){var h=2166136261;for(var i=0;i<t.length;i++){h^=t.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}
-function dataHash(){var a=D.items.map(function(i){return i.id||i.name}).join("|"),t=D.tl;return fnv(a+"#"+t.length+"#"+(t[0]||[])[2]+"#"+(t[t.length-1]||[])[2]+"#"+Object.keys(D.x||{}).length).toString(36)}
+function dataHash(){var a=D.items.map(function(i){return i.id||i.name}).join("|"),t=D.tl;return fnv(a+"#"+t.length+"#"+(t[0]||[])[2]+"#"+(t[t.length-1]||[])[2]+"#"+Object.keys(D.x||{}).length+"#"+Object.keys(D.gx||{}).length).toString(36)}
 function makeCode(){var body="CM1."+S.who.charAt(0)+"."+S.seed0.toString(36)+"."+S.acts.join("")+"."+S.mem+"."+dataHash();return body+"."+fnv(body+"|cm").toString(36)}
 function verify(code){var p=String(code||"").replace(/\s+/g,"").split(".");
  if(p.length!==7||p[0]!=="CM1")return{ok:false,why:"That is not a run code."};
@@ -366,7 +374,7 @@ function onk(e){if(!S||!host||!document.body.contains(host))return;var k=e.key;
 function onku(e){var k=e.key.length===1?e.key.toLowerCase():e.key;keys[k]=0}
 function mount(el,d){unmount();host=el;deps=d;D.items=(d.items||[]).filter(function(i){return i&&i.name});
  D.tl=(d.tl||[]).filter(function(r){return r[5]&&(String(r[3]||"").indexOf("*")<0||true)&&r[0]&&r[2]});
- D.x=d.tlx||{};D.byT={};D.tl.forEach(function(r){D.byT[r[2]]=r});patCache={};roomCache={};onKey=onk;onKeyUp=onku;window.addEventListener("keydown",onKey);window.addEventListener("keyup",onKeyUp);select()}
+ D.x=d.tlx||{};D.gx=d.gx||{};D.byT={};D.tl.forEach(function(r){D.byT[r[2]]=r});patCache={};roomCache={};onKey=onk;onKeyUp=onku;window.addEventListener("keydown",onKey);window.addEventListener("keyup",onKeyUp);select()}
 function unmount(){cancelAnimationFrame(raf);raf=0;if(onKey)window.removeEventListener("keydown",onKey);if(onKeyUp)window.removeEventListener("keyup",onKeyUp);onKey=onKeyUp=null;S=null;keys={};host=null;cvs=null}
 window.CMGame=Object.freeze({mount:mount,unmount:unmount});
 })();

@@ -38,7 +38,7 @@ function trailHas(t){return trailGet().indexOf(t)>=0}
 function trailToggle(t){var a=trailGet(),i=a.indexOf(t);if(i>=0)a.splice(i,1);else if(a.length<100)a.push(t);trailSet(a);return i<0}
 var TLMODE="year",TLX2={price:0,conf:0,conn:0};
 function tlPass(x){if(x.k==="i"||x.k==="p")return true;if(TLX2.price&&!usdOf(x.p))return false;if(TLX2.conf&&!x.s)return false;if(TLX2.conn&&!tlLinks(x.t).length)return false;return true}
-function tlHay(x){if(x.i)return x.i.name+" "+x.i.maker+" "+(x.i.text||"");var e=typeof TLX!=="undefined"?TLX[x.t]:null,s="";if(e){s=(e.maker||"")+" "+(e.dev||"")+" "+(e.detail||"")+" "+Object.keys(e.specs||{}).map(function(k){return e.specs[k]}).join(" ")}return x.t+" "+(x.n||"")+" "+s}
+function tlHay(x){if(x.i)return x.i.name+" "+x.i.maker+" "+(x.i.text||"");var e=typeof TLX!=="undefined"?TLX[x.t]:null,s="";if(e){s=(e.maker||"")+" "+(e.dev||"")+" "+(e.detail||"")+" "+Object.keys(e.specs||{}).map(function(k){return e.specs[k]}).join(" ")}var g=typeof GX!=="undefined"?GX[x.t]:null;if(g)s+=" "+(g.g||"")+" "+gxPlats(g).join(" ");return x.t+" "+(x.n||"")+" "+s}
 var TLREV=null,TLREL={"sequel":"sequel","prequel":"prequel","successor":"successor","predecessor":"predecessor","requires":"requires","ran on":"ran on","same series":"same series","same studio":"same studio","competitor":"rival","based on":"based on","bundled with":"bundled with","upgrade of":"upgrade of","uses":"uses"};
 var TLINV={"sequel":"prequel","prequel":"sequel","successor":"predecessor","predecessor":"successor","requires":"needed by","ran on":"ran this","same series":"same series","same studio":"same studio","competitor":"rival","based on":"inspired","bundled with":"bundled with","upgrade of":"upgraded by","uses":"used by"};
 function tlLinks(title){if(typeof TLX==="undefined")return[];if(!TLREV){TLREV={};Object.keys(TLX).forEach(function(k){(TLX[k].links||[]).forEach(function(l){(TLREV[l[0]]=TLREV[l[0]]||[]).push([k,TLINV[l[1]]||l[1]])})})}
@@ -61,16 +61,16 @@ function tlCard(x,id,open){var r=tlRow(x),yr=dyear(x.d),main=x.k==="i"?x.i.name:
    +tlConn(tk)+(rel.length?'<p class="tle-rel"><b>Same family:</b> '+rel.map(function(z){return'<a href="#/timeline/'+dyear(z[0])+'" data-y="'+dyear(z[0])+'">'+esc(z[2])+' ('+dyear(z[0])+')</a>'}).join(" ")+'</p>':"")
    +(near.length?'<p class="tle-rel"><b>That month:</b> '+near.map(function(z){return'<a href="#/timeline/'+dyear(z[0])+'" data-y="'+dyear(z[0])+'">'+esc(z[2])+'</a>'}).join(" ")+'</p>':"")
    +'</div></div>'}
- return'<article class="tle k-'+x.k+(open?" open":"")+'" data-id="'+id+'"><button class="tle-h" type="button" aria-expanded="'+(open?"true":"false")+'"><span class="tle-d">'+esc(ds||"")+'</span><span class="tle-k">'+esc(tlKindLabel(x.k))+'</span><span class="tle-t">'+esc(main)+ast+'</span>'+(pr?'<span class="tle-p" title="'+esc(pr)+'">'+esc(pr.replace(/ \(.*$/,"").replace(/\*$/,"")+(/\*$/.test(pr)?"*":""))+'</span>':tp&&tp.typ?'<span class="tle-p tle-est" title="Typical price for the era, not a confirmed MSRP">~</span>':"")+(x.k==="i"&&x.i.score!=null?'<span class="tle-p">'+x.i.score+'K</span>':"")+'<span class="tle-x" aria-hidden="true">'+(open?"−":"+")+'</span></button>'+body+'</article>'}
+ return'<article class="tle k-'+x.k+(open?" open":"")+'" data-id="'+id+'"><button class="tle-h" type="button" aria-expanded="'+(open?"true":"false")+'"><span class="tle-d">'+esc(ds||"")+'</span><span class="tle-k">'+esc(tlKindLabel(x.k))+'</span><span class="tle-t">'+esc(main)+ast+(x.k!=="i"&&typeof gxHint==="function"?gxHint(main):"")+'</span>'+(pr?'<span class="tle-p" title="'+esc(pr)+'">'+esc(pr.replace(/ \(.*$/,"").replace(/\*$/,"")+(/\*$/.test(pr)?"*":""))+'</span>':tp&&tp.typ?'<span class="tle-p tle-est" title="Typical price for the era, not a confirmed MSRP">~</span>':"")+(x.k==="i"&&x.i.score!=null?'<span class="tle-p">'+x.i.score+'K</span>':"")+'<span class="tle-x" aria-hidden="true">'+(open?"−":"+")+'</span></button>'+body+'</article>'}
 
 
 
 function tlActs(x,tk){if(x.k==="p")return"";var on=trailHas(tk);return'<p class="tle-acts"><button class="btn" type="button" data-star="'+esc(tk)+'" aria-pressed="'+on+'">'+(on?"\u2605 On my trail":"\u2606 Add to my trail")+'</button> <button class="btn" type="button" data-link="'+esc(tk)+'" data-yr="'+dyear(x.d)+'">Copy link</button></p>'}
-function tlFacts(title){var x=typeof TLX!=="undefined"?TLX[title]:null;if(!x)return"";var h="";
+function tlFacts(title){var x=typeof TLX!=="undefined"?TLX[title]:null;var gp=typeof gxPanel==="function"?gxPanel(title):"";if(!x)return gp;var h="";
  if(x.detail)h+='<p>'+esc(x.detail)+'</p>';
  var m=[];if(x.maker)m.push("<b>Maker:</b> "+esc(x.maker));if(x.dev)m.push("<b>Developer:</b> "+esc(x.dev));if(m.length)h+='<p class="tle-meta">'+m.join(" &middot; ")+'</p>';
  var k=x.specs?Object.keys(x.specs):[];if(k.length)h+='<dl class="tle-sp">'+k.slice(0,10).map(function(a){return'<dt>'+esc(a)+'</dt><dd>'+esc(x.specs[a])+'</dd>'}).join("")+'</dl>';
- if(x.conf==="low")h+='<p class="tn">Details on this entry are lightly sourced.</p>';return h}
+ h+=gp;if(x.conf==="low")h+='<p class="tn">Details on this entry are lightly sourced.</p>';return h}
 function tlConn(title){var l=tlLinks(title);if(!l.length)return"";return'<div class="tle-web"><b>Connections</b> <span class="tn">(click a box to jump there)</span>'+tlWeb(title,l)+(l.length>8?'<p class="tle-rel">'+l.slice(8).map(function(a){return'<a href="#/timeline" data-go="'+esc(a[0])+'">'+esc(a[0])+'</a> <small>'+esc(a[1])+'</small>'}).join(" ")+'</p>':"")+'</div>'}
 
 var TLKEY=null;document.addEventListener("keydown",function(e){if(TLKEY&&location.hash.indexOf("#/timeline")===0&&document.getElementById("tlyr"))TLKEY(e)});
@@ -101,7 +101,7 @@ function timeline(y,jt){
  window.__tlall=all;var ORD={};all.forEach(function(x,i){x._id=i});if(jt)window.TLJUMP=jt;
  app.innerHTML='<section class="tlw"><div class="tlwin"><div class="tlbar-t"><span>TIMELINE.EXE - <b id="tlt">'+TLY+'</b></span><span class="tlbtn" aria-hidden="true">_ &#9633; x</span></div>'
   +'<div class="tlbody"><p class="tlintro">The machines, the games, the movies, the industry and the world, side by side. Pick a year on the chart or drag the slider. Click any entry to open it. An asterisk (*) means I could not confirm the date or price against a source.</p>'
-  +'<div class="tltabs" role="group" aria-label="Timeline views"><button class="btn" type="button" data-m="year">Year view</button><button class="btn" type="button" data-m="price">Price map</button><button class="btn" type="button" data-m="trail" id="tltrailb">My trail</button></div><div id="tlyr">'
+  +'<div class="tltabs" role="group" aria-label="Timeline views"><button class="btn" type="button" data-m="year">Year view</button><button class="btn" type="button" data-m="price">Price map</button><button class="btn" type="button" data-m="games">Games by system</button><button class="btn" type="button" data-m="trail" id="tltrailb">My trail</button></div><div id="tlyr">'
   +'<div class="tlchartw">'+tlChart(all,TLY,mx)+'</div>'
   +'<div class="tlkey">'+Object.keys(TLGN).map(function(k){return'<span><i style="background:'+TLGN[k][1]+'"></i>'+TLGN[k][0]+'</span>'}).join("")+'</div>'
   +'<div class="tlnav"><button class="btn" id="tlprev" type="button">&#9664; Prev</button><input id="tlr" type="range" min="1974" max="2010" step="1" value="'+TLY+'" aria-label="Year"><button class="btn" id="tlnext" type="button">Next &#9654;</button></div>'
@@ -121,7 +121,8 @@ function timeline(y,jt){
  function chips(E){var c={};E.forEach(function(x){c[x.k]=(c[x.k]||0)+1});return'<p class="tlpills">'+Object.keys(TLK).filter(function(k){return c[k]}).map(function(k){return'<label class="tlpill k-'+k+'"><input type="checkbox" data-f="'+k+'"'+(TLF[k]?" checked":"")+'> '+esc(TLK[k][0])+' <b>'+c[k]+'</b></label>'}).join("")+'</p>'}
  function feed(E){var h="",lastM=null;E.forEach(function(x){var mo=String(x.d).length>=7?MON[+String(x.d).slice(5,7)-1]:"";if(mo!==lastM){lastM=mo;h+='<h4 class="tlmon">'+(mo||"Sometime that year")+'</h4>'}h+=tlCard(x,x._id,!!TLOPEN[x._id])});return h||'<div class="empty">Nothing matches. Turn a filter back on.</div>'}
  function tabs(){document.querySelectorAll(".tltabs [data-m]").forEach(function(b){var on=b.dataset.m===TLMODE;b.classList.toggle("pri",on);b.setAttribute("aria-pressed",on)});var n=trailGet().length;document.getElementById("tltrailb").textContent="My trail ("+n+")";document.getElementById("tlyr").hidden=TLMODE!=="year"}
- function draw(){if(TLMODE==="price"){tabs();document.getElementById("tlt").textContent="price map";main.innerHTML=priceMap(all);document.getElementById("tlcount").textContent="price map";wirePM();return}
+ function draw(){if(TLMODE==="games"){tabs();document.getElementById("tlt").textContent="games by system";main.innerHTML=gxView();document.getElementById("tlcount").textContent="games by system";return}
+ if(TLMODE==="price"){tabs();document.getElementById("tlt").textContent="price map";main.innerHTML=priceMap(all);document.getElementById("tlcount").textContent="price map";wirePM();return}
   if(TLMODE==="trail"){tabs();document.getElementById("tlt").textContent="my trail";main.innerHTML=trailView(all);document.getElementById("tlcount").textContent=trailGet().length+" saved";return}
   tabs();var q=TLQ2.trim().toLowerCase(),html;
   document.getElementById("tlt").textContent=q?"search":TLY;
@@ -146,7 +147,10 @@ function timeline(y,jt){
  function jump(title){var x=all.filter(function(z){return z.k!=="i"&&z.t===title})[0]||all.filter(function(z){return z.k==="i"&&(z.i.name===title||(tlRowOfItem(z.i)||[])[2]===title)})[0];if(!x)return;TLMODE="year";TLF[x.k]=1;TLX2={price:0,conf:0,conn:0};document.querySelectorAll("#tlyr [data-x]").forEach(function(c){c.checked=false});TLOPEN[x._id]=1;setYear(dyear(x.d));var el=main.querySelector('[data-id="'+x._id+'"]');if(el){el.scrollIntoView({block:"center"});el.classList.add("flash")}}
  main.addEventListener("keydown",function(e){var n=e.target.closest&&e.target.closest("[data-go]");if(n&&(e.key==="Enter"||e.key===" ")){e.preventDefault();jump(n.dataset.go)}});
  function copy(txt,btn){var done=function(){var o=btn.textContent;btn.textContent="Copied!";setTimeout(function(){btn.textContent=o},1400)};try{navigator.clipboard.writeText(txt).then(done,function(){prompt("Copy this:",txt)})}catch(er){prompt("Copy this:",txt)}}
- main.addEventListener("click",function(e){var st=e.target.closest("[data-star]");if(st){var on=trailToggle(st.dataset.star);st.textContent=on?"\u2605 On my trail":"\u2606 Add to my trail";st.setAttribute("aria-pressed",on);tabs();return}
+ if(typeof gxWire==="function")gxWire(main,function(keep){var q=document.getElementById("gxq"),pos=q?q.selectionStart:0;draw();if(keep){var q2=document.getElementById("gxq");if(q2){q2.focus();try{q2.setSelectionRange(pos,pos)}catch(er){}}}});
+ main.addEventListener("click",function(e){var gp=e.target.closest(".tle [data-gxp]");if(gp){TLMODE="games";GXS.sub="list";GXS.p=gp.dataset.gxp;GXS.y="";GXS.dec="";draw();window.scrollTo(0,document.querySelector(".tlw").offsetTop);return}
+  var gr=e.target.closest("[data-gxrig]");if(gr){var gg=GX[gr.dataset.gxrig];GXS.rig=(gg&&gg.n&&gxFirstRig(gg.n))||GXRIGS[5];TLMODE="games";GXS.sub="rig";draw();window.scrollTo(0,document.querySelector(".tlw").offsetTop);return}
+  var st=e.target.closest("[data-star]");if(st){var on=trailToggle(st.dataset.star);st.textContent=on?"\u2605 On my trail":"\u2606 Add to my trail";st.setAttribute("aria-pressed",on);tabs();return}
   var cl=e.target.closest("[data-link]");if(cl){copy(location.href.split("#")[0]+"#/timeline/"+cl.dataset.yr+"/"+encodeURIComponent(cl.dataset.link),cl);return}
   var rm=e.target.closest("[data-untrail]");if(rm){trailToggle(rm.dataset.untrail);draw();return}
   var cp=e.target.closest("#trcopy");if(cp){copy(trailText(all),cp);return}

@@ -9,7 +9,9 @@ A retro DOS-style museum catalog, timeline and trivia game. It is a plain static
 | `index.html` | The page shell, styles and security policy |
 | `app.js` | The site code. Socials, wanted list and settings are at the top |
 | `items.js` | The museum items. Rewritten by the Admin page |
-| `timeline-data.js` | The timeline (about 1,070 dated entries, 1974 to 2010) |
+| `timeline-data.js` | The timeline (about 1,380 dated entries, 1974 to 2010) |
+| `games-data.js` | Per-system release dates, genre and PC requirements for about 530 games |
+| `games.js` | Games views: system chips, release-by-system table, requirements, the Games by system tab, the Rig checker |
 | `timeline-extra.js` | Extra detail per timeline entry: maker, specs, description, connections. Used by the timeline, the game and the admin autofill |
 | `catalog.js` | The interactive catalog (chips, score slider, Cards, Shelf, Time machine and DIR views) |
 | `quotes.js` | Quotes |
@@ -49,3 +51,9 @@ Timeline links: open an entry and press **Copy link** to get an address like `#/
 
 - Passphrase vault: AES-256-GCM, PBKDF2-SHA-256 with 600,000 rounds, 12+ character passphrase required, backoff and erase after 10 wrong tries. Only fine-grained tokens are accepted. A copied browser profile can be guessed at offline, so use the Generate button.
 - Memory Maze has no test hooks. Each win gives a run code that the game replays move by move to verify the score.
+
+## Games by system
+
+Open any game on the timeline to see which systems it came out on, the release date for each system and region, how long each port took, and the minimum and recommended PC requirements where they are on file. The **Games by system** tab has a year-by-system heat map, filters (system, kind of system, genre, decade, has requirements, 3+ systems), sort options, and lists such as most ported and longest wait for a port. The **Rig checker** picks an era PC or a museum machine and lists the games it can run. Item pages for computers and consoles list games from their era on that platform.
+
+`games-data.js` format: `GX[title] = {r:[[system, date, region]], g:genre, n:minimum, m:recommended, s:source, c:confidence}`. Requirements marked as general knowledge are not checked against a source; the display says so. About 20% of games have requirements on file.
