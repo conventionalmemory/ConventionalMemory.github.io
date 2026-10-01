@@ -217,6 +217,25 @@ function eraSec(it){if(!it.year)return "";var cols=[],d0=it.rel||String(it.year)
  ev.sort(function(x,y){return(x[1]==="e"?0:1)-(y[1]==="e"?0:1)});ev=ev.slice(0,8).sort(function(x,y){return dnum(x[0])-dnum(y[0])});
  if(ev.length)cols.push('<div><h3 class="sub">Industry and tech nearby</h3>'+ev.map(function(r){return '<p class="tl">'+esc(r[2])+' <small class="tn">'+esc(fmtDate(r[0]))+(r[5]?'':'*')+'</small></p>'}).join("")+'</div>');
  return cols.length?'<section class="eras"><h2>Around this date</h2><div class="era">'+cols.join("")+'</div><p><a href="#/timeline/'+it.year+'">See '+it.year+' on the timeline</a> <small class="tn">An asterisk means unconfirmed.</small></p></section>':""}
+function eraPane(it){if(!it.year)return"";var d0=it.rel||String(it.year),a=dnum(d0,false),b=dnum(d0,true),P=[],ng=0;
+ var gm=typeof gxEra==="function"?gxEra(it,"games"):"";
+ if(gm){var mm=/data-n="(\d+)"/.exec(gm);ng=mm?+mm[1]:0}
+ else{var near=TL.filter(function(r){var n=dnum(r[0],false);return(r[1]==="gt"||r[1]==="gn")&&fine(r[0])&&n>=a-31*6&&n<=a+31*3});near.sort(function(x,y){return(x[1]==="gt"?0:1)-(y[1]==="gt"?0:1)});near=near.slice(0,12).sort(function(x,y){return dnum(x[0])-dnum(y[0])});ng=near.length;
+  if(near.length)gm='<h3 class="sub">Games out around then</h3><div class="evl">'+near.map(function(r){var x=dnum(r[0],false);return'<a class="evr" href="#/timeline/'+dyear(r[0])+'/'+encodeURIComponent(r[2])+'"><i>'+(typeof pxRow==="function"?pxRow(r,16):"")+'</i><span class="evd">'+esc(fmtDate(r[0]))+(r[5]?"":"*")+'</span><b>'+esc(r[2])+'</b><small>'+(x>b?"after":x<a?"before":"same time")+'</small></a>'}).join("")+'</div>';
+  else{var g=gamesFor(it.year);if(g){ng=g.l.length;gm='<h3 class="sub">Games around '+g.y+'</h3><p>'+g.l.slice(0,14).map(function(r){return esc(r[2])}).join(", ")+'</p>'}}}
+ if(gm)P.push(["games","Games",ng,gm]);
+ var ev=TL.filter(function(r){return(r[1]==="e"||r[1]==="hw"||r[1]==="sw")&&fine(r[0])&&Math.abs(dnum(r[0],false)-a)<=31*6&&r[2]!==it.name});
+ function evc(r){return'<a class="evr" href="#/timeline/'+dyear(r[0])+'/'+encodeURIComponent(r[2])+'"><i>'+(typeof pxRow==="function"?pxRow(r,16):"")+'</i><span class="evd">'+esc(fmtDate(r[0]))+(r[5]?"":"*")+'</span><b>'+esc(r[2])+'</b></a>'}
+ var news=ev.filter(function(r){return r[1]==="e"}).slice(0,10).sort(function(x,y){return dnum(x[0])-dnum(y[0])}),tech=ev.filter(function(r){return r[1]!=="e"}).slice(0,10).sort(function(x,y){return dnum(x[0])-dnum(y[0])});
+ if(news.length||tech.length)P.push(["tech","News and tech",news.length+tech.length,'<div class="evcols">'+(news.length?'<div><h3 class="sub">In the news</h3><div class="evl">'+news.map(evc).join("")+'</div></div>':"")+(tech.length?'<div><h3 class="sub">Hardware and software</h3><div class="evl">'+tech.map(evc).join("")+'</div></div>':"")+'</div><p class="tn">Within six months either side. An asterisk means the date is unconfirmed.</p>']);
+ var pc=pcFor(it.year);if(pc)P.push(["pc","The PC of the day","","<h3 class=\"sub\">A high-end PC in "+pc.y+"</h3>"+tbl([["CPU",pc.cpu],["RAM",pc.ram],["Video",pc.video],["Sound",pc.sound],["Storage",pc.storage],["Example",pc.ex]])+'<p class="tn">Curated summary, approximate and general. Put it next to the Specs tab.</p>']);
+ var lo=typeof gxEra==="function"?gxEra(it,"loot"):"";if(lo)P.push(["loot","Accessories",(lo.match(/<a /g)||[]).length,lo]);
+ if(!P.length)return"";
+ return'<div class="era2"><div class="ehead"><b>'+esc(String(it.year))+'</b><span>What the world looked like around <i>'+esc(fmtDate(d0))+'</i></span><a class="btn" href="#/timeline/'+it.year+'">Open '+it.year+' on the timeline</a></div>'
+  +'<div class="esw noprint" role="tablist" aria-label="Around this date">'+P.map(function(x,i){return'<button type="button" class="chip'+(i?"":" on")+'" role="tab" data-ep="'+x[0]+'" aria-selected="'+(i===0)+'">'+x[1]+(x[2]!==""?' <b>'+x[2]+'</b>':"")+'</button>'}).join("")+'</div>'
+  +P.map(function(x,i){return'<div class="ep" data-ep="'+x[0]+'"'+(i?" hidden":"")+'>'+x[3]+'</div>'}).join("")+'</div>'}
+function adPane(it){var picks=adPicks(it),h=adItem(it);if(!h)return"";
+ return'<p class="tn adn">A made-up 1990s store flyer built from this item\'s own data. Nothing here can be ordered. <button class="btn adh noprint" type="button">New headline</button></p>'+h+(picks.length?'<h3 class="sub">More from the flyer rack</h3>'+adShelf(picks):"")}
 var LOGTYPES=["Acquired","Upgrade","Repair","Mod","Clean","Test","Moved","Sold","Note"];
 function logsOf(it){return(it.log||[]).slice().sort(function(a,b){return a.d<b.d?1:a.d>b.d?-1:0})}
 function logSec(it){var l=logsOf(it);return l.length?sec("Changelog",'<div>'+l.map(function(x){return '<div class="cl"><b>'+esc(fmtDate(x.d))+'</b><span class="tag">'+esc(x.t||"Note")+'</span> '+esc(x.n||"")+'</div>'}).join("")+'</div>'):""}
@@ -350,7 +369,7 @@ function wanted(){var h='<section><h2>Wanted</h2><p>Items I am hunting for. If y
  var we=wantedExtras();if(we.length)h+='<h3 class="sub">Accessories and parts</h3>'+we.map(function(w){return '<div class="ex"><span class="tag want">'+w.s+'</span> '+esc(w.x.n)+' for <a href="#/item/'+esc(w.it.id)+'">'+esc(w.it.name)+'</a>'+(w.x.note?' <small class="tn">'+esc(w.x.note)+'</small>':'')+'</div>'}).join("");
  app.innerHTML=h+'</section>'}
 function pn(it){var i=ITEMS.indexOf(it),p=ITEMS[i-1],n=ITEMS[i+1];
- return '<p class="pn"><span>'+(p?'<a href="#/item/'+p.id+'">Previous: '+esc(p.name)+'</a>':'<a href="#/catalog">Back to the catalog</a>')+'</span><span>'+(n?'<a href="#/item/'+n.id+'">Next: '+esc(n.name)+'</a>':'')+'</span></p>'}
+ return '<p class="pn"><span>'+(p?'<a href="#/item/'+p.id+'">&#9668; '+esc(p.name)+'</a>':"")+'</span><a class="pnc" href="#/catalog/cat/'+encodeURIComponent(it.cat)+'">All '+esc(it.cat)+'</a><span>'+(n?'<a href="#/item/'+n.id+'">'+esc(n.name)+' &#9658;</a>':"")+'</span></p>'}
 function related(it){var r=ITEMS.filter(function(x){return x!==it&&(x.cat===it.cat||x.maker===it.maker)}).slice(0,3);
  return r.length?'<h3 class="sub">More like this</h3><div class="grid">'+r.map(card).join("")+'</div>':""}
 function inkOn(h){var m=/^#?([0-9a-f]{6})$/i.exec(String(h||""));if(!m)return"#000";var n=parseInt(m[1],16),f=function(v){v/=255;return v<=0.03928?v/12.92:Math.pow((v+0.055)/1.055,2.4)},L=0.2126*f(n>>16&255)+0.7152*f(n>>8&255)+0.0722*f(n&255);return(L+0.05)/0.05>=1.05/(L+0.05)?"#000":"#fff"}
@@ -384,18 +403,21 @@ function heroStrip(it){var t=tier(it.score);
  var vds=(it.videos||[]).map(function(v){var u=safeUrl(v.u,"link");return u?'<a class="btn pri" href="'+esc(u)+'" target="_blank" rel="noopener noreferrer">&#9654; '+esc(v.t)+'</a>':""}).join(" ");
  return'<header class="ihero"><div class="tb">'+esc(dpath(it))+'</div><h2>'+esc(it.name)+'</h2><div class="ibs">'+bd+'</div>'+(vds?'<p class="watch"><b>Featured in video:</b> '+vds+'</p>':"")+strip+'</header>'}
 function dtl(t,sub,h){return h&&String(h).trim()?'<details class="dfold"><summary><b>'+esc(t)+'</b> <small>'+esc(sub)+'</small></summary>'+h+'</details>':""}
-function folder(it,p){var tabs=[];function tab(id,label,html,n){if(html&&String(html).replace(/<[^>]*>/g,"").trim())tabs.push({id:id,label:label,html:html,n:n})}
+function folder(it,p){var tabs=[];var TI={about:"bulb",specs:"chip",mine:"box",era:"clock",ad:"star",history:"floppy",links:"globe"};function tab(id,label,html,n){if(html&&String(html).replace(/<[^>]*>/g,"").trim())tabs.push({id:id,label:label,html:html,n:n})}
  var nsp=Object.keys(it.specs||{}).length,refs=(it.refs||[]).length?sec("Sources",'<ul class="refs">'+it.refs.map(function(r){var u=safeUrl(r.u,"link");return u?'<li><a href="'+esc(u)+'" target="_blank" rel="noopener noreferrer">'+esc(r.t)+'</a></li>':""}).join("")+'</ul>'):"";
- tab("about","About",cmpSel(it)+(it.src||it.units?'<p class="srcrow">'+srcBadge(it,true)+'</p>':'')+p.sc+clampP(it.text)+(it.thoughts?'<div class="take"><b>My take</b>'+clampP(it.thoughts)+'</div>':"")+sec("At a glance",p.ident)+p.wx);
+ tab("about","About",'<div class="abt"><div class="abl">'+p.photo+'</div><div class="abr">'+cmpSel(it)+(it.src||it.units?'<p class="srcrow">'+srcBadge(it,true)+'</p>':'')+p.sc+clampP(it.text)+(it.thoughts?'<div class="take"><b>My take</b>'+clampP(it.thoughts)+'</div>':"")+sec("At a glance",p.ident)+p.wx+'</div></div>');
  tab("specs","Specs",specSheet(it),nsp||"");
  tab("mine","My copy",unitsSec(it)+sec("Collection record",p.coll)+exSec(it)+withSec(it)+(it.notes?sec("Repairs and mods",clampP(it.notes)):""));
+ tab("era","Era",eraPane(it));
+ tab("ad","The ad",adPane(it));
  tab("history","History",connSec(it)+(typeof gxItemSec==="function"?gxItemSec(it):"")+logSec(it));
  tab("links","Links",p.media+p.src+refs);
  var cur="about";try{cur=sessionStorage.getItem("cm-itab")||"about"}catch(e){}if(!tabs.some(function(t){return t.id===cur}))cur=tabs.length?tabs[0].id:"";
- return'<div class="folder" data-cur="'+cur+'"><div class="ftabs noprint" role="tablist" aria-label="Sections">'+tabs.map(function(t,i){return'<button type="button" role="tab" class="ftab'+(t.id===cur?' on':'')+'" data-tab="'+t.id+'" aria-selected="'+(t.id===cur)+'"><b>'+(i+1)+'</b><span>'+t.label+(t.n?' <i>'+t.n+'</i>':'')+'</span></button>'}).join("")+'</div>'+tabs.map(function(t){return'<div class="pane" role="tabpanel" data-pane="'+t.id+'"'+(t.id===cur?'':' hidden')+'>'+t.html+'</div>'}).join("")+'</div>'}
+ return'<div class="folder" data-cur="'+cur+'"><div class="ftabs noprint" role="tablist" aria-label="Sections">'+tabs.map(function(t,i){return'<button type="button" role="tab" class="ftab'+(t.id===cur?' on':'')+'" data-tab="'+t.id+'" aria-selected="'+(t.id===cur)+'"><b>'+(i+1)+'</b><span>'+(typeof px==="function"&&TI[t.id]?px(TI[t.id],14):"")+t.label+(t.n?' <i>'+t.n+'</i>':'')+'</span></button>'}).join("")+'</div>'+tabs.map(function(t){return'<div class="pane" role="tabpanel" data-pane="'+t.id+'"'+(t.id===cur?'':' hidden')+'>'+t.html+'</div>'}).join("")+'</div>'}
 function wireFolder(){var f=app.querySelector(".folder");if(!f)return;var tabs=[].slice.call(f.querySelectorAll(".ftab"));
- function go(id){tabs.forEach(function(b){var on=b.dataset.tab===id;b.classList.toggle("on",on);b.setAttribute("aria-selected",on)});f.querySelectorAll(".pane").forEach(function(p){p.hidden=p.dataset.pane!==id});try{sessionStorage.setItem("cm-itab",id)}catch(e){}}
+ function go(id){tabs.forEach(function(b){var on=b.dataset.tab===id;b.classList.toggle("on",on);b.setAttribute("aria-selected",on)});f.querySelectorAll(".pane").forEach(function(p){p.hidden=p.dataset.pane!==id});try{sessionStorage.setItem("cm-itab",id)}catch(e){}var on=f.querySelector(".ftab.on"),tb=f.querySelector(".ftabs");if(on&&tb&&tb.scrollWidth>tb.clientWidth)tb.scrollLeft=Math.max(0,on.offsetLeft-24)}
  tabs.forEach(function(b,i){b.onclick=function(){go(b.dataset.tab)};b.onkeydown=function(e){var n=e.key==="ArrowRight"?1:e.key==="ArrowLeft"?-1:0;if(n){e.preventDefault();var t=tabs[(i+n+tabs.length)%tabs.length];t.focus();go(t.dataset.tab)}}});
+ f.querySelectorAll(".esw").forEach(function(sw){sw.onclick=function(e){var b=e.target.closest("[data-ep]");if(!b)return;var w=sw.parentNode;sw.querySelectorAll("[data-ep]").forEach(function(x){var on=x===b;x.classList.toggle("on",on);x.setAttribute("aria-selected",on)});w.querySelectorAll(".ep").forEach(function(x){x.hidden=x.dataset.ep!==b.dataset.ep})}});
  f.querySelectorAll(".rmb").forEach(function(b){b.onclick=function(){var d=b.parentNode,o=d.classList.toggle("open");b.textContent=o?"Show less":"Read more";b.setAttribute("aria-expanded",o)}});
  window.CMFK=function(e){if(!document.querySelector(".folder")||/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)||e.ctrlKey||e.metaKey||e.altKey)return;var n=+e.key;if(n>=1&&n<=tabs.length){go(tabs[n-1].dataset.tab)}};
  if(!window.CMFKon){window.CMFKon=1;document.addEventListener("keydown",function(e){if(window.CMFK)window.CMFK(e)})}}
@@ -420,16 +442,16 @@ function item(id){
  var wx=wikiMore(it);var src=w?'<div class="src"><b>From Wikipedia: '+esc(w.t)+'</b>'+(w.summary?'<p>'+esc(w.summary)+'</p>':'')+(wu?'<a href="'+esc(wu)+'" target="_blank" rel="noopener noreferrer">Read the full article</a>':'')+(w.summary?'<small>Summary text from Wikipedia, licensed CC BY-SA.</small>':'')+'</div>':"";
  var ident=factGrid([["Maker",it.maker],["Model",it.model],["Part number",it.partno],["Revision",it.rev],["Barcode",it.upc],["Released",(it.rel?fmtDate(it.rel):(it.year||""))+(it.rel&&it.relx?"*":"")],["Discontinued",it.disc],["Original MSRP",it.msrp],["Made in",it.country],["Date code",it.made],["Category",it.cat],["Type",it.type]]);
  var coll=factGrid([["Accession",it.acc],["Status",it.status?it.status+(it.qty>1?", quantity "+it.qty:""):""],["Condition",it.cond],["Working",it.works],["Includes",(it.has||[]).join(", ")],["Acquired",it.acquired],["Last changed",logsOf(it)[0]?fmtDate(logsOf(it)[0].d):""],["Where I got it",it.got],["Timeline entry",it.tl?{h:'<a href="#/timeline" data-tl="'+esc(it.tl)+'">'+esc(it.tl)+'</a>'+((it.tlShared||[]).length?' <small class="tn">(shares '+esc(it.tlShared.join(", "))+')</small>':"")}:""],["Bought on",it.src?{h:srcBadge(it,true)}:""],["Tags",(it.tags||[]).length?{h:it.tags.map(function(t){return '<a href="#/tag/'+encodeURIComponent(t)+'">'+esc(t)+'</a>'}).join(", ")}:""],["Record complete",comp(it)+"%"]]);
- var picks=adPicks(it);
- app.innerHTML='<section class="itempage">'+pn(it)+adBar(picks)+heroStrip(it)+'<div class="detail"><div class="dl"><div class="ph">'+pic(it)+'</div>'+gal+((it.credit||heroC)?'<small style="color:var(--mute)">'+esc(it.credit||heroC)+'</small>':(!(it.photos||[]).length&&wimg(it)?'<small style="color:var(--mute)">Image via Wikipedia. Check the article page for its license.</small>':(!(it.photos||[]).length&&typeof cimgCredit==="function"?cimgCredit(it.name):'')))+'</div><div class="dr">'
-  +folder(it,{sc:sc,wx:wx,src:src,media:media,ident:ident,coll:coll})
-  +'<p class="tn noprint"><a href="#/mine/own/i:'+esc(it.id)+'">Add to my collection</a> &middot; <a href="#/shorts/'+esc(it.id)+'">Shorts mode</a> &middot; <a href="#/community/fix/'+esc(it.id)+'">Suggest a correction</a> &middot; <button class="btn" id="prt" type="button">Print spec sheet</button></p>'+dtl('The ad for this item','Flyer',adItem(it))+dtl('Around this date'+(it.year?' ('+it.year+')':''),'Games, accessories and news',eraSec(it))+related(it)+dtl('More from the catalog flyers','Ads',adShelf(picks))+'</section>';
+ var photo='<div class="ph">'+pic(it)+'</div>'+gal+((it.credit||heroC)?'<small style="color:var(--mute)">'+esc(it.credit||heroC)+'</small>':(!(it.photos||[]).length&&wimg(it)?'<small style="color:var(--mute)">Image via Wikipedia. Check the article page for its license.</small>':(!(it.photos||[]).length&&typeof cimgCredit==="function"?cimgCredit(it.name):'')));
+ app.innerHTML='<section class="itempage">'+pn(it)+heroStrip(it)
+  +'<p class="iact noprint"><a class="btn" href="#/mine/own/i:'+esc(it.id)+'">Add to my collection</a> <a class="btn" href="#/shorts/'+esc(it.id)+'">Shorts mode</a> <a class="btn" href="#/community/fix/'+esc(it.id)+'">Suggest a correction</a> <button class="btn" id="prt" type="button">Print spec sheet</button></p>'
+  +folder(it,{sc:sc,wx:wx,src:src,media:media,ident:ident,coll:coll,photo:photo})+related(it)+'</section>';
  app.querySelectorAll("[data-tl]").forEach(function(n){n.onclick=function(e){e.preventDefault();var t=n.dataset.tl,r=TL.filter(function(z){return z[2]===t})[0];if(r){window.TLJUMP=t;location.hash="#/timeline/"+dyear(r[0])}}});
  app.querySelectorAll(".tlnode").forEach(function(n){var go=function(){var t=n.dataset.go,r=TL.filter(function(z){return z[2]===t})[0];if(r){window.TLJUMP=t;location.hash="#/timeline/"+dyear(r[0])}};n.onclick=go;n.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();go()}}});
  wireFolder();wireSheet(it);
  var pb=document.getElementById("prt");if(pb)pb.onclick=function(){window.print()};
  var cs=document.getElementById("cmp");if(cs)cs.onchange=function(){if(cs.value)location.hash="#/compare/"+it.id+"/"+cs.value};
- var ax=app.querySelector(".adx");if(ax)ax.onclick=function(){try{sessionStorage.setItem("cm-adx","1")}catch(e){}var b=app.querySelector(".cz-bar");if(b)b.remove()};
+ var ah=app.querySelector(".adh");if(ah){var hi=0;ah.onclick=function(){var k=prodKind(it),hd=AD_HEAD[k]||AD_HEAD.box,z=app.querySelector(".cz-h");hi=(hi||hstr(it.name)%hd.length)+1;if(z)z.textContent=hd[hi%hd.length]}}
  app.querySelectorAll(".dl .ph img").forEach(function(im){im.onclick=function(){var d=document.createElement("div");d.className="lb";var i2=document.createElement("img");i2.src=im.src;i2.alt="";d.appendChild(i2);d.onclick=function(){d.remove()};document.body.appendChild(d)}})}
 function stats(){
  var n=ITEMS.length,q=0,tot=0,mk={},dec={},st={},wk={},cd={};
@@ -460,7 +482,7 @@ function navMark(){var h=location.hash.replace(/^#\/?/,"").split("/"),k=h[0]==="
  var c=document.getElementById("crumb");if(!c)return;if(!h[0]||h[0]==="home"||h[0]==="admin"){c.hidden=true;return}
  var parts=[],t=app.querySelector("h1,h2"),pg=t?(t.firstChild||t).textContent:"";
  if(k){var hr=k==="catalog"||k==="timeline"||k==="search"?"#/"+k:"#/hub/"+k;parts.push([hr,NAVT[k]])}else if(h[0]==="more")parts.push(["","Site map"]);
- if(h[0]==="item"){var it=ITEMS.filter(function(i){return i.id===h[1]})[0];if(it)parts.push(["#/catalog/cat/"+encodeURIComponent(it.cat),it.cat]);if(it)pg=it.name}
+ if(h[0]==="item"){c.hidden=true;return}
  else if(h[0]!=="catalog"&&h[0]!=="timeline"&&h[0]!=="search"&&h[0]!=="hub"&&h[0]!=="more"&&pg)parts.push(["",pg]);
  if(h[0]==="item"&&pg)parts.push(["",pg]);
  c.hidden=false;c.innerHTML='<a href="#/">C:\\MUSEUM</a>'+parts.map(function(p){return'\\'+(p[0]?'<a href="'+p[0]+'">'+esc(p[1])+'</a>':'<span aria-current="location">'+esc(p[1])+'</span>')}).join("")+"&gt;"}
