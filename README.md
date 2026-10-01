@@ -17,6 +17,8 @@ A retro DOS-style museum catalog, timeline and trivia game. It is a plain static
 | `quotes.js` | Quotes |
 | `game.js` | The Memory Maze game (`#/maze`) |
 | `tl.js` | The timeline page (chart, year view, price map, My trail, filters, connection web, deep links) |
+| `icons.js` | About 70 small pixel icons (12 x 12, EGA colors) and the tables that pick one by kind, category, genre or system |
+| `art.js` | Generated artwork: 40+ product drawings, 30+ game scenes, seeded abstract covers, packaging (PC box, cartridge, disc case, arcade cabinet, floppy), movie posters, front pages and badges |
 | `ads.js` | Tribute ads: product drawings and the per-item ad |
 | `admin.js` | The Admin page (`#/admin`) |
 
@@ -61,3 +63,7 @@ Open any game on the timeline to see which systems it came out on, the release d
 ## Peripherals
 
 The timeline has a Peripherals kind (about 340 entries): mice, keyboards, controllers, sound and graphics cards, drives, modems, printers, console accessories. Each has a category, how it connects (`Connection`), and the systems it worked with (`plat` in `timeline-extra.js`). The **Peripherals** tab filters by category, system and decade. Item pages list games and peripherals from the item's launch window (six months before to two years after) for the system it runs, and for computers with CPU speed and RAM in their specs they show which of those games the machine can run. Game cards list peripherals linked to them. Dates and prices without a source show an asterisk.
+
+## Icons and generated art
+
+Every timeline entry, ad and catalog item without a photo gets a picture drawn in code (no image files). `art.js` chooses by kind, title words, genre and the system the game debuted on (a PC game is a box, an NES game a cartridge, a PlayStation game a disc case, and so on) and is seeded by the title, so each one is stable. Small pixel icons from `icons.js` appear on kind pills, category chips, system chips, catalog cards and spines, tables and home tiles. To add an icon, add a 12-row string array to `PXG` in `icons.js` and a rule in `PXKIND`, `PXSUB`, `PXGENRE` or `PXCAT`. To add a product drawing, add a regex to `ICON_KINDS` and a branch to `prodObj2` in `art.js`.

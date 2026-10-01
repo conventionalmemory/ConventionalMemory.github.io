@@ -4,6 +4,7 @@
 /* ---------- product illustrations (EGA palette, drawn as SVG) ---------- */
 function prodKind(it){var s=(it.cat+" "+it.type+" "+it.name+" "+(it.model||"")).toLowerCase();
  if(/laptop|notebook|subnote|portable computer|libretto|thinkpad/.test(s))return"laptop";
+ var ik=typeof iconKind==="function"?iconKind(s):"";if(ik)return ik;
  if(/sound card|sound blaster|soundcard|expansion card|video card|graphics card|adlib|gravis|wavetable|isa|pci|agp|controller card|network card|nic\b/.test(s))return"card";
  if(/keyboard/.test(s))return"keyboard";
  if(/midi|synth|sound module|roland|mt-32|sc-55|module/.test(s))return"synth";
@@ -17,7 +18,7 @@ function prodKind(it){var s=(it.cat+" "+it.type+" "+it.name+" "+(it.model||"")).
  if(/desktop|tower|computer|pc\b|system|amiga|apple|macintosh|atari/.test(s))return"tower";
  return"box"}
 function srect(x,y,w,h,f,s,r){return'<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" fill="'+f+'"'+(s?' stroke="'+s+'" stroke-width="2"':"")+(r?' rx="'+r+'"':"")+'/>'}
-function prodObj(k,R){var o="",i,j;
+function prodObj(k,R,P){var o="",i,j;
  if(k==="laptop"){o+='<polygon points="46,44 194,44 186,118 54,118" fill="#aaaaaa" stroke="#000" stroke-width="3"/><polygon points="56,52 184,52 178,110 62,110" fill="#0000aa" stroke="#555" stroke-width="2"/>'+'<text x="68" y="76" font-family="monospace" font-size="13" fill="#fff">C:\\&gt;_</text>'+srect(68,88,60,4,"#55ffff")+srect(68,97,40,4,"#ffff55")
   +'<polygon points="30,124 210,124 226,146 14,146" fill="#888" stroke="#000" stroke-width="3"/>';for(i=0;i<3;i++)for(j=0;j<14;j++)o+=srect(38+j*11+i*3,128+i*5,8,3,"#333");o+=srect(96,140,48,4,"#555")}
  else if(k==="card"){o+=srect(24,56,190,80,"#00aa00","#000")+srect(24,56,10,80,"#c0c0c0","#000")+'<rect x="24" y="52" width="10" height="90" fill="#aaa" stroke="#000" stroke-width="2"/>'
@@ -40,12 +41,12 @@ function prodObj(k,R){var o="",i,j;
  else if(k==="printer"){o+=srect(40,90,160,46,"#d8d2c0","#000",4)+srect(58,44,124,50,"#f2f2f2","#000")+'<line x1="66" y1="56" x2="170" y2="56" stroke="#777"/><line x1="66" y1="66" x2="150" y2="66" stroke="#777"/><line x1="66" y1="76" x2="160" y2="76" stroke="#777"/>'+srect(70,120,100,6,"#333")+'<circle cx="184" cy="106" r="3" fill="#0f0"/>'}
  else if(k==="drive"){o+=srect(30,58,180,80,"#bdb7a8","#000",4)+srect(46,84,120,10,"#222")+srect(46,102,60,6,"#555")+'<circle cx="186" cy="76" r="4" fill="#0f0" stroke="#000"/>'+srect(176,100,22,22,"#888","#000")+'<text x="48" y="76" font-family="monospace" font-size="11" fill="#000">READ / WRITE</text>'}
  else if(k==="tower"){o+=srect(62,24,116,124,"#d0c9b5","#000",4)+srect(72,36,96,16,"#aaa","#000")+srect(72,58,96,16,"#aaa","#000")+srect(72,80,96,10,"#555","#000")+srect(84,84,50,2,"#000")+srect(72,98,44,10,"#111","#000")+'<circle cx="150" cy="106" r="4" fill="#0f0" stroke="#000"/><circle cx="162" cy="106" r="4" fill="#f00" stroke="#000"/>'+srect(72,118,96,6,"#aaa","#000")+srect(72,130,96,6,"#aaa","#000")+'<text x="106" y="47" font-family="monospace" font-size="9" fill="#000">TURBO</text>'}
- else{o+='<polygon points="40,60 120,36 200,60 200,132 120,150 40,132" fill="#c0a060" stroke="#000" stroke-width="3"/><polygon points="40,60 120,84 200,60" fill="#e0c080" stroke="#000" stroke-width="3"/><line x1="120" y1="84" x2="120" y2="150" stroke="#000" stroke-width="3"/><text x="88" y="118" font-family="monospace" font-size="20" fill="#aa0000">NEW!</text>'}
+ else{o+=typeof prodObj2==="function"?prodObj2(k,R,P||["#d0c9b5","#a8a290","#0000aa"]):""}
  return o}
 function prodSvg(it,w,h,uid){var kind=prodKind(it),R=rng(hstr(it.name||"x")),sk=AD_SKY[Math.floor(R()*AD_SKY.length)],g="pg"+uid,o='<svg viewBox="0 0 240 180" width="'+w+'" height="'+h+'" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Drawing of '+esc(it.name)+'" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="'+g+'" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+sk[0]+'"/><stop offset="1" stop-color="'+sk[1]+'"/></linearGradient></defs><rect width="240" height="180" fill="url(#'+g+')"/>',i;
  for(i=0;i<14;i++){var a=i*Math.PI/7,a2=a+Math.PI/14;o+='<polygon points="120,90 '+(120+Math.cos(a)*260).toFixed(0)+","+(90+Math.sin(a)*260).toFixed(0)+" "+(120+Math.cos(a2)*260).toFixed(0)+","+(90+Math.sin(a2)*260).toFixed(0)+'" fill="#fff" opacity=".10"/>'}
  for(i=0;i<26;i++)o+=srect(Math.floor(R()*238),Math.floor(R()*170),R()<.2?2:1,R()<.2?2:1,"#fff");
- o+='<ellipse cx="122" cy="156" rx="90" ry="9" fill="#000" opacity=".45"/>'+prodObj(kind,R);
+ o+='<ellipse cx="122" cy="156" rx="90" ry="9" fill="#000" opacity=".45"/>'+prodObj(kind,R,typeof PAL!=="undefined"?PAL[Math.floor(R()*PAL.length)]:null);
  return o+'</svg>'}
 
 /* game and hardware posters: theme by title keywords so a "Space Quest" does not look like a "King's Quest" */
@@ -71,7 +72,8 @@ function themeScene(idx,R,sk){var o="",i,x;
  else if(idx===5){o+='<circle cx="140" cy="36" r="18" fill="#ff5555" opacity=".85"/>';o+='<polygon points="0,110 30,90 60,104 96,84 130,106 180,92 180,150 0,150" fill="#000" opacity=".6"/>';for(i=0;i<6;i++)o+='<line x1="'+(20+i*28)+'" y1="0" x2="'+(10+i*28)+'" y2="150" stroke="#ffaa00" stroke-width="1" opacity=".4"/>';
   o+=srect(0,120,180,30,"#3a2a1a")+'<polygon points="60,120 66,96 88,96 94,120" fill="#333" stroke="#000" stroke-width="2"/><rect x="66" y="80" width="22" height="18" fill="#556b2f" stroke="#000" stroke-width="2"/><rect x="88" y="86" width="34" height="5" fill="#222" stroke="#000"/><circle cx="130" cy="88" r="3" fill="#ffff55"/><circle cx="138" cy="88" r="2" fill="#ffaa00"/>'}
  return o}
-function adArtX(r,w,h,uid){var kind=r[1];
+function adArtX(r,w,h,uid){return typeof artFor==="function"?artFor(r,w,h,uid):adArtLegacy(r,w,h,uid)}
+function adArtLegacy(r,w,h,uid){var kind=r[1];
  if(kind==="hw"||kind==="pe"||kind==="sw"&&/os|windows|dos/i.test(r[2])){if(kind==="hw"||kind==="pe"){var k=hwKindOfTitle(r[2]);return prodSvg({name:r[2],cat:k==="laptop"?"laptop":k,type:"",model:""},w,h,uid)}return null}
  if(kind!=="gt"&&kind!=="gn"&&kind!=="sw")return null;var idx=themeOf(r[2]);if(idx<0||idx===0)return null;
  var R=rng(hstr(r[2])),sk=AD_SKY[Math.floor(R()*AD_SKY.length)],g="ag"+uid,o='<svg viewBox="0 0 180 150" width="'+w+'" height="'+h+'" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Generated artwork for '+esc(r[2])+'" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="'+g+'" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+(idx===3?"#000":sk[0])+'"/><stop offset="1" stop-color="'+sk[1]+'"/></linearGradient></defs><rect width="180" height="150" fill="url(#'+g+')"/>',i;

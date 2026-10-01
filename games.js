@@ -21,7 +21,7 @@ function gxPlats(x){var s={},o=[];x.r.forEach(function(r){if(!s[r[0]]){s[r[0]]=1
 // First PC release (DOS, Windows, Mac, Linux, PC-98, FM Towns); PC is what this site cares about most.
 function gxPc(x){for(var i=0;i<x.r.length;i++)if(gxFam(x.r[i][0])==="pc")return x.r[i];return null}
 function gxDebut(x){return gxPc(x)||x.r[0]}
-function gxChip(p,btn){var f=gxFam(p);return'<'+(btn?'button type="button" data-gxp="'+esc(p)+'"':'span')+' class="pf pf-'+f+'" title="'+esc(GXFAMN[f])+'">'+esc(p==="Other"?"Other system":p)+'</'+(btn?'button':'span')+'>'}
+function gxChip(p,btn){var f=gxFam(p);return'<'+(btn?'button type="button" data-gxp="'+esc(p)+'"':'span')+' class="pf pf-'+f+'" title="'+esc(GXFAMN[f])+'">'+(typeof pxPlat==="function"?pxPlat(p,11):"")+esc(p==="Other"?"Other system":p)+'</'+(btn?'button':'span')+'>'}
 function gxRam(v){return v==null?"":v<1?Math.round(v*1024)+" KB":v+" MB"}
 function gxDisk(v){return v==null?"":v>=1024?(Math.round(v/102.4)/10)+" GB":v+" MB"}
 function gxMaxDelay(x){if(!x||x.r.length<2)return 0;var f=x.r[0][1],mx=0;x.r.forEach(function(r){mx=Math.max(mx,gxMo(r[1])-gxMo(f))});return mx}
@@ -39,7 +39,7 @@ function gxReqTable(x){var n=x.n,m=x.m||{},rows=[["OS","os",function(v){return v
  rows.forEach(function(r){var a=n[r[1]]!=null?r[2](n[r[1]]):"",b=m[r[1]]!=null?r[2](m[r[1]]):"";if(a||b)h+='<tr><th scope="row">'+r[0]+'</th><td>'+esc(a||"")+'</td>'+(x.m?'<td>'+esc(b||"")+'</td>':"")+'</tr>'});
  return h?'<table class="gxt gxreq"><thead><tr><th></th><th>Minimum</th>'+(x.m?'<th>Recommended</th>':"")+'</tr></thead><tbody>'+h+'</tbody></table>':""}
 // The panel shown inside an open timeline card and on an item page.
-function gxPanel(title){if(!gxok())return"";var x=GX[title];if(!x)return"";var pl=gxPlats(x),first=gxDebut(x),pcd=gxPc(x),h='<div class="gx"><p class="gxchips">'+(x.g?'<span class="pf pf-g">'+esc(x.g)+'</span> ':"")+pl.map(function(p){return gxChip(p,true)}).join(" ")+'</p>';
+function gxPanel(title){if(!gxok())return"";var x=GX[title];if(!x)return"";var pl=gxPlats(x),first=gxDebut(x),pcd=gxPc(x),h='<div class="gx"><p class="gxchips">'+(x.g?'<span class="pf pf-g">'+pxGenre(x.g,11)+esc(x.g)+'</span> ':"")+pl.map(function(p){return gxChip(p,true)}).join(" ")+'</p>';
  var rs=x.r.map(function(r,i){return[r,i]}).sort(function(a,b){return(gxFam(a[0][0])==="pc"?0:1)-(gxFam(b[0][0])==="pc"?0:1)||a[1]-b[1]}).map(function(a){return a[0]});
  h+='<table class="gxt"><caption>Release date by system'+(pcd?' (PC first)':'')+'</caption><thead><tr><th>System</th><th>Region</th><th>Released</th><th>'+(pcd?'Versus PC debut':'After the first')+'</th></tr></thead><tbody>'
   +rs.map(function(r,i){var pcr=gxFam(r[0])==="pc";return'<tr class="'+(r===first?'gx1 ':'')+(pcr?'gxpc':'')+'"><td>'+gxChip(r[0])+'</td><td><abbr title="'+esc(GXREG[r[2]]||r[2])+'">'+esc(r[2])+'</abbr></td><td>'+esc(gxFmt(r[1]))+'</td><td>'+(r===first?(pcd?"PC debut":"first"):esc(gxDelay(first[1],r[1])))+'</td></tr>'}).join("")+'</tbody></table>';
@@ -100,7 +100,7 @@ function gxView(){if(!gxok())return'<div class="tlsnap"><p>Game data is not load
   +'<p class="tn"><b>'+L.length+'</b> of '+all.length+' games'+(GXS.y?" first released in "+GXS.y:"")+(L.length>150?" (showing 150)":"")+'.</p>'
   +'<div class="gxwrap"><table class="gxt gxlist"><thead><tr><th>Debut</th><th>Game</th><th>Systems</th><th>Genre</th><th>Needs</th></tr></thead><tbody>'
   +S.slice(0,150).map(function(g){var n=g.x.n,need=n?(n.cpu?n.cpu.replace(/^Intel\s+/,""):"")+(n.ramMB!=null?(n.cpu?", ":"")+gxRam(n.ramMB):""):"";
-   return'<tr><td>'+esc(gxFmt(g.first[1]))+'<br><small>'+gxChip(g.first[0])+'</small></td><td><a href="#/timeline" data-go="'+esc(g.t)+'">'+esc(g.t)+'</a></td><td>'+g.pl.slice(0,6).map(function(p){return gxChip(p,true)}).join(" ")+(g.pl.length>6?' <small>+'+(g.pl.length-6)+' more</small>':"")+'</td><td>'+esc(g.x.g||"")+'</td><td>'+(need?esc(need):'<small class="tn">-</small>')+'</td></tr>'}).join("")+'</tbody></table></div></div>'
+   return'<tr><td>'+esc(gxFmt(g.first[1]))+'<br><small>'+gxChip(g.first[0])+'</small></td><td>'+pxGenre(g.x.g,14)+'<a href="#/timeline" data-go="'+esc(g.t)+'">'+esc(g.t)+'</a></td><td>'+g.pl.slice(0,6).map(function(p){return gxChip(p,true)}).join(" ")+(g.pl.length>6?' <small>+'+(g.pl.length-6)+' more</small>':"")+'</td><td>'+esc(g.x.g||"")+'</td><td>'+(need?esc(need):'<small class="tn">-</small>')+'</td></tr>'}).join("")+'</tbody></table></div></div>'
   +'<div class="tlsnap">'+gxStats(all)+'</div>';return h}
 // ---- Rig checker ----
 function gxParseItemRig(it){var sp=it.specs||{},cpu=(sp.CPU||"")+" "+(sp["CPU speed"]||"")+" "+it.name,mh=/(\d+(?:\.\d+)?)\s*(MHz|GHz)/i.exec(sp["CPU speed"]||sp.CPU||""),ram=/(\d+(?:\.\d+)?)\s*(KB|MB|GB)/i.exec(sp["RAM installed"]||sp.RAM||""),cls=0;
@@ -155,7 +155,7 @@ function gxPerView(){var all=gxPerList(),cats={},plats={},decs={};all.forEach(fu
  +'<select id="gps" aria-label="Sort">'+opt("date","Sort: oldest first",GXP.sort==="date")+opt("title","Sort: title",GXP.sort==="title")+'</select></div>'
  +'<p class="tlflt"><label><input type="checkbox" id="gpr"'+(GXP.price?" checked":"")+'> Has a price</label></p><p class="tn"><b>'+L.length+'</b> of '+all.length+(L.length>200?" (showing 200)":"")+'.</p>'
  +'<div class="gxwrap"><table class="gxt gxlist"><thead><tr><th>Released</th><th>Peripheral</th><th>Kind</th><th>Connects by</th><th>Price</th><th>Works with</th></tr></thead><tbody>'
- +L.slice(0,200).map(function(p){var pl=p.e.plat||[],sp=p.e.specs||{};return'<tr><td>'+esc(gxFmt(p.r[0]))+(p.r[5]?'':'*')+'</td><td><a href="#/timeline" data-go="'+esc(p.r[2])+'">'+esc(p.r[2])+'</a></td><td>'+esc(p.e.sub||"")+'</td><td>'+esc(sp.Connection||"")+'</td><td>'+esc((p.r[3]||"").replace(/ \(.*$/,""))+'</td><td>'+pl.slice(0,5).map(function(x){return gxChip(x)}).join(" ")+(pl.length>5?' <small>+'+(pl.length-5)+'</small>':"")+'</td></tr>'}).join("")+'</tbody></table></div></div>'}
+ +L.slice(0,200).map(function(p){var pl=p.e.plat||[],sp=p.e.specs||{};return'<tr><td>'+esc(gxFmt(p.r[0]))+(p.r[5]?'':'*')+'</td><td>'+pxRow(p.r,16)+'<a href="#/timeline" data-go="'+esc(p.r[2])+'">'+esc(p.r[2])+'</a></td><td>'+esc(p.e.sub||"")+'</td><td>'+esc(sp.Connection||"")+'</td><td>'+esc((p.r[3]||"").replace(/ \(.*$/,""))+'</td><td>'+pl.slice(0,5).map(function(x){return gxChip(x)}).join(" ")+(pl.length>5?' <small>+'+(pl.length-5)+'</small>':"")+'</td></tr>'}).join("")+'</tbody></table></div></div>'}
 function gxWire(main,redraw,jump){
  main.addEventListener("input",function(e){if(e.target.id==="gxq"){GXS.q=e.target.value;redraw(true,"gxq")}else if(e.target.id==="gpq"){GXP.q=e.target.value;redraw(true,"gpq")}});
  main.addEventListener("change",function(e){var t=e.target,id=t.id;if(id==="gxp")GXS.p=t.value;else if(id==="gxf")GXS.f=t.value;else if(id==="gxg")GXS.g=t.value;else if(id==="gxd"){GXS.dec=t.value;GXS.y=""}else if(id==="gxs")GXS.sort=t.value;else if(id==="gxr")GXS.req=t.checked?1:0;else if(id==="gxm")GXS.multi=t.checked?1:0;
