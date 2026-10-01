@@ -126,7 +126,7 @@ function openPriv(pass){var e=editing;if(!pass){e.privMsg="Type the passphrase f
  if(!e.it.privEnc){var pr=passProblem(pass);if(pr){note={t:"err",m:"Private passphrase: "+pr};render();return}PP=pass;e.priv={};e.privOk=true;render();return}
  decPriv(e.it.privEnc,pass).then(function(o){PP=pass;e.priv=o||{};e.privOk=true;render()},function(er){note={t:"err",m:er.message};render()})}
 // ---- Autofill: timeline first, then Wikipedia ----
-var CATMAP={"Computer":"Computers","Console or handheld":"Consoles and handhelds","Expansion card":"Expansion cards","Sound or MIDI":"Sound and MIDI","Peripheral":"Peripherals","Storage":"Storage","Monitor":"Monitors","Printer":"Printers","Game or software":"Games and software","Other":"Other"};
+var CATMAP={"Computer":"Computers","Console or handheld":"Consoles and handhelds","Expansion card":"Expansion cards","Sound or MIDI":"Sound and MIDI","Peripheral":"Peripherals","Storage":"Storage","Monitor":"Monitors","Printer":"Printers","Game or software":"Games and software"};
 function nk(s){return String(s).toLowerCase().replace(/[^a-z0-9]+/g," ").trim()}
 function tlMatches(q){q=nk(q);if(q.length<2)return[];var w=q.split(" "),out=[];
  (C.TL||[]).forEach(function(r){if(!/^(hw|sw|gt|gn|gc)$/.test(r[1]))return;var t=nk(r[2]),sc=0;if(t===q)sc=100;else if(t.indexOf(q)>=0)sc=60-Math.min(30,t.length-q.length);else{var hit=w.filter(function(x){return t.indexOf(x)>=0}).length;if(hit===w.length)sc=40;else if(hit&&hit>=Math.ceil(w.length/2)&&w.length>1)sc=15+hit}
@@ -136,7 +136,7 @@ function fillFromTL(r){var x=(C.TLX||{})[r[2]]||{},it=collectSoft(),n={};
  var ty=x.type&&C.SPEC_TYPES[x.type]?x.type:(/^(sw|gt|gn|gc)$/.test(r[1])?"Game or software":"Computer");
  if(!it.name)it.name=r[2];if(!it.maker&&x.maker)it.maker=x.maker;if(!it.rel){it.rel=r[0];it.year=+r[0].slice(0,4);if(!r[5])it.relx=true}
  if(!it.msrp&&r[3])it.msrp=r[3].replace(/\*$/," (estimated)");
- if(!it.cat)it.cat=CATMAP[ty]||"Other";
+ if(!it.cat)it.cat=CATMAP[ty]||"Computers";
  if(!it.text){it.text=[r[4],x.detail].filter(Boolean).join(" ")}
  var known={};var g=C.SPEC_TYPES[ty]||{};Object.keys(g).forEach(function(k){g[k].forEach(function(f){known[f]=1})});
  var sp=Object.assign({},it.specs||{});var src=Object.assign({},x.specs||{});
@@ -237,7 +237,7 @@ function collect(){var o=clone(editing.it),err=[],num=function(id,lo,hi,label){v
  if(!o.name)err.push("Name is required");
  var id=editing.i<0?slug(val("f_id")||o.name||""):editing.it.id;if(!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(id))err.push("The id needs lowercase letters, numbers and dashes");
  if(S.items.some(function(x,i){return x.id===id&&i!==editing.i}))err.push("Another item already uses the id "+id);
- o.id=id;if(!o.cat)o.cat=(C.SPEC_TYPES[o.type]&&o.type!=="Other"?o.type+"s":"Other");
+ o.id=id;if(!o.cat)o.cat=(CATMAP[o.type]||(C.SPEC_TYPES[o.type]&&o.type!=="Other"?o.type+"s":"Computers"));
  LISTS.forEach(function(f){var l=val("f_"+f[0]).split(",").map(function(t){return t.trim()}).filter(Boolean);if(l.length)o[f[0]]=l;else delete o[f[0]]});
  LONG.forEach(function(f){var v=host.querySelector("#f_"+f[0]).value.trim();if(v)o[f[0]]=v;else delete o[f[0]]});
  var cr=val("f_credit");if(cr)o.credit=cr;else delete o.credit;

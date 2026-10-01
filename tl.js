@@ -3,7 +3,8 @@
    Uses helpers from app.js (esc, fmtDate, dyear, pcFor, adArt, TLK, TLF, tlEntries, ITEMS, TL). */
 
 /* Approximate US consumer price index (CPI-U annual averages), used only for the "in today's money" hint. */
-var CPI={1974:49.3,1975:53.8,1976:56.9,1977:60.6,1978:65.2,1979:72.6,1980:82.4,1981:90.9,1982:96.5,1983:99.6,1984:103.9,1985:107.6,1986:109.6,1987:113.6,1988:118.3,1989:124.0,1990:130.7,1991:136.2,1992:140.3,1993:144.5,1994:148.2,1995:152.4,1996:156.9,1997:160.5,1998:163.0,1999:166.6,2000:172.2,2001:177.1,2002:179.9,2003:184.0,2004:188.9,2005:195.3,2006:201.6,2007:207.3,2008:215.3,2009:214.5,2010:218.1},CPI_NOW=322;
+var TLMIN=1972,TLMAX=2026;
+var CPI={1972:41.8,1973:44.4,1974:49.3,1975:53.8,1976:56.9,1977:60.6,1978:65.2,1979:72.6,1980:82.4,1981:90.9,1982:96.5,1983:99.6,1984:103.9,1985:107.6,1986:109.6,1987:113.6,1988:118.3,1989:124.0,1990:130.7,1991:136.2,1992:140.3,1993:144.5,1994:148.2,1995:152.4,1996:156.9,1997:160.5,1998:163.0,1999:166.6,2000:172.2,2001:177.1,2002:179.9,2003:184.0,2004:188.9,2005:195.3,2006:201.6,2007:207.3,2008:215.3,2009:214.5,2010:218.1},CPI_NOW=322;
 var TLGROUP={hw:"tech",pe:"tech",sw:"tech",p:"tech",gt:"games",gn:"games",gc:"games",e:"ind",i:"mus",m:"cult",w:"cult",u:"cult"};
 var TLGN={tech:["Tech","#0000aa"],games:["Games","#00aa00"],ind:["Industry","#aa0000"],mus:["Museum","#aa00aa"],cult:["Culture","#aa5500"]};
 var TLY=0,TLOPEN={},TLQ2="";
@@ -15,7 +16,7 @@ function tlRow(x){return x.k==="i"?[x.d,"i",x.i.name,x.i.msrp||"","",x.i.relx?""
 function osOfYear(y){var best=null;TL.forEach(function(r){if(r[1]==="sw"&&dyear(r[0])<=y&&/^(MS-DOS \d|PC DOS|Windows (1\.|3\.|95|98|2000|Me|XP|Vista|7)|Windows NT|Mac OS X|OS\/2)/.test(r[2])&&(!best||r[0]>=best[0]))best=r});return best}
 function nameKey(t){var w=String(t).replace(/[^A-Za-z0-9 ]/g," ").split(/\s+/).filter(Boolean);return w.length>1&&w[0].length>=4?(w[0]+" "+w[1]).toLowerCase():""}
 
-function tlChart(all,cur,mx){var y0=1974,y1=2010,W=22,H=86,by={},o='<svg class="tlc" viewBox="0 0 '+((y1-y0+1)*W)+' '+(H+16)+'" role="img" aria-label="Number of timeline entries per year, 1974 to 2010. Choose a bar to open that year.">';
+function tlChart(all,cur,mx){var y0=TLMIN,y1=TLMAX,W=22,H=86,by={},o='<svg class="tlc" viewBox="0 0 '+((y1-y0+1)*W)+' '+(H+16)+'" role="img" aria-label="Number of timeline entries per year, 1972 to 2026. Choose a bar to open that year.">';
  all.forEach(function(x){var y=dyear(x.d);if(y<y0||y>y1)return;var g=TLGROUP[x.k]||"cult";by[y]=by[y]||{};by[y][g]=(by[y][g]||0)+1});
  for(var y=y0;y<=y1;y++){var g=by[y]||{},tot=0,yy=H,x0=(y-y0)*W;Object.keys(g).forEach(function(k){tot+=g[k]});
   o+='<g class="tlbar'+(y===cur?" on":"")+'" data-y="'+y+'" tabindex="0" role="button" aria-label="'+y+': '+tot+' entries"><rect class="hit" x="'+x0+'" y="0" width="'+W+'" height="'+(H+16)+'" fill="transparent"/>';
@@ -77,11 +78,11 @@ var TLKEY=null;document.addEventListener("keydown",function(e){if(TLKEY&&locatio
 var PMK={hw:1,pe:1,sw:1,g:1},PMINF=0;
 function priceMap(all){var W=900,H=380,L=52,R=14,T=12,B=30,pts=[];
  all.forEach(function(x){var k=x.k==="i"?"i":x.k==="hw"?"hw":x.k==="pe"?"pe":x.k==="sw"?"sw":/^g/.test(x.k)?"g":"";if(!k||(k!=="i"&&!PMK[k]))return;var p=x.k==="i"?x.i.msrp:x.p,v=usdOf(p);if(!v)return;var y=dyear(x.d),mo=String(x.d).length>=7?+String(x.d).slice(5,7):6,xt=y+(mo-1)/12;if(PMINF&&CPI[y])v=v*CPI_NOW/CPI[y];pts.push({k:k,v:v,x:xt,t:x.k==="i"?x.i.name:x.t,p:p,est:x.k!=="i"&&/\*$/.test(p||"")})});
- var lo=Math.log10(5),hi=Math.log10(PMINF?100000:30000),sx=function(x){return L+(x-1974)/37*(W-L-R)},sy=function(v){return T+(1-(Math.log10(Math.max(5,v))-lo)/(hi-lo))*(H-T-B)};
+ var lo=Math.log10(5),hi=Math.log10(PMINF?100000:30000),sx=function(x){return L+(x-TLMIN)/(TLMAX-TLMIN)*(W-L-R)},sy=function(v){return T+(1-(Math.log10(Math.max(5,v))-lo)/(hi-lo))*(H-T-B)};
  var o='<div class="pmctl"><b>Show:</b> '+[["hw","Hardware"],["pe","Peripherals"],["sw","Software"],["g","Games"]].map(function(a){return'<label><input type="checkbox" data-pk="'+a[0]+'"'+(PMK[a[0]]?" checked":"")+'> '+a[1]+'</label>'}).join(" ")+' <label><input type="checkbox" data-pinf'+(PMINF?" checked":"")+'> In today\'s money (approximate)</label></div>';
  o+='<svg class="pmap" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Launch prices by release date, log scale. '+pts.length+' priced entries.">';
  [10,100,1000,10000,100000].forEach(function(v){if(v>Math.pow(10,hi))return;var y=sy(v);o+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+y.toFixed(1)+'" y2="'+y.toFixed(1)+'" class="g"/><text x="'+(L-6)+'" y="'+(y+4).toFixed(1)+'" text-anchor="end">$'+v.toLocaleString("en-US")+'</text>'});
- for(var yr=1975;yr<=2010;yr+=5){var X=sx(yr);o+='<line x1="'+X.toFixed(1)+'" x2="'+X.toFixed(1)+'" y1="'+T+'" y2="'+(H-B)+'" class="g"/><text x="'+X.toFixed(1)+'" y="'+(H-10)+'" text-anchor="middle">'+yr+'</text>'}
+ for(var yr=1975;yr<=TLMAX;yr+=5){var X=sx(yr);o+='<line x1="'+X.toFixed(1)+'" x2="'+X.toFixed(1)+'" y1="'+T+'" y2="'+(H-B)+'" class="g"/><text x="'+X.toFixed(1)+'" y="'+(H-10)+'" text-anchor="middle">'+yr+'</text>'}
  pts.forEach(function(p){var c=p.k==="hw"?"#0000aa":p.k==="pe"?"#008888":p.k==="sw"?"#aa0000":p.k==="g"?"#00aa00":"#aa00aa",X=sx(p.x).toFixed(1),Y=sy(p.v).toFixed(1);
   o+='<g class="pm" data-go="'+esc(p.t)+'" tabindex="0" role="button" aria-label="'+esc(p.t)+', '+esc(p.p)+'">'+(p.k==="i"?'<path d="M'+X+' '+(Y-7)+'l2 5 5 .5-4 3.5 1.3 5.2-4.3-3-4.3 3 1.3-5.2-4-3.5 5-.5z" fill="'+c+'" stroke="#fff" stroke-width=".8"/>':'<circle cx="'+X+'" cy="'+Y+'" r="4" fill="'+(p.est?"#fff":c)+'" stroke="'+c+'" stroke-width="1.6"/>')+'<title>'+esc(p.t)+": "+esc(p.p)+(PMINF?" (about $"+Math.round(p.v).toLocaleString("en-US")+" today)":"")+'</title></g>'});
  o+='</svg>';
@@ -97,14 +98,14 @@ function trailView(){var rows=trailRows();if(!rows.length)return'<div class="tls
 function timeline(y,jt){
  var all=tlAllEntries(),bym={};all.forEach(function(x){var yy=dyear(x.d);bym[yy]=(bym[yy]||0)+1});
  var mx=Math.max.apply(null,Object.keys(bym).map(function(k){return bym[k]}));
- var Y=+y;if(Y>=1970&&Y<=2010)TLY=Y;else if(!TLY)TLY=1993;TLY=Math.max(1974,Math.min(2010,TLY));
+ var Y=+y;if(Y>=1970&&Y<=TLMAX)TLY=Y;else if(!TLY)TLY=1993;TLY=Math.max(TLMIN,Math.min(TLMAX,TLY));
  window.__tlall=all;var ORD={};all.forEach(function(x,i){x._id=i});if(jt)window.TLJUMP=jt;
  app.innerHTML='<section class="tlw"><div class="tlwin"><div class="tlbar-t"><span>TIMELINE.EXE - <b id="tlt">'+TLY+'</b></span><span class="tlbtn" aria-hidden="true">_ &#9633; x</span></div>'
   +'<div class="tlbody"><p class="tlintro">The machines, the games, the movies, the industry and the world, side by side. Pick a year on the chart or drag the slider. Click any entry to open it. An asterisk (*) means I could not confirm the date or price against a source.</p>'
   +'<div class="tltabs" role="group" aria-label="Timeline views"><button class="btn" type="button" data-m="year">'+px("clock",14)+'Year view</button><button class="btn" type="button" data-m="price">'+px("coin",14)+'Price map</button><button class="btn" type="button" data-m="games">'+px("gamepad",14)+'Games by system</button><button class="btn" type="button" data-m="periph">'+px("mouse",14)+'Peripherals</button><button class="btn" type="button" data-m="trail" id="tltrailb">My trail</button></div><div id="tlyr">'
   +'<div class="tlchartw">'+tlChart(all,TLY,mx)+'</div>'
   +'<div class="tlkey">'+Object.keys(TLGN).map(function(k){return'<span><i style="background:'+TLGN[k][1]+'"></i>'+TLGN[k][0]+'</span>'}).join("")+'</div>'
-  +'<div class="tlnav"><button class="btn" id="tlprev" type="button">&#9664; Prev</button><input id="tlr" type="range" min="1974" max="2010" step="1" value="'+TLY+'" aria-label="Year"><button class="btn" id="tlnext" type="button">Next &#9654;</button></div>'
+  +'<div class="tlnav"><button class="btn" id="tlprev" type="button">&#9664; Prev</button><input id="tlr" type="range" min="'+TLMIN+'" max="'+TLMAX+'" step="1" value="'+TLY+'" aria-label="Year"><button class="btn" id="tlnext" type="button">Next &#9654;</button></div>'
   +'<div class="tlrow"><button class="btn" id="tlrand" type="button">Beam me to a random moment</button><button class="btn" id="tlotd" type="button">On this day</button><input id="tlq" type="search" placeholder="Search all years" aria-label="Search the timeline" value="'+esc(TLQ2)+'"></div>'
   +'<p class="tlflt"><label><input type="checkbox" data-x="price"'+(TLX2.price?" checked":"")+'> Has a price</label> <label><input type="checkbox" data-x="conf"'+(TLX2.conf?" checked":"")+'> Confirmed dates only</label> <label><input type="checkbox" data-x="conn"'+(TLX2.conn?" checked":"")+'> Has connections</label></p></div>'
   +'<div id="tlotdbox" hidden></div><div id="tlmain"></div></div><div class="tlfoot"><span>Best viewed at 800 x 600 in 256 colors</span><span id="tlcount"></span></div></div></section>';
@@ -135,7 +136,7 @@ function timeline(y,jt){
   main.querySelectorAll("input[data-f]").forEach(function(c){c.onchange=function(){TLF[c.dataset.f]=c.checked?1:0;draw()}});
   document.querySelectorAll(".tlbar").forEach(function(g){g.classList.toggle("on",+g.dataset.y===TLY&&!q)});
   document.getElementById("tlr").value=TLY}
- function setYear(v,keepQ){TLY=Math.max(1974,Math.min(2010,v));if(!keepQ){TLQ2="";document.getElementById("tlq").value=""}try{history.replaceState(null,"","#/timeline/"+TLY)}catch(e){}draw();window.scrollTo(0,document.querySelector(".tlw").offsetTop)}
+ function setYear(v,keepQ){TLY=Math.max(TLMIN,Math.min(TLMAX,v));if(!keepQ){TLQ2="";document.getElementById("tlq").value=""}try{history.replaceState(null,"","#/timeline/"+TLY)}catch(e){}draw();window.scrollTo(0,document.querySelector(".tlw").offsetTop)}
  document.querySelector(".tlchartw").addEventListener("click",function(e){var g=e.target.closest(".tlbar");if(g)setYear(+g.dataset.y)});
  document.querySelector(".tlchartw").addEventListener("keydown",function(e){var g=e.target.closest&&e.target.closest(".tlbar");if(g&&(e.key==="Enter"||e.key===" ")){e.preventDefault();setYear(+g.dataset.y)}});
  document.getElementById("tlprev").onclick=function(){setYear(TLY-1)};document.getElementById("tlnext").onclick=function(){setYear(TLY+1)};

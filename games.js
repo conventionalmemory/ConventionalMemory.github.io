@@ -1,9 +1,9 @@
 // Games on the timeline: release dates by system, system requirements, the Games tab and the Rig checker.
 // Data lives in games-data.js (GX). Everything here is display code; all text goes through esc().
-var GXFAM={DOS:"pc",Windows:"pc",Mac:"pc",Linux:"pc","PC-98":"pc","FM Towns":"pc","Apple II":"micro","Commodore 64":"micro",Amiga:"micro","Atari ST":"micro","Atari 8-bit":"micro","ZX Spectrum":"micro","TRS-80":"micro",
- NES:"con",SNES:"con",Genesis:"con","Master System":"con","TurboGrafx-16":"con",Saturn:"con",PlayStation:"con",N64:"con",Dreamcast:"con",PS2:"con",GameCube:"con",Xbox:"con","Xbox 360":"con",PS3:"con",Wii:"con","Atari 2600":"con",
- "Game Boy":"hand","Game Boy Color":"hand","Game Boy Advance":"hand",DS:"hand",PSP:"hand",iOS:"hand",Arcade:"arc",Other:"oth"};
-var GXFAMN={pc:"PC",micro:"Home computer",con:"Console",hand:"Handheld",arc:"Arcade",oth:"Other"};
+var GXFAM={DOS:"pc",Windows:"pc",Mac:"pc",Linux:"pc","PC-98":"pc","FM Towns":"pc","PC-88":"pc","FM-7":"pc","Sharp X1":"pc","Sharp X68000":"pc",Unix:"pc","Apple II":"micro","Apple IIgs":"micro","Commodore 64":"micro","VIC-20":"micro",Amiga:"micro","Atari ST":"micro","Atari 8-bit":"micro","ZX Spectrum":"micro","TRS-80":"micro","BBC Micro":"micro","Amstrad CPC":"micro",MSX:"micro",MSX2:"micro","Elektronika 60":"micro",
+ NES:"con",Famicom:"con","Famicom Disk System":"con",SNES:"con",Genesis:"con","Sega CD":"con","32X":"con","Master System":"con","SG-1000":"con","TurboGrafx-16":"con","PC Engine":"con","TurboGrafx-CD":"con","Neo Geo":"con",Saturn:"con",PlayStation:"con",N64:"con",Dreamcast:"con",PS2:"con",GameCube:"con",Xbox:"con","Xbox 360":"con",PS3:"con",Wii:"con","Wii U":"con","Atari 2600":"con","Atari 5200":"con","Atari 7800":"con",ColecoVision:"con",Intellivision:"con","3DO":"con",Jaguar:"con","Jaguar CD":"con","CD-i":"con","Amiga CD32":"con","PC-FX":"con",Zeebo:"con",
+ "Game Boy":"hand","Game Boy Color":"hand","Game Boy Advance":"hand",DS:"hand","3DS":"hand",PSP:"hand","Game Gear":"hand","Atari Lynx":"hand","Virtual Boy":"hand","N-Gage":"hand",iOS:"mob",Android:"mob",Browser:"mob","Facebook (browser)":"mob",Arcade:"arc"};
+var GXFAMN={pc:"PC",micro:"Home computer",con:"Console",hand:"Handheld",arc:"Arcade",mob:"Mobile and web",oth:"Unlisted system"};
 var GXREG={NA:"North America",JP:"Japan",EU:"Europe",AU:"Australia",WW:"Worldwide"};
 var GXRIGS=[
  {n:"1981 IBM PC",y:1981,cls:1,mhz:4.77,ram:0.256,vram:0},{n:"1984 IBM PC/AT",y:1984,cls:2,mhz:8,ram:0.5,vram:0.128},{n:"1987 386 PC",y:1987,cls:3,mhz:20,ram:2,vram:0.256},
@@ -21,7 +21,7 @@ function gxPlats(x){var s={},o=[];x.r.forEach(function(r){if(!s[r[0]]){s[r[0]]=1
 // First PC release (DOS, Windows, Mac, Linux, PC-98, FM Towns); PC is what this site cares about most.
 function gxPc(x){for(var i=0;i<x.r.length;i++)if(gxFam(x.r[i][0])==="pc")return x.r[i];return null}
 function gxDebut(x){return gxPc(x)||x.r[0]}
-function gxChip(p,btn){var f=gxFam(p);return'<'+(btn?'button type="button" data-gxp="'+esc(p)+'"':'span')+' class="pf pf-'+f+'" title="'+esc(GXFAMN[f])+'">'+(typeof pxPlat==="function"?pxPlat(p,11):"")+esc(p==="Other"?"Other system":p)+'</'+(btn?'button':'span')+'>'}
+function gxChip(p,btn){var f=gxFam(p);return'<'+(btn?'button type="button" data-gxp="'+esc(p)+'"':'span')+' class="pf pf-'+f+'" title="'+esc(GXFAMN[f])+'">'+(typeof pxPlat==="function"?pxPlat(p,11):"")+esc(p)+'</'+(btn?'button':'span')+'>'}
 function gxRam(v){return v==null?"":v<1?Math.round(v*1024)+" KB":v+" MB"}
 function gxDisk(v){return v==null?"":v>=1024?(Math.round(v/102.4)/10)+" GB":v+" MB"}
 function gxMaxDelay(x){if(!x||x.r.length<2)return 0;var f=x.r[0][1],mx=0;x.r.forEach(function(r){mx=Math.max(mx,gxMo(r[1])-gxMo(f))});return mx}
@@ -75,7 +75,7 @@ function gxFilter(L){var q=GXS.q.trim().toLowerCase();return L.filter(function(g
 function gxSort(L){var s=GXS.sort,c={date:function(a,b){return a.first[1]<b.first[1]?-1:a.first[1]>b.first[1]?1:0},title:function(a,b){return a.t<b.t?-1:1},most:function(a,b){return b.pl.length-a.pl.length},wait:function(a,b){return b.delay-a.delay},ram:function(a,b){return(a.x.n&&a.x.n.ramMB!=null?a.x.n.ramMB:1e9)-(b.x.n&&b.x.n.ramMB!=null?b.x.n.ramMB:1e9)}};return L.slice().sort(c[s]||c.date)}
 function gxHeat(L,fam){var P={},ys={};L.forEach(function(g){g.x.r.forEach(function(r){if(fam&&gxFam(r[0])!==fam)return;var y=+r[1].slice(0,4);P[r[0]]=P[r[0]]||{};P[r[0]][y]=(P[r[0]][y]||0)+1;ys[y]=1})});
  var plats=Object.keys(P).sort(function(a,b){var fa=["pc","micro","con","hand","arc","oth"].indexOf(gxFam(a)),fb=["pc","micro","con","hand","arc","oth"].indexOf(gxFam(b));if(fa!==fb)return fa-fb;var ta=0,tb=0;for(var k in P[a])ta+=P[a][k];for(var k2 in P[b])tb+=P[b][k2];return tb-ta});
- if(!plats.length)return"";var y0=1976,y1=2010,W=900,Lm=118,cw=(W-Lm-8)/(y1-y0+1),rh=15,H=plats.length*rh+26,mx=0;plats.forEach(function(p){for(var k in P[p])mx=Math.max(mx,P[p][k])});
+ if(!plats.length)return"";var y0=1976,y1=2026,W=900,Lm=118,cw=(W-Lm-8)/(y1-y0+1),rh=15,H=plats.length*rh+26,mx=0;plats.forEach(function(p){for(var k in P[p])mx=Math.max(mx,P[p][k])});
  var o='<svg class="gxheat" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Games released per system per year. Click a cell to filter the list.">';
  for(var y=y0;y<=y1;y+=2)o+='<text x="'+(Lm+(y-y0)*cw+cw/2).toFixed(1)+'" y="11" text-anchor="middle">'+String(y).slice(2)+'</text>';
  plats.forEach(function(p,i){var yy=20+i*rh;o+='<text x="'+(Lm-5)+'" y="'+(yy+11)+'" text-anchor="end" class="gxpl'+(GXS.p===p?" on":"")+'" data-gxp="'+esc(p)+'">'+esc(p)+'</text>';

@@ -92,7 +92,8 @@ var app=document.getElementById("app");
 // Placeholder text left in sample entries ("Sample: ...", "Example: ...") is never shown to visitors.
 function ph(v){return typeof v==="string"&&/^(sample|example)\b/i.test(v.trim())}
 function unex(v){return typeof v==="string"?v.replace(/^(example|sample)( entry)?[:.]\s*/i,""):v}
-function prepItems(){ITEMS.forEach(function(it){if(!it.cat)it.cat="Other";if(!it.maker)it.maker="Unknown";if(!it.year&&it.rel)it.year=+String(it.rel).slice(0,4);
+function guessCat(it){var t=(it.name+" "+(it.text||"")).toLowerCase(),m={"Computer":"Computers","Console or handheld":"Consoles and handhelds","Expansion card":"Expansion cards","Sound or MIDI":"Sound and MIDI","Peripheral":"Peripherals","Storage":"Storage","Monitor":"Monitors","Printer":"Printers","Game or software":"Games and software"};if(it.type&&m[it.type])return m[it.type];return/console|game boy|playstation|nintendo|sega|atari/.test(t)?"Consoles and handhelds":/sound|midi|synth/.test(t)?"Sound and MIDI":/keyboard|mouse|joystick|modem|scanner|webcam/.test(t)?"Peripherals":/game|software|program/.test(t)?"Games and software":/disk|drive|tape|storage/.test(t)?"Storage":"Computers"}
+function prepItems(){ITEMS.forEach(function(it){if(!it.cat||it.cat==="Other")it.cat=guessCat(it);if(!it.maker)it.maker="Unknown";if(!it.year&&it.rel)it.year=+String(it.rel).slice(0,4);
  ["got","thoughts","cond","acquired"].forEach(function(k){if(ph(it[k])){if(/^(sample|example):/i.test(it[k].trim())&&k!=="thoughts"&&k!=="got"){it[k]=unex(it[k])}else delete it[k]}});
  if(it.text)it.text=unex(it.text);
  if(it.credit&&/replace it with/i.test(it.credit))it.credit="Illustration";
@@ -119,13 +120,13 @@ function home(){
  var n=ITEMS.length,pct=Math.max(1,n/640*100),sc=ITEMS.filter(function(i){return i.score!=null});
  var avg=sc.length?Math.round(sc.reduce(function(a,i){return a+i.score},0)/sc.length):0;
  var old=ITEMS.slice().sort(function(a,b){return a.year-b.year})[0],top=sc.slice().sort(function(a,b){return b.score-a.score})[0];
- var decs=[1970,1980,1990,2000].map(function(d){return '<a class="btn" href="#/timeline/'+(d===1970?1977:d+5)+'">'+d+'s</a>'}).join(" ");
+ var decs=[1970,1980,1990,2000,2010,2020].map(function(d){return '<a class="btn" href="#/timeline/'+(d===1970?1977:d+5)+'">'+d+'s</a>'}).join(" ");
  app.innerHTML='<div class="mq"><span>'+esc(MQ[Math.floor(Math.random()*MQ.length)])+'</span></div>'
  +'<div class="hero"><h1>Conventional Memory</h1><p>Vintage computers and the people who kept them running. Watch the videos, then browse every item in the museum, with photos, audio and the story behind each one.</p>'+socials()+'</div>'
  +'<nav class="hm-tiles" aria-label="Start here">'+tile("#/catalog",n+" items","Browse the catalog","pri","tower")+tile("#/timeline",TL.length+"+ entries","Explore the timeline","","clock")+tile("#/scale","0K to 640K","How items are rated","","star")+tile("#/wanted","Wanted","Help me find these","","gem")+tile("#/random","Surprise me","Load a random item","","dice")+tile("#/follow","Follow","Videos on 4 platforms","","tv")+'</nav>'
  +daily()
  +'<section><h2>Latest in the catalog</h2><div class="grid">'+ITEMS.slice(-4).reverse().map(card).join("")+'</div><p><a class="btn pri" href="#/catalog">Browse the full catalog</a></p></section>'
- +'<section><h2>Travel through time</h2><p>'+TL.length+' dated entries from 1974 to 2010: computers, games, movies and the industry, side by side. Jump to a decade or a year.</p><p class="chips">'+decs+' <a class="btn" href="#/timeline">Open the timeline</a></p>'+otdInner()+'</section>'
+ +'<section><h2>Travel through time</h2><p>'+TL.length+' dated entries from 1972 to 2026: computers, games, movies and the industry, side by side. Jump to a decade or a year.</p><p class="chips">'+decs+' <a class="btn" href="#/timeline">Open the timeline</a></p>'+otdInner()+'</section>'
  +'<section><h2>The museum so far</h2><div class="mem" role="img" aria-label="'+n+' items cataloged"><div class="bar"><i style="width:'+pct+'%"></i></div><small>'+n+'K used, '+(640-n)+'K free. One item cataloged per K.</small></div><div class="stats"><div><b>'+n+'</b>items</div><div><b>'+(sc.length?avg+'K':'none')+'</b>average score</div><div><b>'+(old?old.year:'none')+'</b>oldest item</div>'+(top?'<div><b><a href="#/item/'+top.id+'">'+esc(top.name)+'</a></b>top rated, '+top.score+'K</div>':'')+'</div></section>'
  +recentHtml()+nowHtml()+qodHtml()+contactHtml()}
 function cardBack(it){var sp=(typeof pickSpecs==="function"?pickSpecs(it,it.type):[]).slice(0,3);return'<div class="fl-b"><b>'+esc(it.name)+'</b>'+(it.score!=null?'<div class="fl-s"><i style="width:'+(it.score/640*100)+'%;background:'+tier(it.score).c+'"></i></div><small>'+esc(tier(it.score).l)+' &middot; '+it.score+'K</small>':'')+(sp.length?'<dl>'+sp.map(function(x){return'<dt>'+esc(x[0])+'</dt><dd>'+esc(String(x[1]).slice(0,30))+'</dd>'}).join("")+'</dl>':'<p>'+esc((it.text||"").slice(0,110))+'</p>')+'<span class="fl-go">Open exhibit &raquo;</span></div>'}

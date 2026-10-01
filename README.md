@@ -9,8 +9,8 @@ A retro DOS-style museum catalog, timeline and trivia game. It is a plain static
 | `index.html` | The page shell, styles and security policy |
 | `app.js` | The site code. Socials, wanted list and settings are at the top |
 | `items.js` | The museum items. Rewritten by the Admin page |
-| `timeline-data.js` | The timeline (about 1,650 dated entries, 1974 to 2010) |
-| `games-data.js` | Per-system release dates, genre and PC requirements for about 530 games |
+| `timeline-data.js` | The timeline (about 1,900 dated entries, 1972 to 2026), including roughly 215 video game consoles and handhelds (kind `hw`, TLX type "Console or handheld") |
+| `games-data.js` | Per-system release dates, genre and PC requirements for about 610 games. Every release names its real system (no "Other"); unidentified ports were dropped rather than mislabeled |
 | `games.js` | Games views: system chips, release-by-system table, requirements, the Games by system tab, the Rig checker |
 | `timeline-extra.js` | Extra detail per timeline entry: maker, specs, description, connections. Used by the timeline, the game and the admin autofill |
 | `catalog.js` | The interactive catalog (chips, score slider, Cards, Shelf, Time machine and DIR views) |

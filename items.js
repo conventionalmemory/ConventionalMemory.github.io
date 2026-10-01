@@ -274,10 +274,10 @@ var ITEMS=[
   "text": "Sample entry. A MIDI sound module many DOS games were written to support."
  },
  {
-  "type": "Other",
+  "type": "Computer",
   "photos": [],
   "id": "ibm-personal-computer",
-  "cat": "Other",
+  "cat": "Computers",
   "videos": [],
   "audio": [],
   "maker": "International Business Machines (IBM)",

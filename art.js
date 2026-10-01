@@ -197,7 +197,7 @@ function badgeArt(r,w,h,uid){var R=rng(hstr(r[2])),c=pickA(R,["#aa0000","#0000aa
  return artSvg(w,h,"Generated badge art for "+r[2],o)}
 /* the single entry point: art for a timeline row [date,kind,title,price,note,source] */
 function artFor(r,w,h,uid){var k=r[1];
- if(k==="hw"||k==="pe"||k==="p"){var e=typeof TLX!=="undefined"?TLX[r[2]]:null;return prodSvg({name:r[2],cat:(e&&e.sub)||(k==="pe"?"":"desktop computer"),type:"",model:""},w,h,uid)}
+ if(k==="hw"||k==="pe"||k==="p"){var e=typeof TLX!=="undefined"?TLX[r[2]]:null;var ct=(e&&e.sub)||(k==="pe"?"":"desktop computer");if(e&&e.type==="Console or handheld")ct=/handheld/i.test(e.sub||"")||/game boy|game gear|lynx|portable|pocket|vita|3ds|switch lite|deck|ally/i.test(r[2])?"handheld game console":"game console";else if(e&&/^(Processor)$/.test(e.type))ct="processor";else if(e&&e.type==="Handheld computer")ct="pda";else if(e&&e.type==="Phone")ct="cell phone";else if(e&&e.type==="Tablet")ct="tablet";return prodSvg({name:r[2],cat:ct,type:"",model:""},w,h,uid)}
  if(k==="gt"||k==="gn"||k==="gc")return gameArt(r,w,h,uid);
  if(k==="sw")return swArt(r,w,h,uid);if(k==="m")return posterArt(r,w,h,uid);if(k==="w"||k==="u")return newsArt(r,w,h,uid);if(k==="e")return badgeArt(r,w,h,uid);
  return gameArt(r,w,h,uid)}
