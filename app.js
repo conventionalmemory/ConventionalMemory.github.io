@@ -142,7 +142,7 @@ function cardBack(it){var sp=(typeof pickSpecs==="function"?pickSpecs(it,it.type
 /* Source badge for items bought online. Neutral text label with an original pixel gavel; the sites' real logos are trademarks, so they are not drawn. */
 var SRCN={ebay:"eBay",shopgoodwill:"ShopGoodwill"};
 function srcBadge(it,big){if(!it||!SRCN[it.src])return"";var n=SRCN[it.src];return'<span class="srcb srcb-'+it.src+(big?' big':'')+'" title="Purchased on '+n+'"><svg viewBox="0 0 12 12" width="'+(big?18:12)+'" height="'+(big?18:12)+'" aria-hidden="true" shape-rendering="crispEdges"><path d="M2 1h4v1h1v3H6v1H2V5H1V2h1z" fill="currentColor"/><path d="M6 5h1v1h1v1H7V6H6zM7 7h1v1h1v1h1v1H9V9H8V8H7z" fill="currentColor"/><path d="M1 11h6v1H1z" fill="currentColor"/></svg><b>Bought on '+n+'</b></span>'}
-function card(it){return '<a class="card fl" href="#/item/'+it.id+'"><div class="fl-in"><div class="fl-f"><div class="ph">'+pic(it)+'</div><div class="t"><h3>'+(typeof pxCat==="function"?pxCat(it.cat,16):"")+esc(it.name)+'</h3><p>'+esc(it.maker)+(it.year?', '+it.year:"")+(it.score!=null?'<span class="tag">'+it.score+'K</span>':'')+(it.status?'<span class="tag">'+esc(it.status)+'</span>':'')+(it.qty>1?'<span class="tag">x'+it.qty+'</span>':'')+'</p>'+srcBadge(it)+'</div></div>'+cardBack(it)+'</div></a>'}
+function card(it){return '<a class="card fl" href="#/item/'+it.id+'"><div class="fl-in"><div class="fl-f"><div class="ph">'+pic(it)+'</div><div class="t"><h3 title="'+esc(it.name)+'">'+(typeof pxCat==="function"?pxCat(it.cat,16):"")+esc(it.name)+'</h3><p>'+esc(it.maker)+(it.year?', '+it.year:"")+(it.score!=null?'<span class="tag">'+it.score+'K</span>':'')+(it.status?'<span class="tag">'+esc(it.status)+'</span>':'')+(it.qty>1?'<span class="tag">x'+it.qty+'</span>':'')+'</p>'+srcBadge(it)+'</div></div>'+cardBack(it)+'</div></a>'}
 var MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 function fmtDate(d){var p=String(d).split("-");return p.length===3?MON[+p[1]-1]+" "+(+p[2])+", "+p[0]:p.length===2?MON[+p[1]-1]+" "+p[0]:p[0]}
 function dyear(d){return +String(d).slice(0,4)}
@@ -290,7 +290,7 @@ function dos(it){return(it.name.toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,8
 function dpath(it){return "C:\\MUSEUM\\"+(it.cat.toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,8)||"MISC")+"\\"+dos(it)}
 function dlg(msg,btns){app.innerHTML='<section><div class="dlg"><div class="tb">Error</div><p>'+msg+'</p><p>'+btns+'</p></div></section>'}
 function dir(list){var t=" Volume in drive C is CONVMEM\n Directory of C:\\MUSEUM\n\n";
- list.forEach(function(i){t+='<a href="#/item/'+i.id+'">'+dos(i).padEnd(12)+'</a> '+(i.score!=null?String(i.score).padStart(4)+"K":"   --")+"  "+String(i.year).padEnd(5)+esc(i.name)+"\n"});
+ list.forEach(function(i){t+='<a href="#/item/'+i.id+'">'+dos(i).padEnd(12)+'</a> '+(i.score!=null?String(i.score).padStart(4)+"K":"   --")+"  "+String(i.year||"").padEnd(5)+esc(i.name)+"\n"});
  return '<div class="scr"><pre class="dir">'+t+"\n   "+list.length+" file(s)</pre></div>"}
 function mem(){var cats={};ITEMS.forEach(function(i){(cats[i.cat]=cats[i.cat]||[]).push(i)});
  function bar(v){var n=Math.round(v/640*10);return "\u2588".repeat(n)+"\u2591".repeat(10-n)}

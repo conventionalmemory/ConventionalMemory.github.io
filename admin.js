@@ -85,8 +85,8 @@ function bump(){clearTimeout(idle);if(tok)idle=setTimeout(function(){if(S&&S.dir
 function save(){if(!S||busy)return;busy=true;note={t:"ok",m:"Saving to GitHub..."};render();
  var chain=Promise.resolve();
  S.photos.forEach(function(p){chain=chain.then(function(){return gh(repo()+"/contents/"+p.path,{method:"PUT",body:{message:"Admin: add photo "+p.path,content:p.b64,branch:C.REPO.branch}}).then(function(r){if(!r.ok&&r.status!==422)throw new Error(errText(r))})})});
- chain.then(function(){var body={message:"Admin: update catalog ("+S.items.length+" items)",content:b64enc(serialize(S.items)),branch:C.REPO.branch};if(S.sha)body.sha=S.sha;return gh(repo()+"/contents/"+FILE,{method:"PUT",body:body})})
- .then(function(r){if(!r.ok)throw new Error(errText(r));S.sha=r.json.content.sha;return putTle()}).then(function(){try{alog(diffItems(),S.photos.length)}catch(e){}S.orig=clone(S.items);view="list";S.dirty=false;S.qn=0;S.photos=[];S.created=false;
+ chain.then(function(){if(!S.photos.length&&!S.created&&JSON.stringify(S.items)===JSON.stringify(S.orig))return{ok:true,skip:true};var body={message:"Admin: update catalog ("+S.items.length+" items)",content:b64enc(serialize(S.items)),branch:C.REPO.branch};if(S.sha)body.sha=S.sha;return gh(repo()+"/contents/"+FILE,{method:"PUT",body:body})})
+ .then(function(r){if(!r.ok)throw new Error(errText(r));if(!r.skip)S.sha=r.json.content.sha;return putTle()}).then(function(){try{alog(diffItems(),S.photos.length)}catch(e){}S.orig=clone(S.items);view="list";S.dirty=false;S.qn=0;S.photos=[];S.created=false;
    C.ITEMS.length=0;S.items.forEach(function(i){if(!i.draft)C.ITEMS.push(clone(i))});try{window.ALLITEMS=S.items.map(clone);window.DRAFTS=S.items.filter(function(i){return i.draft})}catch(e){}C.prep();
    note={t:"ok",m:"Saved. The public site updates in a minute or two. Refresh it then to see the change."}})
  .catch(function(e){note={t:"err",m:String(e.message||e)}}).then(function(){busy=false;render()})}

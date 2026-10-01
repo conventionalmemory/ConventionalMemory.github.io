@@ -367,7 +367,7 @@ var ITEMS=[
  {
   "id": "ibm-5150-for-parts-or-repair",
   "type": "Computer",
-  "name": "IBM 5150 (for parts or repair)",
+  "name": "IBM 5150",
   "cat": "Computers",
   "maker": "IBM",
   "model": "5150",
@@ -393,7 +393,7 @@ var ITEMS=[
  {
   "id": "apple-m7332-45w-power-adapter-for-parts",
   "type": "Peripheral",
-  "name": "Apple M7332 45W power adapter (for parts)",
+  "name": "Apple M7332 45W power adapter",
   "cat": "Cables and adapters",
   "maker": "Apple",
   "model": "M7332",
@@ -493,7 +493,7 @@ var ITEMS=[
  {
   "id": "intel-play-qx3-computer-microscope-open-box",
   "type": "Peripheral",
-  "name": "Intel Play QX3+ Computer Microscope (open box)",
+  "name": "Intel Play QX3+ Computer Microscope",
   "cat": "Peripherals",
   "maker": "Intel Play",
   "year": 2001,
@@ -544,7 +544,7 @@ var ITEMS=[
  {
   "id": "impact-m4896-ac-adapter-24-v-1-87-a-45-w",
   "type": "Peripheral",
-  "name": "Impact M4896 AC adapter (24 V, 1.87 A, 45 W)",
+  "name": "Impact M4896 AC adapter",
   "cat": "Cables and adapters",
   "maker": "Impact",
   "model": "M4896",
@@ -566,7 +566,7 @@ var ITEMS=[
  {
   "id": "vintage-5-port-metal-power-center-with-fax-modem-ports",
   "type": "Peripheral",
-  "name": "Vintage 5-port metal power center with fax/modem ports",
+  "name": "5-port metal power center",
   "cat": "Power protection",
   "maker": "Unknown",
   "qty": 1,
@@ -609,7 +609,7 @@ var ITEMS=[
  {
   "id": "relocatable-power-tap-pc-0061-surge-suppressor",
   "type": "Peripheral",
-  "name": "Relocatable power tap PC-0061 (surge suppressor)",
+  "name": "Relocatable power tap PC-0061",
   "cat": "Power protection",
   "maker": "Unbranded",
   "model": "PC-0061",
@@ -729,7 +729,7 @@ var ITEMS=[
  {
   "id": "roland-ma-12c-powered-micro-monitor-speakers-pair",
   "type": "Sound or MIDI",
-  "name": "Roland MA-12C powered micro monitor speakers (pair)",
+  "name": "Roland MA-12C micro monitor speakers",
   "cat": "MIDI",
   "maker": "Roland",
   "model": "MA-12C",
@@ -797,7 +797,7 @@ var ITEMS=[
  {
   "id": "doom-ii-big-box-ibm-pc-3-5-inch-floppies",
   "type": "Game or software",
-  "name": "Doom II Big Box (IBM PC, 3.5-inch floppies)",
+  "name": "Doom II Big Box",
   "cat": "Games and software",
   "maker": "id Software",
   "qty": 1,
@@ -819,7 +819,7 @@ var ITEMS=[
  {
   "id": "doom-gold-medallion-shareware-3-5-inch-floppies",
   "type": "Game or software",
-  "name": "DOOM Gold Medallion shareware (3.5-inch floppies)",
+  "name": "DOOM Gold Medallion shareware",
   "cat": "Games and software",
   "maker": "id Software",
   "qty": 1,
@@ -841,7 +841,7 @@ var ITEMS=[
  {
   "id": "hp-200lx-palmtop-2-mb-dos-with-accessories",
   "type": "Computer",
-  "name": "HP 200LX Palmtop (2 MB, DOS) with accessories",
+  "name": "HP 200LX Palmtop",
   "cat": "Computers",
   "maker": "Hewlett Packard",
   "model": "200LX",
@@ -909,7 +909,7 @@ var ITEMS=[
  {
   "id": "kodak-serial-cable-dc40-dc50-dc120-dc240-dc2800",
   "type": "Peripheral",
-  "name": "Kodak serial cable (DC40, DC50, DC120, DC240, DC2800)",
+  "name": "Kodak digital camera serial cable",
   "cat": "Cables and adapters",
   "maker": "PCCABLES.com",
   "model": "PCC-87001",
@@ -979,7 +979,7 @@ var ITEMS=[
  {
   "id": "sony-mavica-mvc-fd200-for-parts",
   "type": "Peripheral",
-  "name": "Sony Mavica MVC-FD200 (for parts)",
+  "name": "Sony Mavica MVC-FD200 (parts unit)",
   "cat": "Cameras",
   "maker": "Sony",
   "model": "MVC-FD200",
@@ -1052,7 +1052,7 @@ var ITEMS=[
  {
   "id": "lexar-128-mb-memory-stick-full-size",
   "type": "Storage",
-  "name": "Lexar 128 MB Memory Stick (full-size)",
+  "name": "Lexar 128 MB Memory Stick",
   "cat": "Storage",
   "maker": "Lexar",
   "qty": 1,
@@ -1074,7 +1074,7 @@ var ITEMS=[
  {
   "id": "floppy-disk-lot-with-locking-storage-file-50-disks",
   "type": "Storage",
-  "name": "Floppy disk lot with locking storage file (50 disks)",
+  "name": "Floppy disk lot (50 disks)",
   "cat": "Storage",
   "maker": "Unbranded",
   "qty": 1,
@@ -1205,7 +1205,7 @@ var ITEMS=[
  {
   "id": "commodore-64-serial-cable-6-pin-din-for-1541-1571-c128",
   "type": "Peripheral",
-  "name": "Commodore 64 serial cable (6-pin DIN) for 1541, 1571, C128",
+  "name": "Commodore serial cable (6-pin DIN)",
   "cat": "Cables and adapters",
   "maker": "Commodore",
   "qty": 1,
@@ -1292,7 +1292,7 @@ var ITEMS=[
  {
   "id": "sharp-lq61d133-lcd-panel-used-and-tested",
   "type": "Monitor",
-  "name": "Sharp LQ61D133 LCD panel (used and tested)",
+  "name": "Sharp LQ61D133 LCD panel",
   "cat": "Displays",
   "maker": "Sharp",
   "model": "LQ61D133",
@@ -1315,7 +1315,7 @@ var ITEMS=[
  {
   "id": "dim-bulb-tester-with-volt-and-amp-meter-v2",
   "type": "Peripheral",
-  "name": "Dim bulb tester with volt and amp meter (V2)",
+  "name": "Dim bulb tester (V2)",
   "cat": "Parts and tools",
   "maker": "Unbranded",
   "qty": 1,
@@ -1335,7 +1335,7 @@ var ITEMS=[
  {
   "id": "the-colonel-s-bequest-a-laura-bow-mystery-big-box-incomplete",
   "type": "Game or software",
-  "name": "The Colonel's Bequest: A Laura Bow Mystery (Big Box, incomplete)",
+  "name": "The Colonel's Bequest (Big Box)",
   "cat": "Games and software",
   "maker": "Sierra",
   "year": 1989,
@@ -1357,7 +1357,7 @@ var ITEMS=[
  {
   "id": "pc-gamer-november-1997-with-cd-rom",
   "type": "Game or software",
-  "name": "PC Gamer, November 1997 (with CD-ROM)",
+  "name": "PC Gamer, November 1997",
   "cat": "Books and magazines",
   "maker": "Imagine Publishing",
   "year": 1997,
@@ -1382,7 +1382,7 @@ var ITEMS=[
  {
   "id": "aol-america-online-version-2-0-3-5-inch-floppy-sealed",
   "type": "Game or software",
-  "name": "AOL America Online Version 2.0 (3.5-inch floppy, sealed)",
+  "name": "America Online 2.0 (3.5-inch floppy)",
   "cat": "Games and software",
   "maker": "AOL",
   "model": "Version 2.0",
@@ -1405,7 +1405,7 @@ var ITEMS=[
  {
   "id": "replacement-rtc-bios-cmos-battery-for-toshiba-libretto",
   "type": "Peripheral",
-  "name": "Replacement RTC BIOS CMOS battery for Toshiba Libretto",
+  "name": "Libretto CMOS battery (replacement)",
   "cat": "Parts and tools",
   "maker": "RomeTech",
   "qty": 3,
@@ -1446,7 +1446,7 @@ var ITEMS=[
  {
   "id": "hp-omnibook-300-with-accessories",
   "type": "Laptop",
-  "name": "HP OmniBook 300 with accessories",
+  "name": "HP OmniBook 300",
   "cat": "Laptops",
   "maker": "HP",
   "model": "OmniBook 300",
@@ -1488,7 +1488,7 @@ var ITEMS=[
  {
   "id": "compaq-lte-elite-4-40c-no-hard-drive",
   "type": "Laptop",
-  "name": "Compaq LTE Elite 4/40C (no hard drive)",
+  "name": "Compaq LTE Elite 4/40C",
   "cat": "Laptops",
   "maker": "Compaq",
   "model": "LTE Elite 4/40C",
@@ -1508,7 +1508,7 @@ var ITEMS=[
  {
   "id": "iomega-zip-100-external-drive-parallel-port-boxed",
   "type": "Storage",
-  "name": "Iomega Zip 100 external drive (parallel port, boxed)",
+  "name": "Iomega Zip 100 (parallel port)",
   "cat": "Storage",
   "maker": "Iomega",
   "model": "Zip 100",
@@ -1528,7 +1528,7 @@ var ITEMS=[
  {
   "id": "sony-digital-mavica-mvc-fd91-bundle",
   "type": "Camera",
-  "name": "Sony Digital Mavica MVC-FD91 bundle",
+  "name": "Sony Digital Mavica MVC-FD91",
   "cat": "Cameras",
   "maker": "Sony",
   "model": "MVC-FD91",
@@ -1548,7 +1548,7 @@ var ITEMS=[
  {
   "id": "sony-mavica-mvc-fd200-shopgoodwill",
   "type": "Camera",
-  "name": "Sony Mavica MVC-FD200 (ShopGoodwill)",
+  "name": "Sony Mavica MVC-FD200",
   "cat": "Cameras",
   "maker": "Sony",
   "model": "MVC-FD200",

@@ -27,7 +27,7 @@ var CMBook=(function(){
  /* ---------- one catalog entry ---------- */
  function stickers(it,pick){var h="";if(pick)h+='<span class="bk-stk">Staff pick</span>';if(isNew(it))h+='<span class="bk-stk new">NEW!</span>';return h?'<span class="bk-stks">'+h+'</span>':""}
  function entry(it,mode,i,pick){var sp=(typeof pickSpecs==="function"?pickSpecs(it,it.type):[]).slice(0,mode==="big"?5:3),t=it.score!=null?tier(it.score):null;
-  return'<a class="bk-it bk-m-'+mode+'" href="#/item/'+E(it.id)+'" style="--i:'+i+';--c:'+col(it.cat)+'"><div class="bk-ph">'+pic(it)+stickers(it,pick)+(t?'<span class="bk-burst" style="background:'+t.c+';color:'+inkOn(t.c)+'"><b>'+it.score+'K</b><i>'+E(t.l)+'</i></span>':"")+'</div>'
+  return'<a class="bk-it bk-m-'+mode+'" href="#/item/'+E(it.id)+'" style="--i:'+i+';--c:'+col(it.cat)+'"><div class="bk-ph">'+String(pic(it)).replace(/xMidYMid slice/g,"xMidYMid meet")+stickers(it,pick)+(t?'<span class="bk-burst" style="background:'+t.c+';color:'+inkOn(t.c)+'"><b>'+it.score+'K</b><i>'+E(t.l)+'</i></span>':"")+'</div>'
    +'<div class="bk-tx"><small class="bk-no">Item No. '+itemNo(it)+(it.status?' &middot; '+E(it.status):"")+'</small><h4>'+E(it.name)+'</h4><p class="bk-mk">'+E(it.maker||"")+(it.year?', '+it.year:"")+'</p>'
    +(mode==="big"?'<p class="bk-bl">'+E(blurb(it))+'</p>':"")
    +(sp.length&&mode!=="list"?'<ul>'+sp.map(function(x){return'<li><b>'+E(x[0])+':</b> '+E(String(x[1]).slice(0,34))+'</li>'}).join("")+'</ul>':(mode==="list"?'<p class="bk-bl">'+E(blurb(it))+'</p>':""))
