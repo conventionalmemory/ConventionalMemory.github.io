@@ -51,7 +51,7 @@ function gxPanel(title){if(!gxok())return"";var x=GX[title];if(!x)return"";var p
   var f1=gxFirstRig(x.n),f2=x.m?gxFirstRig(x.m):null,t=[];
   if(f1)t.push("Earliest rig in the Rig checker that meets the minimum: <b>"+esc(f1.n)+"</b>");if(f2)t.push("meets the recommended: <b>"+esc(f2.n)+"</b>");
   if(t.length)h+='<p>'+t.join("; ")+'. <button class="btn" type="button" data-gxrig="'+esc(title)+'">Open the Rig checker</button></p>';
-  h+='<p class="tn">Requirements source: '+esc(gxSrc(x))+'.</p>'}
+  h+='<p class="tn">Requirements source: '+(x.u&&typeof safeUrl==="function"&&safeUrl(x.u)?'<a href="'+esc(safeUrl(x.u))+'" target="_blank" rel="noopener noreferrer">'+esc(gxSrc(x))+'</a>':esc(gxSrc(x)))+'.</p>'}
  else if(pc)h+='<p class="tn">No system requirements on file for this one yet.</p>';
  else h+='<p class="tn">No PC release on file; consoles, handhelds and arcades ran on fixed hardware, so there are no requirements to list.</p>';
  var same=gxSimilar(title,x);if(same.length)h+='<p class="tle-rel"><b>More '+esc((x.g||"games").toLowerCase())+':</b> '+same.map(function(t){return'<a href="#/timeline" data-go="'+esc(t)+'">'+esc(t)+'</a>'}).join(" ")+'</p>';
