@@ -1,0 +1,7 @@
+{
+  "name": "conventionalmemory-site",
+  "private": true,
+  "description": "Static site. This package.json only exists to run the smoke test.",
+  "scripts": { "test": "node tests/smoke.js" },
+  "devDependencies": { "playwright": "^1.48.0" }
+}

@@ -317,6 +317,13 @@ html[data-motion=on] .adm .qboss.hit{animation:bosshit .4s steps(4)}@keyframes b
 .pl-sq i.half{background:#c98a00}.pl-cal{display:flex;gap:4px}.pl-cd{width:22px;height:22px;border:2px solid var(--line);display:inline-block}.pl-cd.perfect{background:#e6b800}.pl-cd.ok{background:#00aa00}.pl-cd.miss{background:#aa0000}.pl-stats{border:2px solid var(--line);padding:6px 12px;margin:12px 0}
 .pl-wanted{border:3px double var(--line);background:var(--panel);padding:8px 12px;margin:10px 0}.pl-wanted ul{margin:4px 0 4px 18px}.pl-wanted li.ok{color:var(--ink);font-weight:bold}.pl-wanted li.ok::after{content:" \2713"}.pl-hint{border-left:6px solid var(--blue);padding:4px 10px;background:var(--panel)}
 .pl-stk label{margin-right:12px;white-space:nowrap}.pl-gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}.pl-gal figure{margin:0;border:2px solid var(--line);padding:6px;background:var(--panel)}.pl-gal .th>svg{width:100%;height:auto;display:block}
+.fx-term{position:fixed;inset:0;z-index:9998;background:#000;color:#55ff55;padding:5vh 6vw;font-family:"Courier New",monospace;font-size:20px;cursor:pointer}.fx-term pre{white-space:pre-wrap;margin:0 0 1em;font:inherit;color:#55ff55}.fx-term p{color:#aaa;font-size:14px}
+.fx-toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:9999;background:var(--ink);color:var(--bg);padding:8px 16px;border:2px solid var(--line)}
+.fx-saver{position:fixed;inset:0;width:100vw;height:100vh;z-index:9997;background:#000;cursor:none}
+.pl-bingo{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;max-width:760px;margin:10px 0}.pl-bc{min-width:0;overflow:hidden;hyphens:auto;font:inherit;font-size:14px;aspect-ratio:1;border:2px solid var(--line);background:var(--panel);color:var(--ink);padding:4px;cursor:pointer;word-break:break-word;display:flex;align-items:center;justify-content:center;text-align:center}.pl-bc.on{background:var(--blue);color:var(--blue-ink)}.pl-bc.win{box-shadow:0 0 0 3px #e6b800 inset}.pl-bc:disabled{opacity:1;font-weight:bold}
+@media(max-width:560px){.pl-bc{font-size:11px}}
+.pl-word{font-size:34px;letter-spacing:2px;font-family:"Courier New",monospace;margin:10px 0;word-break:break-word}.pl-keys{display:flex;flex-wrap:wrap;gap:6px;max-width:700px}.pl-keys .btn{min-width:40px;text-align:center;padding:6px}.pl-clue{border-left:6px solid var(--blue);padding:2px 10px;background:var(--panel)}
+.pl-flo{width:100%;max-width:700px;font-family:monospace;font-size:12px}#sq{width:100%;max-width:460px;box-sizing:border-box}.pl-sr{list-style:none;padding:0}.pl-sr li{padding:4px 0;border-bottom:1px dotted var(--line)}.ihero .watch{margin:6px 0}
 .pl-hud{display:flex;flex-wrap:wrap;gap:6px 18px}.pl-hud span{border-bottom:2px solid var(--line)}
 .pl-case{max-width:420px}.pl-case .ph{border:3px double var(--line);position:relative}.pl-art{position:relative}.pl-art svg{width:100%;height:100%;display:block}
 .pl-q h3,.pl-res h3{font-size:26px;margin:10px 0}.pl-opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;max-width:760px}.pl-opts .btn{text-align:left;font-size:18px;padding:10px 14px}
@@ -365,7 +372,7 @@ html[data-motion="on"] .pl-sq i{animation:plflip .5s backwards}html[data-motion=
 <div class="wrap">
 <header class="top">
 <a href="#/">C:\&gt;ConventionalMemory.io<span class="cur" aria-hidden="true">_</span></a>
-<nav><a href="#/catalog">Catalog</a><a href="#/timeline">Timeline</a><a href="#/play">Play<span class="new">NEW!</span></a><a href="#/wanted">Wanted</a><a href="#/follow">Follow</a><button class="btn" id="th" type="button" style="margin-left:16px">Theme</button> <button class="btn" id="mo" type="button" aria-pressed="true">Motion: on</button></nav>
+<nav><a href="#/catalog">Catalog</a><a href="#/timeline">Timeline</a><a href="#/play">Play<span class="new">NEW!</span></a><a href="#/search">Search</a><a href="#/wanted">Wanted</a><a href="#/follow">Follow</a><button class="btn" id="th" type="button" style="margin-left:16px">Theme</button> <button class="btn" id="mo" type="button" aria-pressed="true">Motion: on</button></nav>
 </header>
 <main id="app"></main>
 <footer><div id="retro"></div><div class="prompt"><label for="cmd">C:\&gt;</label><input id="cmd" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Type a command: dir, mem, random, scale, timeline, quote, help"><div id="cout" aria-live="polite">Type help and press Enter.</div></div><a href="#/changes">Changes</a> &middot; <a href="#/quotes">Quotes</a> &middot; <a href="#/stats">Stats</a> &middot; <a href="#/scale">Scale</a> &middot; <a href="#/mem">Memory map</a> &middot; <a href="#/maze">Basement (staff only)</a><br> &copy; Conventional Memory LLC. Content on TikTok, YouTube, Instagram and Facebook.</footer>
@@ -383,6 +390,7 @@ html[data-motion="on"] .pl-sq i{animation:plflip .5s backwards}html[data-motion=
 <script src="tl.js"></script>
 <script src="catalog.js"></script>
 <script src="app.js"></script>
+<script src="fun.js"></script>
 
 </body>
 </html>

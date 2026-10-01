@@ -111,3 +111,12 @@ Every timeline entry, ad and catalog item without a photo gets a picture drawn i
 **Admin quest (`#/admin`)**: Photo Safari (quest and Timeline) has *Skip for now (S)*, which defers an item without rejecting it, and the Timeline version has *Undo last keep (U)*. New modes: **Boss Battle** (an item with 1 to 8 blanks; HP is the blank count, defeat gives +40 XP and a rare relic), **Speed Round** (60 seconds, Y/N on answers the timeline already knows, combo scoring, personal best), **Daily Quests** (3 goals per day, +25 XP each, bonus relic for all three), **Relics** (14 collectibles in common/rare/epic), and new badges (Boss Slayer, Dragon Hunter, Speed Demon, Collector, Quest Giver). The timeline lookup now also matches peripherals and cards.
 
 **Play (`#/play`)**: one shared profile (`cm-play` in localStorage) with XP, levels, 12 badges and a Trophy room (`#/trophies`). New games: Higher or Lower (`#/higher`, `#/higher/adj`), Timeline Sort (`#/sort`), Mystery Photo (`#/mystery`). Daily Dig gains a 50/50 hint (half credit, shown as ◩), streak shields, stats and a 14 day calendar. Build Your Rig gains Wanted games with a bounty, a best-next-upgrade hint and a best-build reveal. Ad Lab gains stickers, a saved-ads gallery and more headlines.
+
+## Round 4: tools and extras
+
+- **Tests:** `npm install && npx playwright install chromium && npm test` runs `tests/smoke.js`, which loads every route, fails on any script error, tries every theme and checks for sideways scrolling at phone width. `.github/workflows/smoke.yml` runs it on every push.
+- **Admin:** a "Photo of the week" card on the admin home jumps straight to that timeline entry in Timeline Photo Safari.
+- **Share pictures:** every game result has *Download picture* (a 1200x630 DOS-window card). `#/today` makes a ready-to-post "Today's find" in Story, square and wide sizes.
+- **Search:** `#/search` (press `/` anywhere, or type `find voodoo` at the prompt) searches items, hardware and games. Item pages show a "Featured in video" row from the item's videos. The home page has a Random year button.
+- **Games:** Retro Bingo (`#/bingo`), Disk Error Hangman (`#/hangman`), and *Save to floppy* on the Trophy room to move progress between devices.
+- **Fun:** a bouncing-window screensaver after 2 idle minutes (or type `screensaver`), a dial-up modem (type `dial`), and the Konami code.

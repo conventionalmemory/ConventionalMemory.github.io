@@ -120,7 +120,7 @@ function home(){
  var n=ITEMS.length,pct=Math.max(1,n/640*100),sc=ITEMS.filter(function(i){return i.score!=null});
  var avg=sc.length?Math.round(sc.reduce(function(a,i){return a+i.score},0)/sc.length):0;
  var old=ITEMS.slice().sort(function(a,b){return a.year-b.year})[0],top=sc.slice().sort(function(a,b){return b.score-a.score})[0];
- var decs=[1970,1980,1990,2000,2010,2020].map(function(d){return '<a class="btn" href="#/timeline/'+(d===1970?1977:d+5)+'">'+d+'s</a>'}).join(" ");
+ var decs=[1970,1980,1990,2000,2010,2020].map(function(d){return '<a class="btn" href="#/timeline/'+(d===1970?1977:d+5)+'">'+d+'s</a>'}).join(" ")+' <a class="btn" href="#/timeline/'+(1978+Math.floor(Math.random()*34))+'">Random year</a>';
  app.innerHTML='<div class="mq"><span>'+esc(MQ[Math.floor(Math.random()*MQ.length)])+'</span></div>'
  +'<div class="hero"><h1>Conventional Memory</h1><p>Vintage computers and the people who kept them running. Watch the videos, then browse every item in the museum, with photos, audio and the story behind each one.</p>'+socials()+'</div>'
  +'<nav class="hm-tiles" aria-label="Start here">'+tile("#/catalog",n+" items","Browse the catalog","pri","tower")+tile("#/timeline",TL.length+"+ entries","Explore the timeline","","clock")+tile("#/scale","0K to 640K","How items are rated","","star")+tile("#/wanted","Wanted","Help me find these","","gem")+tile("#/random","Surprise me","Load a random item","","dice")+tile("#/daily","Daily Dig","Three questions a day","","bulb")+tile("#/play","Play","Rig builder, ad lab, maze","","ghost")+tile("#/follow","Follow","Videos on 4 platforms","","tv")+'</nav>'
@@ -357,7 +357,8 @@ function heroStrip(it){var t=tier(it.score);
  var y=+it.year,row=y?TL.filter(function(r){return dyear(r[0])===y&&/^(hw|sw|gt|m|pe)$/.test(r[1])&&r[2]!==it.name}):[];
  row=row.sort(function(p,q){return hstr(p[2])-hstr(q[2])}).slice(0,6).sort(function(p,q){return p[0]<q[0]?-1:1});
  var strip=row.length?'<div class="ihs" aria-label="Also in '+y+'"><b>Also in '+y+'</b>'+row.map(function(r){return'<a href="#/timeline/'+y+'/'+encodeURIComponent(r[2])+'" title="'+esc(r[2])+'">'+(typeof pxRow==="function"?pxRow(r,16):"")+'<span>'+esc(r[2])+'</span>'+(r[0].length>4?'<small>'+MON[+r[0].slice(5,7)-1]+'</small>':"")+'</a>'}).join("")+'<a class="btn" href="#/timeline/'+y+'">All of '+y+'</a></div>':"";
- return'<header class="ihero"><div class="tb">'+esc(dpath(it))+'</div><h2>'+esc(it.name)+'</h2><div class="ibs">'+bd+'</div>'+strip+'</header>'}
+ var vds=(it.videos||[]).map(function(v){var u=safeUrl(v.u,"link");return u?'<a class="btn pri" href="'+esc(u)+'" target="_blank" rel="noopener noreferrer">&#9654; '+esc(v.t)+'</a>':""}).join(" ");
+ return'<header class="ihero"><div class="tb">'+esc(dpath(it))+'</div><h2>'+esc(it.name)+'</h2><div class="ibs">'+bd+'</div>'+(vds?'<p class="watch"><b>Featured in video:</b> '+vds+'</p>':"")+strip+'</header>'}
 function item(id){
  var it=ITEMS.filter(function(i){return i.id===id})[0];
  if(!it){dlg("Item not found reading drive C.<br>Abort, Retry, Fail?",'<a class="btn" href="#/">Abort</a> <button class="btn" id="rt" type="button">Retry</button> <a class="btn" href="#/catalog">Fail</a>');document.getElementById("rt").onclick=route;return}
@@ -399,10 +400,11 @@ function loadPlay(page,args){if(window.CMPlay){CMPlay.mount(app,page,args);retur
  app.innerHTML='<section><h2>Play</h2><p>Loading.</p></section>';var sc=document.createElement("script");sc.src="play.js";sc.onload=function(){route()};sc.onerror=function(){app.innerHTML='<section><h2>Play</h2><p class="empty">The games could not be loaded. Try again in a moment.</p></section>'};document.head.appendChild(sc)}
 function route(){if(window.CMAdmin)CMAdmin.unmount();app.classList.remove("crt");void app.offsetWidth;app.classList.add("crt");var h=location.hash.replace(/^#\/?/,"").split("/");window.scrollTo(0,0);app.oninput=null;if(window.CMGame)CMGame.unmount();
  if(h[0]==="random"){location.replace("#/item/"+ITEMS[Math.floor(Math.random()*ITEMS.length)].id);return}
- if(h[0]==="maze"&&window.CMGame)CMGame.mount(app,{items:ITEMS,tl:TL,tlx:typeof TLX!=="undefined"?TLX:{},gx:typeof GX!=="undefined"?GX:{},tier:tier,scale:SCALE});else if(h[0]==="compare")compare(h[1],h[2]);else if(h[0]==="tag")tagPage(decodeURIComponent(h.slice(1).join("/")));else if(h[0]==="changes")changes();else if(h[0]==="quotes")quotesPage();else if(h[0]==="stats")stats();else if(h[0]==="wanted")wanted();else if(h[0]==="check")check();else if(h[0]==="mem")mem();else if(h[0]==="admin"||h[0]==="builder")loadAdmin();else if(h[0]==="play"||h[0]==="styleguide"||h[0]==="daily"||h[0]==="build"||h[0]==="adlab"||h[0]==="higher"||h[0]==="sort"||h[0]==="mystery"||h[0]==="trophies")loadPlay(h[0],h.slice(1).map(decodeURIComponent));else if(h[0]==="timeline")timeline(+h[1]||0,h[2]?decodeURIComponent(h.slice(2).join("/")):"");else if(h[0]==="scale")scale();else if(h[0]==="catalog")catalog();else if(h[0]==="item")item(h[1]);else if(h[0]==="follow")follow();else home();
+ if(h[0]==="maze"&&window.CMGame)CMGame.mount(app,{items:ITEMS,tl:TL,tlx:typeof TLX!=="undefined"?TLX:{},gx:typeof GX!=="undefined"?GX:{},tier:tier,scale:SCALE});else if(h[0]==="compare")compare(h[1],h[2]);else if(h[0]==="tag")tagPage(decodeURIComponent(h.slice(1).join("/")));else if(h[0]==="changes")changes();else if(h[0]==="quotes")quotesPage();else if(h[0]==="stats")stats();else if(h[0]==="wanted")wanted();else if(h[0]==="check")check();else if(h[0]==="mem")mem();else if(h[0]==="admin"||h[0]==="builder")loadAdmin();else if(h[0]==="play"||h[0]==="styleguide"||h[0]==="daily"||h[0]==="build"||h[0]==="adlab"||h[0]==="higher"||h[0]==="sort"||h[0]==="mystery"||h[0]==="trophies"||h[0]==="search"||h[0]==="today"||h[0]==="bingo"||h[0]==="hangman")loadPlay(h[0],h.slice(1).map(decodeURIComponent));else if(h[0]==="timeline")timeline(+h[1]||0,h[2]?decodeURIComponent(h.slice(2).join("/")):"");else if(h[0]==="scale")scale();else if(h[0]==="catalog")catalog();else if(h[0]==="item")item(h[1]);else if(h[0]==="follow")follow();else home();
  var qb=document.getElementById("qnew");if(qb)qb.onclick=function(){document.getElementById("qbox").innerHTML=qBlock(QUOTES[Math.floor(Math.random()*QUOTES.length)])};
  var t=app.querySelector("h1,h2"),n=t&&(t.firstChild||t).textContent;document.title=n&&n!=="Conventional Memory"?n+" | Conventional Memory":"Conventional Memory"}
 window.addEventListener("hashchange",route);route();
+document.addEventListener("keydown",function(e){if(e.key==="/"&&!e.ctrlKey&&!e.metaKey&&!e.altKey&&!/^(INPUT|TEXTAREA|SELECT)$/.test((e.target||{}).tagName)){e.preventDefault();location.hash="#/search"}});
 var ti=0;try{ti=+localStorage.getItem("cm-theme")||0}catch(e){}
 initMotion();setTheme(ti);document.getElementById("th").onclick=function(){ti=(ti+1)%THEMES.length;setTheme(ti)};
 if(!location.hash||location.hash==="#/")boot();
@@ -416,10 +418,13 @@ document.getElementById("retro").innerHTML='<div class="rb"></div><p>You are vis
  +'<p class="ring">Museum Ring: <a href="#/item/'+ITEMS[ITEMS.length-1].id+'">[&lt;&lt; Prev]</a> <a href="#/random">[Random]</a> <a href="#/item/'+ITEMS[0].id+'">[Next &gt;&gt;]</a></p>'
  +'<p class="ring">Best viewed with Netscape Navigator 4.0 at 800x600, but it works everywhere. Last updated '+UPDATED+'.</p>';
 var cmd=document.getElementById("cmd"),cout=document.getElementById("cout");
-var GO={dir:"#/catalog",catalog:"#/catalog",mem:"#/mem",scale:"#/scale",timeline:"#/timeline",random:"#/random",cls:"#/",home:"#/",follow:"#/follow",admin:"#/admin",check:"#/check",wanted:"#/wanted",stats:"#/stats",changes:"#/changes",quotes:"#/quotes",maze:"#/maze",basement:"#/maze"};
+var GO={search:"#/search",today:"#/today",bingo:"#/bingo",hangman:"#/hangman",play:"#/play",trophies:"#/trophies",dir:"#/catalog",catalog:"#/catalog",mem:"#/mem",scale:"#/scale",timeline:"#/timeline",random:"#/random",cls:"#/",home:"#/",follow:"#/follow",admin:"#/admin",check:"#/check",wanted:"#/wanted",stats:"#/stats",changes:"#/changes",quotes:"#/quotes",maze:"#/maze",basement:"#/maze"};
 cmd.onkeydown=function(e){if(e.key!=="Enter")return;var c=cmd.value.trim().toLowerCase();cmd.value="";
  if(!c){cout.textContent="";return}
  if(c==="help"){cout.textContent="Commands: "+Object.keys(GO).join(", ")+", quote, ver";return}
+ if(/^(find|search) /.test(c)){cout.textContent="";location.hash="#/search/"+encodeURIComponent(c.replace(/^\w+ /,""));return}
+ if((c==="screensaver"||c==="saver")&&window.CMFun){cout.textContent="Starting screensaver. Move the mouse to stop.";setTimeout(CMFun.saver,300);return}
+ if((c==="dial"||c==="modem"||c==="atdt")&&window.CMFun){cout.textContent="ATDT 555-0142";CMFun.modem();return}
  if(c==="ver"){cout.textContent="Conventional Memory [Version 1.0]";return}
  var EG={"format c:":"WARNING: ALL DATA ON DRIVE C: WILL BE LOST! Proceed with Format (Y/N)? ... Just kidding. Every item is safe.","win":"This program cannot be run in DOS mode. Try dir.","iddqd":"Degreelessness mode on."};
  var eg=c==="chkdsk"?ITEMS.length+" items cataloged. "+(640-ITEMS.length)+"K free of 640K conventional memory.":EG[c];

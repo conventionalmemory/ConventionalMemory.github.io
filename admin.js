@@ -112,7 +112,7 @@ function listView(){var items=S.items,ql=q.toLowerCase(),tot=0,dn=0;
  var chips=[["all","All"],["inc","Incomplete"],["done","Complete"],["nophoto","No photo"]].map(function(c){return'<button class="chip'+(lf===c[0]?" on":"")+'" data-lf="'+c[0]+'" type="button">'+c[1]+'</button>'}).join("");
  return shell('<p>Signed in to <b>'+esc(C.REPO.owner+"/"+C.REPO.repo)+'</b>, branch '+esc(C.REPO.branch)+'. '+items.length+' items. '+(S.dirty?'<span class="tag want">Unsaved changes</span>':'<span class="tag">Saved</span>')+(S.photos.length?' <span class="tag">'+S.photos.length+' photo(s) waiting</span>':"")+'</p>'
  +'<div class="qhero"><div><b>Catalog completeness</b> '+mbar({done:dn,total:tot,pct:all100})+'<br><small class="tn">'+(tot-dn)+' blank fields across '+items.length+' items.</small></div><span><button class="btn pri" id="qgo" type="button">Start the Fill-in Quest</button> <button class="btn" id="qph" type="button">Photo Safari</button></span></div>'
- +qaddHtml()+'<p class="abar"><button class="btn pri" id="add" type="button">Add item (full form)</button> <button class="btn'+(S.dirty?' pri':'')+'" id="sv" type="button"'+(busy||!S.dirty&&!S.photos.length?" disabled":"")+'>Review and save</button> <button class="btn" id="bulk" type="button" title="Fill every blank field the timeline knows an exact match for">Auto-fill from timeline</button> '
+ +potwHtml()+qaddHtml()+'<p class="abar"><button class="btn pri" id="add" type="button">Add item (full form)</button> <button class="btn'+(S.dirty?' pri':'')+'" id="sv" type="button"'+(busy||!S.dirty&&!S.photos.length?" disabled":"")+'>Review and save</button> <button class="btn" id="bulk" type="button" title="Fill every blank field the timeline knows an exact match for">Auto-fill from timeline</button> '
  +(S.undo&&S.undo.length?'<button class="btn" id="ud" type="button">Undo delete ('+esc(S.undo[S.undo.length-1].it.name)+')</button> ':"")
  +'<button class="btn" id="gaudit" type="button">Photo audit</button> <button class="btn" id="ghealth" type="button">Health check</button> <button class="btn" id="dl" type="button">Download items.js backup</button> <button class="btn" id="lk" type="button">Lock</button></p>'
  +'<div class="tools"><input id="aq" type="search" placeholder="Search items" aria-label="Search items" value="'+esc(q)+'">'+chips+'<select id="ls" aria-label="Sort"><option value="az"'+(ls==="az"?" selected":"")+'>A to Z</option><option value="low"'+(ls==="low"?" selected":"")+'>Least complete first</option><option value="new"'+(ls==="new"?" selected":"")+'>Newest first</option></select></div>'
@@ -443,6 +443,7 @@ function fin(m){note={t:"ok",m:m}}
 /* photo audit */
 var PA={res:{},run:0};
 function auditTargets(){var t=[];S.items.forEach(function(it){(it.photos||[]).forEach(function(p,i){var u=C.safeUrl(p,"img");if(u)t.push({k:"i:"+it.id+":"+i,u:u,label:it.name,kind:"item",id:it.id})})});if(typeof CIMG!=="undefined")Object.keys(CIMG).forEach(function(k){t.push({k:"c:"+k,u:cimgUrl(k,160),label:k,kind:"cimg"})});return t}
+function potwHtml(){var q=tlsQueue();if(!q.length)return"";var wk=Math.floor(Date.now()/6048e5),c=q[wk%Math.min(q.length,40)].r;return'<div class="qhero"><div><b>Photo of the week: '+esc(c[2])+'</b><br><small class="tn">'+esc(c[0])+' has no real photo on the timeline yet. One free Commons photo finishes this week\'s goal.</small></div><button class="btn pri" id="potw" data-t="'+esc(c[2])+'" type="button">Find it now</button></div>'}
 function tlHw(){return C.TL.filter(function(r){return/^(hw|pe)$/.test(r[1])})}
 function auditView(){var ts=auditTargets(),done=ts.filter(function(t){return PA.res[t.k]}).length,bad=ts.filter(function(t){return PA.res[t.k]&&PA.res[t.k]!=="ok"}),nop=S.items.filter(function(it){return!(it.photos||[]).length}),hw=tlHw(),have=hw.filter(function(r){return typeof CIMG!=="undefined"&&CIMG[r[2]]}).length;
  return shell('<p class="abar"><button class="btn" id="bk" type="button">Back to the list</button></p><h3 class="sub">Photo audit</h3>'
@@ -599,7 +600,7 @@ function wire(){if(!host)return;host.oninput=bump;
  host.querySelectorAll("[data-lf]").forEach(function(b){b.onclick=function(){lf=b.dataset.lf;render()}});
  $("ls").onchange=function(){ls=this.value;render()};
  $("qgo").onclick=function(){QS.mode="quick";QS.screen="map";QS.skip={};QS.msg=null;view="quest";note=null;render();window.scrollTo(0,0)};
- $("gaudit").onclick=function(){view="audit";render()};$("ghealth").onclick=function(){view="health";render()};
+ $("gaudit").onclick=function(){view="audit";render()};var pw=$("potw");if(pw)pw.onclick=function(){TLS.sk[pw.dataset.t]=-2;view="tlsafari";render()};$("ghealth").onclick=function(){view="health";render()};
  $("qph").onclick=function(){QS.mode="photo";QS.screen="play";QS.skip={};QS.msg=null;view="quest";note=null;render();window.scrollTo(0,0)};
  var qab=$("qab");qab.onclick=function(){var v=$("qan").value.trim();if(v.length<2)return;var res=tlMatches(v);if(res.length&&res[0].sc===100&&(!res[1]||res[1].sc<100)){qaddMake(res[0].r[2],res[0].r);return}QA={q:v,res:res};render();var n=$("qan");n.focus()};
  $("qan").onkeydown=function(e){if(e.key==="Enter")qab.click()};
