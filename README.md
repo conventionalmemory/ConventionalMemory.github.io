@@ -199,3 +199,7 @@ Photo Safari (items and timeline) now searches Wikipedia article images and Comm
 - Era (`eraPane` in app.js) replaces "Around this date": a year header, then a switch between Games (the Press START widget, with counts), News and tech (two dated columns linking into the timeline), The PC of the day, and Accessories (the old "accessory loot", now its own panel). `gxEra(it,"games"|"loot")` returns one half.
 - The ad tab shows the full store flyer at readable width, a New headline button that cycles the copy, and More from the flyer rack.
 - A slim bar above the page links Previous, All <category> (opens that department) and Next; actions (Add to my collection, Shorts, Suggest a correction, Print) are buttons under the hero. On phones the badges are compact, the "Also in" strip scrolls sideways and the tab bar sticks to the top.
+
+### Round 13: header and every screen size
+- Header is two rows that never wrap: brand and display settings (Theme, Motion, Screen) on top, a menu bar of the eight sections below. On phones the settings become icon plus value, and the menu bar scrolls sideways with a fade on the cut-off edge and keeps the current section in view.
+- `tests/widths.js` visits 16 pages at 320, 360, 390, 600, 768, 1024, 1280 and 1920 px and fails on any sideways scroll or element poking past the edge. It found the home title (320 to 360 px) and the item page's long previous/next names, both fixed. It is part of `npm test`.

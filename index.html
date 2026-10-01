@@ -21,7 +21,7 @@ html{scroll-padding-top:env(safe-area-inset-top,0px)}
 body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.6 "IBM Plex Sans",system-ui,sans-serif}
 .wrap{max-width:960px;margin:0 auto;padding:0 20px}
 h1,h2,h3{font-family:"VT323","Courier New",monospace;font-weight:400;line-height:1;margin:0}
-h1{font-size:clamp(48px,11vw,96px)}
+h1{font-size:clamp(34px,10vw,96px);overflow-wrap:anywhere}
 h2{font-size:36px;margin-bottom:12px}
 a{color:inherit}
 :focus-visible{outline:3px solid var(--blue);outline-offset:2px}
@@ -670,14 +670,28 @@ nav a[aria-current=page]{background:var(--line);color:var(--bg,#fff);padding:0 6
 </style><style>
 @media(max-width:700px){.ihero{padding:8px 10px}.ihero h2{font-size:32px;margin-bottom:6px}.ib{padding:1px 6px;gap:4px}.ib small{display:none}.ihs{flex-wrap:nowrap;overflow-x:auto;white-space:nowrap;scrollbar-width:thin}.ihs>*{flex:0 0 auto}.ihero .tb{font-size:18px}
 .ftabs{position:sticky;top:0;z-index:6;background:var(--bg)}.iact .btn{font-size:14px;padding:1px 8px}}
+</style><style>
+/* header v2: brand + display settings on one row, menu bar below, never wraps */
+header.top{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 12px;align-items:center;padding:14px 0 10px}
+header.top>*{min-width:0}header.top a.brand{font-size:26px;min-width:0;overflow-wrap:anywhere}
+.utl{display:flex;gap:6px;justify-self:end}.utl .btn{font-size:14px;padding:2px 8px;white-space:nowrap}
+header.top nav{grid-column:1/-1;display:flex;flex-wrap:nowrap;gap:2px;overflow-x:auto;scrollbar-width:thin;border-top:2px solid var(--line);border-bottom:2px solid var(--line);padding:3px 0;max-width:100%;-webkit-overflow-scrolling:touch}
+header.top nav a{flex:0 0 auto;margin:0;padding:1px 10px;font-size:20px;white-space:nowrap}
+header.top nav a[aria-current=page]{background:var(--line);color:var(--bg,#fff)}
+@media(min-width:900px){header.top nav a{flex:1 1 auto;text-align:center}}
+@media(max-width:560px){header.top{grid-template-columns:minmax(0,1fr)}.utl{justify-self:start;flex-wrap:nowrap}.utl .btn{font-size:13px;padding:1px 6px}header.top a.brand{font-size:21px}header.top nav a{font-size:19px;padding:1px 8px}}
+@media(max-width:560px){.utl{justify-self:stretch;width:100%}.utl .btn{flex:1 1 0;min-width:0;overflow:hidden;text-overflow:ellipsis}}@media(max-width:340px){.utl .btn{font-size:12px;padding:1px 3px}}
+</style><style>
+.itempage .pn>span{overflow:hidden}.itempage .pn>span a{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media(max-width:700px){.itempage .pn{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6px}.itempage .pn .pnc{grid-column:1/-1;order:-1;text-align:center}}
+</style><style>
+@media(max-width:560px){.utl .bl{display:none}#th::before{content:"\25D0  "}#mo::before{content:"\25B6  "}#cr::before{content:"\25A4  "}header.top nav.more{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 30px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 30px),transparent)}}
+@media(max-width:340px){header.top a.brand{font-size:17px}header.top a.brand .cur{display:none}}
 </style></head>
 <body>
 <div id="crtfx" aria-hidden="true"><i class="fx-roll"></i><i class="fx-noise"></i></div>
 <div class="wrap">
-<header class="top">
-<a href="#/">C:\&gt;ConventionalMemory.io<span class="cur" aria-hidden="true">_</span></a>
-<nav aria-label="Main"><a data-s="catalog" href="#/catalog">Catalog</a><a data-s="timeline" href="#/timeline">Timeline</a><a data-s="explore" href="#/hub/explore">Explore</a><a data-s="play" href="#/hub/play">Play</a><a data-s="watch" href="#/hub/watch">Theater</a><a data-s="stuff" href="#/hub/stuff">My stuff</a><a data-s="community" href="#/hub/community">Community</a><a data-s="search" href="#/search">Search</a><button class="btn" id="th" type="button" style="margin-left:16px">Theme</button> <button class="btn" id="mo" type="button" aria-pressed="true">Motion: on</button><button class="btn" id="cr" type="button" title="Screen effects: off, CRT, or max CRT">Screen: CRT</button></nav>
-</header>
+<header class="top"><a class="brand" href="#/">C:\&gt;ConventionalMemory.io<span class="cur" aria-hidden="true">_</span></a><div class="utl" role="group" aria-label="Display settings"><button class="btn" id="th" type="button">Theme</button> <button class="btn" id="mo" type="button" aria-pressed="true">Motion: on</button><button class="btn" id="cr" type="button" title="Screen effects: off, CRT, or max CRT">Screen: CRT</button></div><nav aria-label="Main"><a data-s="catalog" href="#/catalog">Catalog</a><a data-s="timeline" href="#/timeline">Timeline</a><a data-s="explore" href="#/hub/explore">Explore</a><a data-s="play" href="#/hub/play">Play</a><a data-s="watch" href="#/hub/watch">Theater</a><a data-s="stuff" href="#/hub/stuff">My stuff</a><a data-s="community" href="#/hub/community">Community</a><a data-s="search" href="#/search">Search</a></nav></header>
 <div id="crumb" class="crumb" hidden></div>
 <main id="app"></main>
 <footer><div id="retro"></div><div class="prompt"><label for="cmd">C:\&gt;</label><input id="cmd" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Type a command: dir, mem, random, scale, timeline, quote, help"><div id="cout" aria-live="polite">Type help and press Enter.</div></div><a href="#/more">Site map</a> &middot; <a href="#/changes">Recent changes</a> &middot; <a href="#/hub/community">Community</a> &middot; <a href="#/follow">Follow</a> &middot; <a href="#/maze">Basement (staff only)</a><br> &copy; Conventional Memory LLC. Content on TikTok, YouTube, Instagram and Facebook.</footer>
