@@ -95,7 +95,7 @@ function sameMaker(it){var mk=(it.maker||"").split(/[\s\/,(]/)[0].toLowerCase();
   .sort(function(a,b){return Math.abs(dyear(a[0])-d)-Math.abs(dyear(b[0])-d)}).slice(0,6).sort(function(a,b){return a[0]<b[0]?-1:1})}
 function priceBig(p){if(p.none)return"?";var m=String(p.t).match(/[$£¥][\d,.]+/);return m?m[0]:String(p.t).slice(0,9)}
 function czSeason(d){var m=+String(d).slice(5,7)||0;return m>=11||m===12?"HOLIDAY GIFT GUIDE":m>=6&&m<=8?"SUMMER SOFTWARE SAVINGS":m>=1&&m<=2?"NEW YEAR NEW ARRIVALS":m>=3&&m<=5?"SPRING PC SPECIALS":"BACK TO SCHOOL PC PICKS"}
-function czLogo(name){var w=String(name).split(" ");return'<span class="cz-logo"><b>'+esc(w[0])+'</b> <em>'+esc(w.slice(1).join(" "))+'</em></span>'}
+function czLogo(name){var w=String(name).split(" ");return'<span class="cz-logo" role="img" aria-label="'+esc(name)+'"><b>'+esc(w[0])+'</b><em>'+esc(w.slice(1).join(" "))+'</em></span>'}
 function czFlag(p,est){return'<span class="cz-price'+(p.est||est?" est":"")+'" aria-label="Price '+esc(p.t)+'"><i>'+(p.none?"PRICE":p.est||est?"EST. PRICE":"LAUNCH PRICE")+'</i><b>'+esc(priceBig(p))+(p.est&&!p.none&&priceBig(p).slice(-1)!=="*"?"*":"")+'</b></span>'}
 function czHead(store,left,right){return'<div class="cz-head"><div class="cz-hl">'+czLogo(store)+'<span class="cz-sub">'+esc(left)+'</span></div><div class="cz-hr">'+esc(right)+'</div></div>'}
 function czBox(r,i){var p=guessPrice(r,dyear(r[0]));return'<article class="cz-box"><div class="cz-art">'+adArt(r,150,125,"z"+i)+'<span class="cz-spine"></span></div><h4>'+esc(r[2])+'</h4><p class="cz-meta">'+(r[1]==="hw"?"Hardware":"Game or software")+' &middot; '+esc(adWhen(r).replace("COMING","Ships"))+'</p>'+czFlag(p)+'<p class="cz-tag">'+esc(adTag(r))+'</p></article>'}

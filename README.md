@@ -20,7 +20,8 @@ A retro DOS-style museum catalog, timeline and trivia game. It is a plain static
 | `icons.js` | About 70 small pixel icons (12 x 12, EGA colors) and the tables that pick one by kind, category, genre or system |
 | `art.js` | Generated artwork: 40+ product drawings, 30+ game scenes, seeded abstract covers, packaging (PC box, cartridge, disc case, arcade cabinet, floppy), movie posters, front pages and badges |
 | `ads.js` | Tribute ads: product drawings and the per-item ad |
-| `admin.js` | The Admin page (`#/admin`) |
+| `admin.js` | The Admin page (`#/admin`), including the Fill-in Quest |
+| `images-data.js` | `CIMG`: a few real photos hotlinked from Wikimedia Commons (https only), with a credit link to each Commons file page. If one fails to load it is hidden and the drawn art shows instead |
 
 Keep all of them in the same folder. GitHub Pages serves `index.html` at the root.
 
@@ -37,6 +38,12 @@ Edits are saved as commits to `items.js` (and photos to `photos/`). GitHub Pages
 Only someone holding a token for this repository can save changes. The token stays in the page only (never in the URL, never sent anywhere but api.github.com), and the page locks itself after 20 idle minutes.
 
 To avoid pasting the token every visit, type a passphrase (8+ characters) in the optional box when you unlock. The token is then stored encrypted (AES-256-GCM, key from your passphrase) in this browser only, and next time you just type the passphrase. "Forget saved token" removes it.
+
+## Completeness and the Fill-in Quest (Admin page)
+
+Every item gets a completeness meter: the share of useful fields (maker, date, MSRP, model, photo, description, your take, score, condition, working status, tags, links, Wikipedia and every spec for its type) that are filled. The list can be filtered (Incomplete, Complete, No photo) and sorted (least complete first). **Copy** duplicates an item as a starting point, **Undo delete** brings back a removed item until you leave the page, and **Auto-fill from timeline** fills every blank field that has an exact timeline match.
+
+**Start the Fill-in Quest** walks the blank fields one at a time: Quick wins (fields the timeline can answer in one tap come first), Surprise me, or one item only. Each answer earns XP, builds a streak, and unlocks levels and badges (progress is kept in this browser only). Skip, or press Does not apply to hide a field for that item (stored as `na` on the item). Photos can be added by https address or from a file. Nothing is published until you press Save to GitHub.
 
 ## Quick fill and private fields (Admin page)
 
@@ -63,6 +70,10 @@ Open any game on the timeline to see which systems it came out on, the release d
 ## Peripherals
 
 The timeline has a Peripherals kind (about 340 entries): mice, keyboards, controllers, sound and graphics cards, drives, modems, printers, console accessories. Each has a category, how it connects (`Connection`), and the systems it worked with (`plat` in `timeline-extra.js`). The **Peripherals** tab filters by category, system and decade. Item pages list games and peripherals from the item's launch window (six months before to two years after) for the system it runs, and for computers with CPU speed and RAM in their specs they show which of those games the machine can run. Game cards list peripherals linked to them. Dates and prices without a source show an asterisk.
+
+## Readability and themes
+
+Colors come from tokens (`--bg --panel --ink --mute --blue --line`, plus link tokens `--lk --lk-v --lk-h` and paper tokens `--paper-lk --ink-on-paper`) that are redefined in every theme, so links and badges stay readable on any background. Tribute ads use their own newsprint palette so they look the same in every theme.
 
 ## Icons and generated art
 

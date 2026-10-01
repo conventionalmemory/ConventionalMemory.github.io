@@ -51,7 +51,7 @@ function tlWeb(title,links){if(!links.length)return"";var n=Math.min(links.lengt
  var c=title.length>21?title.slice(0,20)+"…":title;o+='<g class="tlhub"><rect x="'+(cx-70)+'" y="'+(cy-14)+'" width="140" height="28" rx="3"/><text x="'+cx+'" y="'+(cy+5)+'" text-anchor="middle" textLength="'+Math.min(128,c.length*7).toFixed(0)+'" lengthAdjust="spacingAndGlyphs">'+esc(c)+'</text></g></svg>';return o}
 function tlPrice(x){var pr=x.k==="i"?x.i.msrp:x.p;if(pr)return{t:pr,est:/\*$/.test(pr)};if(x.k==="hw"||x.k==="pe"||x.k==="sw"||x.k==="gt"||x.k==="gn"||x.k==="gc"){var g=guessPrice([x.d,x.k,x.t,"","",""],dyear(x.d));return g.t==="Price TBA*"?null:{t:g.t,est:true,typ:true}}return null}
 function tlCard(x,id,open){var r=tlRow(x),yr=dyear(x.d),main=x.k==="i"?x.i.name:x.t,tk=x.k==="i"?((tlRowOfItem(x.i)||[])[2]||main):main,ds=String(x.d).length>=10?fmtDate(x.d).replace(/, \d{4}$/,""):String(x.d).length>=7?fmtDate(x.d).replace(/ \d{4}$/,""):"",pr=x.k==="i"?x.i.msrp:x.p,ast=astr(x),tp=tlPrice(x);
- var art=(x.k!=="i"&&x.k!=="p"||true)&&x.k!=="i"?'<div class="tl-thumb">'+adArt(r,96,80,"t"+id)+'</div>':"";
+ var art=(x.k!=="i"&&x.k!=="p"||true)&&x.k!=="i"?'<div class="tl-thumb">'+adArt(r,96,80,"t"+id)+(typeof cimg==="function"?cimg(tk,240):"")+'</div>':"";
  var body='';
  if(open){var nk=nameKey(main),rel=nk?TL.filter(function(z){return z[2]!==main&&nameKey(z[2])===nk}).slice(0,5):[],
    dn=String(x.d).length>=7?dnum(x.d,false):0,near=dn?TL.filter(function(z){return z[2]!==main&&String(z[0]).length>=7&&Math.abs(dnum(z[0],false)-dn)<=31&&(z[1]==="hw"||z[1]==="pe"||z[1]==="gt"||z[1]==="sw"||z[1]==="e")}).slice(0,4):[],
@@ -69,6 +69,8 @@ function tlCard(x,id,open){var r=tlRow(x),yr=dyear(x.d),main=x.k==="i"?x.i.name:
 function tlActs(x,tk){if(x.k==="p")return"";var on=trailHas(tk);return'<p class="tle-acts"><button class="btn" type="button" data-star="'+esc(tk)+'" aria-pressed="'+on+'">'+(on?"\u2605 On my trail":"\u2606 Add to my trail")+'</button> <button class="btn" type="button" data-link="'+esc(tk)+'" data-yr="'+dyear(x.d)+'">Copy link</button></p>'}
 function tlFacts(title){var x=typeof TLX!=="undefined"?TLX[title]:null;var gp=typeof gxPanel==="function"?gxPanel(title):"";if(!x)return gp;var h="";
  if(x.detail)h+='<p>'+esc(x.detail)+'</p>';
+ if(x.trivia&&x.trivia.length)h+='<div class="trv"><b>Did you know?</b><ul>'+x.trivia.map(function(s){return'<li>'+esc(s)+'</li>'}).join('')+'</ul></div>';
+ if(typeof cimgCredit==="function")h+=cimgCredit(title);
  var m=[];if(x.maker)m.push("<b>Maker:</b> "+esc(x.maker));if(x.dev)m.push("<b>Developer:</b> "+esc(x.dev));if(x.sub)m.push("<b>Kind:</b> "+esc(x.sub));if(m.length)h+='<p class="tle-meta">'+m.join(" &middot; ")+'</p>';if(x.plat&&typeof gxChip==="function")h+='<p class="gxchips"><b>Works with:</b> '+x.plat.map(function(p){return gxChip(p,true)}).join(" ")+'</p>';
  var k=x.specs?Object.keys(x.specs):[];if(k.length)h+='<dl class="tle-sp">'+k.slice(0,10).map(function(a){return'<dt>'+esc(a)+'</dt><dd>'+esc(x.specs[a])+'</dd>'}).join("")+'</dl>';
  h+=gp;if(x.conf==="low")h+='<p class="tn">Details on this entry are lightly sourced.</p>';return h}

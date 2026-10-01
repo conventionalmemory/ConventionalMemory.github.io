@@ -76,14 +76,14 @@ function unlock(token,remember,pass){tok=token.trim();busy=true;render();
    note=d.created?{t:"ok",m:"Unlocked. items.js is not in the repository yet, so the current page's items are loaded. Save to GitHub to create it."}:{t:"ok",m:"Unlocked. Loaded "+S.items.length+" items from GitHub."};
    view="list";bump()
  }).catch(function(e){tok=null;S=null;note={t:"err",m:String(e.message||e)}}).then(function(){busy=false;render()})}
-function lock(m){tok=null;PP=null;S=null;editing=null;view="list";clearTimeout(idle);note=m?{t:"ok",m:m}:null;render()}
+function lock(m){tok=null;PP=null;S=null;QC={};editing=null;view="list";clearTimeout(idle);note=m?{t:"ok",m:m}:null;render()}
 var hid=0;document.addEventListener("visibilitychange",function(){if(document.hidden){hid=setTimeout(function(){if(tok&&!(S&&S.dirty))lock("Locked after the tab was in the background for 5 minutes.")},5*60*1000)}else clearTimeout(hid)});
 function bump(){clearTimeout(idle);if(tok)idle=setTimeout(function(){if(S&&S.dirty){bump();return}lock("Locked after 20 minutes of no activity.")},20*60*1000)}
 function save(){if(!S||busy)return;busy=true;note={t:"ok",m:"Saving to GitHub..."};render();
  var chain=Promise.resolve();
  S.photos.forEach(function(p){chain=chain.then(function(){return gh(repo()+"/contents/"+p.path,{method:"PUT",body:{message:"Admin: add photo "+p.path,content:p.b64,branch:C.REPO.branch}}).then(function(r){if(!r.ok&&r.status!==422)throw new Error(errText(r))})})});
  chain.then(function(){var body={message:"Admin: update catalog ("+S.items.length+" items)",content:b64enc(serialize(S.items)),branch:C.REPO.branch};if(S.sha)body.sha=S.sha;return gh(repo()+"/contents/"+FILE,{method:"PUT",body:body})})
- .then(function(r){if(!r.ok)throw new Error(errText(r));S.sha=r.json.content.sha;S.dirty=false;S.photos=[];S.created=false;
+ .then(function(r){if(!r.ok)throw new Error(errText(r));S.sha=r.json.content.sha;S.dirty=false;S.qn=0;S.photos=[];S.created=false;
    C.ITEMS.length=0;S.items.forEach(function(i){C.ITEMS.push(clone(i))});C.prep();
    note={t:"ok",m:"Saved. The public site updates in a minute or two. Refresh it then to see the change."}})
  .catch(function(e){note={t:"err",m:String(e.message||e)}}).then(function(){busy=false;render()})}
@@ -101,14 +101,27 @@ function lockedView(){var hv=hasVault()&&!pasteMode;
  +'<label for="pp">Passphrase to save it on this device (optional, 12+ characters)</label><input id="pp" type="password" autocomplete="new-password" spellcheck="false" placeholder="leave blank to not save"><p><button class="btn" id="gen" type="button">Generate a strong one</button> <span id="genout" class="tn"></span></p>'
  +'<p><button class="btn pri" id="go" type="button"'+(busy?" disabled":"")+'>'+(busy?"Checking...":"Unlock")+'</button>'+(hasVault()?' <button class="btn" id="vback" type="button">Back to saved token</button>':'')+'</p>'
  +'<p class="tn">With a passphrase, the token is stored encrypted in this browser (AES-256-GCM, 600,000 PBKDF2 rounds) so you only paste it once. Without one it stays in this page only. It is sent to api.github.com and nowhere else, and the page locks after 20 idle minutes. Use a random passphrase from a password manager: a copied browser profile can be guessed at offline, and only a strong passphrase stops that.</p>')}
-function listView(){var items=S.items,ql=q.toLowerCase(),vis=items.map(function(it,i){return{it:it,i:i}}).filter(function(x){return!ql||(x.it.name+" "+(x.it.maker||"")+" "+x.it.id+" "+(x.it.cat||"")).toLowerCase().indexOf(ql)>=0});
+var lf="all",ls="az";
+function mbar(m){return'<span class="mbar" title="'+m.done+' of '+m.total+' fields filled"><i style="width:'+m.pct+'%"></i></span> <small class="mpc">'+m.pct+'%</small>'}
+function listView(){var items=S.items,ql=q.toLowerCase(),tot=0,dn=0;
+ var all=items.map(function(it,i){var m=qMeter(it);tot+=m.total;dn+=m.done;return{it:it,i:i,m:m}});
+ var vis=all.filter(function(x){var it=x.it;if(ql&&(it.name+" "+(it.maker||"")+" "+it.id+" "+(it.cat||"")).toLowerCase().indexOf(ql)<0)return false;
+  return lf==="all"||(lf==="inc"&&x.m.pct<100)||(lf==="done"&&x.m.pct>=100)||(lf==="nophoto"&&!(it.photos||[]).length)||(lf==="notl"&&!qTL(it))});
+ vis.sort(function(a,b){return ls==="low"?a.m.pct-b.m.pct||a.it.name.localeCompare(b.it.name):ls==="new"?(b.it.year||0)-(a.it.year||0):a.it.name.localeCompare(b.it.name)});
+ var all100=tot?Math.round(dn*100/tot):0;
+ var chips=[["all","All"],["inc","Incomplete"],["done","Complete"],["nophoto","No photo"]].map(function(c){return'<button class="chip'+(lf===c[0]?" on":"")+'" data-lf="'+c[0]+'" type="button">'+c[1]+'</button>'}).join("");
  return shell('<p>Signed in to <b>'+esc(C.REPO.owner+"/"+C.REPO.repo)+'</b>, branch '+esc(C.REPO.branch)+'. '+items.length+' items. '+(S.dirty?'<span class="tag want">Unsaved changes</span>':'<span class="tag">Saved</span>')+(S.photos.length?' <span class="tag">'+S.photos.length+' photo(s) waiting</span>':"")+'</p>'
- +'<p><button class="btn pri" id="add" type="button">Add item</button> <button class="btn'+(S.dirty?' pri':'')+'" id="sv" type="button"'+(busy||!S.dirty&&!S.photos.length?" disabled":"")+'>Save to GitHub</button> <button class="btn" id="dl" type="button">Download items.js backup</button> <button class="btn" id="lk" type="button">Lock</button></p>'
- +'<div class="tools"><input id="aq" type="search" placeholder="Search items" aria-label="Search items" value="'+esc(q)+'"></div>'
- +(vis.length?vis.map(function(x){return'<div class="row"><span><b>'+esc(x.it.name)+'</b> <small class="tn">'+esc(x.it.maker||"")+', '+esc(x.it.rel||x.it.year||"")+', id '+esc(x.it.id)+'</small></span><button class="btn" data-e="'+x.i+'" type="button">Edit</button> <button class="btn danger" data-d="'+x.i+'" type="button">Delete</button></div>'}).join(""):'<p class="empty">No items match.</p>')
- +'<p class="tn">Changes are only saved when you press Save to GitHub. Deleting an item does not delete its photo files from the repository.</p>')}
-function field(id,label,val,extra){return'<div class="fld"><label for="'+id+'">'+esc(label)+'</label><input id="'+id+'" value="'+esc(val==null?"":val)+'" '+(extra||"")+'></div>'}
-function area(id,label,val,h){return'<label for="'+id+'">'+esc(label)+'</label><textarea id="'+id+'" style="min-height:'+(h||80)+'px">'+esc(val||"")+'</textarea>'}
+ +'<div class="qhero"><div><b>Catalog completeness</b> '+mbar({done:dn,total:tot,pct:all100})+'<br><small class="tn">'+(tot-dn)+' blank fields across '+items.length+' items.</small></div><button class="btn pri" id="qgo" type="button">Start the Fill-in Quest</button></div>'
+ +'<p class="abar"><button class="btn pri" id="add" type="button">Add item</button> <button class="btn'+(S.dirty?' pri':'')+'" id="sv" type="button"'+(busy||!S.dirty&&!S.photos.length?" disabled":"")+'>Save to GitHub</button> <button class="btn" id="bulk" type="button" title="Fill every blank field the timeline knows an exact match for">Auto-fill from timeline</button> '
+ +(S.undo&&S.undo.length?'<button class="btn" id="ud" type="button">Undo delete ('+esc(S.undo[S.undo.length-1].it.name)+')</button> ':"")
+ +'<button class="btn" id="dl" type="button">Download items.js backup</button> <button class="btn" id="lk" type="button">Lock</button></p>'
+ +'<div class="tools"><input id="aq" type="search" placeholder="Search items" aria-label="Search items" value="'+esc(q)+'">'+chips+'<select id="ls" aria-label="Sort"><option value="az"'+(ls==="az"?" selected":"")+'>A to Z</option><option value="low"'+(ls==="low"?" selected":"")+'>Least complete first</option><option value="new"'+(ls==="new"?" selected":"")+'>Newest first</option></select></div>'
+ +(vis.length?vis.map(function(x){var bl=qFields(x.it).filter(function(f){return!qNA(x.it,f)&&!qHas(x.it,f)}).map(qShort);
+  return'<div class="row qrow"><span><b>'+esc(x.it.name)+'</b> <small class="tn">'+esc(x.it.maker||"")+', '+esc(x.it.rel||x.it.year||"")+'</small><br>'+mbar(x.m)+(bl.length?' <small class="tn">Missing: '+esc(bl.slice(0,3).join(", "))+(bl.length>3?" and "+(bl.length-3)+" more":"")+'</small>':' <small class="tn">All filled in</small>')+'</span>'
+  +'<span class="rb">'+(bl.length?'<button class="btn" data-q="'+x.i+'" type="button">Quest</button> ':"")+'<button class="btn" data-e="'+x.i+'" type="button">Edit</button> <button class="btn" data-c="'+x.i+'" type="button">Copy</button> <button class="btn danger" data-d="'+x.i+'" type="button">Delete</button></span></div>'}).join(""):'<p class="empty">No items match.</p>')
+ +'<p class="tn">Changes are only saved when you press Save to GitHub. Deleting can be undone until you leave this page. Deleting an item does not delete its photo files from the repository.</p>')}
+function field(id,label,val,extra){return'<div class="fld"><label for="'+id+'">'+esc(label)+'</label><input id="'+id+'" placeholder=" " value="'+esc(val==null?"":val)+'" '+(extra||"")+'></div>'}
+function area(id,label,val,h){return'<label for="'+id+'">'+esc(label)+'</label><textarea id="'+id+'" placeholder=" " style="min-height:'+(h||80)+'px">'+esc(val||"")+'</textarea>'}
 
 // ---- Private (admin only) fields: encrypted with the admin passphrase, so the public site only ever holds ciphertext ----
 var PRIV=[["paid","What I paid"],["seller","Bought from"],["value","Estimated value now"],["loc","Storage location"],["serial","Serial number"],["pnotes","Private notes"]];
@@ -195,14 +208,14 @@ function lookupView(){var e=editing,h='<fieldset><legend>Quick fill</legend><p c
  return h+'</fieldset>'}
 function editView(){var it=editing.it,isNew=editing.i<0,ty=it.type||"Other",sp=it.specs||{};
  var g=C.SPEC_TYPES[ty]||{},known={},specs="";
- Object.keys(g).forEach(function(k){specs+='<h3 class="sub">'+esc(k)+'</h3><div class="two">'+g[k].map(function(f){known[f]=1;return field("sp_"+slug(f),f,sp[f],'data-k="'+esc(f)+'"')}).join("")+'</div>'});
+ Object.keys(g).forEach(function(k){specs+='<h3 class="sub">'+esc(k)+'</h3><div class="two">'+g[k].map(function(f){known[f]=1;return field("sp_"+slug(f),f,sp[f],'data-bl="1" data-k="'+esc(f)+'"')}).join("")+'</div>'});
  var other=Object.keys(sp).filter(function(k){return!known[k]}).map(function(k){return k+" | "+sp[k]}).join("\n");
  var ex=(it.extras||[]).map(function(x){return x.n+" | "+(x.s||"Have")+(x.note?" | "+x.note:"")}).join("\n");
  var lg=(it.log||[]).map(function(x){return x.d+" | "+(x.t||"Note")+" | "+(x.n||"")}).join("\n");
  var ph=(it.photos||[]);
- return shell('<p><button class="btn" id="bk" type="button">Back to the list</button></p><h3 class="sub">'+(isNew?"Add an item":"Edit "+esc(it.name))+'</h3>'
+ return shell('<p><button class="btn" id="bk" type="button">Back to the list</button></p><h3 class="sub">'+(isNew?"Add an item":"Edit "+esc(it.name))+'</h3>'+(isNew?"":'<p>'+mbar(qMeter(it))+'</p>')+'<p class="tn">Dashed boxes are still blank. <button class="btn" id="nb" type="button">Jump to next blank</button></p>'
  +lookupView()+'<label for="ty">Type</label><select id="ty">'+Object.keys(C.SPEC_TYPES).map(function(k){return'<option'+(k===ty?" selected":"")+'>'+esc(k)+'</option>'}).join("")+'</select>'
- +'<fieldset><legend>Basics</legend><div class="two">'+CORE.map(function(f){return field("f_"+f[0],f[1],it[f[0]],f[2]?"required":"")}).join("")+field("f_id","Web address name (id). Lowercase letters, numbers and dashes",it.id||"",isNew?"":"readonly")+'</div>'
+ +'<fieldset><legend>Basics</legend><div class="two">'+CORE.map(function(f){return field("f_"+f[0],f[1],it[f[0]],'data-bl="1" '+(f[2]?"required":""))}).join("")+field("f_id","Web address name (id). Lowercase letters, numbers and dashes",it.id||"",isNew?"":"readonly")+'</div>'
  +LISTS.map(function(f){return field("f_"+f[0],f[1],(it[f[0]]||[]).join(", "))}).join("")+LONG.map(function(f){return area("f_"+f[0],f[1],it[f[0]])}).join("")
  +'<label><input type="checkbox" id="f_relx" style="width:auto;display:inline"'+(it.relx?" checked":"")+'> The release date is unconfirmed (shows an asterisk)</label>'
  +'<label><input type="checkbox" id="f_sample" style="width:auto;display:inline"'+(it.sample?" checked":"")+'> This is a sample entry</label></fieldset>'
@@ -215,8 +228,90 @@ function editView(){var it=editing.it,isNew=editing.i<0,ty=it.type||"Other",sp=i
  +'<fieldset><legend>Links and media</legend>'+area("f_videos","Videos, one per line: Title | https address",(it.videos||[]).map(function(v){return v.t+" | "+v.u}).join("\n"),60)+area("f_links","Manuals and references, one per line: Title | https address",(it.links||[]).map(function(v){return v.t+" | "+v.u}).join("\n"),60)
  +field("f_wiki","Wikipedia address",it.wiki&&it.wiki.u||"")+area("f_wsum","Wikipedia summary (optional, CC BY-SA text)",it.wiki&&it.wiki.summary||"",60)+'</fieldset>'
  +privSection()+'<fieldset><legend>Accessories and changelog</legend><p class="tn">Ideas: '+esc((C.ACC_HINTS[ty]||[]).join(", "))+'</p>'+area("f_extras","Accessories, one per line: Name | Have, Want, Missing or Optional | note",ex,90)+area("f_log","Changelog, one per line: YYYY-MM-DD | Type | what changed. Types: "+C.LOGTYPES.join(", "),lg,90)+'</fieldset>'
- +'<p><button class="btn pri" id="ok" type="button">'+(isNew?"Add to the catalog":"Apply changes")+'</button> <button class="btn" id="cx" type="button">Cancel</button></p><p class="tn">This applies the change here. Press Save to GitHub on the list page to publish it.</p><div id="ferr"></div>')}
-function render(){if(!host)return;host.innerHTML=!tok||!S?lockedView():view==="edit"?editView():listView();wire()}
+ +'<div class="stick"><button class="btn pri" id="ok" type="button">'+(isNew?"Add to the catalog":"Apply changes")+'</button> <button class="btn" id="cx" type="button">Cancel</button></div><p class="tn">This applies the change here. Press Save to GitHub on the list page to publish it.</p><div id="ferr"></div>')}
+/* ---------- completeness and the Fill-in Quest (admin only) ----------
+   Every item has a list of fields worth having. The quest walks the blank ones one at a time and pays XP for each.
+   Progress (XP, streak, badges) lives in this browser only; the answers go into the catalog like any edit. */
+var QKEY="cm-quest",QT=null,QC={},QS={mode:"quick",item:null,skip:{},msg:null,boom:0,cur:null};
+var QF=[
+ {k:"maker",s:"maker",l:"Who made it?",t:"t",xp:10,ph:"Company or publisher"},
+ {k:"rel",s:"release date",l:"When did it come out?",t:"t",xp:10,ph:"1998, 1998-11 or 1998-11-03",has:function(it){return!!(it.rel||it.year)}},
+ {k:"msrp",s:"MSRP",l:"What did it cost new?",t:"t",xp:10,ph:"$1,995 or about $300"},
+ {k:"model",s:"model",l:"What is the model name or number?",t:"t",xp:8,ph:"Model"},
+ {k:"photo",s:"photo",l:"Show it off. Add a photo.",t:"p",xp:25,ph:"https address of a photo",hint:"Paste an https address, or choose a picture from this device. It is shrunk to 1600 pixels.",has:function(it){return(it.photos||[]).length>0}},
+ {k:"text",s:"description",l:"Describe it in a sentence or two.",t:"a",xp:20},
+ {k:"thoughts",s:"my take",l:"What do you think of it?",t:"a",xp:20,hint:"Your own opinion. This is the fun one."},
+ {k:"score",s:"score",l:"How many K out of 640K?",t:"n",lo:0,hi:640,xp:15,ph:"0 to 640"},
+ {k:"cond",s:"condition",l:"What condition is it in?",t:"t",xp:5,ph:"Mint, Good, Yellowed, For parts"},
+ {k:"works",s:"working status",l:"Does it work?",t:"c",xp:5,ch:["Working","Partly working","Untested","Not working"]},
+ {k:"country",s:"country",l:"Where was it made?",t:"t",xp:5,ph:"Country of origin"},
+ {k:"tags",s:"tags",l:"Add a few tags, separated by commas.",t:"l",xp:5,ph:"1980s, hardware, beige"},
+ {k:"links",s:"link",l:"Add a manual or reference link.",t:"u",xp:10,ph:"Title | https://example.com",hint:"One link. A bare https address works too."},
+ {k:"wiki",s:"Wikipedia",l:"Which Wikipedia article is it?",t:"w",xp:10,ph:"https://en.wikipedia.org/wiki/..."}];
+function qFields(it){var g=C.SPEC_TYPES[it.type||"Other"]||{},out=QF.slice();Object.keys(g).forEach(function(k){g[k].forEach(function(n){out.push({k:"sp:"+n,spec:n,s:n,l:"What is its "+n.toLowerCase()+"?",t:"t",xp:8,ph:n})})});return out}
+function qShort(f){return f.s||f.k}
+function qNA(it,f){return(it.na||[]).indexOf(f.k)>=0}
+function qHas(it,f){if(f.has)return f.has(it);if(f.spec)return!!(it.specs&&it.specs[f.spec]);if(f.k==="links")return(it.links||[]).length>0;if(f.k==="wiki")return!!(it.wiki&&it.wiki.u);if(f.k==="tags")return(it.tags||[]).length>0;return it[f.k]!=null&&String(it[f.k]).trim()!==""}
+function qMeter(it){var fs=qFields(it).filter(function(f){return!qNA(it,f)}),d=fs.filter(function(f){return qHas(it,f)}).length;return{done:d,total:fs.length,pct:fs.length?Math.round(d*100/fs.length):100}}
+function qTL(it){var k=it.id+"|"+it.name;if(!(k in QC)){var m=tlMatches(it.name||"")[0];QC[k]=m&&m.sc>=60?{r:m.r,x:(C.TLX||{})[m.r[2]]||{},exact:m.sc===100}:null}return QC[k]}
+function qSuggest(it,f){var m=qTL(it);if(!m)return null;var r=m.r,x=m.x,v="";
+ if(f.k==="maker")v=x.maker||"";else if(f.k==="rel")v=r[0];else if(f.k==="msrp")v=r[3]?r[3].replace(/\*$/," (estimated)"):"";else if(f.k==="text")v=[r[4],x.detail].filter(Boolean).join(" ");else if(f.spec)v=x.specs&&x.specs[f.spec]?String(x.specs[f.spec]):"";
+ return v?{v:v,from:r[2],exact:m.exact}:null}
+function qApply(it,f,v){v=String(v==null?"":v).trim();if(!v)return"Type something first, or press Skip.";var k=f.k;
+ if(f.t==="n"){var n=Number(v);if(!isFinite(n)||n<f.lo||n>f.hi)return"Use a number from "+f.lo+" to "+f.hi+".";it[k]=n}
+ else if(k==="rel"){if(!/^\d{4}(-\d\d(-\d\d)?)?$/.test(v))return"Use 1998, 1998-11 or 1998-11-03.";it.rel=v;it.year=+v.slice(0,4)}
+ else if(f.t==="l"){var l=v.split(",").map(function(t){return t.trim()}).filter(Boolean);if(!l.length)return"Add at least one tag.";it[k]=l}
+ else if(f.t==="p"){var u=C.safeUrl(v,"img");if(!/^https:/i.test(u))return"Use a web address that starts with https://";it.photos=(it.photos||[]).concat([u])}
+ else if(f.t==="u"){var p=v.split("|").map(function(t){return t.trim()}),su=C.safeUrl(p.length>1?p[1]:p[0],"link");if(!/^https:/i.test(su))return"Use a link that starts with https://";it.links=(it.links||[]).concat([{t:(p.length>1&&p[0])||su.replace(/^https:\/\//,"").split("/")[0],u:su}])}
+ else if(f.t==="w"){if(!wikiOk(v))return"Use an address like https://en.wikipedia.org/wiki/Commodore_64";var t=v.split("/").pop();try{t=decodeURIComponent(t)}catch(e){}it.wiki={t:t.replace(/_/g," "),u:v}}
+ else if(f.spec){it.specs=it.specs||{};it.specs[f.spec]=v}
+ else it[k]=v;
+ return""}
+function qLoad(){var o=null;try{o=JSON.parse(localStorage.getItem(QKEY)||"null")}catch(e){}return Object.assign({xp:0,filled:0,streak:0,best:0,photos:0,full:0,badges:{}},o||{})}
+function qStore(){try{localStorage.setItem(QKEY,JSON.stringify(QT))}catch(e){}}
+var QTITLES=["Boot Sector","Floppy Rookie","Bit Twiddler","Hex Hacker","Cache Hit","TSR Wrangler","Sysop","Overlay Wizard","Himem Hero","Conventional Legend"];
+function qLvl(xp){return Math.floor(Math.sqrt(xp/40))+1}
+var QB=[["first","First Byte","Fill in one field",function(t){return t.filled>=1}],["ten","Ten Fields","Fill in 10 fields",function(t){return t.filled>=10}],["streak5","Hot Streak","Five answers in a row",function(t){return t.best>=5}],["photo3","Shutterbug","Add 3 photos",function(t){return t.photos>=3}],["full","Complete Set","Finish every field on one item",function(t){return t.full>=1}],["arch","Archivist","Fill in 100 fields",function(t){return t.filled>=100}]];
+function qNext(){var c=[];S.items.forEach(function(it,i){if(QS.mode==="item"&&QS.item!==it.id)return;qFields(it).forEach(function(f,n){if(qNA(it,f)||qHas(it,f)||QS.skip[it.id+"|"+f.k])return;var sg=qSuggest(it,f),w=sg&&sg.exact?0:({t:1,c:1,n:1,l:2,u:2,w:2,p:2,a:3})[f.t];c.push({i:i,f:f,w:QS.mode==="item"?n:w*1000+n})})});
+ if(!c.length)return null;if(QS.mode==="random")return c[Math.floor(Math.random()*c.length)];
+ c.sort(function(a,b){return a.w-b.w||a.i-b.i});return c[0]}
+function qAfter(it,f,before){var t=QT,lv=qLvl(t.xp),gain=f.xp+(t.streak>=2?2:0),m=qMeter(it);
+ t.xp+=gain;t.filled++;t.streak++;t.best=Math.max(t.best,t.streak);if(f.t==="p")t.photos++;if(before.pct<100&&m.pct>=100)t.full++;
+ var nb=[];QB.forEach(function(b){if(!t.badges[b[0]]&&b[3](t)){t.badges[b[0]]=1;nb.push(b[1])}});
+ var up=qLvl(t.xp)>lv,msg="+"+gain+" XP"+(t.streak>=3?" (streak bonus)":"");
+ if(m.pct>=100&&before.pct<100)msg+=". "+it.name+" is complete!";if(up)msg+=" Level up: "+QTITLES[Math.min(qLvl(t.xp)-1,QTITLES.length-1)]+"!";if(nb.length)msg+=" Badge: "+nb.join(", ")+".";
+ QS.msg={t:"ok",m:msg};QS.boom=(up||nb.length||m.pct>=100&&before.pct<100)?1:0;S.dirty=true;S.qn=(S.qn||0)+1;qStore()}
+function questView(){if(!QT)QT=qLoad();var cur=QS.cur=qNext(),lv=qLvl(QT.xp),base=40*(lv-1)*(lv-1),nxt=40*lv*lv,pc=Math.round((QT.xp-base)*100/(nxt-base));
+ var h='<p class="abar"><button class="btn" id="bk" type="button">Back to the list</button> <button class="btn'+(S.dirty?' pri':'')+'" id="sv" type="button"'+(busy||!S.dirty&&!S.photos.length?" disabled":"")+'>Save to GitHub'+(S.qn?' ('+S.qn+' answers)':'')+'</button></p>'
+ +'<div class="qhud"><b>Level '+lv+': '+esc(QTITLES[Math.min(lv-1,QTITLES.length-1)])+'</b> <span class="mbar"><i style="width:'+pc+'%"></i></span> <small>'+QT.xp+' XP, '+(nxt-QT.xp)+' to next level</small><br><small>Streak '+QT.streak+' (best '+QT.best+'). Filled '+QT.filled+' fields.</small><br>'
+ +QB.map(function(b){return'<span class="qbd'+(QT.badges[b[0]]?" on":"")+'" title="'+esc(b[2])+'">'+esc(b[1])+'</span>'}).join(" ")+'</div>'
+ +'<div class="tools"><button class="chip'+(QS.mode==="quick"?" on":"")+'" data-qm="quick" type="button">Quick wins</button><button class="chip'+(QS.mode==="random"?" on":"")+'" data-qm="random" type="button">Surprise me</button>'
+ +'<select id="qi" aria-label="Quest on one item"><option value="">One item only...</option>'+S.items.map(function(it){return'<option value="'+esc(it.id)+'"'+(QS.mode==="item"&&QS.item===it.id?" selected":"")+'>'+esc(it.name)+' ('+qMeter(it).pct+'%)</option>'}).join("")+'</select></div>';
+ if(QS.msg)h+='<div class="msg '+QS.msg.t+'" role="status">'+esc(QS.msg.m)+'</div>';
+ if(QS.boom){h+='<div class="qboom" aria-hidden="true">';for(var i=0;i<22;i++)h+='<i style="--x:'+(Math.round(Math.random()*100))+'%;--d:'+(Math.round(Math.random()*500))+'ms;--c:'+["#ff5555","#55ff55","#ffff55","#55ffff","#ff55ff","#5555ff"][i%6]+'"></i>';h+='</div>';QS.boom=0}
+ if(!cur)return shell(h+'<div class="qcard"><h3 class="qq">'+(QS.mode==="item"?"That item is finished.":"Quest complete!")+'</h3><p>Every field that applies is filled in'+(QS.mode==="item"?" for this item":"")+'. Press Save to GitHub to publish.</p></div>');
+ var it=S.items[cur.i],f=cur.f,sg=qSuggest(it,f),inp;
+ if(f.t==="a")inp='<textarea id="qv" placeholder="'+esc(f.ph||"")+'" style="min-height:110px"></textarea>';
+ else if(f.t==="c")inp='<select id="qv">'+f.ch.map(function(c){return'<option>'+esc(c)+'</option>'}).join("")+'</select>';
+ else inp='<input id="qv" placeholder="'+esc(f.ph||"")+'" autocomplete="off">'+(f.t==="p"?'<p><label for="qf">Or choose a picture from this device</label><input id="qf" type="file" accept="image/*"></p>':"");
+ return shell(h+'<div class="qcard"><div class="qitem"><b>'+esc(it.name)+'</b> <small class="tn">'+esc(it.maker||"")+' '+esc(it.rel||it.year||"")+'</small></div><p>'+mbar(qMeter(it))+'</p>'
+ +'<h3 class="qq">'+esc(f.l)+' <span class="tag">+'+f.xp+' XP</span></h3>'+(f.hint?'<p class="tn">'+esc(f.hint)+'</p>':"")+inp
+ +(sg?'<p class="qsg">The timeline has: <b>'+esc(sg.v.length>220?sg.v.slice(0,220)+"...":sg.v)+'</b>'+(sg.exact?"":' <small>(closest match: '+esc(sg.from)+')</small>')+' <button class="btn" id="qu" type="button">Use this</button></p>':"")
+ +'<p class="abar"><button class="btn pri" id="qa" type="button">Save answer</button> <button class="btn" id="qs" type="button">Skip</button> <button class="btn" id="qn" type="button" title="Hide this field for this item">Does not apply</button></p></div>')}
+function wireQuest(){$("bk").onclick=function(){view="list";QS.msg=null;render()};$("sv").onclick=save;
+ host.querySelectorAll("[data-qm]").forEach(function(b){b.onclick=function(){QS.mode=b.dataset.qm;QS.msg=null;QS.skip={};render()}});
+ $("qi").onchange=function(){if(!this.value)return;QS.item=this.value;QS.mode="item";QS.msg=null;render()};
+ var cur=QS.cur;if(!cur)return;var it=S.items[cur.i],f=cur.f,go=function(v){var b4=qMeter(it),e=qApply(it,f,v);if(e){QS.msg={t:"err",m:e};render();return}qAfter(it,f,b4);render()};
+ $("qa").onclick=function(){go($("qv").value)};
+ $("qv").onkeydown=function(e){if(e.key==="Enter"&&(f.t!=="a"||e.ctrlKey||e.metaKey)){e.preventDefault();$("qa").click()}};
+ var qu=$("qu");if(qu)qu.onclick=function(){go(qSuggest(it,f).v)};
+ $("qs").onclick=function(){QS.skip[it.id+"|"+f.k]=1;QT.streak=0;qStore();QS.msg={t:"ok",m:"Skipped. It comes back next visit."};render()};
+ $("qn").onclick=function(){it.na=(it.na||[]).concat([f.k]);S.dirty=true;QS.msg={t:"ok",m:"Marked as not applicable for "+it.name+"."};render()};
+ var qf=$("qf");if(qf)qf.onchange=function(e){var fl=e.target.files[0];if(!fl)return;shrink(fl).then(function(d){var b4=qMeter(it),path="photos/"+slug(it.id)+"-"+Date.now().toString(36)+".jpg";S.photos.push({path:path,b64:d.split(",")[1]});it.photos=(it.photos||[]).concat([path]);qAfter(it,f,b4);render()},function(er){QS.msg={t:"err",m:er.message};render()})};
+ if(!busy)$("qv").focus()}
+function bulkFill(){var n=0,it2=0;S.items.forEach(function(it){var c=0;qFields(it).forEach(function(f){if(f.t==="p"||qNA(it,f)||qHas(it,f))return;var sg=qSuggest(it,f);if(sg&&sg.exact&&!qApply(it,f,sg.v))c++});if(c){n+=c;it2++}});
+ if(n){S.dirty=true;note={t:"ok",m:"Filled "+n+" blank fields on "+it2+" items from the timeline. Look them over, then Save to GitHub."}}else note={t:"ok",m:"Nothing to fill: every blank field has no exact timeline match."};render()}
+function render(){if(!host)return;host.innerHTML=!tok||!S?lockedView():view==="edit"?editView():view==="quest"?questView():listView();wire()}
 function $(id){return host.querySelector("#"+id)}
 function val(id){var e=$(id);return e?e.value.trim():""}
 function pairs(text,kind){var out=[],bad=null;text.split("\n").forEach(function(l,n){l=l.trim();if(!l)return;var p=l.split("|").map(function(x){return x.trim()});
@@ -259,7 +354,9 @@ function wire(){if(!host)return;host.oninput=bump;
  var vb=$("vback");if(vb)vb.onclick=function(){pasteMode=false;note=null;render()};
  var gn=$("gen");if(gn)gn.onclick=function(){var p=genPass();$("pp").value=p;$("genout").textContent="Save this in your password manager now: "+p};
  var g=$("go");if(g){var t=$("tk");g.onclick=function(){var pp=$("pp").value,tv=t.value;if(pp){var pr=passProblem(pp);if(pr){note={t:"err",m:pr};render();return}}pasteMode=false;t.value="";if(pp)PP=pp;unlock(tv,false,pp)};t.onkeydown=function(e){if(e.key==="Enter")g.click()};if(!busy)t.focus();return}
+ if(view==="quest"){wireQuest();return}
  if(view==="edit"){
+  $("nb").onclick=function(){var el=host.querySelector("input[data-bl]:placeholder-shown");if(el){el.scrollIntoView({block:"center"});el.focus()}else{$("ferr").innerHTML='<div class="msg ok">No blank basics or specs left.</div>'}};
   $("ty").onchange=function(){editing.it=collectSoft();render()};
   var lg=$("lgo");lg.onclick=function(){var q=val("lq");editing.it=collectSoft();editing.lq=q;editing.lookupNote=null;editing.lres={tl:tlMatches(q),wk:null};render();
    wikiSearch(q).then(function(l){editing.lres.wk=l},function(er){editing.lres.wk=[];editing.lres.werr="Wikipedia is not reachable right now ("+er.message+"). The timeline results above still work."}).then(function(){if(editing&&view==="edit")render()})};
@@ -287,7 +384,15 @@ function wire(){if(!host)return;host.oninput=bump;
  $("dl").onclick=function(){var b=new Blob([serialize(S.items)],{type:"text/javascript"}),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="items.js";document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(a.href)},2000)};
  var aq=$("aq");aq.oninput=function(){q=aq.value;var pos=aq.selectionStart;render();var n=$("aq");n.focus();try{n.setSelectionRange(pos,pos)}catch(e){}};
  host.querySelectorAll("[data-e]").forEach(function(b){b.onclick=function(){var i=+b.dataset.e;editing={i:i,it:clone(S.items[i]),newPhotos:[],priv:{}};if(!editing.it.photos)editing.it.photos=[];view="edit";note=null;render();window.scrollTo(0,0);if(PP&&editing.it.privEnc)decPriv(editing.it.privEnc,PP).then(function(o){editing.priv=o||{};editing.privOk=true;render()},function(){})}});
- host.querySelectorAll("[data-d]").forEach(function(b){b.onclick=function(){var i=+b.dataset.d,it=S.items[i];if(!confirm('Delete "'+it.name+'" from the catalog? You can still bring it back by not saving, or from GitHub history.'))return;S.items.splice(i,1);S.dirty=true;note={t:"ok",m:"Removed "+it.name+". Press Save to GitHub to publish."};render()}})}
+ host.querySelectorAll("[data-d]").forEach(function(b){b.onclick=function(){var i=+b.dataset.d,it=S.items[i];if(!confirm('Delete "'+it.name+'" from the catalog? You can undo until you leave this page.'))return;S.items.splice(i,1);(S.undo=S.undo||[]).push({it:it,i:i});S.dirty=true;note={t:"ok",m:"Removed "+it.name+". Press Undo delete to bring it back, or Save to GitHub to publish."};render()}});
+ host.querySelectorAll("[data-c]").forEach(function(b){b.onclick=function(){var src=S.items[+b.dataset.c],cp=clone(src),id=slug(src.id)+"-copy",n=2;while(S.items.some(function(x){return x.id===id}))id=slug(src.id)+"-copy-"+n++;
+  delete cp.privEnc;cp.name=src.name+" (copy)";cp.id=id;editing={i:-1,it:cp,newPhotos:[],priv:{}};if(!cp.photos)cp.photos=[];if(PP)editing.privOk=true;view="edit";note={t:"ok",m:"This is a copy of "+src.name+". Change what differs, then Add to the catalog."};render();window.scrollTo(0,0)}});
+ host.querySelectorAll("[data-q]").forEach(function(b){b.onclick=function(){QS.mode="item";QS.item=S.items[+b.dataset.q].id;QS.msg=null;QS.skip={};view="quest";note=null;render();window.scrollTo(0,0)}});
+ host.querySelectorAll("[data-lf]").forEach(function(b){b.onclick=function(){lf=b.dataset.lf;render()}});
+ $("ls").onchange=function(){ls=this.value;render()};
+ $("qgo").onclick=function(){QS.mode="quick";QS.skip={};QS.msg=null;view="quest";note=null;render();window.scrollTo(0,0)};
+ $("bulk").onclick=function(){if(confirm("Fill every blank field that has an exact timeline match? You can review the result before saving."))bulkFill()};
+ var ud=$("ud");if(ud)ud.onclick=function(){var u=S.undo.pop();S.items.splice(Math.min(u.i,S.items.length),0,u.it);S.dirty=true;note={t:"ok",m:"Brought back "+u.it.name+"."};render()}}
 function collectSoft(){var r=null;try{r=collect().o}catch(e){}return r||editing.it}
 function mount(el,ctx){C=ctx;host=el;render();bump()}
 function unmount(){host=null}
