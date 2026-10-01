@@ -1,25 +1,26 @@
 /* Catalog (#/catalog). Two styles, remembered per device:
    "book" = a mail-order catalog you page through (catbook.js), "pro" = a tidy, filterable list.
    Pro style: a Filters drawer, removable filter chips, grouping with a jump strip, three densities and "show more". */
-var CATST={q:"",cats:{},dec:"",min:0,sort:"",view:"cards",status:"",group:"none",dens:"cards",shown:24,panel:false,mode:null};
-function catMode(){var m=CATST.mode;if(!m){try{m=localStorage.getItem("cm-catmode")}catch(e){}CATST.mode=m==="pro"?"pro":"book"}return CATST.mode}
+var CATST={q:"",cats:{},dec:"",min:0,sort:"",view:"cards",status:"",group:"cat",dens:"cards",shown:60,panel:false,mode:null};
+function catMode(){var m=CATST.mode;if(!m){try{m=localStorage.getItem("cm-catmode")}catch(e){}CATST.mode=m==="book"?"book":"pro"}return CATST.mode}
 function catalog(){
  var S=CATST,mode=catMode();
  var cats={},decs={},sts={};
  ITEMS.forEach(function(i){cats[i.cat]=(cats[i.cat]||0)+1;var d=i.year?Math.floor(i.year/10)*10:0;if(d)decs[d]=(decs[d]||0)+1;if(i.status)sts[i.status]=(sts[i.status]||0)+1});
  var scored=ITEMS.filter(function(i){return i.score!=null}),avg=scored.length?scored.reduce(function(a,i){return a+i.score},0)/scored.length:null;
- var head='<h2>Catalog</h2><div class="cstat"><div><b>'+ITEMS.length+'</b>exhibits</div><div><b>'+Object.keys(cats).length+'</b>categories</div><div><b>'+(avg==null?"--":outOf10(avg))+'</b>average out of 10</div><div><b>'+ITEMS.reduce(function(a,i){return a+(i.qty||1)},0)+'</b>pieces on the shelves</div></div>'
+ var head='<h2>Catalog</h2><div class="cstat"><div><b>'+ITEMS.length+'</b>exhibits</div><div><b>'+Object.keys(cats).length+'</b>categories</div><div><b>'+(avg==null?"--":outOf10(avg))+'</b>avg /10</div><div><b>'+ITEMS.reduce(function(a,i){return a+(i.qty||1)},0)+'</b>pieces</div></div>'
   +'<div class="cmode" role="group" aria-label="Catalog style"><span>Style:</span><button type="button" class="btn'+(mode==="book"?" pri":"")+'" data-m="book" aria-pressed="'+(mode==="book")+'">Mail-order catalog</button><button type="button" class="btn'+(mode==="pro"?" pri":"")+'" data-m="pro" aria-pressed="'+(mode==="pro")+'">Pro</button></div>';
  function setMode(m){CATST.mode=m;try{localStorage.setItem("cm-catmode",m)}catch(e){}catalog()}
  window.CATRE=catalog;
  if(mode==="book"&&window.CMBook){app.innerHTML='<section class="catw">'+head+'<div id="bkmount"></div></section>';wireMode();CMBook.mount(document.getElementById("bkmount"));return}
  function wireMode(){document.querySelector(".cmode").onclick=function(e){var b=e.target.closest("[data-m]");if(b&&b.dataset.m!==catMode())setMode(b.dataset.m)}}
  var VIEWS=[["cards","Cards"],["shelf","Shelf"],["years","Time machine"],["next","Next up"],["dir","DIR"]];
- app.innerHTML='<section class="catw">'+head+tagChips()
-  +'<div class="tools ctb"><input id="q" type="search" placeholder="Search names, makers, years, specs (press / to jump here)" aria-label="Search" value="'+esc(S.q)+'"><select id="s" aria-label="Sort"><option value="">Catalog order</option><option value="score">Highest score</option><option value="old">Oldest first</option><option value="new">Newest first</option><option value="name">Name A to Z</option></select>'
+ app.innerHTML='<section class="catw">'+head+tagBrowse()
+  +'<div class="cchips cstrip" id="cc" role="group" aria-label="Categories">'+Object.keys(cats).map(function(c){return'<button type="button" class="chip" data-c="'+esc(c)+'" aria-pressed="false">'+(typeof pxCat==="function"?pxCat(c,14):"")+esc(c)+' <b>'+cats[c]+'</b></button>'}).join("")+'</div>'
+  +'<div class="tools ctb"><input id="q" type="search" placeholder="Search the catalog (press /)" aria-label="Search" value="'+esc(S.q)+'"><select id="s" aria-label="Sort"><option value="">Catalog order</option><option value="score">Highest score</option><option value="old">Oldest first</option><option value="new">Newest first</option><option value="name">Name A to Z</option></select>'
   +'<select id="gp" aria-label="Group by"><option value="none">No grouping</option><option value="cat">Group by category</option><option value="dec">Group by decade</option><option value="az">Group by letter</option></select>'
   +'<button class="btn" id="fb" type="button" aria-expanded="false" aria-controls="fp">Filters</button><button class="btn" id="sur" type="button">Surprise me</button></div>'
-  +'<div id="fp" class="cpanel" hidden><div class="cchips" id="cc" role="group" aria-label="Categories">'+Object.keys(cats).map(function(c){return'<button type="button" class="chip" data-c="'+esc(c)+'" aria-pressed="false">'+(typeof pxCat==="function"?pxCat(c,14):"")+esc(c)+' <b>'+cats[c]+'</b></button>'}).join("")+'</div>'
+  +'<div id="fp" class="cpanel" hidden>'
   +'<div class="cchips" id="cd" role="group" aria-label="Decades and status">'+Object.keys(decs).sort().map(function(d){return'<button type="button" class="chip dec" data-d="'+d+'" aria-pressed="false">'+d+'s <b>'+decs[d]+'</b></button>'}).join("")+Object.keys(sts).map(function(t){return'<button type="button" class="chip st" data-t="'+esc(t)+'" aria-pressed="false">'+esc(t)+' <b>'+sts[t]+'</b></button>'}).join("")+'</div>'
   +'<label class="cmin">Minimum score: <b id="mv">0</b>K <input id="mn" type="range" min="0" max="600" step="50" value="'+S.min+'" aria-label="Minimum score"></label></div>'
   +'<div class="crow"><span class="cviews" role="group" aria-label="View">'+VIEWS.map(function(v){return'<button type="button" class="btn" data-v="'+v[0]+'" aria-pressed="false">'+v[1]+'</button>'}).join("")+'</span><span class="cdens" role="group" aria-label="Density"><button type="button" class="btn" data-n="cards" aria-pressed="false">Big</button><button type="button" class="btn" data-n="rows" aria-pressed="false">List</button><button type="button" class="btn" data-n="table" aria-pressed="false">Table</button></span></div>'

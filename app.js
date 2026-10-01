@@ -265,6 +265,7 @@ function otdInner(){var d=new Date(),k="-"+String(d.getMonth()+1).padStart(2,"0"
 function otd(){var x=otdInner();return x?'<section>'+x+'</section>':""}
 function tagChips(){var c={};ITEMS.forEach(function(i){(i.tags||[]).forEach(function(t){c[t]=(c[t]||0)+1})});var k=Object.keys(c).sort();
  return k.length?'<p class="chips">'+k.map(function(t){return '<a class="tag" href="#/tag/'+encodeURIComponent(t)+'">'+esc(t)+' ('+c[t]+')</a>'}).join("")+'</p>':""}
+function tagBrowse(){var h=tagChips();return h?'<details class="ctags"><summary>Browse by tag</summary>'+h+'</details>':""}
 function tagPage(t){var l=ITEMS.filter(function(i){return(i.tags||[]).indexOf(t)>=0});
  app.innerHTML='<section><h2>Tag: '+esc(t)+'</h2><p><a href="#/catalog">Back to the catalog</a></p><div class="grid">'+(l.map(card).join("")||'<div class="empty">No items have that tag.</div>')+'</div></section>'}
 function daily(){if(!ITEMS.length)return "";var it=ITEMS[Math.floor(Date.now()/864e5)%ITEMS.length];return '<section><h2>Exhibit of the day</h2><div class="grid">'+card(it)+'</div></section>'}

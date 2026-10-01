@@ -161,3 +161,9 @@ Every timeline entry, ad and catalog item without a photo gets a picture drawn i
 - The timeline shows a linked item once, using the entry's date and note, and no longer lists the entry separately.
 - In Admin, the item form has a **Timeline link** box (suggest matches, fill my blanks, copy my details into the entry, and edit the entry's date, price, note, maker, developer, detail and specs). Edits are saved to `timeline-edits.js` (keyed by title) alongside `items.js`; the big timeline data files are untouched.
 - Once you have unlocked Admin on a device, timeline entries show an **Edit entry (admin)** button that opens the same editor (`#/admin/tle/<title>`). Visitors never see it.
+
+### Round 7c: Pro default, separate timeline editor
+- Catalog opens in **Pro** by default; the mail-order book is one click away (Style switch) and remembered.
+- Pro cleanup: compact stats, tags collapsed under "Browse by tag", a scrolling category strip, grouped by category by default, clamped card titles, shorter search box.
+- Editing a catalog item never writes to the timeline. A linked item only inherits blank fields from its entry.
+- Timeline entries are edited in a separate admin tool (Timeline editor), saved to `timeline-edits.js`.

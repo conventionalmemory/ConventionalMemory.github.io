@@ -575,6 +575,13 @@ html[data-motion="on"] .pl-res{animation:plpop .5s}@keyframes plpop{0%{transform
 html[data-motion="on"] .pl-sq i{animation:plflip .5s backwards}html[data-motion="on"] .pl-sq i:nth-child(2){animation-delay:.15s}html[data-motion="on"] .pl-sq i:nth-child(3){animation-delay:.3s}@keyframes plflip{from{transform:rotateX(90deg)}to{transform:none}}
 .pl-stars{display:inline-block;color:var(--blue);letter-spacing:2px}html[data-motion="on"] .pl-stars{animation:plstar .7s cubic-bezier(.3,1.6,.5,1)}@keyframes plstar{from{transform:scale(0)}to{transform:none}}
 </style>
+<style>
+.cstat{gap:6px;margin:6px 0 8px}.cstat div{padding:3px 10px;font-size:13px}.cstat b{display:inline;font-size:20px;margin-right:5px}
+.cstrip{display:flex;flex-wrap:nowrap;overflow-x:auto;gap:6px;padding:4px 0 8px;margin:0 0 6px;scrollbar-width:thin}.cstrip .chip{flex:0 0 auto;white-space:nowrap}
+.ctags{margin:0 0 8px;border:2px solid var(--line);background:var(--panel)}.ctags summary{cursor:pointer;padding:5px 10px;color:var(--mute)}.ctags .chips{max-height:140px;overflow:auto;padding:6px 10px;margin:0}
+.catw .grid>*{min-width:0}.catw .grid h3,.catw .card h3{font-size:16px;line-height:1.15;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.3em;word-break:break-word}
+#jm{display:none}
+</style>
 </head>
 <body>
 <div id="crtfx" aria-hidden="true"><i class="fx-roll"></i><i class="fx-noise"></i></div>
