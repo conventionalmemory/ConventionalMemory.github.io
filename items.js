@@ -361,7 +361,8 @@ var ITEMS=[
    "Brand": "IBM",
    "MPN": "DOS 2.1",
    "Vintage": "Yes"
-  }
+  },
+  "src": "ebay"
  },
  {
   "id": "ibm-5150-for-parts-or-repair",
@@ -382,7 +383,8 @@ var ITEMS=[
    "Brand": "IBM",
    "Model": "5150",
    "Vintage": "Yes"
-  }
+  },
+  "src": "ebay"
  },
  {
   "id": "apple-m7332-45w-power-adapter-for-parts",
@@ -408,7 +410,8 @@ var ITEMS=[
    "Voltage": "24 V",
    "Output current": "1.875 A",
    "Compatible product line": "Apple PowerBook, iBook"
-  }
+  },
+  "src": "ebay"
  },
  {
   "id": "alone-in-the-dark-big-box-pc",
@@ -426,7 +429,9 @@ var ITEMS=[
   "specs": {
    "Platform": "PC",
    "Edition": "Big Box"
-  }
+  },
+  "src": "ebay",
+  "draft": true
  },
  {
   "id": "shadow-warrior-1997-3d-realms-pc-cd-rom-with-manual",
@@ -446,7 +451,9 @@ var ITEMS=[
    "Platform": "PC",
    "Format": "CD-ROM",
    "Publisher or studio": "3D Realms (per title)"
-  }
+  },
+  "src": "ebay",
+  "draft": true
  },
  {
   "id": "apple-desktop-bus-mouse-ii-m2706",
@@ -472,7 +479,8 @@ var ITEMS=[
    "Color": "Platinum Gray",
    "Cord length": "2 ft (one listing)",
    "Type": "Mouse"
-  }
+  },
+  "src": "ebay"
  },
  {
   "id": "intel-play-qx3-computer-microscope-open-box",
@@ -494,7 +502,8 @@ var ITEMS=[
    "MPN": "837381",
    "Year": "2001",
    "Recommended age": "8+"
-  }
+  },
+  "src": "ebay"
  },
  {
   "id": "microsoft-nickelodeon-3d-movie-maker",
@@ -521,7 +530,8 @@ var ITEMS=[
    "Minimum processor": "66 MHz",
    "Minimum hard drive": "50 MB",
    "Language": "English"
-  }
+  },
+  "src": "ebay"
  },
  {
   "id": "impact-m4896-ac-adapter-24-v-1-87-a-45-w",
@@ -542,7 +552,8 @@ var ITEMS=[
    "MPN": "M4896",
    "Output": "24 V, 1.87 A, 45 W",
    "Includes": "Power cord"
-  }
+  },
+  "src": "ebay"
  },
  {
   "id": "vintage-5-port-metal-power-center-with-fax-modem-ports",
@@ -562,7 +573,8 @@ var ITEMS=[
    "Other ports": "2 fax/modem in and out",
    "Construction": "All metal",
    "Vintage": "Yes"
-  }
+  },
+  "src": "ebay"
  },
  {
   "id": "pc-accessories-36011-p10045-temporary-power-tap",
@@ -583,7 +595,8 @@ var ITEMS=[
    "Brand": "PC Accessories",
    "MPN": "36011/P10045",
    "Outlets": "5"
-  }
+  },
+  "src": "ebay"
  },
  {
   "id": "relocatable-power-tap-pc-0061-surge-suppressor",
@@ -604,7 +617,8 @@ var ITEMS=[
    "MPN": "PC-0061",
    "Outlets": "5",
    "Type": "Surge suppressor"
-  }
+  },
+  "src": "ebay"
  },
  {
   "id": "microsoft-encarta-95",
@@ -627,7 +641,8 @@ var ITEMS=[
    "Operating system": "Windows",
    "Year": "1995",
    "Type": "Encyclopedia"
-  }
+  },
+  "src": "ebay"
  },
  {
   "id": "apple-a1152-wired-usb-optical-mouse",
@@ -650,7 +665,9 @@ var ITEMS=[
    "Resolution": "400 DPI",
    "Buttons": "1",
    "Color": "White"
-  }
+  },
+  "src": "ebay",
+  "draft": true
  },
  {
   "id": "sierra-home-master-cook-deluxe-5-0",
@@ -675,7 +692,8 @@ var ITEMS=[
    "Minimum hard drive": "60 MB",
    "Minimum processor": "66 MHz",
    "Language": "English"
-  }
+  },
+  "src": "ebay"
  },
  {
   "id": "leisure-suit-larry-3-big-box-pc-3-5-inch-floppy",
@@ -696,7 +714,9 @@ var ITEMS=[
    "Platform": "IBM PC / MS-DOS",
    "Format": "3.5-inch floppy",
    "Edition": "Big Box"
-  }
+  },
+  "src": "ebay",
+  "draft": true
  },
  {
   "id": "roland-ma-12c-powered-micro-monitor-speakers-pair",
@@ -719,7 +739,8 @@ var ITEMS=[
    "Type": "Monitor speaker",
    "Color": "Gray",
    "Connectivity": "Wired"
-  }
+  },
+  "src": "ebay"
  },
  {
   "id": "3dfx-voodoo-original-print-ad-lara-croft-1997",
@@ -742,7 +763,8 @@ var ITEMS=[
    "Type": "Print ad",
    "Date": "1997",
    "Original or reproduction": "Original"
-  }
+  },
+  "src": "ebay"
  },
  {
   "id": "duke-nukem-3d-big-box-pc",
@@ -760,7 +782,9 @@ var ITEMS=[
   "specs": {
    "Platform": "PC",
    "Edition": "Big Box"
-  }
+  },
+  "src": "ebay",
+  "draft": true
  },
  {
   "id": "doom-ii-big-box-ibm-pc-3-5-inch-floppies",
@@ -781,7 +805,8 @@ var ITEMS=[
    "Format": "3.5-inch floppy",
    "Disks": "5",
    "Includes": "Box, manuals, paperwork"
-  }
+  },
+  "src": "ebay"
  },
  {
   "id": "doom-gold-medallion-shareware-3-5-inch-floppies",
@@ -802,7 +827,8 @@ var ITEMS=[
    "Publisher": "id Software",
    "Format": "3.5-inch floppy, 2 discs",
    "Type": "Original shareware"
-  }
+  },
+  "src": "ebay"
  },
  {
   "id": "hp-200lx-palmtop-2-mb-dos-with-accessories",
@@ -825,7 +851,8 @@ var ITEMS=[
    "Type": "Pocket computer",
    "RAM": "2 MB",
    "Operating system": "DOS"
-  }
+  },
+  "src": "ebay"
  },
  {
   "id": "toshiba-libretto-l5-japanese",
@@ -846,7 +873,9 @@ var ITEMS=[
    "Brand": "Toshiba",
    "Model": "Libretto L5",
    "Language": "Japanese (per title)"
-  }
+  },
+  "src": "ebay",
+  "draft": true
  },
  {
   "id": "toshiba-libretto-110ct-purchased-unit",
@@ -865,7 +894,9 @@ var ITEMS=[
   "specs": {
    "Brand": "Toshiba",
    "Model": "Libretto 110CT"
-  }
+  },
+  "src": "ebay",
+  "draft": true
  },
  {
   "id": "kodak-serial-cable-dc40-dc50-dc120-dc240-dc2800",
@@ -888,7 +919,8 @@ var ITEMS=[
    "MPN": "PCC-87001",
    "Length": "6 ft",
    "Color": "Beige"
-  }
+  },
+  "src": "ebay"
  },
  {
   "id": "kodak-dc40-digital-camera-0-4-mp",
@@ -909,7 +941,9 @@ var ITEMS=[
    "Model": "DC40",
    "Resolution": "0.4 MP (per title)",
    "Color": "Black"
-  }
+  },
+  "src": "ebay",
+  "draft": true
  },
  {
   "id": "sony-cyber-shot-2-1-mp-with-128-mb-memory-stick",
@@ -930,7 +964,9 @@ var ITEMS=[
    "Resolution": "2.1 MP (per title)",
    "Lens": "f/6.4-19.2 mm 1:3.8 (per title)",
    "Media": "Memory Stick"
-  }
+  },
+  "src": "ebay",
+  "draft": true
  },
  {
   "id": "sony-mavica-mvc-fd200-for-parts",
@@ -951,7 +987,9 @@ var ITEMS=[
   "specs": {
    "Brand": "Sony",
    "Model": "MVC-FD200"
-  }
+  },
+  "src": "ebay",
+  "draft": true
  },
  {
   "id": "sony-mavica-mvc-fd81-with-battery-and-case",
@@ -973,7 +1011,9 @@ var ITEMS=[
    "Model": "MVC-FD81",
    "Includes": "Battery, case",
    "Not included": "Charger"
-  }
+  },
+  "src": "ebay",
+  "draft": true
  },
  {
   "id": "sony-mavica-mvc-fd7-floppy-disk-camera",
@@ -998,7 +1038,8 @@ var ITEMS=[
    "Color": "Silver",
    "Connectivity": "USB",
    "Charger included": "No"
-  }
+  },
+  "src": "ebay"
  },
  {
   "id": "lexar-128-mb-memory-stick-full-size",
@@ -1019,7 +1060,8 @@ var ITEMS=[
    "Format": "Memory Stick",
    "Capacity": "128 MB",
    "Compatible brand": "Sony"
-  }
+  },
+  "src": "ebay"
  },
  {
   "id": "floppy-disk-lot-with-locking-storage-file-50-disks",
@@ -1039,7 +1081,8 @@ var ITEMS=[
    "Capacity": "1.44 MB",
    "Features": "Recordable",
    "Count": "50"
-  }
+  },
+  "src": "ebay"
  },
  {
   "id": "roland-p-55-sc-55-replacement-dc-charger-adapter",
@@ -1057,7 +1100,9 @@ var ITEMS=[
   "text": "A replacement DC power adapter and cord listed for the Roland P-55 SonicCell and SC-55/SC-55mkII, per the order title.",
   "specs": {
    "Compatible": "Roland P-55 SonicCell, SC-55, SC-55mkII (per title)"
-  }
+  },
+  "src": "ebay",
+  "draft": true
  },
  {
   "id": "roland-sound-canvas-sc-55mkii",
@@ -1079,7 +1124,9 @@ var ITEMS=[
    "Model": "SC-55mkII",
    "Type": "MIDI sound module",
    "Market": "Japan (per title)"
-  }
+  },
+  "src": "ebay",
+  "draft": true
  },
  {
   "id": "official-duke-nukem-3d-level-design-handbook",
@@ -1098,7 +1145,9 @@ var ITEMS=[
   "specs": {
    "Format": "Book",
    "CD-ROM": "Not included"
-  }
+  },
+  "src": "ebay",
+  "draft": true
  },
  {
   "id": "midi-15-pin-joystick-game-port-to-5-pin-din-breakout-adapter",
@@ -1117,7 +1166,9 @@ var ITEMS=[
   "specs": {
    "Length": "5 ft",
    "Ends": "15-pin joystick game port, 5-pin DIN"
-  }
+  },
+  "src": "ebay",
+  "draft": true
  },
  {
   "id": "yamaha-tg100-tone-generator",
@@ -1139,7 +1190,9 @@ var ITEMS=[
    "Model": "TG100",
    "Type": "Tone generator",
    "I/O": "MIDI DIN in and out"
-  }
+  },
+  "src": "ebay",
+  "draft": true
  },
  {
   "id": "commodore-64-serial-cable-6-pin-din-for-1541-1571-c128",
@@ -1160,7 +1213,8 @@ var ITEMS=[
    "Brand": "Commodore (compatible)",
    "Type": "Cable",
    "Connector": "6-pin DIN serial"
-  }
+  },
+  "src": "ebay"
  },
  {
   "id": "diablo-pc-1996",
@@ -1177,7 +1231,9 @@ var ITEMS=[
   "text": "Diablo for PC, titled as 1996 in the order.",
   "specs": {
    "Platform": "PC"
-  }
+  },
+  "src": "ebay",
+  "draft": true
  },
  {
   "id": "altec-lansing-acs45-multimedia-speaker-system-with-subwoofer",
@@ -1197,7 +1253,9 @@ var ITEMS=[
    "Brand": "Altec Lansing",
    "Model": "ACS45",
    "Type": "Computer speakers with subwoofer"
-  }
+  },
+  "src": "ebay",
+  "draft": true
  },
  {
   "id": "pcmcia-to-usb-2-0-cardbus-dual-port-adapter",
@@ -1220,7 +1278,8 @@ var ITEMS=[
    "Ports": "2 x USB 2.0",
    "Speed": "480 Mbps",
    "USB power": "+5 V, 100 mA per port without adapter; 500 mA with adapter"
-  }
+  },
+  "src": "ebay"
  },
  {
   "id": "sharp-lq61d133-lcd-panel-used-and-tested",
@@ -1242,7 +1301,8 @@ var ITEMS=[
    "Model": "LQ61D133",
    "Type": "LCD screen panel",
    "Operating temperature": "-20 to 60 C"
-  }
+  },
+  "src": "ebay"
  },
  {
   "id": "dim-bulb-tester-with-volt-and-amp-meter-v2",
@@ -1261,7 +1321,8 @@ var ITEMS=[
    "Type": "Current limiter",
    "Includes": "60 W bulb, circuit diagram, quick start guide",
    "Meters": "Volt and amp"
-  }
+  },
+  "src": "ebay"
  },
  {
   "id": "the-colonel-s-bequest-a-laura-bow-mystery-big-box-incomplete",
@@ -1282,7 +1343,8 @@ var ITEMS=[
    "Publisher": "Sierra Online, Inc.",
    "Release year": "1989",
    "Genre": "Mystery adventure"
-  }
+  },
+  "src": "ebay"
  },
  {
   "id": "pc-gamer-november-1997-with-cd-rom",
@@ -1306,7 +1368,8 @@ var ITEMS=[
    "Date": "November 1997",
    "Pages": "448",
    "Includes": "CD-ROM"
-  }
+  },
+  "src": "ebay"
  },
  {
   "id": "aol-america-online-version-2-0-3-5-inch-floppy-sealed",
@@ -1328,7 +1391,8 @@ var ITEMS=[
    "Type": "Program disk",
    "Color": "Ivory",
    "Original or reproduction": "Original"
-  }
+  },
+  "src": "ebay"
  },
  {
   "id": "replacement-rtc-bios-cmos-battery-for-toshiba-libretto",
@@ -1348,6 +1412,377 @@ var ITEMS=[
    "Brand": "RomeTech",
    "Type": "CMOS battery",
    "Compatible": "Toshiba Libretto, Tecra, Qosmio"
-  }
+  },
+  "src": "ebay"
+ },
+ {
+  "id": "toshiba-satellite-4015cds-laptop",
+  "type": "Laptop",
+  "name": "Toshiba Satellite 4015CDS laptop",
+  "cat": "Laptops",
+  "maker": "Toshiba",
+  "model": "Satellite 4015CDS",
+  "qty": 1,
+  "works": "Untested",
+  "cond": "Per order email title: listed as untested.",
+  "tags": [
+   "Toshiba",
+   "Laptop"
+  ],
+  "text": "A Toshiba Satellite 4015CDS notebook. The listing title calls it a vintage laptop and says it is untested.",
+  "specs": {
+   "Model": "Satellite 4015CDS"
+  },
+  "src": "shopgoodwill"
+ },
+ {
+  "id": "hp-omnibook-300-with-accessories",
+  "type": "Laptop",
+  "name": "HP OmniBook 300 with accessories",
+  "cat": "Laptops",
+  "maker": "HP",
+  "model": "OmniBook 300",
+  "qty": 1,
+  "works": "Partly working",
+  "cond": "Per order email title: listed as power tested, with accessories.",
+  "tags": [
+   "HP",
+   "OmniBook",
+   "Laptop"
+  ],
+  "text": "A vintage 9-inch HP OmniBook 300 with accessories. The listing title says it was power tested.",
+  "specs": {
+   "Model": "OmniBook 300"
+  },
+  "src": "shopgoodwill"
+ },
+ {
+  "id": "apple-powerbook-1400c-166",
+  "type": "Laptop",
+  "name": "Apple PowerBook 1400c/166",
+  "cat": "Laptops",
+  "maker": "Apple",
+  "model": "PowerBook 1400c/166",
+  "qty": 1,
+  "cond": "Per order email title: listing title mentions Mac OS 8.5, floppy drive and modem.",
+  "tags": [
+   "Apple",
+   "PowerBook",
+   "Mac OS 8.5"
+  ],
+  "text": "An Apple Macintosh PowerBook 1400c/166. The listing title mentions Mac OS 8.5, a floppy drive and a modem.",
+  "specs": {
+   "Model": "PowerBook 1400c/166",
+   "OS (per title)": "Mac OS 8.5"
+  },
+  "src": "shopgoodwill"
+ },
+ {
+  "id": "compaq-lte-elite-4-40c-no-hard-drive",
+  "type": "Laptop",
+  "name": "Compaq LTE Elite 4/40C (no hard drive)",
+  "cat": "Laptops",
+  "maker": "Compaq",
+  "model": "LTE Elite 4/40C",
+  "qty": 1,
+  "cond": "Per order email title: no HDD, powers on.",
+  "tags": [
+   "Compaq",
+   "LTE",
+   "Laptop"
+  ],
+  "text": "A vintage Compaq LTE Elite 4/40C laptop sold without a hard drive. The listing title says it powers on.",
+  "specs": {
+   "Model": "LTE Elite 4/40C"
+  },
+  "src": "shopgoodwill"
+ },
+ {
+  "id": "iomega-zip-100-external-drive-parallel-port-boxed",
+  "type": "Storage",
+  "name": "Iomega Zip 100 external drive (parallel port, boxed)",
+  "cat": "Storage",
+  "maker": "Iomega",
+  "model": "Zip 100",
+  "qty": 1,
+  "cond": "Per order email title: complete in box.",
+  "tags": [
+   "Iomega",
+   "Zip",
+   "Parallel"
+  ],
+  "text": "An Iomega Zip 100 external drive for the parallel port, listed as complete in box.",
+  "specs": {
+   "Interface": "Parallel port"
+  },
+  "src": "shopgoodwill"
+ },
+ {
+  "id": "sony-digital-mavica-mvc-fd91-bundle",
+  "type": "Camera",
+  "name": "Sony Digital Mavica MVC-FD91 bundle",
+  "cat": "Cameras",
+  "maker": "Sony",
+  "model": "MVC-FD91",
+  "qty": 1,
+  "cond": "Per order email title: bundle.",
+  "tags": [
+   "Sony",
+   "Mavica",
+   "Floppy"
+  ],
+  "text": "A Sony Digital Mavica MVC-FD91 floppy disk camera bundle, per the listing title.",
+  "specs": {
+   "Model": "MVC-FD91"
+  },
+  "src": "shopgoodwill"
+ },
+ {
+  "id": "sony-mavica-mvc-fd200-shopgoodwill",
+  "type": "Camera",
+  "name": "Sony Mavica MVC-FD200 (ShopGoodwill)",
+  "cat": "Cameras",
+  "maker": "Sony",
+  "model": "MVC-FD200",
+  "qty": 1,
+  "cond": "Per order email title: 2.0 MP, floppy and Memory Stick dual media.",
+  "tags": [
+   "Sony",
+   "Mavica",
+   "Floppy"
+  ],
+  "text": "A Sony Mavica MVC-FD200 2.0 MP camera. The listing title says it takes floppy and Memory Stick media.",
+  "specs": {
+   "Model": "MVC-FD200",
+   "Resolution (per title)": "2.0 MP"
+  },
+  "src": "shopgoodwill"
+ },
+ {
+  "id": "tdk-mf-2hd-floppies-and-maxell-8mm-tape-lot",
+  "type": "Game or software",
+  "name": "TDK MF-2HD floppies and Maxell 8mm tape lot",
+  "cat": "Storage",
+  "maker": "TDK",
+  "model": "MF-2HD",
+  "qty": 1,
+  "cond": "Per order email title: TDK MF-2HD micro floppy disks IBM PS/2 format, Maxell 8mm GX-MP video cassette.",
+  "tags": [
+   "Floppy",
+   "TDK"
+  ],
+  "text": "Listed as: TDK MF-2HD micro floppy disks IBM PS/2 format, Maxell 8mm GX-MP video cassette.",
+  "src": "shopgoodwill",
+  "draft": true
+ },
+ {
+  "id": "game-boy-advance-game-lot-nemo-medal-of-honor-tiger-namco-su",
+  "type": "Game or software",
+  "name": "Game Boy Advance game lot (Nemo, Medal of Honor, Tiger, Namco, Sum of All Fears)",
+  "cat": "Games and software",
+  "maker": "Unknown",
+  "qty": 1,
+  "cond": "Per order email title: GBA lot: Nemo, Medal of Honor, Tiger, Namco, Sum of All Fears.",
+  "tags": [
+   "Game Boy Advance"
+  ],
+  "text": "Listed as: GBA lot: Nemo, Medal of Honor, Tiger, Namco, Sum of All Fears.",
+  "src": "shopgoodwill",
+  "draft": true
+ },
+ {
+  "id": "nintendo-game-boy-pocket-2022-order",
+  "type": "Game console",
+  "name": "Nintendo Game Boy Pocket (2022 order)",
+  "cat": "Game consoles",
+  "maker": "Unknown",
+  "qty": 1,
+  "cond": "Per order email title: winning-bid email title only: Nintendo Game Boy Pocket (2022 order).",
+  "tags": [
+   "Retro gaming"
+  ],
+  "text": "Listed as: winning-bid email title only: Nintendo Game Boy Pocket (2022 order).",
+  "src": "shopgoodwill",
+  "draft": true
+ },
+ {
+  "id": "nintendo-wii-console-rvl-001-with-remote-and-nunchuk",
+  "type": "Game console",
+  "name": "Nintendo Wii console RVL-001 with remote and nunchuk",
+  "cat": "Game consoles",
+  "maker": "Unknown",
+  "qty": 1,
+  "cond": "Per order email title: winning-bid email title only: Nintendo Wii console RVL-001 with remote and nunchuk.",
+  "tags": [
+   "Retro gaming"
+  ],
+  "text": "Listed as: winning-bid email title only: Nintendo Wii console RVL-001 with remote and nunchuk.",
+  "src": "shopgoodwill",
+  "draft": true
+ },
+ {
+  "id": "white-nintendo-wii-console-with-cables-and-sensor-bar",
+  "type": "Game console",
+  "name": "White Nintendo Wii console with cables and sensor bar",
+  "cat": "Game consoles",
+  "maker": "Unknown",
+  "qty": 1,
+  "cond": "Per order email title: winning-bid email title only: White Nintendo Wii console with cables and sensor bar.",
+  "tags": [
+   "Retro gaming"
+  ],
+  "text": "Listed as: winning-bid email title only: White Nintendo Wii console with cables and sensor bar.",
+  "src": "shopgoodwill",
+  "draft": true
+ },
+ {
+  "id": "nes-mike-tyson-s-punch-out-game-only",
+  "type": "Game console",
+  "name": "NES Mike Tyson's Punch-Out (game only)",
+  "cat": "Game consoles",
+  "maker": "Unknown",
+  "qty": 1,
+  "cond": "Per order email title: winning-bid email title only: NES Mike Tyson's Punch-Out (game only).",
+  "tags": [
+   "Retro gaming"
+  ],
+  "text": "Listed as: winning-bid email title only: NES Mike Tyson's Punch-Out (game only).",
+  "src": "shopgoodwill",
+  "draft": true
+ },
+ {
+  "id": "two-sony-playstation-3-controllers",
+  "type": "Game console",
+  "name": "Two Sony PlayStation 3 controllers",
+  "cat": "Game consoles",
+  "maker": "Unknown",
+  "qty": 1,
+  "cond": "Per order email title: winning-bid email title only: Two Sony PlayStation 3 controllers.",
+  "tags": [
+   "Retro gaming"
+  ],
+  "text": "Listed as: winning-bid email title only: Two Sony PlayStation 3 controllers.",
+  "src": "shopgoodwill",
+  "draft": true
+ },
+ {
+  "id": "game-boy-color-parts-and-repair-with-game",
+  "type": "Game console",
+  "name": "Game Boy Color (parts and repair) with game",
+  "cat": "Game consoles",
+  "maker": "Unknown",
+  "qty": 1,
+  "cond": "Per order email title: winning-bid email title only: Game Boy Color (parts and repair) with game.",
+  "tags": [
+   "Retro gaming"
+  ],
+  "text": "Listed as: winning-bid email title only: Game Boy Color (parts and repair) with game.",
+  "src": "shopgoodwill",
+  "draft": true
+ },
+ {
+  "id": "super-nintendo-final-fantasy-iii-cartridge",
+  "type": "Game console",
+  "name": "Super Nintendo Final Fantasy III cartridge",
+  "cat": "Game consoles",
+  "maker": "Unknown",
+  "qty": 1,
+  "cond": "Per order email title: winning-bid email title only: Super Nintendo Final Fantasy III cartridge.",
+  "tags": [
+   "Retro gaming"
+  ],
+  "text": "Listed as: winning-bid email title only: Super Nintendo Final Fantasy III cartridge.",
+  "src": "shopgoodwill",
+  "draft": true
+ },
+ {
+  "id": "nintendo-game-boy-color-purple",
+  "type": "Game console",
+  "name": "Nintendo Game Boy Color, purple",
+  "cat": "Game consoles",
+  "maker": "Unknown",
+  "qty": 1,
+  "cond": "Per order email title: winning-bid email title only: Nintendo Game Boy Color, purple.",
+  "tags": [
+   "Retro gaming"
+  ],
+  "text": "Listed as: winning-bid email title only: Nintendo Game Boy Color, purple.",
+  "src": "shopgoodwill",
+  "draft": true
+ },
+ {
+  "id": "red-nintendo-game-boy-pocket-mgb-001",
+  "type": "Game console",
+  "name": "Red Nintendo Game Boy Pocket MGB-001",
+  "cat": "Game consoles",
+  "maker": "Unknown",
+  "qty": 1,
+  "cond": "Per order email title: winning-bid email title only: Red Nintendo Game Boy Pocket MGB-001.",
+  "tags": [
+   "Retro gaming"
+  ],
+  "text": "Listed as: winning-bid email title only: Red Nintendo Game Boy Pocket MGB-001.",
+  "src": "shopgoodwill",
+  "draft": true
+ },
+ {
+  "id": "playstation-game-lot-spyro-crash-bandicoot-ctr",
+  "type": "Game console",
+  "name": "PlayStation game lot (Spyro, Crash Bandicoot, CTR)",
+  "cat": "Game consoles",
+  "maker": "Unknown",
+  "qty": 1,
+  "cond": "Per order email title: winning-bid email title only: PlayStation game lot (Spyro, Crash Bandicoot, CTR).",
+  "tags": [
+   "Retro gaming"
+  ],
+  "text": "Listed as: winning-bid email title only: PlayStation game lot (Spyro, Crash Bandicoot, CTR).",
+  "src": "shopgoodwill",
+  "draft": true
+ },
+ {
+  "id": "lot-of-30-assorted-playstation-3-games",
+  "type": "Game console",
+  "name": "Lot of 30 assorted PlayStation 3 games",
+  "cat": "Game consoles",
+  "maker": "Unknown",
+  "qty": 1,
+  "cond": "Per order email title: winning-bid email title only: Lot of 30 assorted PlayStation 3 games.",
+  "tags": [
+   "Retro gaming"
+  ],
+  "text": "Listed as: winning-bid email title only: Lot of 30 assorted PlayStation 3 games.",
+  "src": "shopgoodwill",
+  "draft": true
+ },
+ {
+  "id": "game-boy-advance-sp",
+  "type": "Game console",
+  "name": "Game Boy Advance SP",
+  "cat": "Game consoles",
+  "maker": "Unknown",
+  "qty": 1,
+  "cond": "Per order email title: winning-bid email title only: Game Boy Advance SP.",
+  "tags": [
+   "Retro gaming"
+  ],
+  "text": "Listed as: winning-bid email title only: Game Boy Advance SP.",
+  "src": "shopgoodwill",
+  "draft": true
+ },
+ {
+  "id": "bulk-lot-of-nintendo-handheld-console-cases",
+  "type": "Game console",
+  "name": "Bulk lot of Nintendo handheld console cases",
+  "cat": "Game consoles",
+  "maker": "Unknown",
+  "qty": 1,
+  "cond": "Per order email title: winning-bid email title only: Bulk lot of Nintendo handheld console cases.",
+  "tags": [
+   "Retro gaming"
+  ],
+  "text": "Listed as: winning-bid email title only: Bulk lot of Nintendo handheld console cases.",
+  "src": "shopgoodwill",
+  "draft": true
  }
 ];

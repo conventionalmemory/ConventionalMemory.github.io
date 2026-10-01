@@ -67,7 +67,7 @@ function unlock(token,remember,pass){tok=token.trim();busy=true;render();
   if(!r.ok)throw new Error(errText(r));
   if(r.json.permissions&&r.json.permissions.push===false)throw new Error("This token can read the repository but not write to it. Give it Contents: Read and write.");
   return gh(repo()+"/contents/"+FILE+"?ref="+encodeURIComponent(C.REPO.branch)).then(function(m){
-   if(m.status===404)return{sha:null,items:clone(C.ITEMS),created:true};
+   if(m.status===404)return{sha:null,items:clone(window.ALLITEMS||C.ITEMS),created:true};
    if(!m.ok)throw new Error(errText(m));
    return gh(repo()+"/contents/"+FILE+"?ref="+encodeURIComponent(C.REPO.branch),{accept:"application/vnd.github.raw+json",text:true}).then(function(t){
     if(!t.ok)throw new Error(errText(t));return{sha:m.json.sha,items:parseItems(t.text)}})})
@@ -84,7 +84,7 @@ function save(){if(!S||busy)return;busy=true;note={t:"ok",m:"Saving to GitHub...
  S.photos.forEach(function(p){chain=chain.then(function(){return gh(repo()+"/contents/"+p.path,{method:"PUT",body:{message:"Admin: add photo "+p.path,content:p.b64,branch:C.REPO.branch}}).then(function(r){if(!r.ok&&r.status!==422)throw new Error(errText(r))})})});
  chain.then(function(){var body={message:"Admin: update catalog ("+S.items.length+" items)",content:b64enc(serialize(S.items)),branch:C.REPO.branch};if(S.sha)body.sha=S.sha;return gh(repo()+"/contents/"+FILE,{method:"PUT",body:body})})
  .then(function(r){if(!r.ok)throw new Error(errText(r));S.sha=r.json.content.sha;try{alog(diffItems(),S.photos.length)}catch(e){}S.orig=clone(S.items);view="list";S.dirty=false;S.qn=0;S.photos=[];S.created=false;
-   C.ITEMS.length=0;S.items.forEach(function(i){C.ITEMS.push(clone(i))});C.prep();
+   C.ITEMS.length=0;S.items.forEach(function(i){if(!i.draft)C.ITEMS.push(clone(i))});try{window.ALLITEMS=S.items.map(clone);window.DRAFTS=S.items.filter(function(i){return i.draft})}catch(e){}C.prep();
    note={t:"ok",m:"Saved. The public site updates in a minute or two. Refresh it then to see the change."}})
  .catch(function(e){note={t:"err",m:String(e.message||e)}}).then(function(){busy=false;render()})}
 
@@ -106,10 +106,10 @@ function mbar(m){return'<span class="mbar" title="'+m.done+' of '+m.total+' fiel
 function listView(){var items=S.items,ql=q.toLowerCase(),tot=0,dn=0;
  var all=items.map(function(it,i){var m=qMeter(it);tot+=m.total;dn+=m.done;return{it:it,i:i,m:m}});
  var vis=all.filter(function(x){var it=x.it;if(ql&&(it.name+" "+(it.maker||"")+" "+it.id+" "+(it.cat||"")).toLowerCase().indexOf(ql)<0)return false;
-  return lf==="all"||(lf==="inc"&&x.m.pct<100)||(lf==="done"&&x.m.pct>=100)||(lf==="nophoto"&&!(it.photos||[]).length)||(lf==="notl"&&!qTL(it))});
+  return lf==="all"||(lf==="inc"&&x.m.pct<100)||(lf==="done"&&x.m.pct>=100)||(lf==="nophoto"&&!(it.photos||[]).length)||(lf==="notl"&&!qTL(it))||(lf==="draft"&&it.draft)||(lf==="live"&&!it.draft)});
  vis.sort(function(a,b){return ls==="low"?a.m.pct-b.m.pct||a.it.name.localeCompare(b.it.name):ls==="new"?(b.it.year||0)-(a.it.year||0):a.it.name.localeCompare(b.it.name)});
  var all100=tot?Math.round(dn*100/tot):0;
- var chips=[["all","All"],["inc","Incomplete"],["done","Complete"],["nophoto","No photo"]].map(function(c){return'<button class="chip'+(lf===c[0]?" on":"")+'" data-lf="'+c[0]+'" type="button">'+c[1]+'</button>'}).join("");
+ var chips=[["all","All"],["inc","Incomplete"],["done","Complete"],["nophoto","No photo"],["draft","Drafts ("+items.filter(function(i){return i.draft}).length+")"],["live","Published"]].map(function(c){return'<button class="chip'+(lf===c[0]?" on":"")+'" data-lf="'+c[0]+'" type="button">'+c[1]+'</button>'}).join("");
  return shell('<p>Signed in to <b>'+esc(C.REPO.owner+"/"+C.REPO.repo)+'</b>, branch '+esc(C.REPO.branch)+'. '+items.length+' items. '+(S.dirty?'<span class="tag want">Unsaved changes</span>':'<span class="tag">Saved</span>')+(S.photos.length?' <span class="tag">'+S.photos.length+' photo(s) waiting</span>':"")+'</p>'
  +'<div class="qhero"><div><b>Catalog completeness</b> '+mbar({done:dn,total:tot,pct:all100})+'<br><small class="tn">'+(tot-dn)+' blank fields across '+items.length+' items.</small></div><span><button class="btn pri" id="qgo" type="button">Start the Fill-in Quest</button> <button class="btn" id="qph" type="button">Photo Safari</button></span></div>'
  +potwHtml()+qaddHtml()+'<p class="abar"><button class="btn pri" id="add" type="button">Add item (full form)</button> <button class="btn'+(S.dirty?' pri':'')+'" id="sv" type="button"'+(busy||!S.dirty&&!S.photos.length?" disabled":"")+'>Review and save</button> <button class="btn" id="bulk" type="button" title="Fill every blank field the timeline knows an exact match for">Auto-fill from timeline</button> '
@@ -117,8 +117,8 @@ function listView(){var items=S.items,ql=q.toLowerCase(),tot=0,dn=0;
  +'<button class="btn" id="gaudit" type="button">Photo audit</button> <button class="btn" id="ghealth" type="button">Health check</button> <button class="btn" id="gtools" type="button">Bulk tools</button> <button class="btn" id="gstudio" type="button">Studio</button> <button class="btn" id="dl" type="button">Download items.js backup</button> <button class="btn" id="lk" type="button">Lock</button></p>'
  +'<div class="tools"><input id="aq" type="search" placeholder="Search items" aria-label="Search items" value="'+esc(q)+'">'+chips+'<select id="ls" aria-label="Sort"><option value="az"'+(ls==="az"?" selected":"")+'>A to Z</option><option value="low"'+(ls==="low"?" selected":"")+'>Least complete first</option><option value="new"'+(ls==="new"?" selected":"")+'>Newest first</option></select></div>'
  +(vis.length?vis.map(function(x){var bl=qFields(x.it).filter(function(f){return!qNA(x.it,f)&&!qHas(x.it,f)}).map(qShort);
-  return'<div class="row qrow"><span><b>'+esc(x.it.name)+'</b> <small class="tn">'+esc(x.it.maker||"")+', '+esc(x.it.rel||x.it.year||"")+'</small><br>'+mbar(x.m)+(bl.length?' <small class="tn">Missing: '+esc(bl.slice(0,3).join(", "))+(bl.length>3?" and "+(bl.length-3)+" more":"")+'</small>':' <small class="tn">All filled in</small>')+'</span>'
-  +'<span class="rb">'+(bl.length?'<button class="btn" data-q="'+x.i+'" type="button">Quest</button> ':"")+'<button class="btn" data-e="'+x.i+'" type="button">Edit</button> <button class="btn" data-c="'+x.i+'" type="button">Copy</button> <button class="btn danger" data-d="'+x.i+'" type="button">Delete</button></span></div>'}).join(""):'<p class="empty">No items match.</p>')
+  return '<div class="row qrow"><span><b>'+esc(x.it.name)+'</b>'+(x.it.draft?' <span class="tag want">Draft</span>':'')+(x.it.src?' <span class="tag">'+esc(x.it.src==="ebay"?"eBay":"ShopGoodwill")+'</span>':'')+' <small class="tn">'+esc(x.it.maker||"")+', '+esc(x.it.rel||x.it.year||"")+'</small><br>'+mbar(x.m)+(bl.length?' <small class="tn">Missing: '+esc(bl.slice(0,3).join(", "))+(bl.length>3?" and "+(bl.length-3)+" more":"")+'</small>':' <small class="tn">All filled in</small>')+'</span>'
+  +'<span class="rb">'+(bl.length?'<button class="btn" data-q="'+x.i+'" type="button">Quest</button> ':"")+(x.it.draft?'<button class="btn pri" data-pub="'+x.i+'" type="button">Publish</button> ':'')+'<button class="btn" data-e="'+x.i+'" type="button">Edit</button> <button class="btn" data-c="'+x.i+'" type="button">Copy</button> <button class="btn danger" data-d="'+x.i+'" type="button">Delete</button></span></div>'}).join(""):'<p class="empty">No items match.</p>')
  +'<p class="tn">Changes are only saved when you press Save to GitHub. Deleting can be undone until you leave this page. Deleting an item does not delete its photo files from the repository.</p>')}
 function field(id,label,val,extra){return'<div class="fld"><label for="'+id+'">'+esc(label)+'</label><input id="'+id+'" placeholder=" " value="'+esc(val==null?"":val)+'" '+(extra||"")+'></div>'}
 function area(id,label,val,h){return'<label for="'+id+'">'+esc(label)+'</label><textarea id="'+id+'" placeholder=" " style="min-height:'+(h||80)+'px">'+esc(val||"")+'</textarea>'}
@@ -219,6 +219,7 @@ function editView(){var it=editing.it,isNew=editing.i<0,ty=it.type||"Other",sp=i
  +'<fieldset><legend>Basics</legend><div class="two">'+CORE.map(function(f){return field("f_"+f[0],f[1],it[f[0]],'data-bl="1" '+(f[2]?"required":""))}).join("")+field("f_id","Web address name (id). Lowercase letters, numbers and dashes",it.id||"",isNew?"":"readonly")+'</div>'
  +LISTS.map(function(f){return field("f_"+f[0],f[1],(it[f[0]]||[]).join(", "))}).join("")+LONG.map(function(f){return area("f_"+f[0],f[1],it[f[0]])}).join("")
  +'<label><input type="checkbox" id="f_relx" style="width:auto;display:inline"'+(it.relx?" checked":"")+'> The release date is unconfirmed (shows an asterisk)</label>'
+ +'<label><input type="checkbox" id="f_draft" style="width:auto;display:inline"'+(it.draft?" checked":"")+'> Draft: keep it out of the public catalog until I publish it</label>'
  +'<label><input type="checkbox" id="f_sample" style="width:auto;display:inline"'+(it.sample?" checked":"")+'> This is a sample entry</label></fieldset>'
  +'<fieldset><legend>Specs</legend>'+(specs||'<p>No spec template for this type.</p>')+area("f_other","Other specs, one per line: Label | Value",other,60)+'</fieldset>'
  +'<fieldset><legend>Photos</legend><div class="thumbs">'+ph.map(function(p,i){var u=C.safeUrl(p,"img");return'<figure>'+(u?'<img src="'+esc(u)+'" alt="">':'')+'<figcaption>'+esc(String(p).slice(0,40))+'</figcaption><button class="btn danger" data-rp="'+i+'" type="button">Remove</button></figure>'}).join("")
@@ -604,7 +605,7 @@ function collect(){var o=clone(editing.it),err=[],num=function(id,lo,hi,label){v
  LONG.forEach(function(f){var v=host.querySelector("#f_"+f[0]).value.trim();if(v)o[f[0]]=v;else delete o[f[0]]});
  var cr=val("f_credit");if(cr)o.credit=cr;else delete o.credit;
  if(host.querySelector("#f_relx").checked)o.relx=true;else delete o.relx;
- if(host.querySelector("#f_sample").checked)o.sample=true;else delete o.sample;
+ if(host.querySelector("#f_sample").checked)o.sample=true;else delete o.sample;if(host.querySelector("#f_draft").checked)o.draft=true;else delete o.draft;
  var sp={};host.querySelectorAll("input[data-k]").forEach(function(i){if(i.value.trim())sp[i.dataset.k]=i.value.trim()});
  pairs(host.querySelector("#f_other").value,"spec").list.forEach(function(p){sp[p[0]]=p[1]});if(Object.keys(sp).length)o.specs=sp;else delete o.specs;
  var v=pairs(host.querySelector("#f_videos").value,"url");if(v.bad)err.push(v.bad);o.videos=v.list;
@@ -659,6 +660,7 @@ function wire(){if(!host)return;host.oninput=bump;
  host.querySelectorAll("[data-c]").forEach(function(b){b.onclick=function(){var src=S.items[+b.dataset.c],cp=clone(src),id=slug(src.id)+"-copy",n=2;while(S.items.some(function(x){return x.id===id}))id=slug(src.id)+"-copy-"+n++;
   delete cp.privEnc;cp.name=src.name+" (copy)";cp.id=id;editing={i:-1,it:cp,newPhotos:[],priv:{}};if(!cp.photos)cp.photos=[];if(PP)editing.privOk=true;view="edit";note={t:"ok",m:"This is a copy of "+src.name+". Change what differs, then Add to the catalog."};render();window.scrollTo(0,0)}});
  host.querySelectorAll("[data-q]").forEach(function(b){b.onclick=function(){QS.mode="item";QS.item=S.items[+b.dataset.q].id;QS.screen="play";QS.pin=null;QS.msg=null;QS.skip={};view="quest";note=null;render();window.scrollTo(0,0)}});
+ host.querySelectorAll("[data-pub]").forEach(function(b){b.onclick=function(){var it=S.items[+b.dataset.pub];delete it.draft;S.dirty=true;note={t:"ok",m:"Published "+it.name+". Save to GitHub to make it public."};render()}});
  host.querySelectorAll("[data-lf]").forEach(function(b){b.onclick=function(){lf=b.dataset.lf;render()}});
  $("ls").onchange=function(){ls=this.value;render()};
  $("qgo").onclick=function(){QS.mode="quick";QS.screen="map";QS.skip={};QS.msg=null;view="quest";note=null;render();window.scrollTo(0,0)};
