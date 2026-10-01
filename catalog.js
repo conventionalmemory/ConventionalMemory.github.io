@@ -1,32 +1,37 @@
 /* Catalog (#/catalog). Two styles, remembered per device:
    "book" = a mail-order catalog you page through (catbook.js), "pro" = a tidy, filterable list.
    Pro style: a Filters drawer, removable filter chips, grouping with a jump strip, three densities and "show more". */
-var CATST={q:"",cats:{},dec:"",min:0,sort:"",view:"cards",status:"",group:"cat",dens:"cards",shown:60,panel:false,mode:null};
+var CATST={q:"",cats:{},dec:"",min:0,sort:"",view:"cards",status:"",group:"cat",dens:"cards",shown:60,panel:false,mode:null,all:false};
 function catMode(){var m=CATST.mode;if(!m){try{m=localStorage.getItem("cm-catmode")}catch(e){}CATST.mode=m==="book"?"book":"pro"}return CATST.mode}
 function catalog(){
- var S=CATST,mode=catMode();
+ var S=CATST,mode=catMode();var pm=/^#\/catalog\/cat\/(.+)$/.exec(location.hash);if(pm){S.cats={};S.cats[decodeURIComponent(pm[1])]=true;S.all=false;S.q="";S.dec="";S.status="";S.min=0;S.view="cards";mode="pro";CATST.mode="pro"}
  var cats={},decs={},sts={};
  ITEMS.forEach(function(i){cats[i.cat]=(cats[i.cat]||0)+1;var d=i.year?Math.floor(i.year/10)*10:0;if(d)decs[d]=(decs[d]||0)+1;if(i.status)sts[i.status]=(sts[i.status]||0)+1});
  var scored=ITEMS.filter(function(i){return i.score!=null}),avg=scored.length?scored.reduce(function(a,i){return a+i.score},0)/scored.length:null;
- var head='<h2>Catalog</h2><div class="cstat"><div><b>'+ITEMS.length+'</b>exhibits</div><div><b>'+Object.keys(cats).length+'</b>categories</div><div><b>'+(avg==null?"--":outOf10(avg))+'</b>avg /10</div><div><b>'+ITEMS.reduce(function(a,i){return a+(i.qty||1)},0)+'</b>pieces</div></div>'
-  +'<div class="cmode" role="group" aria-label="Catalog style"><span>Style:</span><button type="button" class="btn'+(mode==="book"?" pri":"")+'" data-m="book" aria-pressed="'+(mode==="book")+'">Mail-order catalog</button><button type="button" class="btn'+(mode==="pro"?" pri":"")+'" data-m="pro" aria-pressed="'+(mode==="pro")+'">Pro</button></div>';
+ var stat='<div class="cstat"><div><b>'+ITEMS.length+'</b>exhibits</div><div><b>'+Object.keys(cats).length+'</b>categories</div><div><b>'+(avg==null?"--":outOf10(avg))+'</b>avg /10</div><div><b>'+ITEMS.reduce(function(a,i){return a+(i.qty||1)},0)+'</b>pieces</div></div>';
+ var head='<h2>Catalog</h2>'+(mode=="book"?stat:"")+'<div class="cmode" role="group" aria-label="Catalog style"><span>Style:</span><button type="button" class="btn'+(mode==="book"?" pri":"")+'" data-m="book" aria-pressed="'+(mode==="book")+'">Mail-order catalog</button><button type="button" class="btn'+(mode==="pro"?" pri":"")+'" data-m="pro" aria-pressed="'+(mode==="pro")+'">Pro</button></div>';
  function setMode(m){CATST.mode=m;try{localStorage.setItem("cm-catmode",m)}catch(e){}catalog()}
  window.CATRE=catalog;
  if(mode==="book"&&window.CMBook){app.innerHTML='<section class="catw">'+head+'<div id="bkmount"></div></section>';wireMode();CMBook.mount(document.getElementById("bkmount"));return}
  function wireMode(){document.querySelector(".cmode").onclick=function(e){var b=e.target.closest("[data-m]");if(b&&b.dataset.m!==catMode())setMode(b.dataset.m)}}
  var VIEWS=[["cards","Cards"],["shelf","Shelf"],["years","Time machine"],["next","Next up"],["dir","DIR"]];
- app.innerHTML='<section class="catw">'+head+tagBrowse()
-  +'<div class="cchips cstrip" id="cc" role="group" aria-label="Categories">'+Object.keys(cats).map(function(c){return'<button type="button" class="chip" data-c="'+esc(c)+'" aria-pressed="false">'+(typeof pxCat==="function"?pxCat(c,14):"")+esc(c)+' <b>'+cats[c]+'</b></button>'}).join("")+'</div>'
+ app.innerHTML='<section class="catw">'+head
   +'<div class="tools ctb"><input id="q" type="search" placeholder="Search the catalog (press /)" aria-label="Search" value="'+esc(S.q)+'"><select id="s" aria-label="Sort"><option value="">Catalog order</option><option value="score">Highest score</option><option value="old">Oldest first</option><option value="new">Newest first</option><option value="name">Name A to Z</option></select>'
   +'<select id="gp" aria-label="Group by"><option value="none">No grouping</option><option value="cat">Group by category</option><option value="dec">Group by decade</option><option value="az">Group by letter</option></select>'
   +'<button class="btn" id="fb" type="button" aria-expanded="false" aria-controls="fp">Filters</button><button class="btn" id="sur" type="button">Surprise me</button></div>'
   +'<div id="fp" class="cpanel" hidden>'
+  +tagBrowse()
   +'<div class="cchips" id="cd" role="group" aria-label="Decades and status">'+Object.keys(decs).sort().map(function(d){return'<button type="button" class="chip dec" data-d="'+d+'" aria-pressed="false">'+d+'s <b>'+decs[d]+'</b></button>'}).join("")+Object.keys(sts).map(function(t){return'<button type="button" class="chip st" data-t="'+esc(t)+'" aria-pressed="false">'+esc(t)+' <b>'+sts[t]+'</b></button>'}).join("")+'</div>'
   +'<label class="cmin">Minimum score: <b id="mv">0</b>K <input id="mn" type="range" min="0" max="600" step="50" value="'+S.min+'" aria-label="Minimum score"></label></div>'
+  +'<div id="fr"></div><div id="res"><div class="cback"><button class="btn" id="bk" type="button">\u25c4 Back to the aisles</button></div>'
+  +'<div class="cchips cstrip" id="cc" role="group" aria-label="Categories">'+Object.keys(cats).map(function(c){return'<button type="button" class="chip" data-c="'+esc(c)+'" aria-pressed="false">'+(typeof pxCat==="function"?pxCat(c,14):"")+esc(c)+' <b>'+cats[c]+'</b></button>'}).join("")+'</div>'
   +'<div class="crow"><span class="cviews" role="group" aria-label="View">'+VIEWS.map(function(v){return'<button type="button" class="btn" data-v="'+v[0]+'" aria-pressed="false">'+v[1]+'</button>'}).join("")+'</span><span class="cdens" role="group" aria-label="Density"><button type="button" class="btn" data-n="cards" aria-pressed="false">Big</button><button type="button" class="btn" data-n="rows" aria-pressed="false">List</button><button type="button" class="btn" data-n="table" aria-pressed="false">Table</button></span></div>'
-  +'<div id="af" class="cact"></div><p id="cn" class="tn" role="status"></p><div id="jm"></div><div id="g"></div><p id="more" class="cmore"></p></section>';
+  +'<div id="af" class="cact"></div><p id="cn" class="tn" role="status"></p><div id="jm"></div><div id="g"></div><p id="more" class="cmore"></p></div></section>';
  wireMode();
  var q=document.getElementById("q"),so=document.getElementById("s"),g=document.getElementById("g"),mn=document.getElementById("mn"),gp=document.getElementById("gp"),fp=document.getElementById("fp"),fb=document.getElementById("fb");so.value=S.sort;gp.value=S.group;
+ var fr=document.getElementById("fr"),res=document.getElementById("res"),useFront=typeof CMFront!=="undefined"&&ITEMS.length>0;
+ if(useFront){fr.innerHTML=CMFront.html(ITEMS);CMFront.wire(fr,ITEMS,{dept:function(c){S.cats={};S.cats[c]=true;S.all=false;S.shown=24;run();window.scrollTo(0,0)},go:function(v){S.view=v;S.all=true;S.shown=24;run();window.scrollTo(0,0)}})}
+ document.getElementById("bk").onclick=function(){S.q="";S.cats={};S.dec="";S.status="";S.min=0;q.value="";mn.value=0;S.all=false;S.view="cards";run();window.scrollTo(0,0)};
  function match(i){var t=(i.name+" "+i.maker+" "+i.year+" "+i.cat+" "+(i.acc||"")+" "+(i.tags||[]).join(" ")+" "+(i.text||"")+" "+Object.keys(i.specs||{}).map(function(k){return i.specs[k]}).join(" ")).toLowerCase();var okc=Object.keys(S.cats).filter(function(k){return S.cats[k]});
   return t.indexOf(S.q.toLowerCase())>=0&&(!okc.length||okc.indexOf(i.cat)>=0)&&(!S.dec||(i.year&&Math.floor(i.year/10)*10===+S.dec))&&(!S.status||i.status===S.status)&&(S.min<=0||(i.score!=null&&i.score>=S.min))}
  function shelf(l){var h='<p class="tn">Every spine is an exhibit. Taller means a higher score. Hover or tab to a spine to read its full title.</p><div class="shelfw"><div class="shelf">'+l.map(function(i,n){var sc=i.score==null?200:i.score,ht=130+sc/640*130,c=i.score!=null?tier(i.score).c:"#808080",w=40+((hstr?hstr(i.name):n)%3)*8;return'<a class="spine" href="#/item/'+esc(i.id)+'" style="height:'+ht.toFixed(0)+'px;width:'+w+'px;background:'+c+';color:'+inkOn(c)+'" aria-label="'+esc(i.name+(i.year?", "+i.year:"")+(i.score!=null?", "+tier(i.score).l:""))+'" data-n="'+esc(i.name)+'" data-m="'+esc((i.maker||"")+(i.year?" · "+i.year:"")+(i.score!=null?" · "+i.score+"K "+tier(i.score).l:""))+'"><i class="spx">'+(typeof pxCat==="function"?pxCat(i.cat,16):"")+'</i><span>'+esc(i.name)+'</span><small>'+(i.year?String(i.year).slice(2):"")+'</small></a>'}).join("")+'</div><div class="shtip" role="tooltip" hidden></div></div>';return h}
@@ -41,7 +46,8 @@ function catalog(){
  function gkey(i){return S.group==="cat"?i.cat:S.group==="dec"?(i.year?Math.floor(i.year/10)*10+"s":"Undated"):(String(i.name||"?").charAt(0).toUpperCase().replace(/[^A-Z]/,"#"))}
  function draw(l){return S.dens==="rows"?'<div class="crows">'+l.map(row).join("")+'</div>':S.dens==="table"?tbl(l):'<div class="grid">'+l.map(card).join("")+'</div>'}
  function slug2(k){return"grp-"+String(k).replace(/[^a-z0-9]+/gi,"-")}
- function run(){var r=ITEMS.filter(match);
+ function isIdle(){return useFront&&!S.all&&!S.q&&!Object.keys(S.cats).some(function(k){return S.cats[k]})&&!S.dec&&!S.status&&S.min<=0&&S.view==="cards"}
+ function run(){var idle=isIdle();fr.hidden=!idle;res.hidden=idle;var r=ITEMS.filter(match);
   if(S.sort==="score")r.sort(function(a,b){return(b.score||0)-(a.score||0)});else if(S.sort==="old")r.sort(function(a,b){return a.year-b.year});else if(S.sort==="new")r.sort(function(a,b){return b.year-a.year});else if(S.sort==="name"||(S.group==="az"&&!S.sort))r.sort(function(a,b){return a.name.localeCompare(b.name)});
   document.getElementById("mv").textContent=S.min;
   document.querySelectorAll("[data-c]").forEach(function(b){var on=!!S.cats[b.dataset.c];b.classList.toggle("on",on);b.setAttribute("aria-pressed",on)});
@@ -50,6 +56,7 @@ function catalog(){
   document.querySelectorAll("[data-v]").forEach(function(b){var on=S.view===b.dataset.v;b.classList.toggle("pri",on);b.setAttribute("aria-pressed",on)});
   document.querySelectorAll("[data-n]").forEach(function(b){var on=S.dens===b.dataset.n;b.classList.toggle("pri",on);b.setAttribute("aria-pressed",on)});
   fp.hidden=!S.panel;fb.setAttribute("aria-expanded",S.panel);fb.classList.toggle("pri",S.panel);
+  if(idle)return;
   var act=[];if(S.q)act.push(["q",'Search: "'+S.q+'"']);Object.keys(S.cats).forEach(function(k){if(S.cats[k])act.push(["c:"+k,k])});if(S.dec)act.push(["d",S.dec+"s"]);if(S.status)act.push(["t",S.status]);if(S.min>0)act.push(["m","Score "+S.min+"K+"]);
   document.getElementById("af").innerHTML=act.map(function(a){return'<button type="button" class="chip on" data-x="'+esc(a[0])+'" aria-label="Remove filter '+esc(a[1])+'">'+esc(a[1])+' &times;</button>'}).join("")+(act.length>1?'<button class="btn" id="clr" type="button">Clear all</button>':"");
   document.getElementById("cn").textContent="Showing "+Math.min(r.length,S.view==="cards"?S.shown:r.length)+" of "+r.length+(r.length!==ITEMS.length?" matching ("+ITEMS.length+" in the museum)":" exhibits");

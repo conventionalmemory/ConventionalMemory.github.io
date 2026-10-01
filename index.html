@@ -613,16 +613,56 @@ html[data-motion="on"] .pl-sq i{animation:plflip .5s backwards}html[data-motion=
 @media(max-width:700px){.ftabs{overflow-x:auto;flex-wrap:nowrap;padding-bottom:0}.ftab{flex:0 0 auto}.ftab b,.ftab span{font-size:18px}.specgrid{columns:1}}
 @media print{.pane[hidden]{display:block!important}.ftabs{display:none}}
 </style>
-<style>.dfold{border:2px solid var(--line);background:var(--panel);margin:12px 0}.dfold>summary{cursor:pointer;padding:6px 10px;font-family:"VT323",monospace;font-size:20px;list-style:none}.dfold>summary::before{content:"[+] ";color:var(--blue)}.dfold[open]>summary::before{content:"[-] "}.dfold>summary small{font-family:inherit;color:var(--mute);font-size:16px}.dfold[open]>summary{border-bottom:2px solid var(--line)}.dfold>*:not(summary){margin-left:10px;margin-right:10px}</style></head>
+<style>.dfold{border:2px solid var(--line);background:var(--panel);margin:12px 0}.dfold>summary{cursor:pointer;padding:6px 10px;font-family:"VT323",monospace;font-size:20px;list-style:none}.dfold>summary::before{content:"[+] ";color:var(--blue)}.dfold[open]>summary::before{content:"[-] "}.dfold>summary small{font-family:inherit;color:var(--mute);font-size:16px}.dfold[open]>summary{border-bottom:2px solid var(--line)}.dfold>*:not(summary){margin-left:10px;margin-right:10px}</style><style>
+/* Catalog front (catfront.js) */
+.front{margin-top:12px}.fh{margin:20px 0 8px;font-size:20px;color:var(--mute)}
+.memp{border:3px solid var(--line);background:#000;color:#c0c0c0;padding:0;margin:4px 0 6px;font-family:inherit}
+.memh{display:flex;flex-wrap:wrap;gap:4px 14px;justify-content:space-between;padding:4px 10px;background:#c0c0c0;color:#000}.memh span{opacity:.75}
+.memb{display:flex;gap:3px;padding:10px;height:70px}
+.ms{flex:1 1 0;min-width:0;border:0;border-top:3px solid rgba(255,255,255,.55);border-left:3px solid rgba(255,255,255,.35);border-bottom:3px solid rgba(0,0,0,.5);color:#fff;font:inherit;font-size:15px;cursor:pointer;padding:0 4px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;text-shadow:1px 1px 0 #000}
+.ms:hover,.ms:focus-visible{filter:brightness(1.3);outline:2px dashed #ff0;outline-offset:1px}.ms span{pointer-events:none}
+.memt{display:flex;flex-wrap:wrap;gap:4px 18px;padding:6px 10px 8px;font-size:15px}.memt b{color:#ff0}.memf{margin-left:auto}
+.depts{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:22px 14px;padding-top:14px}
+.dept{position:relative;display:flex;flex-direction:column;align-items:center;gap:3px;padding:16px 8px 10px;border:3px solid var(--line);background:var(--panel);color:var(--text,inherit);font:inherit;cursor:pointer;box-shadow:4px 4px 0 var(--line)}
+.dept::before,.dept::after{content:"";position:absolute;top:-16px;width:3px;height:16px;background:var(--line)}.dept::before{left:22%}.dept::after{right:22%}
+.dept .dr{position:absolute;inset:0 0 auto 0;height:7px;background:var(--dc)}.dept .di{display:block;margin-top:4px}.dept b{font-size:19px}.dept small{color:var(--mute);font-size:15px}
+.dept:hover,.dept:focus-visible{background:var(--dc);color:#fff;border-color:#000}.dept:hover small,.dept:focus-visible small{color:#fff}
+.mb{display:block;width:80%;height:6px;background:rgba(128,128,128,.3);margin-top:3px}.mb i{display:block;height:100%}
+html[data-motion=on] .dept{transition:transform .12s steps(3)}html[data-motion=on] .dept:hover{transform:translate(-2px,-3px) rotate(-1.2deg)}
+.fduo{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-top:22px}.spot,.crate{border:3px solid var(--line);background:var(--panel);padding:12px}
+.spot{display:grid;grid-template-columns:minmax(150px,42%) 1fr;gap:14px}.sph{position:relative}.sbd{position:absolute;z-index:2;top:-12px;left:-6px;background:#aa0000;color:#fff;padding:1px 8px;font-size:15px;transform:rotate(-3deg)}
+.spp{display:block;aspect-ratio:4/3;overflow:hidden;background:#111;border:2px solid var(--line)}.spp svg,.spp img,.mp svg,.mp img{width:100%;height:100%;object-fit:cover;display:block}
+.spt h3{margin:0 0 4px;font-size:22px}.spt p{margin:6px 0}.sc{display:inline-block;padding:0 7px}
+.crate{text-align:center}.crate h3{margin:0}.cbtn{background:none;border:0;cursor:pointer;padding:6px}.cbtn svg{display:block;margin:auto}.cbtn:hover,.cbtn:focus-visible{outline:2px dashed var(--line)}
+.cbtn.pop svg .lid{transform:translateY(-6px) rotate(-8deg);transform-origin:10px 12px}html[data-motion=on] .cbtn.pop{animation:crshake .45s steps(6)}@keyframes crshake{0%,100%{transform:none}25%{transform:rotate(-6deg)}75%{transform:rotate(6deg)}}
+.crx .mc{margin:6px auto;max-width:200px}
+.aisle{margin-top:20px}.ah{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px}.ah small{color:var(--mute);font-size:15px}.aa{margin-left:auto;display:flex;gap:4px}.aa .btn{padding:0 10px}
+.asign{margin:0;display:inline-block;background:var(--dc);color:#fff;padding:2px 14px;font-size:19px;border:2px solid #000;box-shadow:3px 3px 0 #000}
+.atabs{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 0}
+.arow{display:flex;gap:12px;overflow-x:auto;padding:12px 4px 12px;margin-top:6px;border-bottom:6px solid var(--line);scroll-snap-type:x proximity;scrollbar-width:thin}
+.mc{flex:0 0 170px;width:170px;box-sizing:border-box;min-width:0;align-self:flex-start;scroll-snap-align:start;display:flex;flex-direction:column;gap:2px;text-decoration:none;color:inherit;border:2px solid var(--line);background:var(--panel);padding:6px}.mc:hover{border-color:var(--link,#00f)}
+.mc .mp{position:relative;display:block;aspect-ratio:4/3;overflow:hidden;background:#111;margin-bottom:4px}.mc b{font-size:17px;line-height:1.15}.mc small{color:var(--mute);font-size:14px}.mc .mb{width:100%}
+.wtiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px}
+.wt{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:10px 12px;border:3px solid var(--line);background:var(--panel);font:inherit;color:inherit;cursor:pointer;text-align:left}.wt i{font-style:normal;font-size:26px;line-height:1;color:var(--link,#00f)}.wt b{font-size:19px}.wt small{color:var(--mute);font-size:15px}.wt:hover,.wt:focus-visible{background:var(--hl,#ffff99)}
+.fall{text-align:center;margin:18px 0 6px}.cback{margin:6px 0 4px}
+@media(max-width:700px){.fduo{grid-template-columns:1fr}.spot{grid-template-columns:1fr}.memb{height:56px;padding:8px}.ms{font-size:12px}.memf{margin-left:0}.depts{grid-template-columns:repeat(2,1fr)}.mc{flex-basis:150px;width:150px}}
+</style>
+<style>
+/* navigation: current page, crumbs, scrolling on phones */
+nav a[aria-current=page]{background:var(--line);color:var(--bg,#fff);padding:0 6px;text-decoration:none}
+.crumb{text-transform:uppercase;font-size:15px;color:var(--mute);margin:6px 0 0;word-break:break-word}.crumb a{color:inherit}.crumb [aria-current]{color:var(--text,inherit)}
+@media(max-width:700px){nav{display:flex;flex-wrap:nowrap;overflow-x:auto;white-space:nowrap;gap:2px;padding-bottom:4px;scrollbar-width:thin}nav a{margin-left:10px;flex:0 0 auto}nav .btn{flex:0 0 auto}}
+</style></head>
 <body>
 <div id="crtfx" aria-hidden="true"><i class="fx-roll"></i><i class="fx-noise"></i></div>
 <div class="wrap">
 <header class="top">
 <a href="#/">C:\&gt;ConventionalMemory.io<span class="cur" aria-hidden="true">_</span></a>
-<nav><a href="#/catalog">Catalog</a><a href="#/timeline">Timeline</a><a href="#/play">Play<span class="new">NEW!</span></a><a href="#/search">Search</a><a href="#/more">More</a><a href="#/wanted">Wanted</a><a href="#/follow">Follow</a><button class="btn" id="th" type="button" style="margin-left:16px">Theme</button> <button class="btn" id="mo" type="button" aria-pressed="true">Motion: on</button><button class="btn" id="cr" type="button" title="Screen effects: off, CRT, or max CRT">Screen: CRT</button></nav>
+<nav aria-label="Main"><a data-s="catalog" href="#/catalog">Catalog</a><a data-s="timeline" href="#/timeline">Timeline</a><a data-s="explore" href="#/hub/explore">Explore</a><a data-s="play" href="#/hub/play">Play</a><a data-s="watch" href="#/hub/watch">Theater</a><a data-s="stuff" href="#/hub/stuff">My stuff</a><a data-s="community" href="#/hub/community">Community</a><a data-s="search" href="#/search">Search</a><button class="btn" id="th" type="button" style="margin-left:16px">Theme</button> <button class="btn" id="mo" type="button" aria-pressed="true">Motion: on</button><button class="btn" id="cr" type="button" title="Screen effects: off, CRT, or max CRT">Screen: CRT</button></nav>
 </header>
+<div id="crumb" class="crumb" hidden></div>
 <main id="app"></main>
-<footer><div id="retro"></div><div class="prompt"><label for="cmd">C:\&gt;</label><input id="cmd" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Type a command: dir, mem, random, scale, timeline, quote, help"><div id="cout" aria-live="polite">Type help and press Enter.</div></div><a href="#/changes">Changes</a> &middot; <a href="#/quotes">Quotes</a> &middot; <a href="#/stats">Stats</a> &middot; <a href="#/scale">Scale</a> &middot; <a href="#/mem">Memory map</a> &middot; <a href="#/maze">Basement (staff only)</a><br> &copy; Conventional Memory LLC. Content on TikTok, YouTube, Instagram and Facebook.</footer>
+<footer><div id="retro"></div><div class="prompt"><label for="cmd">C:\&gt;</label><input id="cmd" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Type a command: dir, mem, random, scale, timeline, quote, help"><div id="cout" aria-live="polite">Type help and press Enter.</div></div><a href="#/more">Site map</a> &middot; <a href="#/changes">Recent changes</a> &middot; <a href="#/hub/community">Community</a> &middot; <a href="#/follow">Follow</a> &middot; <a href="#/maze">Basement (staff only)</a><br> &copy; Conventional Memory LLC. Content on TikTok, YouTube, Instagram and Facebook.</footer>
 </div>
 <script src="timeline-data.js"></script>
 <script src="timeline-extra.js"></script>
@@ -640,7 +680,7 @@ html[data-motion="on"] .pl-sq i{animation:plflip .5s backwards}html[data-motion=
 <script src="games.js"></script>
 <script src="tl.js"></script>
 <script src="catbook.js"></script>
-<script src="catalog.js"></script>
+<script src="catfront.js"></script><script src="catalog.js"></script>
 <script src="app.js"></script>
 <script src="fun.js"></script>
 
