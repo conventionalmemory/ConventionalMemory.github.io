@@ -1147,3 +1147,12 @@ html[data-motion=on] .ml-st:hover .ml-sg{animation:ml-flick .5s steps(2,end) 2}@
 /* top menu: nine tabs no longer fit one row on a desktop, so wrap them instead of showing a scroll bar; phones swipe with the bar hidden */
 @media(min-width:561px){header.top nav{flex-wrap:wrap;overflow:visible;justify-content:center}header.top nav a{padding:1px 8px;flex:0 0 auto}}
 header.top nav{scrollbar-width:none}header.top nav::-webkit-scrollbar{display:none}
+
+/* ===== static search pages (tools/build-seo.js writes them): history/, year/, decade/, museum/ ===== */
+.sp{max-width:880px;margin:0 auto;padding:0 16px 40px}.sp .top{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;justify-content:space-between}.sp-nav{display:flex;flex-wrap:wrap;gap:6px 14px}.sp-nav a{color:var(--lk)}
+.sp-crumb{margin:10px 0;font-size:14px;color:var(--mute)}.sp-crumb a{color:var(--lk)}
+.sp-art h1{margin:.3em 0 .2em;line-height:1.15;font-size:clamp(26px,5vw,40px)}.sp-art h2{margin:1.4em 0 .4em;font-size:1.15em}.sp-kicker{margin:.8em 0 0;color:var(--mute);font-size:14px;text-transform:uppercase;letter-spacing:.06em}.sp-lead{font-size:1.1em}
+.sp-facts{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:6px 18px;margin:.5em 0}.sp-facts div{border-bottom:1px dotted var(--line);padding:3px 0}.sp-facts dt{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--mute)}.sp-facts dd{margin:0}
+.sp-cols{columns:2 260px;column-gap:24px;padding-left:1.1em}.sp-cols li{break-inside:avoid;margin:2px 0}.sp-cols small,.sp-years small{color:var(--mute)}
+.sp-years{list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:6px 14px}.sp-find{margin:1.4em 0;padding:10px 14px;border:2px solid var(--line);background:var(--panel)}.sp-find h2{margin-top:0}.sp-find ul{margin:.3em 0;padding-left:1.1em}
+.sp-pn{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 18px;margin:1.6em 0 0;padding-top:10px;border-top:2px solid var(--line)}.sp-foot{margin-top:2em;padding-top:10px;border-top:2px solid var(--line);font-size:14px}.sp-foot a{color:var(--lk)}
