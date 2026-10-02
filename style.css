@@ -1030,11 +1030,12 @@ html[data-motion=on] svg.cc.an-scurry .mc-all{animation:mc-scurry .6s steps(4,en
 /* ===== the stage (stage.js): scenery, actors, props ===== */
 .stg{position:relative;overflow:hidden;height:clamp(170px,34vh,300px);flex:0 0 auto;background:linear-gradient(#10104a 0 62%,#2a2a5e 62% 63%,#3a3a78 63%);border-top:3px double #3a3aff;font-family:"VT323","Courier New",monospace}
 .stg:before{content:"";position:absolute;left:0;right:0;bottom:0;height:37%;background:repeating-linear-gradient(90deg,#4a4a8a 0 40px,#3e3e7a 40px 80px);opacity:.7}
-.stg-a{position:absolute;bottom:4%;transform:translateX(-50%);line-height:0}.stg-a.flip .stg-s{display:block;transform:scaleX(-1)}
+.stg-a{position:absolute;bottom:4%;transform:translateX(-50%);line-height:0}.stg-in{position:relative;display:block}.stg-a.flip .stg-in{transform:scaleX(-1)}.stg-a.flip .pp-crate b{display:inline-block;transform:scaleX(-1)}.stg-s{display:block}
 .stg-a svg{display:block}.stg-b{position:absolute;left:50%;bottom:100%;transform:translateX(-50%);margin:0 0 4px;width:max-content;max-width:260px;padding:5px 10px;background:#fff;color:#111!important;border:3px solid #111;border-radius:10px;font:20px/1.1 "VT323","Courier New",monospace;text-align:center;z-index:9}
-.stg-b:after{content:"";position:absolute;left:50%;top:100%;margin-left:-6px;border:6px solid transparent;border-top-color:#111}.stg-a.flip .stg-b{transform:translateX(-50%) scaleX(1)}
+.stg-b:after{content:"";position:absolute;left:calc(50% + var(--tx,0px));top:100%;margin-left:-6px;border:6px solid transparent;border-top-color:#111}
+.stg-b.stgside{bottom:auto;top:12%;transform:none;margin:0}.stg-b.stgside.stgr{left:100%;margin-left:6px}.stg-b.stgside.stgl{left:auto;right:100%;margin-right:6px}.stg-b.stgside:after{top:50%;margin-top:-6px;border-top-color:transparent}.stg-b.stgside.stgr:after{left:-12px;margin-left:0;border-right-color:#111}.stg-b.stgside.stgl:after{left:auto;right:-12px;margin-left:0;border-left-color:#111}
 .stg-a.star .stg-b{background:#fff6c8;font-size:23px;max-width:300px}
-.stg-p{position:absolute;left:50%;top:0;pointer-events:none}.stg-p:empty{display:none}
+.stg-p{position:absolute;left:50%;top:0;pointer-events:none;z-index:2}.stg-p:not([class*="pp-"]){display:none}
 .pp-crate{transform:translate(-50%,-64%);width:46px;height:34px;background:#b8843a;border:3px solid #6b4a1a;box-sizing:border-box;display:flex;align-items:center;justify-content:center;box-shadow:inset 0 -6px 0 #0002}.pp-crate b{font:13px/1 "VT323",monospace;color:#fff!important;letter-spacing:.04em}
 .pp-duster{transform:translate(34px,30px) rotate(-30deg);width:5px;height:42px;background:#8a5a2b}.pp-duster:before{content:"";position:absolute;left:-9px;top:-14px;width:23px;height:18px;background:#ff7a9a;border-radius:50% 50% 30% 30%}
 .pp-broom{transform:translate(30px,40px) rotate(8deg);width:4px;height:66px;background:#8a5a2b}.pp-broom:after{content:"";position:absolute;left:-12px;bottom:-4px;width:28px;height:14px;background:#d8b45a}
@@ -1055,6 +1056,33 @@ html[data-motion=on] svg.cc.an-scurry .mc-all{animation:mc-scurry .6s steps(4,en
 .sn-table{width:100px;height:40px;background:#a8793a;border-top:6px solid #6b4a1a;box-sizing:border-box}
 .sn-drive{width:70px;height:56px;background:#9aa4b4;border:3px solid #4a5260;box-sizing:border-box}.sn-drive:after{content:"";position:absolute;right:8px;top:8px;width:8px;height:8px;background:#e8402f;animation:sn-spark .6s steps(2,end) infinite}
 .sn-barrier{width:150px;height:34px;background:repeating-linear-gradient(45deg,#ffd54a 0 14px,#16161a 14px 28px);border:3px solid #16161a;box-sizing:border-box;bottom:4%}
+.sn-stool{width:46px;height:34px;background:#a8793a;border-top:6px solid #6b4a1a;box-sizing:border-box}.sn-stool:after{content:"";position:absolute;left:6px;right:6px;top:6px;height:28px;border-left:5px solid #6b4a1a;border-right:5px solid #6b4a1a}
+.sn-jukebox{width:64px;height:96px;background:linear-gradient(#ff3d9a 0 30%,#7a1a56 30%);border:4px solid #3a0a2a;border-radius:30px 30px 4px 4px;box-sizing:border-box}.sn-jukebox:before{content:"";position:absolute;left:10px;top:34px;width:36px;height:30px;background:repeating-linear-gradient(90deg,#ffd54a 0 6px,#16161a 6px 9px);animation:sn-spark .5s steps(2,end) infinite}
+.sn-cone{width:20px;height:28px;background:#ff7a2a;clip-path:polygon(35% 0,65% 0,100% 100%,0 100%);z-index:3}
+/* wall decorations: simple pixel pieces hung on the back wall */
+.stg-d{position:absolute;transform:translateX(-50%);z-index:0;font-family:"VT323","Courier New",monospace;color:#fff}
+.d-banner{padding:3px 14px;background:#c0143c;border:3px solid #ffd54a;font-size:18px;line-height:1;letter-spacing:.08em;white-space:nowrap;box-shadow:0 3px 0 #0006}
+.d-frame{width:46px;height:38px;border:4px solid #c8a24a;background:linear-gradient(#0000 0 55%,var(--c2,#4ad66d) 55%) ,var(--c1,#38b2ff);box-sizing:border-box}
+.d-clock{width:34px;height:34px;border-radius:50%;background:#f4efe0;border:4px solid #8a5a2b;box-sizing:border-box}.d-clock:before{content:"";position:absolute;left:13px;top:5px;width:2px;height:11px;background:#16161a;transform-origin:50% 10px;animation:d-tick 12s steps(12,end) infinite}.d-clock:after{content:"";position:absolute;left:13px;top:9px;width:2px;height:7px;background:#c0143c}
+@keyframes d-tick{to{transform:rotate(360deg)}}
+.d-window{width:52px;height:52px;background:linear-gradient(#0a0a30,#1a2a6a);border:4px solid #8a5a2b;box-sizing:border-box;box-shadow:inset 0 0 0 2px #0008}.d-window:before{content:"";position:absolute;left:8px;top:6px;width:4px;height:4px;background:#fff;box-shadow:20px 10px 0 #fff,10px 22px 0 #fff,26px 24px 0 #ffd54a}.d-window:after{content:"";position:absolute;left:50%;top:0;bottom:0;width:3px;margin-left:-1px;background:#8a5a2b}
+.d-lamp{width:3px;height:34px;background:#8a8a98;overflow:visible}.d-lamp:after{content:"";position:absolute;left:-15px;top:30px;width:34px;height:14px;background:#ffd54a;border-radius:50% 50% 0 0;box-shadow:0 18px 40px 14px #ffd54a40}
+.d-poster{width:72px;padding:6px 3px;background:#f4efe0;color:#16161a!important;border:3px solid #16161a;font-size:16px;line-height:1;text-align:center;box-sizing:border-box;transform:translateX(-50%) rotate(-2deg)}
+.d-sign{padding:3px 12px;background:#2f3a86;border:3px solid #e8e8ee;font-size:18px;line-height:1;letter-spacing:.1em}
+.d-calendar{width:40px;height:46px;background:#fff;border:3px solid #16161a;border-top:10px solid #c0143c;box-sizing:border-box}.d-calendar:after{content:"";position:absolute;left:4px;top:4px;right:4px;bottom:4px;background:repeating-linear-gradient(90deg,#16161a 0 3px,#0000 3px 8px),#0000;opacity:.6;-webkit-mask:linear-gradient(#000 0 0);height:18px}
+.d-neon{padding:2px 10px;border:3px solid var(--n,#38f0ff);color:var(--n,#38f0ff)!important;font-size:20px;line-height:1.05;letter-spacing:.12em;white-space:nowrap;box-shadow:0 0 10px var(--n,#38f0ff),inset 0 0 8px var(--n,#38f0ff);animation:d-neon 1.4s steps(2,end) infinite}
+@keyframes d-neon{50%{opacity:.55}}
+.d-mirror{width:40px;height:66px;background:linear-gradient(120deg,#cfe8ff 0 40%,#9ac8f0 40% 55%,#cfe8ff 55%);border:4px solid #c8a24a;border-radius:20px 20px 2px 2px;box-sizing:border-box}
+.d-rack{width:70px;height:4px;background:#8a8a98;box-shadow:0 0 0 0 #0000}.d-rack:before{content:"";position:absolute;left:6px;top:4px;width:14px;height:26px;background:#ff3d9a;box-shadow:20px 0 0 #38b2ff,40px 0 0 #ffd54a}
+/* effects: tiny pixel pieces that rise and fade */
+.stg-fx{position:absolute;width:3px;height:3px;background:#fff;pointer-events:none;z-index:8;animation:fx-up 1.1s steps(6,end) forwards}
+.fx-puff{background:#c8c8d8;box-shadow:6px -4px 0 #c8c8d8,12px 1px 0 #a8a8bc,3px 5px 0 #a8a8bc}
+.fx-spark{background:#ffe14a;box-shadow:5px -5px 0 #ff9a2a,-5px -3px 0 #fff,3px 4px 0 #ff9a2a}
+.fx-star{background:#fff6a0;box-shadow:3px 0 0 #fff6a0,-3px 0 0 #fff6a0,0 3px 0 #fff6a0,0 -3px 0 #fff6a0;width:3px;height:3px}
+.fx-heart{background:#ff4d7a;width:3px;height:3px;box-shadow:6px 0 0 #ff4d7a,-3px 3px 0 #ff4d7a,0 3px 0 #ff4d7a,3px 3px 0 #ff4d7a,6px 3px 0 #ff4d7a,9px 3px 0 #ff4d7a,0 6px 0 #ff4d7a,3px 6px 0 #ff4d7a,6px 6px 0 #ff4d7a,3px 9px 0 #ff4d7a}
+.fx-note{background:#ffd54a;width:3px;height:3px;box-shadow:3px 0 0 #ffd54a,6px -3px 0 #ffd54a,6px -6px 0 #ffd54a,6px -9px 0 #ffd54a,9px -9px 0 #ffd54a}
+@keyframes fx-up{0%{transform:translateY(0);opacity:1}100%{transform:translateY(-34px);opacity:0}}
+html[data-motion=off] .stg-fx{display:none}
 html[data-motion=off] .stg-a,html[data-motion=off] .stg-a *{transition:none!important}
 /* the kiosk host strip */
 .kiosk .stg{border-top:3px double #3a3aff}

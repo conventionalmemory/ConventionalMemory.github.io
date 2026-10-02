@@ -21,7 +21,7 @@ const srv=http.createServer((q,r)=>{let f=path.join(root,decodeURIComponent(q.ur
  const t=await txt();ok(/Meet Connie/.test(t)&&/August 12, 1981/.test(t)&&/Emma 386/.test(t)&&/Windows 95/.test(t),"story page: file, family and history");
  // counts match so the Funnies unlock can be earned
  const fc=await p.evaluate(()=>(window.CMConnie?CMConnie._t.STRIPS.length+CMConnie._t.GAGS.length:-1)+"|"+CMCast.FUN_TOTAL+"|"+CMConnie._t.STRIPS.length+"|"+CMConnie._t.STORY.length);
- ok(fc==="22|22|11|8","11 strips + 11 gags = the 22 needed ("+fc+")");
+ ok(fc==="22|22|11|9","11 strips + 11 gags = the 22 needed ("+fc+")");
  // Memory Manager is solvable at every level, and stars work
  const g=await p.evaluate(()=>{const T=CMConnie._t,out=[];T.LV.forEach((L,i)=>{const bst=T.best(L);out.push([i+1,bst,L.need,bst>=L.need])});return out});
  ok(g.every(x=>x[3]),"every Memory Manager level can be won: "+g.map(x=>x.join("/")).join(" "));
@@ -114,5 +114,10 @@ ok(await p.evaluate(()=>!!document.querySelector(".mm-how[open]")&&/Off.*Low.*Hi
  ok(await p.evaluate(()=>CMCast.ANIMS.every(a=>{const sv=document.querySelector(".an-c svg");CMCast.play(sv,a.k);const g=[".mc-all",".mc-armr",".mc-arml",".mc-mouth",".mc-eyes",".mc-legl"].some(q=>{const e=sv.querySelector(q);return e&&getComputedStyle(e).animationName!=="none"||(e&&getComputedStyle(e).transform!=="none")});CMCast.stopAnim(sv);return g})),"every animation in the library really changes something on the character");
  await p.evaluate(()=>{document.querySelector('[data-scene="carry"]').click()});await p.waitForTimeout(900);ok(await p.evaluate(()=>{const s=document.getElementById("anstage");return !!s.querySelector(".stg-a.star")&&s.querySelectorAll(".stg-a").length>=2}),"a scene plays with Connie as the star");
  ok(await p.evaluate(()=>window.CMStage&&CMStage.scenes.length>=11&&CMStage.scenes.every(k=>{CMStage.mount(document.getElementById("anstage"));CMStage.run(k,{name:"Test",who:"emma"});return !!document.querySelector("#anstage .stg-a.star")})),"every stage scene runs and has Connie in it");
+ ok(await p.evaluate(()=>CMStage.scenes.length>=14&&["shelve","garage","music"].every(k=>CMStage.scenes.indexOf(k)>=0)&&Object.keys(CMStage.by).every(k=>CMStage.by[k].every(s=>CMStage.scenes.indexOf(s)>=0))),"14 scenes, the new ones included, and every kiosk slide kind points at a real scene");
+ {const bad=[];for(const k of ["carry","dust","shelve","bench","garage","arcade","music","print","kitchen","storage","family","closet","mall","menu"]){await p.evaluate(k=>{document.documentElement.setAttribute("data-motion","on");const e=document.getElementById("anstage");CMStage.mount(e);CMStage.run(k,{name:"IBM PC 5150",who:"ram",line:"That is my dad, Raymond. He reads the manual first. Always. He is reading this one right now.",gl:"Hi!"})},k);
+  for(const t of [900,2200,3600]){await p.waitForTimeout(t===900?900:1300);const r=await p.evaluate(()=>{const b=document.getElementById("anstage").getBoundingClientRect();return [...document.querySelectorAll("#anstage .stg-b:not([hidden])")].filter(x=>{const q=x.getBoundingClientRect();return q.left<b.left-4||q.right>b.right+4||q.top<b.top-4}).length});if(r)bad.push(k+"@"+t)}}
+  ok(!bad.length,"speech bubbles stay inside the stage in every scene"+(bad.length?" ("+bad.join(", ")+")":""))}
+ await p.evaluate(()=>CMStage.stop());
  ok(errs.length===0,"no script errors"+(errs.length?" ("+errs[0]+")":""));
  console.log(fails.length?"\n"+fails.length+" FAILED":"\nAll good.");await b.close();srv.close();process.exit(fails.length?1:0)})();

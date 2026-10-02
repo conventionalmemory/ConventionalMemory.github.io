@@ -43,14 +43,14 @@ window.CMShop=(function(){
    ["st-family","The Ventional family sheet","The whole family, one very full sheet.",600,"sticker",["emma","hiram","rhoda"],"mock"],
    ["st-jokes","Museum jokes (2 sheets)","Straight off the marquee: IRQ 5, Disk 7 of 14 and more.",800,"sticker",["connie","dot"],"mock"],
    ["st-guys","Conrad and Raymond outfits","Fifteen outfits each: biker, wizard, fishing vest and more.",600,"sticker",["conrad","ram"],"mock"],
-   ["st-pets","Mat and Toner pet sheet","The two pets in every mood. Includes a pawprint.",500,"sticker",["mat","toner"],"mock"],
+   ["st-pets","Three-pets sticker sheet","Nibble, Mat and Toner in every mood. Includes a pawprint.",500,"sticker",["nibble","mat","toner"],"mock"],
    ["st-big","Big Connie laptop pair","Two 3-inch Connies for a laptop lid.",500,"sticker",["connie"],"mock"],
    ["st-all","The mega pack","Every sheet we make. Connie is on most of them.",2400,"sticker",["connie","emma","conrad","mat"],"mock"]],
   cards:[
    ["tc-starter","Starter pack (5 cards)","Five cards from the family set. Connie is in every pack, because of course she is.",500,"card",["connie"],"mock"],
    ["tc-holo","Holofoil Connie (single)","The only holofoil in the set. Number one of eighteen.",400,"card",["connie"],"mock"],
-   ["tc-set","The full family set (18)","Every Ventional, plus the two pets.",2400,"card",["connie","emma","ram"],"mock"],
-   ["tc-pets","Pet pack: Mat and Toner","Two cards. One click, one pawprint.",500,"card",["mat","toner"],"mock"],
+   ["tc-set","The full family set (18)","Every Ventional, plus all three pets.",2400,"card",["connie","emma","ram"],"mock"],
+   ["tc-pets","Pet pack: Nibble, Mat and Toner","Three cards. Four bits of seeds, one click, one pawprint.",500,"card",["nibble","mat","toner"],"mock"],
    ["tc-crew","Creators pack: Matt and Tony","The two museum guys, painted portraits, with stats.",500,"cardimg",["matt","tony"],"soon"],
    ["tc-binder","Nine-pocket binder","Holds the whole set, with room for one more.",1200,"book",["connie"],"soon"]],
   pins:[
@@ -58,7 +58,7 @@ window.CMShop=(function(){
    ["pn-halo","Connie with halo","The Memory Manager perfect-run look.",900,"pin",["connie"],"soon"],
    ["pn-640","640K pin","Just the number. Everyone knows.",800,"pin",["connie"],"soon"],
    ["pn-conrad","Uncle Conrad (CONFIG.SYS) pin","Mug included.",900,"pin",["conrad"],"soon"],
-   ["pn-pets","Mat and Toner pet pins (2)","Sold as a pair, like they go everywhere.",1200,"pin",["mat","toner"],"soon"],
+   ["pn-pets","Pet pins (3)","Nibble, Mat and Toner. Sold as a trio, like they go everywhere.",1600,"pin",["nibble","mat","toner"],"soon"],
    ["pn-five","Set of five","Connie, Emma, Himmy, Raymond and Rhoda.",3500,"pin",["connie","emma","hiram"],"soon"]],
   plush:[
    ["pl-connie","Connie plush (8 in)","Soft green board, bow, and gold fingers on the shoes.",2800,"plush",["connie"],"maybe"],
