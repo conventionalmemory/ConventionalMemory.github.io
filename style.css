@@ -867,3 +867,10 @@ html[data-motion="off"] .mascot *{animation:none!important}
 @media (max-width:520px){.gcast{grid-template-columns:1fr}}
 .ab .ab-lead{font-size:1.15em;line-height:1.4}.ab-quote{margin:12px 0;padding:8px 14px;border-left:5px solid var(--line);background:var(--panel);font-size:1.05em;line-height:1.45}
 .mc-empty{display:flex;align-items:center;gap:12px;margin:12px 0}.mc-empty .mascot{flex:none}.mc-ebody{flex:1;min-width:0}.mc-ebody>.empty{margin:0}.grid>.mc-empty{grid-column:1/-1}
+/* manuals and ads, photo review */
+.docs{margin:12px 0}.docs .refs{margin:4px 0 8px}.dfd{margin:6px 0}.dfd summary{cursor:pointer}
+.rvg{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px;margin:8px 0}
+.rvc{display:flex;gap:8px;align-items:flex-start;border:1px solid var(--line);padding:6px;font-size:13px}
+.rvc img{width:72px;height:72px;object-fit:contain;background:#fff;flex:none}.rvk{display:block;margin-top:4px;font-size:12px}
+.jba{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}.jth{float:right;width:56px;height:56px;object-fit:cover;margin:0 0 4px 8px;border:1px solid var(--line)}
+.casef{margin:4px 0 6px;display:grid;grid-template-columns:auto 1fr;gap:2px 10px;font-size:13px}.casef dt{font-weight:bold}.casef dd{margin:0}
