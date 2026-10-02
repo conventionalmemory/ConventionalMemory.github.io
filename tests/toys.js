@@ -59,5 +59,8 @@ const srv=http.createServer((q,r)=>{let f=path.join(root,decodeURIComponent(q.ur
  ok(await p.evaluate(()=>{var b=document.getElementById("mcsay");return !!b&&/Connie Ventional/i.test(b.innerText)&&b.querySelectorAll("button").length===2}),"clicking Connie opens a speech bubble with her name and two buttons");
  await p.click("#mcsay button:last-child");ok(await p.evaluate(()=>!document.getElementById("mcsay")),"Thanks, Connie closes the bubble");
  await p.focus(".ab svg.mascot");await p.keyboard.press("Enter");await p.waitForTimeout(200);ok(await p.evaluate(()=>!!document.getElementById("mcsay")),"Connie opens from the keyboard");await p.keyboard.press("Escape");ok(await p.evaluate(()=>!document.getElementById("mcsay")),"Escape closes her bubble");
+ await go("catalog?q="+encodeURIComponent("zzzzqqqq"));await p.waitForTimeout(500);ok(await p.evaluate(()=>!!document.querySelector(".mc-empty svg.mascot")),"Connie shows up on an empty catalog search");
+ await go("staff");await p.evaluate(()=>{localStorage.removeItem("cm-admin")});await go("staff");ok(await p.evaluate(()=>!!document.querySelector("svg.mascot")&&/guarding/.test(document.getElementById("app").innerText)),"Connie guards the staff-only door");
+ await go("about");ok(await p.evaluate(()=>{var h=[...document.querySelectorAll("[data-room]")].find(b=>/Blockbuster/.test(b.getAttribute("aria-label")));return !!h&&parseFloat(h.style.left)>50&&parseFloat(h.style.top)<62}),"Blockbuster card hotspot sits at the right of the monitor base");
  ok(!errs.length,"no script errors"+(errs.length?": "+errs.join("|"):""));
  await b.close();srv.close();if(fails.length){console.error("FAILED "+fails.length);process.exit(1)}console.log("OK toys")})();

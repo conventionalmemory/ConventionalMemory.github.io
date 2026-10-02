@@ -866,3 +866,4 @@ html[data-motion="off"] .mascot *{animation:none!important}
 .gcast{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:6px 0 10px}.gcast>div{border:2px solid #555;padding:6px;text-align:center;background:#00a}.gcast canvas{width:60px;height:90px;image-rendering:pixelated;display:block;margin:0 auto 4px;background:#00a}.gcast b{display:block;color:#ff5;font-size:13px}.gcast span{font-size:12px;color:#aaa}
 @media (max-width:520px){.gcast{grid-template-columns:1fr}}
 .ab .ab-lead{font-size:1.15em;line-height:1.4}.ab-quote{margin:12px 0;padding:8px 14px;border-left:5px solid var(--line);background:var(--panel);font-size:1.05em;line-height:1.45}
+.mc-empty{display:flex;align-items:center;gap:12px;margin:12px 0}.mc-empty .mascot{flex:none}.mc-ebody{flex:1;min-width:0}.mc-ebody>.empty{margin:0}.grid>.mc-empty{grid-column:1/-1}

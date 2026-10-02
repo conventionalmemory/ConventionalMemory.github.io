@@ -26,5 +26,13 @@ const srv=http.createServer((q,r)=>{let f=path.join(root,decodeURIComponent(q.ur
  ok(st.th&&st.th.l.length===1&&st.th.l[0].id==="dQw4w9WgXcQ","restore keeps only valid video ids");ok(st.d&&st.d.streak===0,"restore turns a non-number streak into 0");
  // 3. address bar and share codes
  for(const r of ["catalog?q="+encodeURIComponent(PWN),"catalog?c="+encodeURIComponent(PWN)+"&d="+encodeURIComponent(PWN),"search/"+encodeURIComponent(PWN),"item/"+encodeURIComponent(PWN),"maker/"+encodeURIComponent(PWN),"t/"+encodeURIComponent(PWN),"tag/"+encodeURIComponent(PWN),"labels/"+encodeURIComponent(PWN),"wish/"+encodeURIComponent(PWN),"rigs/"+encodeURIComponent(PWN),"timeline/"+encodeURIComponent(PWN),PWN]){await go(r);ok((await inj())===0,"hostile address inert: #/"+r.slice(0,40))}
+ // 4. the public page can only talk to its own origin; the admin page (built from it) is the only one that can reach GitHub
+ {const idx=fs.readFileSync(path.join(root,"index.html"),"utf8"),adm=fs.readFileSync(path.join(root,"admin.html"),"utf8");
+  const cs=h=>(h.match(/Content-Security-Policy" content="([^"]+)"/)||[])[1]||"";
+  ok(/connect-src 'self';/.test(cs(idx))&&!/github|wikipedia|wikimedia/i.test(cs(idx).replace(/frame-src[^;]*;/,"")),"public page CSP allows connections to its own origin only");
+  ok(/connect-src 'self' https:\/\/api\.github\.com/.test(cs(adm)),"admin page CSP allows GitHub");
+  ok(adm===require("child_process").execSync("node -e \"var fs=require('fs');var s=fs.readFileSync('index.html','utf8');var o=s.replace(\\\"connect-src 'self';\\\",\\\"connect-src 'self' https://api.github.com https://en.wikipedia.org https://commons.wikimedia.org;\\\").replace('<title>','<title>Admin | ').replace('<meta charset=\\\"utf-8\\\">','<meta charset=\\\"utf-8\\\">\\n<meta name=\\\"robots\\\" content=\\\"noindex\\\">');process.stdout.write(o)\"",{cwd:root,maxBuffer:1e8}).toString(),"admin.html is up to date (run node tools/build-admin.js after editing index.html)");
+  await p.goto(base+"admin");await p.waitForTimeout(700);ok(/admin\.html/.test(p.url()),"#/admin on the public page moves to admin.html ("+p.url().replace(/^.*\//,"")+")");
+  await p.goto(base+"");await p.waitForTimeout(300)}
  ok(!errs.length,"no script errors"+(errs.length?": "+errs.join("|"):""));
  await b.close();srv.close();if(fails.length){console.error("FAILED "+fails.length);process.exit(1)}console.log("OK security")})();

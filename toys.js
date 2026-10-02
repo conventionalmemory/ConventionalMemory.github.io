@@ -50,7 +50,7 @@ var CMToys=(function(){
   h+='<div id="wlist">'+listHtml(list,mine)+'</div>';
   if(mine){h+='<div class="wsh-act noprint"><button class="btn pri" id="wlink" type="button">Copy a link to share my list</button> <button class="btn" id="wsan" type="button">Write my Dear Santa letter</button> <button class="btn" id="wprint" type="button">Print</button></div><p id="wmsg" class="tn" role="status"></p><div id="wsanta"></div>'}
   app.innerHTML=h+'</section>';wire(list,mine,shared)}
- function listHtml(list,mine){if(!list.length)return'<p class="empty">Nothing on the list yet. '+(mine?"Search above, or circle something in the catalog.":"")+'</p>';
+ function listHtml(list,mine){if(!list.length)return conW('<p class="empty">Nothing on the list yet. '+(mine?"Search above, or circle something in the catalog.":"")+'</p>','wow');
   return'<ol class="wsh-l">'+list.map(function(r){var n=nameOf(r.k);return'<li><span class="wsh-n">'+(n.href?'<a href="'+E(n.href)+'">'+E(n.n)+'</a>':E(n.n))+(n.tag?' <small class="tn">'+E(n.tag)+'</small>':"")+'</span>'+(mine&&r.src.length?'<small class="tn wsh-s">'+E(r.src.join(", "))+'</small>':"")+'<span class="wsh-b noprint">'+buyLinks(n.n)+'</span>'+(mine?'<label class="wsh-m noprint">Max $ <input data-max="'+E(r.k)+'" inputmode="decimal" value="'+E(r.max||"")+'" size="5" aria-label="Most I would pay for '+E(n.n)+'"></label><button class="btn noprint" data-rm="'+E(r.k)+'" type="button" aria-label="Remove '+E(n.n)+'">&times;</button>':"")+'</li>'}).join("")+'</ol>'}
  function wire(list,mine,shared){
   if(!mine){var c=$("#wcopyall");if(c)c.onclick=function(){var w=wishLoad(),n=0;shared.forEach(function(k){if(!w.some(function(x){return x.k===k})){w.push({k:k,t:Date.now()});n++}});wishSave(w);c.textContent="Copied "+n+" to my list";c.disabled=true};return}
@@ -186,7 +186,7 @@ var CMToys=(function(){
   ["PC Gamer",36.6,72.9,22.5,7.2,"A real PC Gamer from the 90s, with Duke Nukem Forever on the cover story. It was coming soon then. It is coming soon now. Some things are timeless."],
   ["Pager",63,73.2,6.8,4.3,"A real pager. It goes beep. Somebody, somewhere, wanted you to call them back from a land line."],
   ["Tamagotchi",39.5,56.3,4.7,4.2,"A real Tamagotchi. Please do not ask how long it has been since it ate."],
-  ["Blockbuster card",11.7,60.2,5.2,4.2,"A real Blockbuster card. Be kind, rewind. You are somehow still not late on your fees."],
+  ["Blockbuster card",55.3,57.7,6.2,3.8,"A real Blockbuster card. Be kind, rewind. You are somehow still not late on your fees."],
   ["Mouse and pad",69.4,81,22.4,14.7,"A mouse on a Duke mouse pad. It has a ball inside. Please do not ask where the ball goes."]];
  var LOG=[
   ["Chapter 1 · 1989 to 1995","Adventure games","Always, but not always together. Each of us was off solving our own mysteries, and then comparing notes like detectives who had both been in the same mansion. Nobody ever knew what to do with the rubber chicken, but we were all very serious about it. Favorites: Matt says The Colonel's Bequest. Tony says Torin's Passage."],

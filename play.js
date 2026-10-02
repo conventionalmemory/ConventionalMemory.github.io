@@ -305,7 +305,7 @@ function search(arg){var q0=arg?decodeURIComponent(arg):"";
   function grp(t,n,list,fn){return list.length?'<h3 class="sub">'+t+' ('+list.length+')</h3><ul class="pl-sr">'+list.slice(0,n).map(fn).join("")+'</ul>'+(list.length>n?'<p class="tn">Showing the first '+n+'. Add a word to narrow it down.</p>':""):""}
   var rowf=function(r){return'<li><a href="#/timeline/'+r[0].slice(0,4)+'/'+encodeURIComponent(r[2])+'">'+E(r[2])+'</a> <small class="tn">'+E(fmtDate(r[0]))+(r[3]?", "+E(r[3].replace(/\*$/,"")):"")+'</small></li>'};
   h=grp("Museum items",20,its,function(it){return'<li><a href="#/item/'+E(it.id)+'">'+E(it.name)+'</a> <small class="tn">'+E(it.maker||"")+" "+E(it.year||"")+'</small></li>'})+grp("Timeline hardware and events",25,tlh,rowf)+grp("Games and software",25,tlg,rowf);
-  $("#sr").innerHTML=h||'<p class="empty">Nothing found for "'+E(q)+'".</p>'}
+  $("#sr").innerHTML=h||conW('<p class="empty">Nothing found for "'+E(q)+'".</p>')}
  $("#sq").oninput=run;run();if(!q0)$("#sq").focus()}
 function todayPage(){var P=dpool().filter(function(r){return/^(hw|pe)$/.test(r[1])&&typeof CIMG!=="undefined"&&CIMG[r[2]]}),pool=P.length?P:dpool().filter(function(r){return/^(hw|pe)$/.test(r[1])}),r=pool[hstr("today"+today())%pool.length],d=adData({kind:"tl",r:r,t:r[2]}),x=TLXS[r[2]]||{},it=ITEMS.filter(function(i){return i.name===r[2]})[0];
  d.specs=d.specs.slice(0,2);var tag=(r[4]||"").split(". ")[0].slice(0,64),o=function(f){return{style:"mag",fmt:f,store:0,head:"Today's find: "+d.title+".",tag:tag,price:d.price?String(d.price).replace(/\*$/,"").split(/[ ;(]/)[0]:"",stk:[0]}},name=d.title.toLowerCase().replace(/[^a-z0-9]+/g,"-");
