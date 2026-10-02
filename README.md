@@ -305,3 +305,9 @@ Until then, labels printed with the github.io address keep working: GitHub redir
 - **Jokes everywhere**: new lines for Matt (EMT, cables, hoarding, the lost graph paper, the boys inheriting everything) and Tony (the accidental axe, the jester hat, who holds the controller), room names like The Totally Real Cow Level, Dupe Vault and Wrong Button Gallery, new flavor text, and win and game-over lines from Connie.
 - **Eight new questions**: MegaZeux's Robotic language, ZZT, MUDs, Star Wars Reality's SMAUG base, Doom WADs, Duke Nukem 3D's Build engine, QBasic and Diablo II's cow level.
 - Old run codes become unreplayable because the questions and cast changed; the best-run display marks them "unchecked". `tests/maze.js` plays both characters to a win and checks the run code replays.
+
+### Round 22: Connie is clearly Connie
+- **Reads as a RAM module**: two small black chips on her board, a notch in her gold contacts like a real memory stick, plus a name badge under her in the main places ("Connie Ventional, RAM module, 640K"): About, Start here, the prize counter, the demo kiosk and the not-found page.
+- **Clippy-style speech bubbles**: click, tap or press Enter on her and a yellow bubble with a tail types out a tip while her mouth moves. Tips depend on the page you are on ("It looks like you are browsing the catalog. Would you like help?"). Buttons: Another tip, Thanks Connie. Esc, a click elsewhere or leaving the page closes it. She says hello by herself once per visit on About and Start here. With reduced motion or Motion: off the text appears at once.
+- She can be reached by keyboard (focusable, Enter or Space) and her label says to press for a tip.
+- About intro rearranged: a lead sentence, what Matt does (with Tony roped in), then the 'simpler time' idea as a pull quote, then the 640K name.

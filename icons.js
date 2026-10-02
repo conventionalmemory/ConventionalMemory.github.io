@@ -112,7 +112,7 @@ function pxGenre(g,size){return px(pxPick(PXGENRE,g,"gamepad"),size||12)}
 var MEMSKINS={green:["#1f9d55","#0b4a28","#ffd54a","#7a3b1e","#ff5fa2"],blue:["#2f6fe0","#10306b","#ffd54a","#e8c34a","#ff5fa2"],gold:["#e0b030","#6b4d08","#ffffff","#3a2410","#d03030"],pink:["#e0509a","#6b1a45","#ffe8a0","#2a1a4a","#ffd54a"]};
 var MASCOT_NAME="Connie Ventional";
 var MASCOT_QUIPS=["Hi! I am Connie Ventional. I live in the first 640K.","Have you tried turning it off and on again?","I have 640K of personality. Okay, 639K. The rest is the BIOS.","Please do not touch my pins.","Insert disk 2 to continue.","Memory: 640K. Mood: excellent.","Did you save? You should save.","Ctrl+Alt+Del is not a hug.","Himem.sys says hi.","I am not a bug. I am a feature with legs."];
-function mascot(size,mood,skin){size=size||64;if(!skin){try{skin=(JSON.parse(localStorage.getItem("cm-prizes")||"{}")).skin}catch(e){}}var c=MEMSKINS[skin]||MEMSKINS.green,b=c[0],d=c[1],p=c[2],hr=c[3],bw=c[4],o='<svg class="mascot mc-'+(mood||"happy")+'" viewBox="0 0 24 24" width="'+size+'" height="'+size+'" shape-rendering="crispEdges" role="img" aria-label="'+MASCOT_NAME+', the museum mascot" xmlns="http://www.w3.org/2000/svg"><g class="mc-all">';
+function mascot(size,mood,skin,cap){size=size||64;if(!skin){try{skin=(JSON.parse(localStorage.getItem("cm-prizes")||"{}")).skin}catch(e){}}var c=MEMSKINS[skin]||MEMSKINS.green,b=c[0],d=c[1],p=c[2],hr=c[3],bw=c[4],o='<svg class="mascot mc-'+(mood||"happy")+'" viewBox="0 0 24 24" width="'+size+'" height="'+size+'" shape-rendering="crispEdges" role="button" aria-label="'+MASCOT_NAME+', the museum mascot. Press for a tip."'+(size>=56?' tabindex="0"':"")+' xmlns="http://www.w3.org/2000/svg"><g class="mc-all">';
  function r(x,y,w,h,f){o+='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" fill="'+f+'"/>'}
  /* legs: little chip pins with shoes */
  o+='<g class="mc-legl">';r(8,19,1,3,p);r(7,22,3,1,d);o+='</g><g class="mc-legr">';r(15,19,1,3,p);r(14,22,3,1,d);o+='</g>';
@@ -123,7 +123,9 @@ function mascot(size,mood,skin){size=size||64;if(!skin){try{skin=(JSON.parse(loc
  /* the chip: dark outline, bright body, shine */
  r(4,6,16,13,d);r(5,7,14,11,b);r(5,7,14,1,"#ffffff44");
  /* gold edge contacts along the bottom, like a memory module */
- for(var k=6;k<=17;k+=2)r(k,18,1,1,p);
+ for(var k=6;k<=17;k+=2)if(k!==12)r(k,18,1,1,p);
+ /* two little black chips on the board, like the ones on a RAM stick */
+ r(5,16,3,2,"#1a1a1a");r(5,16,1,1,"#8a8a8a");r(16,16,3,2,"#1a1a1a");r(18,16,1,1,"#8a8a8a");
   /* fringe */
  r(3,3,18,4,hr);r(4,2,16,1,hr);r(5,7,5,1,hr);r(14,7,5,1,hr);r(9,7,6,1,hr);r(3,7,2,6,hr);r(19,7,2,6,hr);
  r(5,3,3,1,"#ffffff44");
@@ -141,9 +143,25 @@ function mascot(size,mood,skin){size=size||64;if(!skin){try{skin=(JSON.parse(loc
  if(mood==="oops"){r(9,16,5,1,"#c0143c");r(8,15,1,1,"#c0143c");r(14,15,1,1,"#c0143c")}
  else if(mood==="wow"){r(10,15,3,3,"#c0143c");r(11,16,1,1,"#40000e")}
  else{r(10,15,1,1,"#c0143c");r(11,16,2,1,"#c0143c");r(13,15,1,1,"#c0143c")}
- o+='</g></g>';return o+'</svg>'}
+ o+='</g></g>';o+='</svg>';if(cap)o='<span class="mc-wrap">'+o+'<span class="mc-cap"><b>'+MASCOT_NAME+'</b><small>RAM module &middot; 640K</small></span></span>';return o}
 /* Click or tap Connie and she says a line, then hops. */
-function mascotSay(svg){var old=document.getElementById("mcsay");if(old)old.remove();var t=MASCOT_QUIPS[Math.floor(Math.random()*MASCOT_QUIPS.length)],b=document.createElement("div");b.id="mcsay";b.className="mc-bubble";b.setAttribute("role","status");b.textContent=t;document.body.appendChild(b);
- var r=svg.getBoundingClientRect(),w=Math.min(260,window.innerWidth-16);b.style.maxWidth=w+"px";var x=Math.max(8,Math.min(r.left+r.width/2-w/2,window.innerWidth-w-8)),y=r.top+window.scrollY-b.offsetHeight-8;if(y<window.scrollY+4)y=r.bottom+window.scrollY+8;b.style.left=x+"px";b.style.top=y+"px";
- svg.classList.remove("mc-hop");void svg.getBoundingClientRect();svg.classList.add("mc-hop");setTimeout(function(){svg.classList.remove("mc-hop")},700);setTimeout(function(){if(b.parentNode)b.remove()},3800)}
-document.addEventListener("click",function(e){var m=e.target.closest&&e.target.closest("svg.mascot");if(m)mascotSay(m)});
+var MC_TIPS={catalog:["It looks like you are browsing the catalog. Would you like help? Try the More filters button, or just type in the search box.","Every exhibit gets a permanent label number. Matt sticks it on the shelf himself.","Tap the view button to switch between cards, a list and a grid."],item:["It looks like you are reading an exhibit page. Would you like help? The Quick facts box has the specs, and I have never once been wrong about specs.","If an exhibit has a manual, it is linked at the bottom. Matt collects those too."],timeline:["It looks like you are time traveling. Would you like help? Pick a year, then open any entry for the full story.","The timeline now has MegaZeux, MUDs and game makers. I am very proud."],about:["Click things on the workstation. Everything is clickable. Even the pager.","Matt has three young boys. Someday all of this is theirs. Please be kind to the cables."],start:["It looks like you are new here. Would you like help? Pick whichever mood sounds closest and I will take you there."],play:["Play a game, earn tickets, spend them on a new color for me. I look great in gold.","The Memory Maze has a memory chip with a bow in it. I wonder who that is."],maze:["Psst. There are two of me in the house. Find us and I will top up your memory."],prizes:["Spend your tickets on a new color for me. I will not be offended. Much."]};
+var mcCur=null,mcTimer=0,mcType=0;
+function mcRoute(){var h=(location.hash||"#/").replace(/^#\/?/,"").split("/")[0]||"home";return h==="hub"?"play":h}
+function mcClose(){if(mcCur){var o=mcCur.bub;if(o&&o.parentNode)o.parentNode.removeChild(o);if(mcCur.svg)mcCur.svg.classList.remove("mc-talking");}clearInterval(mcType);clearTimeout(mcTimer);mcCur=null;window.removeEventListener("resize",mcPlace)}
+function mcPlace(){if(!mcCur||!mcCur.svg||!document.body.contains(mcCur.svg)){mcClose();return}var b=mcCur.bub,sv=mcCur.svg,r=sv.getBoundingClientRect(),w=Math.min(300,window.innerWidth-16);b.style.maxWidth=w+"px";var bw=b.offsetWidth,bh=b.offsetHeight,x=Math.max(8,Math.min(r.left+r.width/2-bw/2,window.innerWidth-bw-8)),up=r.top-bh-14>=4;b.className="mc-bubble "+(up?"mc-up":"mc-dn");b.style.left=(x+window.scrollX)+"px";b.style.top=((up?r.top-bh-14:r.bottom+14)+window.scrollY)+"px";var tx=Math.max(14,Math.min(r.left+r.width/2-x,bw-26));b.style.setProperty("--tx",tx+"px")}
+function mascotSay(svg,first){mcClose();var tips=(MC_TIPS[mcRoute()]||[]).concat(MASCOT_QUIPS),k=first?-1:(window.__mcI=(window.__mcI==null?0:window.__mcI+1)%tips.length),t=first?first:tips[k];
+ var b=document.createElement("div");b.id="mcsay";b.className="mc-bubble";b.setAttribute("role","status");
+ var p=document.createElement("p");b.appendChild(p);var bar=document.createElement("div");bar.className="mc-bb";var n=document.createElement("button");n.type="button";n.textContent="Another tip";var c=document.createElement("button");c.type="button";c.textContent="Thanks, Connie";bar.appendChild(n);bar.appendChild(c);b.appendChild(bar);
+ var nm=document.createElement("small");nm.className="mc-nm";nm.textContent=MASCOT_NAME;b.insertBefore(nm,p);
+ document.body.appendChild(b);mcCur={bub:b,svg:svg};
+ var calm=document.documentElement.getAttribute("data-motion")==="off"||(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches);
+ function done(){svg.classList.remove("mc-talking");clearTimeout(mcTimer);mcTimer=setTimeout(mcClose,16000)}
+ if(calm){p.textContent=t;done()}else{var i=0;svg.classList.add("mc-talking");p.textContent="";b.style.minWidth=Math.min(t.length*7.2+30,280)+"px";mcType=setInterval(function(){i+=1;p.textContent=t.slice(0,i);mcPlace();if(i>=t.length){clearInterval(mcType);done()}},24)}
+ mcPlace();window.addEventListener("resize",mcPlace);
+ n.onclick=function(e){e.stopPropagation();mascotSay(svg)};c.onclick=function(e){e.stopPropagation();mcClose()};
+ svg.classList.remove("mc-hop");void svg.getBoundingClientRect();svg.classList.add("mc-hop");setTimeout(function(){svg.classList.remove("mc-hop")},700)}
+function mascotGreet(root){try{if(sessionStorage.getItem("cm-con-hi"))return;var sv=(root||document).querySelector("svg.mascot");if(!sv||+sv.getAttribute("width")<80)return;sessionStorage.setItem("cm-con-hi","1");setTimeout(function(){if(document.body.contains(sv)&&!mcCur)mascotSay(sv,"Hi! I am Connie Ventional, the memory chip with the bow. Click me any time for a tip.")},1100)}catch(e){}}
+document.addEventListener("click",function(e){var m=e.target.closest&&e.target.closest("svg.mascot");if(m){mascotSay(m);return}if(mcCur&&!(e.target.closest&&e.target.closest("#mcsay")))mcClose()});
+document.addEventListener("keydown",function(e){if(e.key==="Escape")mcClose();var m=e.target&&e.target.closest&&e.target.closest("svg.mascot");if(m&&(e.key==="Enter"||e.key===" ")){e.preventDefault();mascotSay(m)}});
+window.addEventListener("hashchange",mcClose);

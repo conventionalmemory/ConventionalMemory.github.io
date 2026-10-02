@@ -54,5 +54,10 @@ const srv=http.createServer((q,r)=>{let f=path.join(root,decodeURIComponent(q.ur
  await p.evaluate(()=>{});ok(await p.evaluate(()=>{var t=document.querySelector(".ab").innerText;return /Zack/.test(t)&&/Star Wars MUDs/.test(t)&&/Torin/.test(t)&&[...document.querySelectorAll("[data-room]")].some(b=>/PC Gamer/i.test(b.getAttribute("aria-label")||b.title||b.textContent))}),"about mentions Zack, the MUDs, favorites and the real objects");
  ok(await p.evaluate(()=>!!document.querySelector('footer a[href="#/about"]')&&!!document.querySelector('footer a[href="#/start"]')),"footer links to About and Start here");
  await go("start");ok(await p.evaluate(()=>document.querySelectorAll(".st .hm-tile").length===6&&!!document.querySelector(".st svg.mascot")),"start here page has six paths and Connie");
+ await go("about");await p.waitForTimeout(300);ok(await p.evaluate(()=>/Connie Ventional/.test(document.querySelector(".ab .mc-cap")?.innerText||"")&&/RAM/i.test(document.querySelector(".ab .mc-cap")?.innerText||"")),"Connie wears a name badge on the About page");
+ await p.evaluate(()=>{var b=document.getElementById("mcsay");if(b)b.remove()});await p.click(".ab svg.mascot");await p.waitForTimeout(300);
+ ok(await p.evaluate(()=>{var b=document.getElementById("mcsay");return !!b&&/Connie Ventional/i.test(b.innerText)&&b.querySelectorAll("button").length===2}),"clicking Connie opens a speech bubble with her name and two buttons");
+ await p.click("#mcsay button:last-child");ok(await p.evaluate(()=>!document.getElementById("mcsay")),"Thanks, Connie closes the bubble");
+ await p.focus(".ab svg.mascot");await p.keyboard.press("Enter");await p.waitForTimeout(200);ok(await p.evaluate(()=>!!document.getElementById("mcsay")),"Connie opens from the keyboard");await p.keyboard.press("Escape");ok(await p.evaluate(()=>!document.getElementById("mcsay")),"Escape closes her bubble");
  ok(!errs.length,"no script errors"+(errs.length?": "+errs.join("|"):""));
  await b.close();srv.close();if(fails.length){console.error("FAILED "+fails.length);process.exit(1)}console.log("OK toys")})();
