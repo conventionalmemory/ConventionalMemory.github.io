@@ -200,7 +200,7 @@ var AD_TAGS_HW=["More megahertz than you can shake a floppy at.","The future fit
 function adTag(r){var p=r[1]==="hw"||r[1]==="pe"?AD_TAGS_HW:AD_TAGS_SW;return p[hstr(r[2]+"t")%p.length]}
 function dnum(d,up){var p=String(d).split("-"),y=+p[0],m=p[1]?+p[1]:up?12:1,dd=p[2]?+p[2]:up?28:1;return y*372+(m-1)*31+dd-1}
 function fine(d){return String(d).length>=7}
-function guessPrice(r,y){if(r[3])return {t:r[3],est:/\*$/.test(r[3])};
+function guessPrice(r,y){if(r[3]==="n/a")return {t:"Not sold",est:false};if(r[3])return {t:r[3],est:/\*$/.test(r[3])};
  if(r[1]==="hw"||r[1]==="pe")return {t:"Price TBA*",est:true};
  var pr=y<1990?"$29.95 to $49.95*":y<1996?"$39.95 to $59.95*":y<2000?"$39.99 to $54.99*":y<2006?"$29.99 to $49.99*":"$39.99 to $59.99*";return {t:pr,est:true}}
 function adPicks(it){var d0=it.rel||String(it.year);if(!it.year)return [];var a=dnum(d0,false),out=[];
@@ -426,7 +426,7 @@ function connSec(it){var r=tlMatch(it);if(!r||typeof tlLinks!=="function")return
   +(miss.length?'<p class="tn">Not here yet: '+miss.slice(0,8).map(function(x){return'<a href="#/timeline" data-tl="'+esc(x[0])+'">'+esc(x[0])+'</a> <small>('+esc(x[1])+')</small>'}).join(", ")+'</p>':""))}
 function heroStrip(it){var t=tier(it.score);
  function b(ic,l,v,st){return v?'<span class="ib"'+(st?' style="'+st+'"':"")+'>'+(typeof px==="function"?px(ic,16):"")+'<small>'+esc(l)+'</small><b>'+esc(v)+'</b></span>':""}
- var bd=(it.cm?'<span class="ib" title="Permanent museum label number"><small>Label</small><b>'+esc(tagNo(it))+'</b></span>':"")+b("clock","Released",it.rel?fmtDate(it.rel)+(it.relx?"*":""):it.year)+(it.maker&&it.maker!=="Unknown"?'<a class="ib" href="#/maker/'+encodeURIComponent(it.maker)+'" title="See everything from this maker">'+(typeof px==="function"?px("gear",16):"")+'<small>Maker</small><b>'+esc(it.maker)+'</b></a>':b("gear","Maker",it.maker))+b("coin","MSRP",it.msrp)+(it.score!=null?b("trophy","Score",it.score+"K, "+t.l,"background:"+t.c+";color:"+inkOn(t.c)+";border-color:"+t.c):"")+b("bolt","Working",it.works)+b("shield","Status",it.status)+b("flag","Type",it.type);
+ var bd=(it.cm?'<span class="ib" title="Permanent museum label number"><small>Label</small><b>'+esc(tagNo(it))+'</b></span>':"")+b("clock","Released",it.rel?fmtDate(it.rel)+(it.relx?"*":""):it.year)+(it.maker&&it.maker!=="Unknown"?'<a class="ib" href="#/maker/'+encodeURIComponent(it.maker)+'" title="See everything from this maker">'+(typeof px==="function"?px("gear",16):"")+'<small>Maker</small><b>'+esc(it.maker)+'</b></a>':b("gear","Maker",it.maker))+b("coin",/^(free|shareware|included|open source|bundled)/i.test(it.msrp||"")?"Price":"MSRP",it.msrp)+(it.score!=null?b("trophy","Score",it.score+"K, "+t.l,"background:"+t.c+";color:"+inkOn(t.c)+";border-color:"+t.c):"")+b("bolt","Working",it.works)+b("shield","Status",it.status)+b("flag","Type",it.type);
  var y=+it.year,row=y?TL.filter(function(r){return dyear(r[0])===y&&/^(hw|sw|gt|m|pe)$/.test(r[1])&&r[2]!==it.name}):[];
  row=row.sort(function(p,q){return hstr(p[2])-hstr(q[2])}).slice(0,6).sort(function(p,q){return p[0]<q[0]?-1:1});
  var strip=row.length?'<div class="ihs" aria-label="Also in '+y+'"><b>Also in '+y+'</b>'+row.map(function(r){return'<a href="#/timeline/'+y+'/'+encodeURIComponent(r[2])+'" title="'+esc(r[2])+'">'+(typeof pxRow==="function"?pxRow(r,16):"")+'<span>'+esc(r[2])+'</span>'+(r[0].length>4?'<small>'+MON[+r[0].slice(5,7)-1]+'</small>':"")+'</a>'}).join("")+'<a class="btn" href="#/timeline/'+y+'">All of '+y+'</a></div>':"";

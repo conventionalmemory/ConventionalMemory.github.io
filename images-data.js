@@ -5,6 +5,15 @@
    File names were taken from Commons search results; a few show a closely related model, and the
    caption says so. */
 var CIMG={
+"Sinclair QL":["Sinclair QL Top.jpg","Sinclair QL home computer, top view."],
+"TRS-80 Model 100":["Radio Shack TRS-80 Model 100.jpg","Radio Shack TRS-80 Model 100 portable computer."],
+"Apple Lisa":["Apple Lisa Computer.jpg","Apple Lisa computer."],
+"IBM PC XT":["IBM PC XT 5160.JPG","IBM PC XT model 5160."],
+"Sharp X68000":["Sharp X68000 XVI.jpg","The Sharp X68000 XVI, a later model in the X68000 line."],
+"Macintosh Plus":["Apple Macintosh Plus.jpg","A Macintosh Plus."],
+"Commodore 64C":["Commodore 64C.jpg","A Commodore 64C."],
+"Famicom Disk System":["Nintendo-Famicom-Disk-System.jpg","The Famicom Disk System drive attached to a Famicom."],
+"Apple IIGS":["Apple IIgs 004.jpg","An Apple IIGS."],
 "Roland MT-32":["Roland MT-32.jpg","A Roland MT-32 sound module"],
 "Sound Blaster 16":["Sound Blaster 16.JPG","A Sound Blaster 16 ISA card"],
 "IBM Model M":["IBM Model M 1391403 keyboard.jpg","An IBM Model M keyboard"],
