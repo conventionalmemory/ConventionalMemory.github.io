@@ -379,14 +379,27 @@ function person(x,px,py,o,step,dir,walk){
  mr(x,px,top,dir,a[0]+sw2-1,a[1],a[2]+2,a[3]+1,"k");mr(x,px,top,dir,a[0]+sw2,a[1],a[2],a[3],o.sleeve||o.shade||o.shirt);mr(x,px,top,dir,a[0]+sw2,a[1],a[2],1,o.shirt||o.sleeve);mr(x,px,top,dir,a[0]+sw2*2,a[1]+a[3],a[2],2,o.skin||"R");
  if(o.cuff)mr(x,px,top,dir,a[0]+sw2,a[1]+a[3]-1,a[2],1,o.cuff);
  if(o.extra)o.extra(x,px,top,dir)}
-function chip(x,px,py,step,dir){var hop=Math.floor(Math.abs(Math.sin(Date.now()/260))*2),lg=step%2?1:0;py=py-hop+3;
+/* Connie in the maze: her look from the closet, redrawn in the sixteen EGA colors. sk = skirt, bw = bow, hm = hem */
+var LOOKEGA={classic:{sk:"M",bw:"M",hm:"w"},punk:{sk:"k",bw:"k",hm:"R"},skate:{sh:"d",bw:"R"},plaid:{sk:"r",bw:"k",hm:"y"},check:{ck:1,bw:"R"},cyber:{sk:"c",bw:"c",hm:"C"},prom:{sk:"B",bw:"w",hm:"C"},aerobics:{sk:"C",bw:"y",hm:"M"},sysop:{sk:"b",bw:"G",hm:"G"},hacker:{sk:"k",bw:"k",hm:"G",dots:"G"},explorer:{sk:"n",bw:null,hm:"y",hat:1},grunge:{sk:"g",bw:null,hm:"k",beanie:1}};
+function chip(x,px,py,step,dir){var hop=Math.floor(Math.abs(Math.sin(Date.now()/260))*2),lg=step%2?1:0,lk="classic";try{lk=CMCast.cur().look}catch(e){}var L=LOOKEGA[lk]||LOOKEGA.classic;py=py-hop+3;
  x.fillStyle="rgba(0,0,0,.35)";x.fillRect(px-7,py+2,14,2);
- rect(x,px-5,py-22,10,12,"n");rect(x,px+1,py-25,4,3,"M");rect(x,px+2,py-24,1,1,"w");rect(x,px-4,py-20,8,9,"g");rect(x,px-4,py-20,8,1,"G");
- rect(x,px-3,py-17,2,3,"k");rect(x,px+1,py-17,2,3,"k");rect(x,px-3,py-17,1,1,"w");rect(x,px+1,py-17,1,1,"w");
- rect(x,px-4,py-14,2,1,"M");rect(x,px+2,py-14,2,1,"M");rect(x,px-1,py-13,2,1,"R");
- for(var i=0;i<4;i++)rect(x,px-3+i*2,py-11,1,1,"y");
- rect(x,px-6,py-16,2,1,"y");rect(x,px+4,py-16,2,1,"y");
- rect(x,px-3,py-10,1,6-lg,"y");rect(x,px+2,py-10,1,5+lg,"y");rect(x,px-4,py-4-lg,3,1,"g");rect(x,px+1,py-5+lg,3,1,"g")}
+ /* legs and gold-contact shoes (a little comb of gold fingers) */
+ rect(x,px-3,py-6,1,4-lg,"l");rect(x,px+2,py-6,1,3+lg,"l");
+ rect(x,px-4,py-3-lg,3,1,"y");rect(x,px-4,py-2-lg,1,1,"y");rect(x,px-2,py-2-lg,1,1,"y");rect(x,px+1,py-4+lg,3,1,"y");rect(x,px+1,py-3+lg,1,1,"y");rect(x,px+3,py-3+lg,1,1,"y");
+ /* bob, board and face */
+ rect(x,px-6,py-25,12,17,"n");rect(x,px-5,py-22,10,13,"k");rect(x,px-4,py-21,8,11,"g");rect(x,px-4,py-21,8,1,"G");
+ rect(x,px-6,py-25,12,5,"n");rect(x,px-4,py-20,2,1,"n");rect(x,px+2,py-20,2,1,"n");rect(x,px-1,py-20,2,1,"n");
+ rect(x,px-3,py-18,2,3,"k");rect(x,px+1,py-18,2,3,"k");rect(x,px-3,py-18,1,1,"w");rect(x,px+1,py-18,1,1,"w");rect(x,px-4,py-19,1,1,"k");rect(x,px+3,py-19,1,1,"k");
+ rect(x,px-4,py-14,2,1,"R");rect(x,px+2,py-14,2,1,"R");rect(x,px-1,py-13,2,1,"r");
+ /* contacts, skirt or shorts */
+ for(var i=0;i<4;i++)rect(x,px-3+i*2,py-9,1,1,"y");
+ if(L.sh){rect(x,px-4,py-8,3,3,L.sh);rect(x,px+1,py-8,3,3,L.sh)}
+ else{for(var q=-5;q<5;q++){var c=L.ck?((q+px)%2?"k":"w"):L.sk;rect(x,px+q,py-8,1,1,c);rect(x,px+q-1,py-7,1,1,c);rect(x,px+q,py-7,1,1,c)}
+  for(var h=-5;h<5;h++)rect(x,px+h,py-6,1,1,h%2?(L.hm||"w"):(L.ck?"k":L.sk));if(L.dots){rect(x,px-3,py-7,1,1,L.dots);rect(x,px+1,py-8,1,1,L.dots);rect(x,px+3,py-7,1,1,L.dots)}}
+ /* bow, hard hat or beanie */
+ if(L.bw)rect(x,px+1,py-27,5,3,L.bw),rect(x,px+3,py-26,1,1,"w");
+ if(L.hat){rect(x,px-4,py-28,9,4,"y");rect(x,px-5,py-25,11,1,"n");rect(x,px-1,py-27,2,2,"w")}
+ if(L.beanie){rect(x,px-6,py-28,12,5,"l");rect(x,px-6,py-26,12,1,"d");rect(x,px-1,py-30,2,2,"w")}}
 function drawGr(x,px,py,step,dir){MW=12;var hop=Math.abs(Math.sin(Date.now()/150))*3|0;py-=hop;
  x.fillStyle="rgba(0,0,0,.35)";x.fillRect(px-6,py+hop-1,12,2);
  var P={".":0,k:"k",g:"g",G:"G",r:"R",y:"y",w:"w"},rows=["k..........k","kk........kk","kgk.kkkk.kgk",".kgkgGGGgkgk.","..kgGGGGGgk..","..kgrGGrGgk..",".kgGGGGGGGgk.",".kgGwkwkwGgk.","..kgGGGGGgk..","..kkgggggkk..",".kgkgGGGgkgk.","kyk.kkkkk.kyk","y.y..k.k..y.y","....kk.kk...."];

@@ -109,43 +109,18 @@ function pxGenre(g,size){return px(pxPick(PXGENRE,g,"gamepad"),size||12)}
    mascot(size, mood, skin) mood: happy, wow, oops. Skin (a color she wears) comes from the prize counter.
    She is animated with CSS (style.css, ".mascot" rules): she bobs, blinks, waves and wiggles her bow. Click or tap her and she says something.
    Animation stops for prefers-reduced-motion and for the site's Motion: off switch. */
-var MEMSKINS={green:["#1f9d55","#0b4a28","#ffd54a","#7a3b1e","#ff5fa2"],blue:["#2f6fe0","#10306b","#ffd54a","#e8c34a","#ff5fa2"],gold:["#e0b030","#6b4d08","#ffffff","#3a2410","#d03030"],pink:["#e0509a","#6b1a45","#ffe8a0","#2a1a4a","#ffd54a"]};
+var MEMSKINS=typeof CMCast!=="undefined"?CMCast.COLORS:{green:{b:"#1f9d55",d:"#0b4a28",hr:"#7a3b1e"}};
 var MASCOT_NAME="Connie Ventional";
-var MASCOT_QUIPS=["Hi! I am Connie Ventional. I live in the first 640K.","Have you tried turning it off and on again?","I have 640K of personality. Okay, 639K. The rest is the BIOS.","Please do not touch my pins.","Insert disk 2 to continue.","Memory: 640K. Mood: excellent.","Did you save? You should save.","Ctrl+Alt+Del is not a hug.","Himem.sys says hi.","I am not a bug. I am a feature with legs."];
-function mascot(size,mood,skin,cap){size=size||64;if(!skin){try{skin=(JSON.parse(localStorage.getItem("cm-prizes")||"{}")).skin}catch(e){}}var c=MEMSKINS[skin]||MEMSKINS.green,b=c[0],d=c[1],p=c[2],hr=c[3],bw=c[4],o='<svg class="mascot mc-'+(mood||"happy")+'" viewBox="0 0 24 24" width="'+size+'" height="'+size+'" shape-rendering="crispEdges" role="button" aria-label="'+MASCOT_NAME+', the museum mascot. Press for a tip."'+(size>=56?' tabindex="0"':"")+' xmlns="http://www.w3.org/2000/svg"><g class="mc-all">';
- function r(x,y,w,h,f){o+='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" fill="'+f+'"/>'}
- /* legs: little chip pins with shoes */
- o+='<g class="mc-legl">';r(8,19,1,3,p);r(7,22,3,1,d);o+='</g><g class="mc-legr">';r(15,19,1,3,p);r(14,22,3,1,d);o+='</g>';
- /* arms: pins on the sides with a hand each */
- o+='<g class="mc-arml">';r(2,11,3,1,p);r(1,10,2,3,"#ffe0c0");o+='</g><g class="mc-armr">';r(19,11,3,1,p);r(21,10,2,3,"#ffe0c0");o+='</g>';
- /* hair behind the chip */
- r(3,5,18,13,hr);
- /* the chip: dark outline, bright body, shine */
- r(4,6,16,13,d);r(5,7,14,11,b);r(5,7,14,1,"#ffffff44");
- /* gold edge contacts along the bottom, like a memory module */
- for(var k=6;k<=17;k+=2)if(k!==12)r(k,18,1,1,p);
- /* two little black chips on the board, like the ones on a RAM stick */
- r(5,16,3,2,"#1a1a1a");r(5,16,1,1,"#8a8a8a");r(16,16,3,2,"#1a1a1a");r(18,16,1,1,"#8a8a8a");
-  /* fringe */
- r(3,3,18,4,hr);r(4,2,16,1,hr);r(5,7,5,1,hr);r(14,7,5,1,hr);r(9,7,6,1,hr);r(3,7,2,6,hr);r(19,7,2,6,hr);
- r(5,3,3,1,"#ffffff44");
- /* bow */
- o+='<g class="mc-bow">';r(15,0,3,3,bw);r(18,1,2,1,bw);r(17,1,1,1,"#fff");r(19,0,2,3,bw);o+='</g>';
- /* eyes with lashes */
- o+='<g class="mc-eyes">';
- if(mood==="oops"){r(6,10,3,1,"#fff");r(7,9,1,3,"#fff");r(14,10,3,1,"#fff");r(15,9,1,3,"#fff");r(6,10,3,1,"#000");r(14,10,3,1,"#000")}
- else if(mood==="wow"){r(6,9,3,4,"#fff");r(14,9,3,4,"#fff");r(7,10,1,2,"#000");r(15,10,1,2,"#000");r(5,8,1,1,d);r(17,8,1,1,d)}
- else{r(6,10,3,4,"#1a1030");r(14,10,3,4,"#1a1030");r(6,10,2,2,"#fff");r(14,10,2,2,"#fff");r(8,12,1,1,"#9fe8ff");r(16,12,1,1,"#9fe8ff");r(8,13,1,1,"#4a3a7a");r(16,13,1,1,"#4a3a7a");r(5,10,1,1,d);r(17,10,1,1,d)}
- o+='</g>';
- /* blush and lipstick */
- r(5,14,2,1,"#ff8aa8");r(16,14,2,1,"#ff8aa8");r(5,15,1,1,"#ff8aa855");r(17,15,1,1,"#ff8aa855");
- o+='<g class="mc-mouth">';
- if(mood==="oops"){r(9,16,5,1,"#c0143c");r(8,15,1,1,"#c0143c");r(14,15,1,1,"#c0143c")}
- else if(mood==="wow"){r(10,15,3,3,"#c0143c");r(11,16,1,1,"#40000e")}
- else{r(10,15,1,1,"#c0143c");r(11,16,2,1,"#c0143c");r(13,15,1,1,"#c0143c")}
- o+='</g></g>';o+='</svg>';if(cap)o='<span class="mc-wrap">'+o+'<span class="mc-cap"><b>'+MASCOT_NAME+'</b><small>RAM module &middot; 640K</small></span></span>';return o}
+var MASCOT_QUIPS=["Hi! I am Connie Ventional. I live in the first 640K.","Have you tried turning it off and on again?","I have 640K of personality. Okay, 639K. The rest is the BIOS.","Please do not touch my pins.","Insert disk 2 to continue.","Memory: 640K. Mood: excellent.","Did you save? You should save.","Ctrl+Alt+Del is not a hug.","Himem.sys says hi. My brother Hiram, I mean.","I am not a bug. I am a feature with legs.","My sister Emma 386 can borrow more room than I can. She never asks.","Mom is read-only. You can ask, but you cannot edit.","Tessie the TSR has been in our hallway since 1983.","My shoes are made of gold contacts. Very good for the connection.","There is a whole comic page about my family. It is called the Funnies."];
+/* mascot(size, mood, skin, cap, opt): mood is happy, wow, oops, wink, love or sleep.
+   She wears whatever look, accessory and color is saved in this browser (the closet), unless opt = {look, acc} says otherwise.
+   The drawing itself lives in cast.js. The class names below drive the CSS animation in style.css. */
+function mascot(size,mood,skin,cap,opt){size=size||64;opt=opt||{};mood=mood||"happy";
+ var o='<svg class="mascot mc-'+mood+'" viewBox="0 0 24 24" width="'+size+'" height="'+size+'" shape-rendering="crispEdges" role="button" aria-label="'+MASCOT_NAME+', the museum mascot. Press for a tip."'+(size>=56?' tabindex="0"':"")+' xmlns="http://www.w3.org/2000/svg">';
+ try{o+=CMCast.castSvg("connie",{mood:mood==="happy"||mood==="oops"||mood==="wow"||mood==="wink"||mood==="love"||mood==="sleep"?mood:"happy",skin:skin||undefined,look:opt.look,acc:opt.acc})}catch(e){}
+ o+='</svg>';if(cap)o='<span class="mc-wrap">'+o+'<span class="mc-cap"><b>'+MASCOT_NAME+'</b><small>RAM module &middot; 640K</small></span></span>';return o}
 /* Click or tap Connie and she says a line, then hops. */
-var MC_TIPS={journal:["It looks like you are admiring a repair. Would you like help? Drag the slider on a before and after photo.","Every job here has a date, a type and the parts that went in. The pile of capacitors is the real star."],catalog:["It looks like you are browsing the catalog. Would you like help? Try the More filters button, or just type in the search box.","Every exhibit gets a permanent label number. Matt sticks it on the shelf himself.","Tap the view button to switch between cards, a list and a grid."],item:["It looks like you are reading an exhibit page. Would you like help? The Quick facts box has the specs, and I have never once been wrong about specs.","If an exhibit has a manual, it is linked at the bottom. Matt collects those too."],timeline:["It looks like you are time traveling. Would you like help? Pick a year, then open any entry for the full story.","The timeline now has MegaZeux, MUDs and game makers. I am very proud."],about:["Click things on the workstation. Everything is clickable. Even the pager.","Matt has three young boys. Someday all of this is theirs. Please be kind to the cables."],start:["It looks like you are new here. Would you like help? Pick whichever mood sounds closest and I will take you there."],play:["Play a game, earn tickets, spend them on a new color for me. I look great in gold.","The Memory Maze has a memory chip with a bow in it. I wonder who that is."],maze:["Psst. There are two of me in the house. Find us and I will top up your memory."],prizes:["Spend your tickets on a new color for me. I will not be offended. Much."]};
+var MC_TIPS={connie:["This is my family page. Emma 386 is the one with the glasses and the ponytail. Do not ask her about page frames unless you have time.","Everything in my story is true except the family. The dates are real."],funnies:["The Sunday Funnies are about my family. Read all of them and I will unlock a look for you.","Mom is read-only. It is the only joke in the strip she has never edited."],closet:["Locked things say how to get them. Tickets from games buy some looks. Others you have to earn by playing.","The Sysop look needs ten stars in Memory Manager. Hacker needs 100 XP."],memman:["The trick is loading the biggest drivers high first. Fill the upper floor, then leave the small ones downstairs.","DOS=HIGH moves DOS into my brother Hiram\u2019s loft. It saves 48K and he does not mind."],stickers:["Print me, cut me out, put me on your laptop. I will be very good company."],journal:["It looks like you are admiring a repair. Would you like help? Drag the slider on a before and after photo.","Every job here has a date, a type and the parts that went in. The pile of capacitors is the real star."],catalog:["It looks like you are browsing the catalog. Would you like help? Try the More filters button, or just type in the search box.","Every exhibit gets a permanent label number. Matt sticks it on the shelf himself.","Tap the view button to switch between cards, a list and a grid."],item:["It looks like you are reading an exhibit page. Would you like help? The Quick facts box has the specs, and I have never once been wrong about specs.","If an exhibit has a manual, it is linked at the bottom. Matt collects those too."],timeline:["It looks like you are time traveling. Would you like help? Pick a year, then open any entry for the full story.","The timeline now has MegaZeux, MUDs and game makers. I am very proud."],about:["Click things on the workstation. Everything is clickable. Even the pager.","Matt has three young boys. Someday all of this is theirs. Please be kind to the cables."],start:["It looks like you are new here. Would you like help? Pick whichever mood sounds closest and I will take you there."],play:["Play a game, earn tickets, spend them on a new color for me. I look great in gold.","The Memory Maze has a memory chip with a bow in it. I wonder who that is."],maze:["Psst. There are two of me in the house. Find us and I will top up your memory."],prizes:["Spend your tickets on a new color for me. I will not be offended. Much."]};
 function conWrap(h,mood){return'<div class="mc-empty">'+mascot(56,mood||"oops")+'<div class="mc-ebody">'+h+'</div></div>'}
 function conW(h,mood){return conWrap(h,mood)}
 var mcCur=null,mcTimer=0,mcType=0;

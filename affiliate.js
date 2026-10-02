@@ -4,7 +4,7 @@
      AFF.ebay   : your eBay Partner Network campaign ID, a 10 digit number
    The links only search for the product by name; they never show or copy prices. The required disclosure sits
    in each shelf box (one short line) and on the Disclosure page linked from the footer. Every link is rel="sponsored". */
-var AFF={amazon:"conventionalm-20",ebay:"",ebayCustom:"cm"};
+var AFF={amazon:"conventionalm-20",ebay:"5339217307",ebayCustom:"cm"};
 var AFF_SHORT="Affiliate links. As an Amazon Associate I earn from qualifying purchases.";
 var AFF_NOTE="Some links on this site are affiliate links. If you buy through one, Conventional Memory earns a small commission at no cost to you. As an Amazon Associate I earn from qualifying purchases. Links only search for a product by name; the museum never copies prices or product photos from Amazon or eBay, and nothing here is a paid placement. Items recommended on a page were picked by the museum, and a recommendation is not a promise that a part fits your exact model.";
 function affId(k){var v=String(AFF[k]||"").trim();if(k==="amazon")return/^[a-z0-9][a-z0-9-]{1,38}-\d{2}$/i.test(v)?v:"";if(k==="ebay")return/^\d{8,12}$/.test(v)?v:"";return""}

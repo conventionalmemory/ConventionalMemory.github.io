@@ -59,21 +59,36 @@ function gearParts(c,name,maker){var out=[];function add(l,q){if(out.length<5&&!
  if(comp||con||kb||cam||card||midi||hand){add("Electronics contact cleaner","DeoxIT contact cleaner");add("99% isopropyl alcohol for cleaning boards","99% isopropyl alcohol")}
  return out}
 function gearBooks(c){var out=[],txt=c.nm+" "+c.mk;GEAR_BOOKS.forEach(function(b){if(out.length<2&&b[0].test(txt)&&!out.some(function(o){return o[0]===b[1]}))out.push([b[1],b[2]])});
- if(!out.length&&/^(hw)$/.test(c.kind)&&c.yr&&c.yr<1995)GEAR_GENERIC.forEach(function(g){out.push([g[2],g[3]])});return out.slice(0,2)}
-/* What kind of "find one" line fits: a movie on disc, a game copy, or the machine itself. */
-function gearFind(c,name,maker){var q=affQ(name,maker);if(!q)return null;
- if(c.row){var k=c.kind;
-  if(k==="m")return{l:"Find it on Blu-ray or DVD",q:q+" Blu-ray DVD"};
-  if(/^(gt|gn|gc)$/.test(k))return{l:"Find a copy",q:q+" game"};
-  if(/^(hw|pe)$/.test(k))return{l:"Find one of your own",q:q};
-  if(k==="sw")return null;return null}
- if(c.it){if(c.ty==="game or software"||/books|ephemera/.test(c.cat))return{l:"Find another copy",q:q};if(/cable|adapter|battery|charger/.test(c.nm))return{l:"Find another",q:q};return{l:"Find another one",q:q}}
- return null}
-function affShelf(name,maker,key){if(!affOn())return"";var c=gearCtx(name,maker,key),parts=gearParts(c,name,maker),books=gearBooks(c),f=gearFind(c,name,maker);
- if(!parts.length&&!books.length&&!f)return"";
- function li(l,q){var a=affLink(l,q);return a?"<li>"+a+"</li>":""}
+ if(!out.length&&/^(hw)$/.test(c.kind)&&c.yr&&c.yr<1995)GEAR_GENERIC.forEach(function(g){out.push([g[1],g[2]])});return out.slice(0,2)}
+/* The words that name an event's subject, for a book search: keep names and numbers, drop the verbs ("introduced", "decided", "first runs"). */
+function topicQ(name){var drop=/^(a|an|the|of|in|on|at|to|by|for|and|is|are|was|were|first|new|its|it|goes|go|sale|sends|sent|runs|ships|shipped|released|release|introduced|introduces|launched|launches|published|publishes|incorporated|founded|decided|signed|settle|settles|sues|sue|announced|announces|becomes|opens|opened|debuts|premieres|unveiled|unveils|ruling|v\.?|vs\.?)$/i;
+ var t=String(name||"").replace(/\([^)]*\)/g," ").replace(/[^\w .&'+-]+/g," ").split(/\s+/).filter(function(w){return w&&!drop.test(w)&&(/^[A-Z0-9]/.test(w)||/^\d/.test(w))});return t.slice(0,6).join(" ")}
+/* What to look for, as a list: [label, search words]. Every catalog item and every timeline entry gets at least one, and the kinds that
+   come in several forms get several (a movie on disc, its soundtrack, a poster). All are plain searches, never one specific listing,
+   so they still work after a particular listing is gone. */
+function gearFinds(c,name,maker){var q=affQ(name,maker);if(!q)return[];var out=[];function add(l,w){out.push([l,w])}
+ if(c.row){var k=c.kind,t=topicQ(name)||q;
+  if(k==="m"){add("Find it on Blu-ray or DVD",q+" Blu-ray DVD");if(c.yr&&c.yr<2006)add("Find it on VHS",q+" VHS");add("Find the soundtrack",q+" soundtrack");add("Find a poster",q+" movie poster")}
+  else if(/^(gt|gn|gc)$/.test(k)){add("Find a copy",q+" game");add("Find the manual or strategy guide",q+" strategy guide manual");add("Find the soundtrack or merchandise",q+" soundtrack")}
+  else if(/^(hw|pe)$/.test(k)){add("Find one of your own",q);add("Find manuals and paperwork",q+" manual");add("Find accessories",q+" accessories")}
+  else if(k==="sw"){add("Find a boxed copy",q+" software");add("Find the manual",q+" manual")}
+  else if(k==="u"){add("Find books about it",t+" book")}
+  else{add("Find books about it",t+" book");add("Find vintage memorabilia",t+" vintage")}
+  return out}
+ if(c.it){var nm=c.nm,ty=c.ty,cat=c.cat;
+  if(ty==="game or software"||/games and software/.test(cat)){add("Find another copy",q);add("Find the manual or strategy guide",q+" manual guide")}
+  else if(/books|ephemera/.test(cat))add("Find another copy",q);
+  else if(/cable|adapter|battery|charger|power tap|surge/.test(nm)||/cables|power protection|parts and tools/.test(cat)){add("Find another",q);add("Find a spare",q+" spare")}
+  else{add("Find another one",q);add("Find manuals and paperwork",q+" manual");add("Find accessories",q+" accessories")}
+  return out}
+ /* anything else (a catalog row on the timeline, an odd kind): at least look for one */
+ add("Find one of your own",q);add("Find manuals and paperwork",q+" manual");return out}
+function gearFind(c,name,maker){var f=gearFinds(c,name,maker)[0];return f?{l:f[0],q:f[1]}:null}
+function affShelf(name,maker,key){if(!affOn())return"";var c=gearCtx(name,maker,key),parts=gearParts(c,name,maker),books=gearBooks(c),fs=gearFinds(c,name,maker);
+ if(!parts.length&&!books.length&&!fs.length)return"";
+ function li(l,q){var a=affUrl("amazon",q),e=affUrl("ebay",q);if(!a&&!e)return"";return"<li>"+esc(l)+" "+(e?'<a href="'+esc(e)+'" target="_blank" rel="sponsored noopener noreferrer">eBay</a>':"")+(e&&a?" &middot; ":"")+(a?'<a href="'+esc(a)+'" target="_blank" rel="sponsored noopener noreferrer">Amazon</a>':"")+"</li>"}
  var h='<div class="affb affs">';
  if(parts.length)h+='<h4 class="sub">Keep it running</h4><ul class="refs">'+parts.map(function(p){return li(p[0],p[1])}).join("")+'</ul>';
  if(books.length)h+='<h4 class="sub">Further reading</h4><ul class="refs">'+books.map(function(b){return li(b[0],b[1])}).join("")+'</ul>';
- if(f){var a=affUrl("amazon",f.q),e=affUrl("ebay",f.q);h+='<p class="shf"><b>'+esc(f.l)+':</b> '+(e?'<a href="'+esc(e)+'" target="_blank" rel="sponsored noopener noreferrer">eBay</a>':"")+(e&&a?" &middot; ":"")+(a?'<a href="'+esc(a)+'" target="_blank" rel="sponsored noopener noreferrer">Amazon</a>':"")+'</p>'}
- return h+(parts.length||books.length||f?'<p class="affd tn">'+esc(AFF_SHORT)+' <a href="#/disclosure">Details</a></p>':"")+'</div>'}
+ if(fs.length)h+='<ul class="refs shf-l">'+fs.map(function(f){var a=affUrl("amazon",f[1]),e=affUrl("ebay",f[1]);return'<li class="shf"><b>'+esc(f[0])+':</b> '+(e?'<a href="'+esc(e)+'" target="_blank" rel="sponsored noopener noreferrer">eBay</a>':"")+(e&&a?" &middot; ":"")+(a?'<a href="'+esc(a)+'" target="_blank" rel="sponsored noopener noreferrer">Amazon</a>':"")+"</li>"}).join("")+"</ul>";
+ return h+(parts.length||books.length||fs.length?'<p class="affd tn">'+esc(AFF_SHORT)+' <a href="#/disclosure">Details</a></p>':"")+'</div>'}

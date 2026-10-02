@@ -254,7 +254,11 @@ function higher(arg){var adj=arg==="adj",P=hpool(adj),HK="cm-higher",B=ld(HK,{ra
  init();draw()}
 /* ================= Timeline Sort: tap five finds from oldest to newest ================= */
 var SGAP=[8,6,4,3,2];
-function sortSet(round,P){var out=[],tries=0;while(out.length<5&&tries++<400){var r=P[Math.floor(Math.random()*P.length)],y=+r[0].slice(0,4);if(out.every(function(o){return o[2]!==r[2]&&Math.abs(+o[0].slice(0,4)-y)>=SGAP[round]}))out.push(r)}return out}
+function sortSet(round,P){
+ /* Pick five finds whose years are at least gap apart. A single greedy pass can paint itself into a corner and come back with four (it did), so retry the whole pick, and ease the gap a year at a time if a gap is truly too tight for this pool. */
+ var gap=SGAP[round],att,tries,out,r,y;
+ for(;gap>=0;gap--){for(att=0;att<80;att++){out=[];for(tries=0;tries<120&&out.length<5;tries++){r=P[Math.floor(Math.random()*P.length)];y=+r[0].slice(0,4);if(out.every(function(o){return o[2]!==r[2]&&Math.abs(+o[0].slice(0,4)-y)>=gap}))out.push(r)}if(out.length===5)return out}}
+ return out}
 function tsort(){var P=dpool(),G;
  function init(){G={round:0,total:0,set:sortSet(0,P),pick:[],rev:0,over:0,aw:null};G.show=shuf(G.set,Math.random)}
  function draw(){var h='<section class="pl"><h2>Timeline Sort</h2><p>Tap the five finds in order, <b>oldest first</b>. Each round the years sit closer together.</p><p class="pl-hud"><span>Round <b>'+Math.min(G.round+1,5)+'</b> of 5</span><span>Score <b>'+G.total+'</b> of 25</span><span>Gap '+SGAP[Math.min(G.round,4)]+'+ years</span></p>';
@@ -348,5 +352,5 @@ function floppyOut(){var o={};FK.forEach(function(k){try{var v=localStorage.getI
 function floppyIn(t){t=String(t||"").trim();if(t.indexOf("CMFLOPPY1:")!==0)return"That is not a floppy code. It should start with CMFLOPPY1:";var o;try{o=JSON.parse(decodeURIComponent(escape(atob(t.slice(10)))))}catch(e){return"That code is damaged. Copy the whole thing."}
  var n=0;Object.keys(o).forEach(function(k){if(FK.indexOf(k)>=0&&o[k]&&typeof o[k]==="object"&&!Array.isArray(o[k])){try{var v=o[k];if(k===PK)v.xp=nz(v.xp);if(k===DK)v=dClean(v);localStorage.setItem(k,JSON.stringify(v));n++}catch(e){}}});return n?"Loaded "+n+" save file"+(n===1?"":"s")+". Open the Play page to see your progress.":"The floppy was empty."}
 
-window.CMPlay={mount:function(el,page,args){el.innerHTML='<div id="plbar"></div><div id="plapp"></div>';app=el.querySelector("#plapp");if(page!=="styleguide")refreshBar();try{if(page==="daily")daily(args[0]);else if(page==="build")build(args[0]);else if(page==="adlab")adlab(args[0]);else if(page==="higher")higher(args[0]);else if(page==="sort")tsort();else if(page==="mystery")mystery();else if(page==="trophies")trophies();else if(page==="search")search(args[0]);else if(page==="today")todayPage();else if(page==="bingo")bingo(args[0]);else if(page==="hangman")hangman();else if(page==="styleguide")styleguide();else hub()}catch(e){app.innerHTML='<section><h2>Play</h2><p class="empty">Something went wrong loading this game ('+E(e.message)+').</p>'+bk()+'</section>'}},unmount:function(){}};
+window.CMPlay={_t:{sortSet:sortSet,pool:dpool},mount:function(el,page,args){el.innerHTML='<div id="plbar"></div><div id="plapp"></div>';app=el.querySelector("#plapp");if(page!=="styleguide")refreshBar();try{if(page==="daily")daily(args[0]);else if(page==="build")build(args[0]);else if(page==="adlab")adlab(args[0]);else if(page==="higher")higher(args[0]);else if(page==="sort")tsort();else if(page==="mystery")mystery();else if(page==="trophies")trophies();else if(page==="search")search(args[0]);else if(page==="today")todayPage();else if(page==="bingo")bingo(args[0]);else if(page==="hangman")hangman();else if(page==="styleguide")styleguide();else hub()}catch(e){app.innerHTML='<section><h2>Play</h2><p class="empty">Something went wrong loading this game ('+E(e.message)+').</p>'+bk()+'</section>'}},unmount:function(){}};
 })();
