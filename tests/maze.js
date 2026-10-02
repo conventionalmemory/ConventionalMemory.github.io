@@ -33,5 +33,9 @@ const srv=http.createServer((q,r)=>{let f=path.join(root,decodeURIComponent(q.ur
    const code=localStorage.getItem("cm-maze-code");return {win:!!S.win,mem:S.mem,code,v:code?d.verify(code):null,n}});
   ok(res.win&&res.code&&res.v&&res.v.ok&&res.v.who===who,who+" can win and the run code replays ("+(res.v&&(res.v.ok?res.v.mem+"K":res.v.why))+")");
  }
+ // questions are generated from the live site data: many kinds, always valid, and a brand-new item shows up with no code changes
+ {const g=await p.evaluate(()=>{const d={quotes:QUOTES,items:ITEMS.concat([{id:"zz-test",name:"Zorblax Quantum Deck 9000",cat:"Zorblax gear",year:1991,maker:"Zorblax Labs",text:"A made-up test machine that exists only to prove the maze reads the catalog.",specs:{Zing:"11 zings"},sample:false}]),tl:TL,tlx:TLX,gx:GX,tier:tier,scale:SCALE};const r=CMGame.probe(d,900);const tags={};r.forEach(q=>tags[q.tag]=1);
+   return {n:r.length,bad:r.filter(q=>!q.q||q.o.length<4||new Set(q.o).size!==q.o.length||q.c<0||q.c>=q.o.length).length,kinds:Object.keys(tags).length,seen:r.some(q=>(q.q+q.o.join("|")).indexOf("Zorblax Quantum Deck 9000")>=0)}});
+  ok(g.n===900&&g.bad===0,"900 generated questions are all valid (bad="+g.bad+")");ok(g.kinds>=9,"questions come in at least 9 kinds ("+g.kinds+")");ok(g.seen,"a newly added catalog item appears in generated questions")}
  ok(errs.length===0,"no script errors"+(errs.length?": "+errs.join("|"):""));
  await b.close();srv.close();if(fails.length){console.error("FAILED "+fails.length);process.exit(1)}console.log("OK maze")})();

@@ -72,7 +72,7 @@ function gearFind(c,name,maker){var q=affQ(name,maker);if(!q)return null;
 function affShelf(name,maker,key){if(!affOn())return"";var c=gearCtx(name,maker,key),parts=gearParts(c,name,maker),books=gearBooks(c),f=gearFind(c,name,maker);
  if(!parts.length&&!books.length&&!f)return"";
  function li(l,q){var a=affLink(l,q);return a?"<li>"+a+"</li>":""}
- var h='<div class="affb shelf">';
+ var h='<div class="affb affs">';
  if(parts.length)h+='<h4 class="sub">Keep it running</h4><ul class="refs">'+parts.map(function(p){return li(p[0],p[1])}).join("")+'</ul>';
  if(books.length)h+='<h4 class="sub">Further reading</h4><ul class="refs">'+books.map(function(b){return li(b[0],b[1])}).join("")+'</ul>';
  if(f){var a=affUrl("amazon",f.q),e=affUrl("ebay",f.q);h+='<p class="shf"><b>'+esc(f.l)+':</b> '+(e?'<a href="'+esc(e)+'" target="_blank" rel="sponsored noopener noreferrer">eBay</a>':"")+(e&&a?" &middot; ":"")+(a?'<a href="'+esc(a)+'" target="_blank" rel="sponsored noopener noreferrer">Amazon</a>':"")+'</p>'}

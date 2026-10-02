@@ -105,7 +105,7 @@ function qSeries(list){var c=[];list.forEach(function(r){var x=tx(r);if(x&&x.lin
  return mk('Which of these followed "'+nameOf(p[0])+'"?',nameOf(p[1]),w,"series")}
 function pnum(p){var m=String(p).replace(/,/g,"").match(/[\d.]+/);return m?+m[0]||1:1}
 function qPriceX(list){var c=list.filter(function(r){return cleanPrice(r[3])&&(r[1]==="hw"||r[1]==="pe"||r[1]==="sw"||group(r[1])==="g")});if(c.length<8)return null;var r=pick(c),w=[];
- shuf(c.filter(function(z){var a=pnum(z[3]),b=pnum(r[3]);return group(z[1])===group(r[1])&&a>b/5&&a<b*5})).forEach(function(z){if(z[3]!==r[3]&&w.indexOf(z[3])<0&&w.length<3)w.push(z[3])});if(w.length<3)return null;
+ shuf(c.filter(function(z){var a=pnum(z[3]),b=pnum(r[3]);return group(z[1])===group(r[1])&&a>b/5&&a<b*5})).forEach(function(z){if(z[3]!==r[3]&&w.indexOf(z[3])<0&&w.length<3&&/\(/.test(z[3])===/\(/.test(r[3]))w.push(z[3])});if(w.length<3)return null;
  return mk('What was the launch price of "'+nameOf(r)+'"?',r[3],w,"price")}
 function qDetail(list){var c=list.filter(function(r){var x=tx(r);return x&&x.detail&&x.detail.length>50&&x.detail.length<170&&x.conf!=="low"});if(!c.length)return null;var r=pick(c),x=tx(r),w=[];
  shuf(list.filter(function(z){return z!==r&&group(z[1])===group(r[1])})).forEach(function(z){if(w.length<3)w.push(nameOf(z))});if(w.length<3)return null;
@@ -118,6 +118,26 @@ function qItemX(it){var t=R(),o=[];
  if(it.cat){var cs=[];D.items.forEach(function(z){if(z.cat&&z.cat!==it.cat&&cs.indexOf(z.cat)<0)cs.push(z.cat)});["Laptops","Computers","Sound cards","Games","Peripherals","Monitors"].forEach(function(z){if(z!==it.cat&&cs.indexOf(z)<0)cs.push(z)});return mk('Which catalog category is the "'+it.name+'" filed under?',it.cat,shuf(cs).slice(0,3),"item")}
  return null}
 function qMuseum(ok){if(!D.items.length||ok.length<3)return null;var it=pick(D.items),w=shuf(ok.filter(function(r){return nameOf(r)!==it.name})).slice(0,3).map(nameOf);if(w.length<3)return null;return mk("Which of these is actually in the museum's collection?",it.name,w,"item")}
+/* ---- generators added in round 29: these read the live site data (quotes, item descriptions, timeline), so anything Matt adds becomes a question with no changes here ---- */
+function personName(a){return/^[A-Z][A-Za-z.'\u00C0-\u017F-]+( (de|van|von|of|[A-Z][A-Za-z.'\u00C0-\u017F-]+)){1,3}$/.test(a)&&!/campaign|joke|Conventional|Memory|DOS|Windows|Error|Message|Proverb/i.test(a)}
+function qQuote(){var qs=(D.quotes||[]).filter(function(z){if(!(z&&z[0]&&z[1]&&z[0].length<=120&&personName(z[1])))return false;var sur=z[1].split(" ").pop().toLowerCase();return z[0].toLowerCase().indexOf(sur)<0});if(qs.length<8)return null;
+ var z=pick(qs),w=[];shuf(qs).forEach(function(y){if(y[1]!==z[1]&&w.indexOf(y[1])<0&&w.length<3)w.push(y[1])});if(w.length<3)return null;
+ return mk('Who said this? "'+z[0]+'"',z[1],w,"quote")}
+function maskName(t,name){var re=function(w){return new RegExp(w.replace(/[.*+?^${}()|[\]\\]/g,"\\$&"),"gi")};t=t.replace(re(String(name)),"____");String(name).split(/\s+/).filter(function(w){return w.length>3}).forEach(function(w){t=t.replace(re(w),"____")});return t.replace(/(____\s*)+/g,"____ ").replace(/____ (['\u2019,.;:])/g,"____$1")}
+function qDescribe(){var c=D.items.filter(function(i){return !i.sample&&i.text&&i.text.length>40&&i.text.length<260});if(c.length<4)c=D.items.filter(function(i){return i.text&&i.text.length>40&&i.text.length<260});if(c.length<4)return null;
+ var it=pick(c),w=shuf(D.items.filter(function(z){return z.name!==it.name&&(z.cat===it.cat||R()<.4)})).slice(0,3).map(function(z){return z.name});if(w.length<3)return null;
+ var sent=it.text.split(/(?<=[.!?])\s/)[0];return mk("Which museum item is this? "+maskName(sent,it.name),it.name,w,"item")}
+function qWhichYear(list){if(list.length<12)return null;var r=pick(list),y=yr(r[0]),g=group(r[1]),w=[];
+ shuf(list.filter(function(z){return group(z[1])===g&&Math.abs(yr(z[0])-y)>=2})).forEach(function(z){if(w.length<3&&nameOf(z)!==nameOf(r)&&w.indexOf(nameOf(z))<0)w.push(nameOf(z))});if(w.length<3)return null;
+ return mk(g==="g"?"Which of these games came out in "+y+"?":g==="m"?"Which of these movies opened in "+y+"?":"Which of these arrived in "+y+"?",nameOf(r),w,"first")}
+function qMostExpensive(list){var c=list.filter(function(r){return cleanPrice(r[3])&&(r[1]==="hw"||r[1]==="pe"||r[1]==="sw"||group(r[1])==="g")});if(c.length<8)return null;
+ var g=group(pick(c)[1]),pool=shuf(c.filter(function(r){return group(r[1])===g})),o=[];
+ for(var i=0;i<pool.length&&o.length<4;i++){var v=pnum(pool[i][3]);if(o.every(function(x){var u=pnum(x[3]);return Math.max(u,v)/Math.max(1,Math.min(u,v))>=1.6}))o.push(pool[i])}
+ if(o.length<4)return null;var top=o.slice().sort(function(a,b){return pnum(b[3])-pnum(a[3])})[0];
+ return mk(g==="g"?"Which of these games had the highest launch price?":"Which of these cost the most at launch?",nameOf(top),o.filter(function(x){return x!==top}).map(nameOf),"price")}
+function qCategory(){var cats={};D.items.forEach(function(i){if(i.cat)(cats[i.cat]=cats[i.cat]||[]).push(i)});var ks=Object.keys(cats).filter(function(k){return cats[k].length>=2});if(ks.length<3)return null;
+ var k=pick(ks),right=pick(cats[k]),w=shuf(D.items.filter(function(i){return i.cat!==k})).slice(0,3).map(function(i){return i.name});if(w.length<3)return null;
+ return mk('Which of these does the museum file under "'+k+'"?',right.name,w,"item")}
 function qStatic(){var s=pick(STATIC);return mk(s[0],s[1],s[2],"dos")}
 function qGame(list){var PCP=["DOS","Windows","Mac","Linux","PC-98","FM Towns"],hasPc=function(x){return x.r.some(function(q){return PCP.indexOf(q[0])>=0})},c=list.filter(function(r){return D.gx&&D.gx[r[2]]&&D.gx[r[2]].c!=="low"&&group(r[1])==="g"&&hasPc(D.gx[r[2]])});if(c.length<3)return null;var r=pick(c),x=D.gx[r[2]],pl=[],i;x.r.forEach(function(q){if(pl.indexOf(q[0])<0)pl.push(q[0])});
  var all=[];Object.keys(D.gx).forEach(function(t){D.gx[t].r.forEach(function(q){if(all.indexOf(q[0])<0&&q[0]!=="Other")all.push(q[0])})});
@@ -129,18 +149,23 @@ function qGame(list){var PCP=["DOS","Windows","Mac","Linux","PC-98","FM Towns"],
 function nextQ(era,lvl){
  var wide=[4,6,9][lvl>=0?Math.min(lvl,2):0]+0,ok=D.tl.filter(function(r){return Math.abs(yr(r[0])-era)<=4}),okw=D.tl.filter(function(r){return Math.abs(yr(r[0])-era)<=9}),tries=0,q=null;
  while(!q&&tries++<40){var t=R();
-  if(t<.16)q=qStatic();
-  else if(t<.28&&D.items.length)q=qItem(pick(D.items));
-  else if(t<.38&&D.items.length)q=qItemX(pick(D.items));
-  else if(t<.42)q=qMuseum(ok);
-  else if(t<.52&&ok.length>8)q=qFirst(ok);
-  else if(t<.60)q=qPriceX(okw);
-  else if(t<.68)q=qMaker(okw);
-  else if(t<.73)q=qDev(okw);
-  else if(t<.80)q=qSpec(okw);
-  else if(t<.85)q=qSeries(okw);
-  else if(t<.88)q=qDetail(okw);
-  else if(t<.95)q=qGame(okw);
+  if(t<.10)q=qStatic();
+  else if(t<.19&&D.items.length)q=qItem(pick(D.items));
+  else if(t<.27&&D.items.length)q=qItemX(pick(D.items));
+  else if(t<.31)q=qMuseum(ok);
+  else if(t<.36&&ok.length>8)q=qFirst(ok);
+  else if(t<.41)q=qPriceX(okw);
+  else if(t<.46)q=qMaker(okw);
+  else if(t<.50)q=qDev(okw);
+  else if(t<.56)q=qSpec(okw);
+  else if(t<.60)q=qSeries(okw);
+  else if(t<.63)q=qDetail(okw);
+  else if(t<.70)q=qGame(okw);
+  else if(t<.75)q=qQuote();
+  else if(t<.81)q=qDescribe();
+  else if(t<.86)q=qWhichYear(okw);
+  else if(t<.90)q=qMostExpensive(okw);
+  else if(t<.93)q=qCategory();
   else if(ok.length)q=qYear(pick(ok),lvl);
   if(q&&S.used[q.q])q=null}
  if(!q){q=qStatic();var n=0;while(S.used[q.q]&&n++<40)q=qStatic()}
@@ -209,7 +234,7 @@ function moveGremlin(){var path=bfs(S.gr.room,S.room);if(path.length)S.gr.room=p
 function gremlin(){S.mode="q";var q=nextQ(room().era,2);S.q=q;S.door={gremlin:true};showQ("The Memory Gremlin leaps out. \"Answer me, or I take "+S.pen+"K!\"")}
 
 /* ---------- questions UI ---------- */
-function TOPIC(t){return t==="item"?"Museum items":t==="dos"?"DOS lore":"Timeline"}
+function TOPIC(t){return t==="item"?"Museum items":t==="dos"?"DOS lore":t==="quote"?"Famous quotes":"Timeline"}
 function report(){var r=S.rep||{},k=Object.keys(r);return k.length?'<p class="gnote">Trivia report: '+k.map(function(x){return esc(x)+" "+r[x][0]+"/"+r[x][1]}).join(" &middot; ")+'</p>':""}
 function showQ(pre){var box=host.querySelector("#gq"),o="";
  var q=S.q,hide=S.hidden||[];
@@ -254,7 +279,7 @@ function talk(){var rm=room(),n=S.npcs[rm.i];if(S.mode!=="play")return;S.acts.pu
  else say(pick(n==="matt"?MATT_LINES:TONY_LINES));hud()}
 /* ---------- run codes: every finished game can be replayed and checked ---------- */
 function fnv(t){var h=2166136261;for(var i=0;i<t.length;i++){h^=t.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}
-function dataHash(){var a=D.items.map(function(i){return i.id||i.name}).join("|"),t=D.tl;return fnv(a+"#"+t.length+"#"+(t[0]||[])[2]+"#"+(t[t.length-1]||[])[2]+"#"+Object.keys(D.x||{}).length+"#"+Object.keys(D.gx||{}).length).toString(36)}
+function dataHash(){var a="g2|"+D.items.map(function(i){return i.id||i.name}).join("|"),t=D.tl;return fnv(a+"#"+t.length+"#"+(t[0]||[])[2]+"#"+(t[t.length-1]||[])[2]+"#"+Object.keys(D.x||{}).length+"#"+Object.keys(D.gx||{}).length).toString(36)}
 function makeCode(){var body="CM1."+S.who.charAt(0)+"."+S.seed0.toString(36)+"."+S.acts.join("")+"."+S.mem+"."+dataHash();return body+"."+fnv(body+"|cm").toString(36)}
 function verify(code){var p=String(code||"").replace(/\s+/g,"").split(".");
  if(p.length!==7||p[0]!=="CM1")return{ok:false,why:"That is not a run code."};
@@ -286,22 +311,49 @@ function finish(html){var box=host.querySelector("#gq");box.hidden=false;var cn=
 function pat(a,b){var k=a+b;if(patCache[k])return patCache[k];var c=document.createElement("canvas");c.width=2;c.height=2;var x=c.getContext("2d");x.fillStyle=C[a];x.fillRect(0,0,2,2);x.fillStyle=C[b];x.fillRect(0,0,1,1);x.fillRect(1,1,1,1);return patCache[k]=cx.createPattern(c,"repeat")}
 function rect(x,X,y,w,h,c){x.fillStyle=C[c];x.fillRect(X,y,w,h)}
 function dith(x,X,y,w,h,a,b){x.fillStyle=pat(a,b);x.fillRect(X,y,w,h)}
-function person(x,px,py,o,step,dir){var lg=step%2?1:0;
- rect(x,px-3,py-19,6,6,o.skin);rect(x,px-3,py-20,6,2,o.hair);if(o.hat)rect(x,px-4,py-21,8,2,o.hat);rect(x,px-1+dir,py-17,1,1,"k");
- rect(x,px-4,py-13,8,8,o.shirt);rect(x,px-5,py-12,1,6,o.skin);rect(x,px+4,py-12,1,6,o.skin);
- rect(x,px-3,py-5,3,5-lg,o.pants);rect(x,px,py-5,3,4+lg,o.pants);rect(x,px-4,py-1,3,1,"k");rect(x,px,py-1,3,1,"k");
- if(o.extra)o.extra(x,px,py,dir)}
+/* ---- sprites: 12 wide, 27 tall, drawn facing right and mirrored for left. Letters map to EGA colors per character. ---- */
+var HEAD={
+ std:["....kkkk....","...khhhhk...","..khhhhhhk..","..khhhhhsk..","..khhhsksk..","..khhsssssk.","...ksssmsk..","....ksssk...",".....kss...."],
+ glass:["....kkkk....","...khhhhk...","..khhhhhhk..","..khhhhhsk..","..khhskksk..","..khhsssssk.","...kqqqmsk..","....kqqqk...",".....kqq...."],
+ spiky:["...h.h.h....","..hhhhhhh...","..khhhhhhk..","..khhhhhsk..","..khhhsksk..","..khhsssssk.","...ksssmsk..","....ksssk...",".....kss...."],
+ bun:["....hhhh....","...hhhhhk...","..khhhhhhk..","..khhhhhsk..","..khhskksk..","..khhsssssk.","...ksssmsk..","....ksssk...",".....kss...."]};
+var BODY=["...kttttk...","..kttttttk..","..kttttttk..","..kttttttk..","..kuttttuk..","..kbbbbbbk..","..kppppppk..","..kppppppk.."];
+function mr(x,px,top,dir,c,r,w,h,col){rect(x,dir>0?px-6+c:px-6+(12-c-w),top+r,w,h,col)}
+function spr(x,rows,px,top,dir,pal,r0){for(var r=0;r<rows.length;r++){var s=rows[r];for(var c=0;c<s.length;c++){var ch=s.charAt(c);if(ch===".")continue;var col=pal[ch];if(col)mr(x,px,top,dir,c,(r0||0)+r,1,1,col)}}}
+function palOf(o){return{k:"k",s:o.skin,h:o.hair,q:o.beard||o.hair,t:o.shirt,u:o.shade||o.shirt,b:o.belt||o.pants,p:o.pants,m:"r"}}
+function leg(x,px,top,dir,c,h,col,sy){mr(x,px,top,dir,c-1,17,5,h+1,"k");mr(x,px,top,dir,c,17,3,h,col);mr(x,px,top,dir,c-1,sy,6,2,"k");mr(x,px,top,dir,c,sy,4,1,"d")}
+function person(x,px,py,o,step,dir,walk){
+ var f=walk?step%4:0,bob=(walk&&(f===1||f===3))?1:0,top=py-27-bob,pal=palOf(o);
+ x.fillStyle="rgba(0,0,0,.35)";x.fillRect(px-7,py-1,14,2);
+ if(o.skirt){var sw=walk?(f%2?1:-1):0;
+  mr(x,px,top,dir,2,15,8,3,o.pants);mr(x,px,top,dir,1,18,10,4,o.pants);mr(x,px,top,dir,0,22,12,3,o.pants);mr(x,px,top,dir,0,25,12,1,o.shade||"d");
+  mr(x,px,top,dir,3+sw,26,3,1,"k");mr(x,px,top,dir,6-sw,26,3,1,"k")}
+ else{var off=walk?[[2,-2],[0,0],[-2,2],[0,0]][f]:[0,0],lb=[0,1,0,0][f],lf=[0,0,0,1][f];
+  // back leg first (darker), then front leg
+  leg(x,px,top,dir,3+off[1],8-lb,o.pshade||"d",25-lb);leg(x,px,top,dir,6+off[0],8-lf,o.pants,25-lf)}
+ spr(x,HEAD[o.head||"std"],px,top,dir,pal);spr(x,BODY.slice(0,o.skirt?5:8),px,top,dir,pal,9);
+ // near arm swings against the front leg
+ var sw2=[-1,0,1,0][f];mr(x,px,top,dir,4+sw2,10,3,5,o.shade||o.shirt);mr(x,px,top,dir,4+sw2,10,3,1,o.shirt);mr(x,px,top,dir,4+sw2*2,15,3,2,o.skin);
+ if(o.extra)o.extra(x,px,top,dir)}
 function chip(x,px,py,step,dir){var hop=Math.floor(Math.abs(Math.sin(Date.now()/260))*2),lg=step%2?1:0;py=py-hop+3;
+ x.fillStyle="rgba(0,0,0,.35)";x.fillRect(px-7,py+2,14,2);
  rect(x,px-5,py-22,10,12,"n");rect(x,px+1,py-25,4,3,"M");rect(x,px+2,py-24,1,1,"w");rect(x,px-4,py-20,8,9,"g");rect(x,px-4,py-20,8,1,"G");
  rect(x,px-3,py-17,2,3,"k");rect(x,px+1,py-17,2,3,"k");rect(x,px-3,py-17,1,1,"w");rect(x,px+1,py-17,1,1,"w");
  rect(x,px-4,py-14,2,1,"M");rect(x,px+2,py-14,2,1,"M");rect(x,px-1,py-13,2,1,"R");
  for(var i=0;i<4;i++)rect(x,px-3+i*2,py-11,1,1,"y");
  rect(x,px-6,py-16,2,1,"y");rect(x,px+4,py-16,2,1,"y");
  rect(x,px-3,py-10,1,6-lg,"y");rect(x,px+2,py-10,1,5+lg,"y");rect(x,px-4,py-4-lg,3,1,"g");rect(x,px+1,py-5+lg,3,1,"g")}
-var LOOK={matt:{skin:"R",hair:"w",shirt:"r",pants:"b",extra:function(x,px,py,dir){rect(x,px-4,py-8,8,3,"b");rect(x,px-1,py-13,2,1,"y");rect(x,px-3,py-15,6,1,"n");rect(x,px-3,py-21,6,2,"w");rect(x,dir>0?px-5:px+3,py-19,2,1,"w")}},
- tony:{skin:"R",hair:"l",shirt:"r",pants:"d",extra:function(x,px,py,dir){rect(x,px-3,py-15,6,2,"l");rect(x,px-3,py-13,6,2,"g");rect(x,px-4,py-21,8,2,"g");rect(x,px-5,py-24,2,4,"r");rect(x,px-1,py-26,2,6,"G");rect(x,px+3,py-24,2,4,"B");rect(x,px-5,py-25,1,1,"y");rect(x,px-1,py-27,1,1,"y");rect(x,px+4,py-25,1,1,"y")}},
- aunt:{skin:"R",hair:"w",shirt:"m",pants:"m"},zack:{skin:"R",hair:"y",shirt:"g",pants:"b",extra:function(x,px,py){rect(x,px-3,py-18,6,1,"k");rect(x,px-3,py-12,8,1,"G")}},
- gr:{skin:"G",hair:"g",shirt:"g",pants:"g",extra:function(x,px,py){rect(x,px-2,py-18,1,1,"R");rect(x,px+1,py-18,1,1,"R")}}};
+function drawGr(x,px,py,step,dir){var hop=Math.abs(Math.sin(Date.now()/150))*3|0;py-=hop;
+ x.fillStyle="rgba(0,0,0,.35)";x.fillRect(px-6,py+hop-1,12,2);
+ var P={".":0,k:"k",g:"g",G:"G",r:"R",y:"y",w:"w"},rows=["k..........k","kk........kk","kgk.kkkk.kgk",".kgkgGGGgkgk.","..kgGGGGGgk..","..kgrGGrGgk..",".kgGGGGGGGgk.",".kgGwkwkwGgk.","..kgGGGGGgk..","..kkgggggkk..",".kgkgGGGgkgk.","kyk.kkkkk.kyk","y.y..k.k..y.y","....kk.kk...."];
+ for(var r=0;r<rows.length;r++)for(var c=0;c<12;c++){var ch=rows[r].charAt(c);if(ch!=="."&&P[ch])mr(x,px,py-14,dir,c,r,1,1,P[ch])}}
+var LOOK={
+ matt:{head:"glass",skin:"R",hair:"w",beard:"l",shirt:"r",shade:"R",pants:"b",pshade:"B",belt:"n",extra:function(x,px,top,dir){mr(x,px,top,dir,6,12,2,2,"y");mr(x,px,top,dir,1,14,2,1,"d");mr(x,px,top,dir,8,13,1,4,"l");mr(x,px,top,dir,7,17,3,1,"y")}},
+ tony:{head:"std",skin:"R",hair:"l",shirt:"g",shade:"G",pants:"d",pshade:"k",belt:"n",extra:function(x,px,top,dir){
+  mr(x,px,top,dir,2,0,8,2,"g");mr(x,px,top,dir,3,-2,6,2,"G");mr(x,px,top,dir,0,-4,3,4,"r");mr(x,px,top,dir,9,-4,3,4,"B");mr(x,px,top,dir,5,-6,3,5,"G");
+  mr(x,px,top,dir,0,-5,1,1,"y");mr(x,px,top,dir,10,-5,1,1,"y");mr(x,px,top,dir,6,-7,1,1,"y");mr(x,px,top,dir,3,2,6,1,"y");mr(x,px,top,dir,4,12,4,1,"r")}},
+ aunt:{head:"bun",skin:"R",hair:"w",shirt:"m",shade:"M",pants:"m",skirt:1,extra:function(x,px,top,dir){mr(x,px,top,dir,4,13,4,1,"w");mr(x,px,top,dir,7,9,1,1,"w")}},
+ zack:{head:"spiky",skin:"R",hair:"y",shirt:"c",shade:"B",pants:"b",pshade:"B",belt:"b",extra:function(x,px,top,dir){mr(x,px,top,dir,3,13,6,1,"w");mr(x,px,top,dir,1,9,2,1,"c")}}};
 function icon(x,e,X,Y){if(!e)return;var t=(e.title||"").toLowerCase();
  if(e.kind==="goal"){rect(x,X-7,Y-10,14,14,"k");rect(x,X-6,Y-9,12,12,"B");rect(x,X-3,Y-9,6,5,"w");rect(x,X-2,Y-2,4,4,"k");rect(x,X-5,Y+1,10,1,"y");return}
  if(/disk|floppy|zip/.test(t)){rect(x,X-6,Y-10,12,12,"d");rect(x,X-4,Y-10,8,4,"l");rect(x,X-4,Y-4,8,5,"w")}
@@ -334,9 +386,9 @@ function draw(){var rm=room(),x=cx;x.imageSmoothingEnabled=false;
  var lit=S.lightning>0;if(lit){rm.decor.forEach(function(d){if(d.t==="window")drawDecor(x,d,rm,true)})}
  doorDraw(x,rm);
  if(rm.ex&&!rm.taken)icon(x,rm.ex,160,FLOOR+2);
- var sp=[];sp.push({y:S.py,f:function(){person(x,S.px|0,S.py|0,LOOK[S.who],S.step,S.dir)}});
- var n=S.npcs[rm.i];if(n&&n!=="aunt"||n==="aunt")sp.push({y:FLOOR+34,f:function(){if(n==="connie")chip(x,262,FLOOR+34,0,-1);else person(x,262,FLOOR+34,LOOK[n],0,-1)}});
- if(S.gr.room===rm.i&&S.mode!=="over")sp.push({y:FLOOR+30,f:function(){person(x,56,FLOOR+30,LOOK.gr,S.step,1)}});
+ var sp=[];sp.push({y:S.py,f:function(){person(x,S.px|0,S.py|0,LOOK[S.who],S.step,S.dir,S.walk)}});
+ var n=S.npcs[rm.i];if(n&&n!=="aunt"||n==="aunt")sp.push({y:FLOOR+34,f:function(){var fc=S.px<262?-1:1;if(n==="connie")chip(x,262,FLOOR+34,0,fc);else person(x,262,FLOOR+34,LOOK[n],0,fc,0)}});
+ if(S.gr.room===rm.i&&S.mode!=="over")sp.push({y:FLOOR+30,f:function(){drawGr(x,56,FLOOR+30,0,S.px>56?1:-1)}});
  sp.sort(function(a,b){return a.y-b.y}).forEach(function(s){s.f()});
  var dim=Math.max(0,(rm.depth||0)/(S.mx||1)*.0);if(S.fade>0){x.fillStyle="rgba(0,0,0,"+S.fade+")";x.fillRect(0,0,W,H)}
  if(S.flash>0){x.fillStyle=(S.flash%2?C.R:C.r);x.globalAlpha=.35;x.fillRect(0,0,W,H);x.globalAlpha=1}
@@ -345,7 +397,8 @@ function loop(t){raf=requestAnimationFrame(loop);if(!S||!cvs||!document.body.con
  var dt=Math.min(50,t-last)/16.7;last=t;
  if(S.mode==="play"){var dx=0,dy=0;
   if(keys.ArrowLeft||keys.a)dx=-1;if(keys.ArrowRight||keys.d)dx=1;if(keys.ArrowUp||keys.w)dy=-1;if(keys.ArrowDown||keys.s)dy=1;
-  if(dx||dy){var sp=1.5*dt;S.px+=dx*sp;S.py+=dy*sp*.7;if(dx)S.dir=dx;S.step=Math.floor(t/140);
+  S.walk=dx||dy?1:0;
+  if(dx||dy){var sp=1.5*dt;S.px+=dx*sp;S.py+=dy*sp*.7;if(dx)S.dir=dx;S.dist=(S.dist||0)+sp*(dx&&dy?.85:1);S.step=Math.floor(S.dist/4);
    var rm=room();
    if(S.px<5){if(rm.d.W&&S.py>FLOOR+8){S.px=5;tryDoor("W")}else S.px=5}
    if(S.px>W-5){if(rm.d.E&&S.py>FLOOR+8){S.px=W-5;tryDoor("E")}else S.px=W-5}
@@ -371,11 +424,11 @@ function shell(){host.innerHTML='<section class="gm"><div class="gbar"><b>MEMORY
 function select(){roomCache={};S=null;
  host.innerHTML='<section class="gm"><div class="gbar"><b>MEMORY MAZE</b><span>A Conventional Memory mystery</span></div><div class="gsel"><h2>Who are you tonight?</h2><p>The Master Boot Disk has vanished from the Conventional Memory Museum on a stormy night. The house is a maze of locked doors. Each lock wants a right answer, and every wrong one costs you memory. Find the Vault before midnight.</p>'
  +(typeof mascot==="function"?'<p class="gcon">'+mascot(52,"happy")+'<span>Connie: \u201cI live in the first 640K. If you find me in the house, I will share some.\u201d</span></p>':"")
- +'<div class="gchars"><button class="gchar" data-w="matt" type="button"><canvas width="60" height="90" data-p="matt"></canvas><b>Matt</b><span>The curator and collector. Hoards everything, knows where all of it is and exactly why it is broken. Starts with 3 hints.</span></button>'
- +'<button class="gchar" data-w="tony" type="button"><canvas width="60" height="90" data-p="tony"></canvas><b>Tony</b><span>The tinkerer in the jester hat. Steady hands, mostly: wrong answers cost only 16K. Starts with 1 hint.</span></button></div>'
- +'<h3 class="sub">Also in the house</h3><div class="gcast"><div><canvas width="60" height="90" data-p="connie"></canvas><b>Connie Ventional</b><span>A memory chip with a bow. Gives you 16K.</span></div><div><canvas width="60" height="90" data-p="aunt"></canvas><b>Auntie Autoexec</b><span>Points the way.</span></div><div><canvas width="60" height="90" data-p="zack"></canvas><b>Zack</b><span>Always in the party. Nobody knows why.</span></div></div><p class="gnote">Best run in this browser: <b id="gbest">none yet</b>. Look for Connie Ventional in the house. She gives out memory. Zack will also be there. We do not know why. <a href="#/">Back to the site</a></p><h3 class="sub">Check a run code</h3><p class="gnote">Paste a code from someone\'s win screen. The game replays every move and confirms the score, so scores cannot be faked.</p><textarea id="gvin" class="gcode" rows="2" aria-label="Run code"></textarea><p><button class="btn" id="gvgo" type="button">Check it</button> <span id="gvout" aria-live="polite"></span></p></div></section>';
+ +'<div class="gchars"><button class="gchar" data-w="matt" type="button"><canvas width="60" height="105" data-p="matt"></canvas><b>Matt</b><span>The curator and collector. Hoards everything, knows where all of it is and exactly why it is broken. Starts with 3 hints.</span></button>'
+ +'<button class="gchar" data-w="tony" type="button"><canvas width="60" height="105" data-p="tony"></canvas><b>Tony</b><span>The tinkerer in the jester hat. Steady hands, mostly: wrong answers cost only 16K. Starts with 1 hint.</span></button></div>'
+ +'<h3 class="sub">Also in the house</h3><div class="gcast"><div><canvas width="60" height="105" data-p="connie"></canvas><b>Connie Ventional</b><span>A memory chip with a bow. Gives you 16K.</span></div><div><canvas width="60" height="105" data-p="aunt"></canvas><b>Auntie Autoexec</b><span>Points the way.</span></div><div><canvas width="60" height="105" data-p="zack"></canvas><b>Zack</b><span>Always in the party. Nobody knows why.</span></div></div><p class="gnote">Best run in this browser: <b id="gbest">none yet</b>. Look for Connie Ventional in the house. She gives out memory. Zack will also be there. We do not know why. <a href="#/">Back to the site</a></p><h3 class="sub">Check a run code</h3><p class="gnote">Paste a code from someone\'s win screen. The game replays every move and confirms the score, so scores cannot be faked.</p><textarea id="gvin" class="gcode" rows="2" aria-label="Run code"></textarea><p><button class="btn" id="gvgo" type="button">Check it</button> <span id="gvout" aria-live="polite"></span></p></div></section>';
  var bb=bestFromStore();if(bb)host.querySelector("#gbest").textContent=bb.mem+"K free"+(bb.ok?" (checked)":" (unchecked: the museum has changed since)");
- host.querySelectorAll("canvas[data-p]").forEach(function(c){var x=c.getContext("2d");x.imageSmoothingEnabled=false;x.fillStyle=C.b;x.fillRect(0,0,60,90);x.save();x.scale(3,3);if(c.dataset.p==="connie")chip(x,10,28,0,1);else person(x,10,29,LOOK[c.dataset.p],0,1);x.restore()});
+ host.querySelectorAll("canvas[data-p]").forEach(function(c){var x=c.getContext("2d");x.imageSmoothingEnabled=false;x.fillStyle=C.k;x.fillRect(0,0,60,105);x.save();x.scale(3,3);if(c.dataset.p==="connie")chip(x,10,33,0,1);else person(x,10,33,LOOK[c.dataset.p],0,1,0);x.restore()});
  host.querySelector("#gvgo").onclick=function(){var r=verify(host.querySelector("#gvin").value),o=host.querySelector("#gvout");o.textContent=r.ok?"Valid. "+(r.who==="matt"?"Matt":"Tony")+" finished at "+clock(r.min)+" with "+r.mem+"K free and "+r.taken+" exhibits.":"Not valid. "+r.why};
  host.querySelectorAll(".gchar").forEach(function(b){b.onclick=function(){begin(b.dataset.w)}})}
 function begin(who){shell();keys={};newGame(who);last=performance.now();cancelAnimationFrame(raf);raf=requestAnimationFrame(loop)}
@@ -388,9 +441,11 @@ function onk(e){if(!S||!host||!document.body.contains(host))return;var k=e.key;
  if(lk==="l")look();else if(lk==="e")take();else if(lk==="t")talk();else if(lk==="h")say("Hints work on a question. You have "+S.hints+".");
  else if("ArrowLeft ArrowRight ArrowUp ArrowDown a d w s".indexOf(lk)>=0){keys[lk]=1;if(lk.indexOf("Arrow")===0)e.preventDefault()}}
 function onku(e){var k=e.key.length===1?e.key.toLowerCase():e.key;keys[k]=0}
-function mount(el,d){unmount();host=el;deps=d;D.items=(d.items||[]).filter(function(i){return i&&i.name});
+function setData(d){deps=d;D.items=(d.items||[]).filter(function(i){return i&&i.name});
  D.tl=(d.tl||[]).filter(function(r){return r[5]&&(String(r[3]||"").indexOf("*")<0||true)&&r[0]&&r[2]});
- D.x=d.tlx||{};D.gx=d.gx||{};D.byT={};D.tl.forEach(function(r){D.byT[r[2]]=r});patCache={};roomCache={};onKey=onk;onKeyUp=onku;window.addEventListener("keydown",onKey);window.addEventListener("keyup",onKeyUp);select()}
+ D.quotes=d.quotes||[];D.x=d.tlx||{};D.gx=d.gx||{};D.byT={};D.tl.forEach(function(r){D.byT[r[2]]=r});}
+function mount(el,d){unmount();host=el;setData(d);patCache={};roomCache={};onKey=onk;onKeyUp=onku;window.addEventListener("keydown",onKey);window.addEventListener("keyup",onKeyUp);select()}
 function unmount(){cancelAnimationFrame(raf);raf=0;if(onKey)window.removeEventListener("keydown",onKey);if(onKeyUp)window.removeEventListener("keyup",onKeyUp);onKey=onKeyUp=null;S=null;keys={};host=null;cvs=null}
-window.CMGame=Object.freeze({mount:mount,unmount:unmount});
+function probe(d,n){setData(d);var keep=S,out=[];S={used:{}};for(var i=0;i<n;i++){var q=nextQ(1981+ri(30),ri(3));out.push({q:q.q,o:q.o,c:q.c,tag:q.tag})}S=keep;return out}
+window.CMGame=Object.freeze({mount:mount,unmount:unmount,probe:probe});
 })();
