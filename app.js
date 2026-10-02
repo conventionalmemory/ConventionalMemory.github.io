@@ -1,7 +1,7 @@
 // ---- EDIT HERE: your socials and your catalog ----
 var HANDLE="ConventionalMemory";
 var EMAIL="ConventionalMemory@gmail.com"; // your contact address, used by the mailbox
-var SITE_URL="https://conventionalmemory.github.io/"; // the one place the public address lives (set to https://conventionalmemory.io/ once the custom domain is live)
+var SITE_URL="https://conventionalmemory.io/"; // the one place the public address lives (tools/set-domain.js changes it)
 var SITE_HOST=SITE_URL.replace(/^https?:\/\//,"").replace(/\/$/,"");
 try{if(window.top!==window.self){document.documentElement.style.display="none";window.top.location.replace(window.self.location.href)}}catch(e){document.documentElement.style.display="none"} // no clickjacking: a meta CSP cannot set frame-ancestors
 var REPO={owner:"conventionalmemory",repo:"ConventionalMemory.github.io",branch:"main"}; // where the Admin page saves changes

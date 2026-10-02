@@ -1,7 +1,7 @@
 // Builds feed.xml (RSS 2.0) from items.js: every changelog entry of every published item, newest first.
 // Run: node tools/build-feed.js   (the feed workflow runs it whenever items.js changes)
 const fs=require("fs"),path=require("path"),root=path.join(__dirname,"..");
-const BASE="https://conventionalmemory.github.io/";
+let BASE="https://conventionalmemory.github.io/";try{const c=require("fs").readFileSync(require("path").join(__dirname,"..","CNAME"),"utf8").trim();if(c)BASE="https://"+c+"/"}catch(e){}
 const s=fs.readFileSync(path.join(root,"items.js"),"utf8"),m=s.lastIndexOf("var ITEMS=");
 const items=JSON.parse(s.slice(m+10,s.lastIndexOf(";"))).filter(i=>!i.draft);
 const x=t=>String(t==null?"":t).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&apos;"}[c]));
