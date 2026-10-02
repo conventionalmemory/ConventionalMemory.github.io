@@ -3,6 +3,10 @@
 <url><loc>https://conventionalmemory.io/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
 <url><loc>https://conventionalmemory.io/history/</loc><priority>0.7</priority></url>
 <url><loc>https://conventionalmemory.io/museum/</loc><priority>0.7</priority></url>
+<url><loc>https://conventionalmemory.io/guides/</loc><priority>0.8</priority></url>
+<url><loc>https://conventionalmemory.io/guides/retro-pc-starter-kit/</loc><priority>0.8</priority></url>
+<url><loc>https://conventionalmemory.io/guides/fix-a-dead-vintage-computer/</loc><priority>0.8</priority></url>
+<url><loc>https://conventionalmemory.io/guides/play-old-pc-games-on-modern-gear/</loc><priority>0.8</priority></url>
 <url><loc>https://conventionalmemory.io/decade/1970s/</loc><priority>0.7</priority></url>
 <url><loc>https://conventionalmemory.io/decade/1980s/</loc><priority>0.7</priority></url>
 <url><loc>https://conventionalmemory.io/decade/1990s/</loc><priority>0.7</priority></url>

@@ -28,6 +28,7 @@ const gearCtx=get("gearCtx"),gearFinds=get("gearFinds"),gearParts=get("gearParts
 /* ---- helpers ---- */
 const H=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const slug=s=>String(s).normalize("NFKD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/&/g," and ").replace(/['\u2019]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,70).replace(/-+$/,"");
+const {GUIDES,TIERS,UPDATED:GUIDES_UPDATED}=require("./guides.js");
 const MON=["January","February","March","April","May","June","July","August","September","October","November","December"];
 const dlabel=d=>{const p=String(d).split("-");return p.length===3?MON[+p[1]-1]+" "+(+p[2])+", "+p[0]:p.length===2?MON[+p[1]-1]+" "+p[0]:p[0]};
 const yr=r=>+String(r[0]).slice(0,4);
@@ -64,10 +65,10 @@ function shell(o){const url=abs(o.path),desc=clip(o.desc,158),title=o.title;
  +'<meta name="twitter:card" content="summary_large_image">\n<meta name="twitter:title" content="'+H(title)+'">\n<meta name="twitter:description" content="'+H(desc)+'">\n<meta name="twitter:image" content="'+abs("/og.png")+'">\n'
  +'<meta name="theme-color" content="#000080">\n<link rel="icon" href="/icon.svg" type="image/svg+xml">\n<link rel="alternate" type="application/rss+xml" title="'+NAME+': recent changes" href="/feed.xml">\n'
  +'<link rel="preconnect" href="https://fonts.googleapis.com">\n<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n<link href="https://fonts.googleapis.com/css2?family=VT323&family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">\n<link rel="stylesheet" href="/style.css">\n'+ld+"\n</head>\n<body>\n"
- +'<div class="wrap sp">\n<header class="top"><a class="brand" href="/">C:\\&gt;ConventionalMemory.io</a><nav class="sp-nav" aria-label="Main"><a href="/#/">Museum</a> <a href="/history/">Timeline pages</a> <a href="/#/catalog">Catalog</a> <a href="/#/play">Games</a> <a href="/#/connie">Connie</a></nav></header>\n'
+ +'<div class="wrap sp">\n<header class="top"><a class="brand" href="/">C:\\&gt;ConventionalMemory.io</a><nav class="sp-nav" aria-label="Main"><a href="/#/">Museum</a> <a href="/history/">Timeline pages</a> <a href="/guides/">Guides</a> <a href="/#/catalog">Catalog</a> <a href="/#/play">Games</a> <a href="/#/connie">Connie</a></nav></header>\n'
  +(o.crumbs?'<nav class="sp-crumb" aria-label="Breadcrumb">'+o.crumbs.map((c,i)=>i<o.crumbs.length-1?'<a href="'+c[1]+'">'+H(c[0])+"</a>":"<span>"+H(c[0])+"</span>").join(" &rsaquo; ")+"</nav>\n":"")
  +"<main>\n"+o.body+"\n</main>\n"
- +'<footer class="sp-foot"><p><a href="/#/">Open the interactive museum</a> &middot; <a href="/history/">Timeline pages</a> &middot; <a href="/museum/">Exhibits</a> &middot; <a href="/#/disclosure">Affiliate disclosure</a> &middot; <a href="/feed.xml">RSS</a></p><p class="tn">'+NAME+' is a museum of vintage computers, a timeline and retro games, by Matt and Tony. Dates and descriptions are summarized from public sources; check the source named on each page.</p></footer>\n</div>\n</body>\n</html>\n'}
+ +'<footer class="sp-foot"><p><a href="/#/">Open the interactive museum</a> &middot; <a href="/history/">Timeline pages</a> &middot; <a href="/museum/">Exhibits</a> &middot; <a href="/guides/">Guides</a> &middot; <a href="/#/disclosure">Affiliate disclosure</a> &middot; <a href="/feed.xml">RSS</a></p><p class="tn">'+NAME+' is a museum of vintage computers, a timeline and retro games, by Matt and Tony. Dates and descriptions are summarized from public sources; check the source named on each page.</p></footer>\n</div>\n</body>\n</html>\n'}
 const crumbLD=c=>({"@context":"https://schema.org","@type":"BreadcrumbList",itemListElement:c.map((x,i)=>({"@type":"ListItem",position:i+1,name:x[0],item:abs(x[1])}))});
 const ORG={"@type":"Organization",name:NAME,url:abs("/"),logo:abs("/icon.svg")};
 
@@ -83,6 +84,9 @@ function shopBox(title,qs){if(!affOn())return"";const L=(u,t)=>u?'<a href="'+H(u
  const li=qs.map(q=>"<li>"+H(q[0])+": "+[L(affUrl("ebay",q[1]),"eBay"),L(affUrl("amazon",q[1]),"Amazon")].filter(Boolean).join(" &middot; ")+"</li>").join("");
  return'<section class="sp-find"><h2>'+H(title)+"</h2><ul>"+li+'</ul><p class="tn">'+H(AFF_SHORT)+' <a href="/#/disclosure">Disclosure</a></p></section>'}
 
+const GUIDE_BY=Object.fromEntries(GUIDES.map(g=>[g.slug,g]));
+function guideLine(kind){const a=kind==="hw"||kind==="pe"||kind==="item"?["fix-a-dead-vintage-computer","retro-pc-starter-kit"]:/^g[tnc]$/.test(kind)||kind==="sw"?["play-old-pc-games-on-modern-gear"]:[];
+ return a.length?'<p class="sp-guides"><b>Guides:</b> '+a.map(k=>'<a href="/guides/'+k+'/">'+H(GUIDE_BY[k].h1)+"</a>").join(" &middot; ")+"</p>":""}
 const out={};
 const put=(p,c)=>{out[p]=c};
 
@@ -103,7 +107,7 @@ sorted.forEach((e,idx)=>{const r=e.r,x=e.x,y=e.y,kind=KIND[e.k]||"Entry",sub=x.s
   +'<p><a class="btn pri" href="/#/timeline/'+y+'">See '+y+" in the interactive timeline</a></p>"
   +'<h2>Facts</h2><dl class="sp-facts">'+facts.map(f=>"<div><dt>"+H(f[0])+"</dt><dd>"+H(f[1])+"</dd></div>").join("")+"</dl>"
   +(srcHtml?'<p class="tn">'+srcHtml+"</p>":"")
-  +aff(e.name,x.maker,e.name)
+  +aff(e.name,x.maker,e.name)+guideLine(e.k)
   +(rel.length?"<h2>Related</h2><ul>"+rel.join("")+"</ul>":"")
   +(more.length?'<h2>Also in '+y+"</h2><ul class=\"sp-cols\">"+more.map(z=>'<li><a href="'+link(z)+'">'+H(z.name)+"</a> <small>"+H(KIND[z.k]||"")+"</small></li>").join("")+'</ul><p><a href="/year/'+y+'/">Everything from '+y+"</a></p>":"")
   +'<nav class="sp-pn" aria-label="Previous and next">'+(prev?'<a href="'+link(prev)+'">&larr; '+H(prev.name)+" ("+prev.y+")</a>":"<span></span>")+(next?'<a href="'+link(next)+'">'+H(next.name)+" ("+next.y+") &rarr;</a>":"")+"</nav></article>";
@@ -158,22 +162,48 @@ decades.forEach(d=>{const ys=years.filter(y=>decadeOf(y)===d),path_="/decade/"+d
   const body='<article class="sp-art"><p class="sp-kicker">'+H(it.cat||"Exhibit")+"</p><h1>"+H(it.name)+"</h1><p class=\"sp-lead\">"+H(clean(it.text))+'</p><p><a class="btn pri" href="/#/item/'+H(it.id)+'">See this exhibit in the museum</a></p>'
    +'<h2>Specifications</h2><dl class="sp-facts">'+facts.map(f=>"<div><dt>"+H(f[0])+"</dt><dd>"+H(f[1])+"</dd></div>").join("")+"</dl>"
    +(refs.length?"<h2>References</h2><ul>"+refs.map(r=>'<li><a href="'+H(r.u)+'" rel="nofollow noopener" target="_blank">'+H(r.t||r.u)+"</a></li>").join("")+"</ul>":"")
-   +aff(it.name,it.maker,it.id)+"</article>";
+   +aff(it.name,it.maker,it.id)+guideLine("item")+"</article>";
   put(path_+"index.html",shell({path:path_,title,desc,crumbs,body,ld:[{"@context":"https://schema.org","@type":"Article",headline:it.name,description:desc,about:{"@type":"Thing",name:it.name},image:abs("/og.png"),author:ORG,publisher:ORG,mainEntityOfPage:abs(path_),inLanguage:"en"},crumbLD(crumbs)]}))});
  const path_="/museum/",crumbs=[["Home","/"],["Exhibits","/museum/"]];
  put("/museum/index.html",shell({path:path_,title:"Vintage computer exhibits and specifications | "+NAME,desc:"The exhibits in the "+NAME+" collection, with specifications and history.",crumbs,og:"website",
   body:'<article class="sp-art"><h1>The exhibits</h1><p class="sp-lead">Machines from the museum floor, with specifications and history.</p><ul class="sp-cols">'+ITEMS.map(it=>'<li><a href="/museum/'+H(it.id)+'/">'+H(it.name)+"</a> <small>"+H(it.year||"")+"</small></li>").join("")+'</ul><p><a class="btn pri" href="/#/catalog">Browse the whole catalog</a></p></article>',
   ld:[crumbLD(crumbs)]}))}
 
+/* ---- buyer guides ---- */
+{const L=(u,t)=>u?'<a href="'+H(u)+'" target="_blank" rel="sponsored noopener noreferrer">'+t+"</a>":"";
+ const lk=p=>{const ls=[],am=p.a&&affUrl("amazon",p.a),eb=p.e&&affUrl("ebay",p.e);if(am)ls.push(L(am,"Check Amazon"));if(eb)ls.push(L(eb,p.a?"Check eBay":"Find one on eBay"));return ls.length&&affOn()?'<p class="sp-plinks">'+ls.join(" &middot; ")+"</p>":""};
+ const pick=p=>{if(p.tier)p=TIERS[p.tier];
+  if(p.tiers)return'<div class="sp-pick sp-tiered"><h3>'+H(p.n)+'</h3><p class="sp-ptag">'+H(p.t)+"</p><p>"+H(p.w)+'</p><div class="sp-tiers">'+p.tiers.map(x=>'<div class="sp-tier"><p class="sp-tl">'+H(x.l)+"</p><h4>"+H(x.n)+"</h4><p>"+H(x.w)+"</p>"+lk(x)+"</div>").join("")+"</div></div>";
+  return'<div class="sp-pick"><h3>'+H(p.n)+'</h3><p class="sp-ptag">'+H(p.t)+"</p><p>"+H(p.w)+"</p>"+(p.s?'<p class="sp-pskip"><b>Watch out:</b> '+H(p.s)+"</p>":"")+lk(p)+(p.g?'<p class="sp-plinks"><a href="/guides/'+p.g+'/">Read the repair guide</a></p>':"")+"</div>"};
+ GUIDES.forEach(g=>{const path_="/guides/"+g.slug+"/",crumbs=[["Home","/"],["Guides","/guides/"],[g.h1,path_]];
+  const tl=(g.links||[]).map(n=>{const e=byName.get(n);if(!e||!e.page){console.log("guide link skipped (no page):",n);return""}return'<li><a href="'+link(e)+'">'+H(e.name)+"</a> <small>"+e.y+"</small></li>"}).filter(Boolean);
+  const others=GUIDES.filter(o=>o!==g).map(o=>'<li><a href="/guides/'+o.slug+'/">'+H(o.h1)+"</a></li>");
+  const body='<article class="sp-art sp-guide"><p class="sp-kicker">Guide &middot; Updated '+H(dlabel(GUIDES_UPDATED))+"</p><h1>"+H(g.h1)+"</h1><p class=\"sp-lead\">"+H(g.lead)+"</p>"
+   +'<p class="sp-connie"><b>Connie says:</b> '+H(g.quip)+"</p>"
+   +'<p class="sp-how"><b>How we pick.</b> A product makes the list only when reviewers and long-time collectors keep recommending it, it does one job well and it will still work in five years. No filler, no mystery brands, and no paid placements. Not every item has been through our own bench, so we go by reputation. Prices change, so check the listing.</p>'
+   +'<p class="tn sp-disc">Some links on this page are affiliate links. If you buy through one, Conventional Memory earns a small commission at no cost to you. '+H(AFF_SHORT)+' <a href="/#/disclosure">Disclosure</a></p>'
+   +(g.paths?"<h2>Pick your path</h2><ol>"+g.paths.map(p=>"<li><b>"+H(p[0])+".</b> "+H(p[1])+"</li>").join("")+"</ol>":"")
+   +(g.safety?'<p class="sp-safe"><b>'+H(g.safety.split(":")[0])+".</b>"+H(g.safety.slice(g.safety.indexOf(":")+1))+"</p>":"")
+   +(g.steps?"<h2>Step by step</h2><ol class=\"sp-steps\">"+g.steps.map(t=>"<li><b>"+H(t[0])+".</b> "+H(t[1])+"</li>").join("")+"</ol>":"")
+   +g.sections.map(sec=>"<h2>"+H(sec.h)+"</h2><p>"+H(sec.intro)+"</p>"+sec.picks.map(pick).join("")).join("")
+   +"<h2>Skip these</h2><ul>"+g.skip.map(t=>"<li>"+H(t)+"</li>").join("")+"</ul>"
+   +(tl.length?"<h2>From the timeline</h2><ul class=\"sp-cols\">"+tl.join("")+"</ul>":"")
+   +"<h2>More guides</h2><ul>"+others.join("")+'</ul><p><a class="btn pri" href="/#/">Visit the museum</a></p></article>';
+  put(path_+"index.html",shell({path:path_,title:g.title+" | "+NAME,desc:g.desc,crumbs,body,ld:[{"@context":"https://schema.org","@type":"Article",headline:g.h1,description:g.desc,datePublished:GUIDES_UPDATED,dateModified:GUIDES_UPDATED,image:abs("/og.png"),author:ORG,publisher:ORG,mainEntityOfPage:abs(path_),inLanguage:"en"},crumbLD(crumbs)]}))});
+ const path_="/guides/",crumbs=[["Home","/"],["Guides","/guides/"]];
+ put("/guides/index.html",shell({path:path_,title:"Retro computing guides: buy, fix and play | "+NAME,desc:"Practical guides for vintage computers: the gear worth buying, how to fix a dead machine and how to play old PC games today.",crumbs,og:"website",
+  body:'<article class="sp-art"><h1>Guides</h1><p class="sp-lead">Practical, funny and honest. What to buy, how to fix it and how to play on it.</p><ul class="sp-guidelist">'+GUIDES.map(g=>'<li><a href="/guides/'+g.slug+'/">'+H(g.h1)+"</a><br><span>"+H(g.desc)+"</span></li>").join("")+'</ul><p class="tn">'+H(AFF_SHORT)+' <a href="/#/disclosure">Disclosure</a></p></article>',
+  ld:[{"@context":"https://schema.org","@type":"CollectionPage",name:"Retro computing guides",description:"Guides for buying, fixing and playing on vintage computers.",url:abs(path_),isPartOf:{"@type":"WebSite",name:NAME,url:abs("/")}},crumbLD(crumbs)]}))}
+
 /* ---- 404, robots, sitemap ---- */
 put("/404.html",shell({path:"/404.html",title:"Page not found | "+NAME,desc:"That page is not in the museum. Try the timeline or the catalog.",noindex:1,og:"website",
  body:'<article class="sp-art"><h1>Page not found</h1><p class="sp-lead">That page is not in the museum, or it moved.</p><p><a class="btn pri" href="/#/">Go to the museum</a> <a class="btn" href="/history/">Browse the timeline</a> <a class="btn" href="/#/search">Search</a></p></article>'}));
 put("/robots.txt","User-agent: *\nAllow: /\n\nSitemap: "+abs("/sitemap.xml")+"\n");
-{const urls=["/","/history/","/museum/"].concat(decades.map(d=>"/decade/"+d+"/"),years.map(y=>"/year/"+y+"/"),ITEMS.map(i=>"/museum/"+i.id+"/"),sorted.map(e=>"/history/"+e.slug+"/"));
- put("/sitemap.xml",'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+urls.map(u=>"<url><loc>"+H(abs(u))+"</loc>"+(u==="/"?"<changefreq>weekly</changefreq><priority>1.0</priority>":/^\/(history|museum|decade)\/$|^\/decade\//.test(u)?"<priority>0.7</priority>":"")+"</url>").join("\n")+"\n</urlset>\n")}
+{const urls=["/","/history/","/museum/","/guides/"].concat(GUIDES.map(g=>"/guides/"+g.slug+"/"),[]).concat(decades.map(d=>"/decade/"+d+"/"),years.map(y=>"/year/"+y+"/"),ITEMS.map(i=>"/museum/"+i.id+"/"),sorted.map(e=>"/history/"+e.slug+"/"));
+ put("/sitemap.xml",'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+urls.map(u=>"<url><loc>"+H(abs(u))+"</loc>"+(u==="/"?"<changefreq>weekly</changefreq><priority>1.0</priority>":/^\/guides\//.test(u)?"<priority>0.8</priority>":/^\/(history|museum|decade)\/$|^\/decade\//.test(u)?"<priority>0.7</priority>":"")+"</url>").join("\n")+"\n</urlset>\n")}
 
 /* ---- write or check ---- */
-const GEN=["history","year","decade","museum"],FILES=["sitemap.xml","robots.txt","404.html"];
+const GEN=["history","year","decade","museum","guides"],FILES=["sitemap.xml","robots.txt","404.html"];
 function walk(d){const o=[];if(!fs.existsSync(d))return o;fs.readdirSync(d,{withFileTypes:true}).forEach(e=>{const p=path.join(d,e.name);if(e.isDirectory())o.push(...walk(p));else o.push(p)});return o}
 if(CHECK){const want=Object.keys(out),have=new Set([].concat(...GEN.map(g=>walk(path.join(root,g))),FILES.map(f=>path.join(root,f)).filter(f=>fs.existsSync(f))).map(f=>"/"+path.relative(root,f).split(path.sep).join("/")));
  const miss=want.filter(p=>!have.has(p)),extra=[...have].filter(p=>!out[p]),diff=want.filter(p=>have.has(p)&&fs.readFileSync(path.join(root,p),"utf8")!==out[p]);

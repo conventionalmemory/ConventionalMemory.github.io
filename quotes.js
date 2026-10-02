@@ -342,7 +342,6 @@ var QUOTES=[
 ["The visitor counter was a small monument to hope.","Conventional Memory"],
 ["Web rings were social networks for people who preferred hyperlinks.","Conventional Memory"],
 ["Every guestbook was a small town square.","Conventional Memory"],
-["A hand-coded site is a handwritten letter.","Conventional Memory"],
 ["View Source was the original open-source movement.","Conventional Memory"],
 ["Best viewed at 800x600 was our era's way of saying please don't judge me.","Conventional Memory"],
 ["Museum content is just show-and-tell with better lighting.","Conventional Memory"],

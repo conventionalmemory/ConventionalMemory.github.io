@@ -24,6 +24,12 @@ ok(!bad.length,"every page has one h1, a good title, description and canonical, 
 ok([...titles.values()].every(n=>n===1),"page titles are unique");
 ok([...descs.values()].filter(n=>n>1).length<=Math.ceil(files.length*.02),"descriptions are almost all unique");
 ok(affPages>1000&&badAff===0,"affiliate links appear on "+affPages+" pages and every one is rel=sponsored");
+{const gs=["retro-pc-starter-kit","fix-a-dead-vintage-computer","play-old-pc-games-on-modern-gear"];
+ const pages=gs.map(g=>{try{return rd("guides/"+g+"/index.html")}catch(e){return""}});
+ ok(pages.every(Boolean)&&urls.some(u=>/\/guides\/$/.test(u))&&gs.every(g=>urls.some(u=>u.indexOf("/guides/"+g+"/")>=0)),"three guides and the guides index are in the sitemap");
+ ok(pages.every(p=>/affiliate links/i.test(p)&&/Amazon Associate/.test(p)&&(p.match(/class="sp-pick"/g)||[]).length>=5),"every guide shows the disclosure and at least five picks");
+ ok(pages.every(p=>(p.match(/<a [^>]*href="https:\/\/www\.(?:ebay|amazon)\.com[^>]*>/g)||[]).every(x=>/rel="sponsored noopener noreferrer"/.test(x))),"guide product links are all rel=sponsored");
+ }
 const idx=rd("index.html");
 ok(/<meta name="description" content="[^"]{80,}"/.test(idx)&&/rel="canonical"/.test(idx)&&/property="og:image"/.test(idx)&&/application\/ld\+json/.test(idx),"home page has description, canonical, social tags and structured data");
 {const host=base.replace(/^https:\/\//,"");let cn="";try{cn=rd("CNAME").trim()}catch(e){}
