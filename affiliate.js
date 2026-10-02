@@ -4,7 +4,7 @@
      AFF.ebay   : your eBay Partner Network campaign ID, a 10 digit number
    The links only search for the product by name; they never show or copy prices. Every box carries the
    disclosure that Amazon and eBay require, and every link is marked rel="sponsored". */
-var AFF={amazon:"",ebay:"",ebayCustom:"cm"};
+var AFF={amazon:"conventionalm-20",ebay:"",ebayCustom:"cm"};
 var AFF_NOTE="Affiliate links: if you buy through them, Conventional Memory earns a small commission at no cost to you. As an Amazon Associate I earn from qualifying purchases.";
 function affId(k){var v=String(AFF[k]||"").trim();if(k==="amazon")return/^[a-z0-9][a-z0-9-]{1,38}-\d{2}$/i.test(v)?v:"";if(k==="ebay")return/^\d{8,12}$/.test(v)?v:"";return""}
 function affOn(){return!!(affId("amazon")||affId("ebay"))}
