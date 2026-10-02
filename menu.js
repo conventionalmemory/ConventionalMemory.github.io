@@ -44,6 +44,8 @@ document.addEventListener("keydown",function(e){if(e.key==="Escape"&&!panel.hidd
 document.addEventListener("click",function(e){if(!panel.hidden&&!e.target.closest("#mnp")&&!e.target.closest("header.top nav"))hide()});
 document.addEventListener("focusin",function(e){if(!panel.hidden&&!e.target.closest("#mnp")&&!e.target.closest("header.top nav"))hide()});
 window.addEventListener("hashchange",function(){hide()});window.addEventListener("resize",function(){hide()});window.addEventListener("scroll",function(){if(!panel.hidden&&NARROW.matches)hide()},{passive:true});
+/* skip link: the address bar uses #/ routes, so jump with focus instead of a #anchor */
+var sk=document.querySelector("a.skip"),mn=document.getElementById("app");if(sk&&mn)sk.addEventListener("click",function(e){e.preventDefault();mn.setAttribute("tabindex","-1");mn.focus();mn.scrollIntoView()});
 /* the All pages button, top right */
 var ap=document.getElementById("allp");if(!ap){var u=hd.querySelector(".utl");if(u){ap=document.createElement("a");ap.id="allp";ap.className="btn";ap.href="#/more";ap.textContent="All pages";u.insertBefore(ap,u.firstChild)}}
 if(ap){var sp=document.createElement("span");sp.className="ap-i";sp.innerHTML=ic("folder",16);ap.insertBefore(sp,ap.firstChild);ap.insertBefore(document.createTextNode(" "),ap.childNodes[1])}

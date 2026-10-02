@@ -29,6 +29,11 @@ const srv=http.createServer((q,r)=>{let f=path.join(root,decodeURIComponent(q.ur
  await p.click('header.top nav a[data-s="read"]+.mn-c');await p.waitForTimeout(300);
  ok(await p.evaluate(()=>{const m=document.getElementById("mnp");return !m.hidden&&!!m.querySelector('a[href="#/books"]')&&!!m.querySelector('a[href="/guides/"]')}),"the arrow opens Read with Books and Guides");
  await p.keyboard.press("Escape");
+ // skip link, home tiles, tab bars, not-found suggestions
+ await go("");ok(await p.evaluate(()=>{const a=document.querySelector("a.skip");a.click();return location.hash==="#/"&&document.activeElement===document.getElementById("app")}),"the skip link moves focus to the page without changing the address");
+ ok(await p.evaluate(()=>[...document.querySelectorAll(".hm-tiles a")].map(a=>a.getAttribute("href")).filter(h=>/#\/hub\/(read|explore)|#\/more|#\/play|#\/connie/.test(h)).length>=5),"the home page tiles lead to Explore, Read, Play, Connie and All pages");
+ for(const [r,t] of [["books","Repair journal"],["jukebox","Demo kiosk"],["cards","The Funnies"],["prizes","Prize counter"],["higher","Mystery Photo"]]){await go(r);ok(await p.evaluate(t=>[...document.querySelectorAll(".tbar a")].some(a=>a.textContent===t),t),"the #/"+r+" page has a tab bar that includes "+t)}
+ await go("kioks");ok(await p.evaluate(()=>/kiosk/i.test(document.getElementById("app").innerText)&&!!document.querySelector('#app a[href="#/kiosk"]')),"a misspelled address (kioks) suggests the Demo kiosk");
  // All pages
  await p.click("#allp");await p.waitForTimeout(600);
  ok(await p.evaluate(()=>location.hash==="#/more"&&/All pages/.test(document.getElementById("app").innerText)),"the All pages button opens the finder");

@@ -142,7 +142,7 @@ function home(){
  var decs=[1970,1980,1990,2000,2010,2020].map(function(d){return '<a class="btn" href="#/timeline/'+(d===1970?1977:d+5)+'">'+d+'s</a>'}).join(" ")+' <a class="btn" href="#/timeline/'+(1978+Math.floor(Math.random()*34))+'">Random year</a>';
  app.innerHTML='<div class="mq"><span>'+esc(MQ[Math.floor(Math.random()*MQ.length)])+'</span></div>'
  +'<div class="hero"><h1>Conventional Memory</h1><p>Vintage computers and the people who kept them running. Watch the videos, then browse every item in the museum, with photos, audio and the story behind each one.</p>'+socials()+'<p><a href="#/start">New here? Start here.</a> &middot; <a href="#/about">Meet the crew</a> &middot; <a href="#/connie">Meet Connie</a></p></div>'
- +'<nav class="hm-tiles" aria-label="Start here">'+tile("#/catalog",n+" items","Browse the catalog","pri","tower")+tile("#/timeline",TL.length+"+ entries","Explore the timeline","","clock")+tile("#/scale","0K to 640K","How items are rated","","star")+tile("#/wanted","Wanted","Help me find these","","gem")+tile("#/random","Surprise me","Load a random item","","dice")+tile("#/daily","Daily Dig","Three questions a day","","bulb")+tile("#/play","Play","Daily puzzles, rigs, prizes","","ghost")+tile("#/connie","Connie","Meet the mascot and her family","","heart")+tile("#/hub/explore","Explore","Tours, eras, the zoom timeline","","globe")+tile("#/follow","Follow","Videos on 4 platforms","","tv")+'</nav>'
+ +'<nav class="hm-tiles" aria-label="Start here">'+tile("#/catalog",n+" items","Browse the catalog","pri","tower")+tile("#/timeline",TL.length+"+ entries","Explore the timeline","","clock")+tile("#/scale","0K to 640K","How items are rated","","star")+tile("#/wanted","Wanted","Help me find these","","gem")+tile("#/random","Surprise me","Load a random item","","dice")+tile("#/daily","Daily Dig","Three questions a day","","bulb")+tile("#/play","Play","Daily puzzles, rigs, prizes","","ghost")+tile("#/connie","Connie","Meet the mascot and her family","","heart")+tile("#/hub/explore","Explore","Tours, eras, the zoom timeline","","globe")+tile("#/hub/read","Read","Books, guides and manuals","","book")+tile("#/follow","Follow","Videos on 4 platforms","","tv")+tile("#/more","All pages","Every feature, with a finder","","folder")+'</nav>'
  +paHtml()
  +connieCorner()
  +daily()
@@ -580,7 +580,7 @@ var ROUTE_NAMES=["about","catalog","timeline","search","explore","play","theater
 function lev(a,b){var m=[],i,j;for(i=0;i<=a.length;i++)m[i]=[i];for(j=0;j<=b.length;j++)m[0][j]=j;for(i=1;i<=a.length;i++)for(j=1;j<=b.length;j++)m[i][j]=Math.min(m[i-1][j]+1,m[i][j-1]+1,m[i-1][j-1]+(a[i-1]===b[j-1]?0:1));return m[a.length][b.length]}
 function notFound(path){var w=String(path).split("/")[0].toLowerCase(),best=ROUTE_NAMES.map(function(n){return[lev(w,n),n]}).sort(function(a,b){return a[0]-b[0]}).slice(0,3).filter(function(x){return x[0]<=Math.max(2,Math.floor(w.length/2))});
  app.innerHTML='<section class="nf"><h2>Page not found</h2><div class="nf-m">'+(typeof mascot==="function"?mascot(96,"oops",undefined,true):"")+'</div><p>There is no page called <b>'+esc(path)+'</b> in the museum. The link may be old or mistyped.</p>'
-  +(best.length?'<p>Did you mean: '+best.map(function(x){return'<a class="btn" href="#/'+x[1]+'">'+x[1]+'</a>'}).join(" ")+'</p>':"")
+  +(function(){var fp=typeof findPages==="function"?findPages(String(path).replace(/[\/_-]+/g," "),4):[],h=fp.map(function(x){return'<a class="btn" href="'+esc(x.h)+'">'+esc(x.t)+'</a>'}).join(" ");if(!h&&best.length)h=best.map(function(x){return'<a class="btn" href="#/'+x[1]+'">'+x[1]+'</a>'}).join(" ");return h?'<p>Did you mean: '+h+'</p>':""})()+'<p><a class="btn" href="#/more">See all pages</a></p>'
   +'<form id="nfs" class="tools"><input id="nfq" type="search" placeholder="Search the museum" aria-label="Search the museum"> <button class="btn pri" type="submit">Search</button></form><p><a class="btn" href="#/">Home</a> <a class="btn" href="#/catalog">Catalog</a> <a class="btn" href="#/more">Site map</a></p></section>';
  document.getElementById("nfs").onsubmit=function(e){e.preventDefault();var q=document.getElementById("nfq").value.trim();location.hash=q?"#/search/"+encodeURIComponent(q):"#/search"}}
 /* Wish list store (browser only). Entries: {k:"i:<item id>" | "t:<timeline name>" | "c:<free text>", n:note, max:price, t:time}. */
@@ -608,9 +608,13 @@ function paWire(){var t=document.getElementById("pat"),b=document.getElementById
 /* Related pages share one tab bar, so five stats pages, three daily games, and so on read as one place each. */
 var TABSETS=[["Museum stats",[["stats","The numbers"],["report","Collection report"],["mem","Memory map"],["scale","640K scale"]]],
  ["Daily",[["daily","Daily Dig"],["bingo","Retro Bingo"]]],
- ["What's new",[["changes","Recent changes"],["journal","Repair journal"],["follow","Follow"]]],
+ ["Read",[["books","Bookshelf"],["manuals","Manuals"],["quotes","Quotes"],["journal","Repair journal"]]],
+ ["What's new",[["changes","Recent changes"],["follow","Follow"]]],
  ["A year",[["era","Era mode"],["walk","Guided walk"],["day","One day"],["zoom","Zoom"]]],
  ["Machines",[["runs","Does it run?"],["rigs","Dream rig"],["bench","Benchmarks"],["build","Rig challenge"]]],
+ ["Games",[["play","All games"],["higher","Higher or Lower"],["sort","Timeline Sort"],["mystery","Mystery Photo"],["hangman","Hangman"]]],
+ ["Watch and listen",[["theater","Theater"],["jukebox","Jukebox"],["kiosk","Demo kiosk"],["animations","Animations"]]],
+ ["Meet Connie",[["connie","Her story"],["funnies","The Funnies"],["memman","Memory Manager"],["closet","Closet"],["cards","Trading Cards"],["stickers","Stickers"],["animations","Animations"],["prizes","Prize counter"],["shop","The Mall"]]],
  ["My lists",[["mine","My collection"],["wish","Wish list"],["backup","Back up"]]]];
 function tabBar(h){var set=TABSETS.filter(function(s){return s[1].some(function(t){return t[0]===h[0]})})[0];if(!set||app.querySelector(".tbar"))return;
  var yr=/^\d{4}/.test(h[1]||"")?h[1].slice(0,4):"";

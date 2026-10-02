@@ -13,7 +13,7 @@ window.CMConnie=(function(){
  function $(q,r){return(r||app).querySelector(q)}function $$(q,r){return Array.prototype.slice.call((r||app).querySelectorAll(q))}
  function sv(o){var s=CMCast.state();for(var k in o)s[k]=o[k];try{localStorage.setItem("cm-connie",JSON.stringify(s))}catch(e){}}
  function link(h,t,c){return'<a class="btn'+(c?" "+c:"")+'" href="'+h+'">'+t+"</a>"}
- function nav(cur){var t=[["connie","Her story"],["funnies","The Funnies"],["memman","Memory Manager"],["closet","Closet"],["cards","Trading Cards"],["stickers","Stickers"],["animations","Animations"],["shop","The Mall"]];return'<nav class="tbar noprint" aria-label="Meet Connie">'+t.map(function(x){return'<a href="#/'+x[0]+'"'+(x[0]===cur?' aria-current="page"':"")+">"+x[1]+"</a>"}).join("")+"</nav>"}
+ function nav(cur){var t=[["connie","Her story"],["funnies","The Funnies"],["memman","Memory Manager"],["closet","Closet"],["cards","Trading Cards"],["stickers","Stickers"],["animations","Animations"],["prizes","Prize counter"],["shop","The Mall"]];return'<nav class="tbar noprint" aria-label="Meet Connie">'+t.map(function(x){return'<a href="#/'+x[0]+'"'+(x[0]===cur?' aria-current="page"':"")+">"+x[1]+"</a>"}).join("")+"</nav>"}
 
  /* ------------------------------------------------------------------ her story */
  var FACTS=[["Full name","Connie Ventional (Connie for short)"],["Born","August 12, 1981, the same day IBM announced the Personal Computer"],["Height","640K, give or take the BIOS"],["Lives","The first 640K, which everybody calls conventional memory"],["Favorite food","Free kilobytes"],["Pet peeve","\u201cNot enough memory\u201d"],["Hobby","Loading things high"],["Shoes","Gold contacts, naturally"],["Motto","There is always room for one more, if you load it high."]];
