@@ -115,7 +115,7 @@ var MASCOT_QUIPS=["Hi! I am Connie Ventional. I live in the first 640K.","Have y
 function mascot(size,mood,skin){size=size||64;if(!skin){try{skin=(JSON.parse(localStorage.getItem("cm-prizes")||"{}")).skin}catch(e){}}var c=MEMSKINS[skin]||MEMSKINS.green,b=c[0],d=c[1],p=c[2],hr=c[3],bw=c[4],o='<svg class="mascot mc-'+(mood||"happy")+'" viewBox="0 0 24 24" width="'+size+'" height="'+size+'" shape-rendering="crispEdges" role="img" aria-label="'+MASCOT_NAME+', the museum mascot" xmlns="http://www.w3.org/2000/svg"><g class="mc-all">';
  function r(x,y,w,h,f){o+='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" fill="'+f+'"/>'}
  /* legs: little chip pins with shoes */
- o+='<g class="mc-legl">';r(8,19,1,3,p);r(7,22,3,1,d);o+='</g><g class="mc-legr">';r(15,19,1,3,p);r(14,22,3,1,d);o+='</g>';r(11,19,2,2,p);
+ o+='<g class="mc-legl">';r(8,19,1,3,p);r(7,22,3,1,d);o+='</g><g class="mc-legr">';r(15,19,1,3,p);r(14,22,3,1,d);o+='</g>';
  /* arms: pins on the sides with a hand each */
  o+='<g class="mc-arml">';r(2,11,3,1,p);r(1,10,2,3,"#ffe0c0");o+='</g><g class="mc-armr">';r(19,11,3,1,p);r(21,10,2,3,"#ffe0c0");o+='</g>';
  /* hair behind the chip */
@@ -124,9 +124,7 @@ function mascot(size,mood,skin){size=size||64;if(!skin){try{skin=(JSON.parse(loc
  r(4,6,16,13,d);r(5,7,14,11,b);r(5,7,14,1,"#ffffff44");
  /* gold edge contacts along the bottom, like a memory module */
  for(var k=6;k<=17;k+=2)r(k,18,1,1,p);
- /* the pin-1 notch, as a tiny beauty mark */
- r(17,9,1,1,d);
- /* fringe */
+  /* fringe */
  r(3,3,18,4,hr);r(4,2,16,1,hr);r(5,7,5,1,hr);r(14,7,5,1,hr);r(9,7,6,1,hr);r(3,7,2,6,hr);r(19,7,2,6,hr);
  r(5,3,3,1,"#ffffff44");
  /* bow */
@@ -135,14 +133,14 @@ function mascot(size,mood,skin){size=size||64;if(!skin){try{skin=(JSON.parse(loc
  o+='<g class="mc-eyes">';
  if(mood==="oops"){r(6,10,3,1,"#fff");r(7,9,1,3,"#fff");r(14,10,3,1,"#fff");r(15,9,1,3,"#fff");r(6,10,3,1,"#000");r(14,10,3,1,"#000")}
  else if(mood==="wow"){r(6,9,3,4,"#fff");r(14,9,3,4,"#fff");r(7,10,1,2,"#000");r(15,10,1,2,"#000");r(5,8,1,1,d);r(17,8,1,1,d)}
- else{r(6,10,3,3,"#fff");r(14,10,3,3,"#fff");r(7,11,2,2,"#000");r(15,11,2,2,"#000");r(7,11,1,1,"#fff");r(15,11,1,1,"#fff");r(5,9,1,1,d);r(6,9,1,1,d);r(16,9,1,1,d);r(17,9,1,1,d)}
+ else{r(6,10,3,4,"#1a1030");r(14,10,3,4,"#1a1030");r(6,10,2,2,"#fff");r(14,10,2,2,"#fff");r(8,12,1,1,"#9fe8ff");r(16,12,1,1,"#9fe8ff");r(8,13,1,1,"#4a3a7a");r(16,13,1,1,"#4a3a7a");r(5,10,1,1,d);r(17,10,1,1,d)}
  o+='</g>';
  /* blush and lipstick */
- r(5,14,2,1,"#ff8aa8");r(16,14,2,1,"#ff8aa8");
+ r(5,14,2,1,"#ff8aa8");r(16,14,2,1,"#ff8aa8");r(5,15,1,1,"#ff8aa855");r(17,15,1,1,"#ff8aa855");
  o+='<g class="mc-mouth">';
  if(mood==="oops"){r(9,16,5,1,"#c0143c");r(8,15,1,1,"#c0143c");r(14,15,1,1,"#c0143c")}
  else if(mood==="wow"){r(10,15,3,3,"#c0143c");r(11,16,1,1,"#40000e")}
- else{r(8,15,1,1,"#c0143c");r(9,16,5,1,"#c0143c");r(14,15,1,1,"#c0143c")}
+ else{r(10,15,1,1,"#c0143c");r(11,16,2,1,"#c0143c");r(13,15,1,1,"#c0143c")}
  o+='</g></g>';return o+'</svg>'}
 /* Click or tap Connie and she says a line, then hops. */
 function mascotSay(svg){var old=document.getElementById("mcsay");if(old)old.remove();var t=MASCOT_QUIPS[Math.floor(Math.random()*MASCOT_QUIPS.length)],b=document.createElement("div");b.id="mcsay";b.className="mc-bubble";b.setAttribute("role","status");b.textContent=t;document.body.appendChild(b);
