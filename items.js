@@ -318,7 +318,9 @@ var ITEMS=[
   "cat": "MIDI",
   "year": 1987,
   "maker": "Roland",
-  "photos": [],
+  "photos": [
+   "https://commons.wikimedia.org/wiki/Special:FilePath/Roland_MT-32.jpg?width=800"
+  ],
   "videos": [],
   "audio": [],
   "sample": true,
@@ -340,7 +342,15 @@ var ITEMS=[
   ],
   "verify": "Exact release month (existing rel 1987-06 not confirmed on the page); headphone jack exists only on later revision, so the existing 'headphones' connector may not apply to the original.",
   "conf": "med",
-  "draft": true
+  "draft": true,
+  "photoMeta": {
+   "https://commons.wikimedia.org/wiki/Special:FilePath/Roland_MT-32.jpg?width=800": {
+    "k": "stock",
+    "c": "Photo: Wikimedia Commons contributor, free license (see the file page)",
+    "p": "https://commons.wikimedia.org/wiki/File:Roland_MT-32.jpg"
+   }
+  },
+  "credit": "Photo: Wikimedia Commons contributor, free license (see the file page)"
  },
  {
   "id": "ibm-dos-2-1-books-and-disks",
@@ -1242,7 +1252,18 @@ var ITEMS=[
   ],
   "verify": "Exact model number of the unit sold (F1061A is the 2MB model per HP Computer Museum; Wikipedia also lists F1216A).",
   "conf": "high",
-  "draft": true
+  "draft": true,
+  "photos": [
+   "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/17/Hewlett_Packard_200LX_Palmtop_PC_-_2.jpg/960px-Hewlett_Packard_200LX_Palmtop_PC_-_2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+  ],
+  "photoMeta": {
+   "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/17/Hewlett_Packard_200LX_Palmtop_PC_-_2.jpg/960px-Hewlett_Packard_200LX_Palmtop_PC_-_2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail": {
+    "k": "stock",
+    "c": "Photo: Felix Winkelnkemper, CC BY-SA 4.0, via Wikimedia Commons",
+    "p": "https://commons.wikimedia.org/wiki/File:Hewlett_Packard_200LX_Palmtop_PC_-_2.jpg"
+   }
+  },
+  "credit": "Photo: Felix Winkelnkemper, CC BY-SA 4.0, via Wikimedia Commons"
  },
  {
   "id": "toshiba-libretto-l5-japanese",
@@ -2043,7 +2064,18 @@ var ITEMS=[
   ],
   "verify": "US MSRP not found",
   "conf": "high",
-  "draft": true
+  "draft": true,
+  "photos": [
+   "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f3/SierraOnLine-Box-ColonelsBequest.jpg/960px-SierraOnLine-Box-ColonelsBequest.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+  ],
+  "photoMeta": {
+   "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f3/SierraOnLine-Box-ColonelsBequest.jpg/960px-SierraOnLine-Box-ColonelsBequest.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail": {
+    "k": "stock",
+    "c": "Photo: Sierra On-Line, CC BY-SA 4.0, via Wikimedia",
+    "p": "https://en.wikipedia.org/wiki/File:SierraOnLine-Box-ColonelsBequest.jpg"
+   }
+  },
+  "credit": "Photo: Sierra On-Line, CC BY-SA 4.0, via Wikimedia"
  },
  {
   "id": "pc-gamer-november-1997-with-cd-rom",
@@ -2490,7 +2522,18 @@ var ITEMS=[
     "src": "shopgoodwill",
     "cond": "Per order email title: winning-bid email title only: Red Nintendo Game Boy Pocket MGB-001."
    }
-  ]
+  ],
+  "photos": [
+   "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a8/Game-Boy-Pocket-Black.jpg/960px-Game-Boy-Pocket-Black.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+  ],
+  "photoMeta": {
+   "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a8/Game-Boy-Pocket-Black.jpg/960px-Game-Boy-Pocket-Black.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail": {
+    "k": "stock",
+    "c": "Photo: Evan-Amos, Public domain, via Wikimedia Commons",
+    "p": "https://commons.wikimedia.org/wiki/File:Game-Boy-Pocket-Black.jpg"
+   }
+  },
+  "credit": "Photo: Evan-Amos, Public domain, via Wikimedia Commons"
  },
  {
   "id": "nintendo-wii-console-rvl-001-with-remote-and-nunchuk",
@@ -2535,7 +2578,18 @@ var ITEMS=[
     "src": "shopgoodwill",
     "cond": "Per order email title: winning-bid email title only: White Nintendo Wii console with cables and sensor bar."
    }
-  ]
+  ],
+  "photos": [
+   "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/83/Wii_console.png/960px-Wii_console.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+  ],
+  "photoMeta": {
+   "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/83/Wii_console.png/960px-Wii_console.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail": {
+    "k": "stock",
+    "c": "Photo: Wii-console.jpg: Evan-Amos derivative work: Alphathon™ (talk, CC BY-SA 3.0, via Wikimedia Commons",
+    "p": "https://commons.wikimedia.org/wiki/File:Wii_console.png"
+   }
+  },
+  "credit": "Photo: Wii-console.jpg: Evan-Amos derivative work: Alphathon™ (talk, CC BY-SA 3.0, via Wikimedia Commons"
  },
  {
   "id": "nes-mike-tyson-s-punch-out-game-only",
@@ -2769,7 +2823,18 @@ var ITEMS=[
    }
   ],
   "verify": "Listing does not say if it is AGS-001 (frontlit) or later AGS-101 (backlit); rel is NA launch of the AGS-001.",
-  "conf": "high"
+  "conf": "high",
+  "photos": [
+   "https://commons.wikimedia.org/wiki/Special:FilePath/Game-Boy-Advance-SP-Mk1-Blue.jpg?width=800"
+  ],
+  "photoMeta": {
+   "https://commons.wikimedia.org/wiki/Special:FilePath/Game-Boy-Advance-SP-Mk1-Blue.jpg?width=800": {
+    "k": "stock",
+    "c": "Photo: Wikimedia Commons contributor, free license (see the file page)",
+    "p": "https://commons.wikimedia.org/wiki/File:Game-Boy-Advance-SP-Mk1-Blue.jpg"
+   }
+  },
+  "credit": "Photo: Wikimedia Commons contributor, free license (see the file page)"
  },
  {
   "id": "bulk-lot-of-nintendo-handheld-console-cases",
