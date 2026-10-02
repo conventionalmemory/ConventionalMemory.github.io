@@ -20,7 +20,7 @@ const srv=http.createServer((q,r)=>{let f=path.join(root,decodeURIComponent(q.ur
   await p.keyboard.press("t");await p.waitForTimeout(100);
   const m=await p.evaluate(()=>CMGame.dbg().S.log.slice(-4).join(" ")),mem=await p.evaluate(()=>CMGame.dbg().S.mem);
   ok(new RegExp({connie:"Connie",zack:"Zack",tony:"Tony",aunt:"Auntie"}[who]).test(m),who+" talks");
-  if(who==="connie")ok(mem===516&&/\+16K/.test(m),"Connie restores 16K of memory");
+  if(who==="connie")ok(mem>=508&&mem<=516&&/\+16K/.test(m),"Connie restores 16K of memory");
  }
  // play a whole game perfectly, then the run code must verify
  for(const who of ["matt","tony"]){

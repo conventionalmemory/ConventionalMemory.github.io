@@ -25,7 +25,7 @@ const srv=http.createServer((q,r)=>{let f=path.join(root,decodeURIComponent(q.ur
  await p.goto(base+"timeline/9999");await p.waitForTimeout(500);ok(/not on it/.test(await p.evaluate(()=>document.getElementById("app").innerText)),"out-of-range year says so");
  // zoom stays light
  await p.goto(base+"zoom");await p.waitForTimeout(800);const nz=await p.evaluate(()=>document.querySelectorAll(".zn").length);ok(nz>10&&nz<700,"zoom timeline renders only nearby entries ("+nz+" buttons)");
- await p.click(".zn");await p.waitForTimeout(200);ok(await p.evaluate(()=>/Timeline page/.test(document.getElementById("zpop").innerText)),"zoom entry opens its details");
+ await p.click(".zn");await p.waitForFunction(()=>/Timeline page/.test((document.getElementById("zpop")||{innerText:""}).innerText),null,{timeout:3000}).catch(()=>{});ok(await p.evaluate(()=>/Timeline page/.test(document.getElementById("zpop").innerText)),"zoom entry opens its details");
  // era mode leaves admin alone
  await p.goto(base+"era/1995");await p.waitForTimeout(400);await p.click("#eraon");await p.waitForTimeout(300);await p.goto(base+"admin");await p.waitForTimeout(500);
  ok(await p.evaluate(()=>document.documentElement.getAttribute("data-theme")!=="ega"),"era mode does not restyle Admin");

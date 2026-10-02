@@ -329,3 +329,8 @@ Until then, labels printed with the github.io address keep working: GitHub redir
 - **Photo review**: the admin audit page lists the 240 photos added by the fact check so you can tick the wrong ones and remove them in one commit.
 - **Repair journal** (`#/journal`) with before/after sliders, plus new **symptom** and **fix** fields on changelog lines (`| symptom=no power | fix=new battery`), shown as a small case file.
 - **Connie helps**: "What is this?" explains the page you are on, "Surprise tour" takes you to a random item or timeline entry.
+
+### Round 26: affiliate links (off until you add your IDs)
+- `affiliate.js` holds two settings, `AFF.amazon` (Associates tracking ID, like `yourname-20`) and `AFF.ebay` (eBay Partner Network campaign ID, a 10 digit number). While they are empty the site has no affiliate links and no disclosure line. Bad IDs also switch it off.
+- With IDs set, item pages (Links tab), timeline hardware, software and game entries, and the Wanted page's accessories list get "Search eBay" and "Search Amazon" links for that product. They are plain search links (no prices copied), marked `rel="sponsored noopener noreferrer"`, with the required disclosure under each box and in the footer.
+- Amazon links look like `amazon.com/s?k=<name>&tag=<your-tag>`. eBay links look like `ebay.com/sch/i.html?_nkw=<name>&campid=<your-id>&customid=cm&toolid=10001&mkevt=1&mkcid=1&mkrid=711-53200-19255-0`. Check one against the link generator in your EPN account after you sign up, because eBay has changed its link format before.
