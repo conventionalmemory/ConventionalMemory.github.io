@@ -232,7 +232,7 @@ Photo Safari (items and timeline) now searches Wikipedia article images and Comm
 ### Round 16: stuck states, merges, and the toy aisle
 **Stuck states fixed**
 - Catalog filters now live in the address (`#/catalog?c=Laptops&d=1990&v=shelf`). The Catalog menu link (plain `#/catalog`) always returns to the front, Back from an item restores the filters, and a filtered address can be bookmarked or shared. `#/catalog/cat/<Dept>` still works.
-- Unknown addresses show a real not-found page (with Mem, a "did you mean", and a search box). A year outside the timeline says so instead of silently showing another year.
+- Unknown addresses show a real not-found page (with Connie, a "did you mean", and a search box). A year outside the timeline says so instead of silently showing another year.
 - Era mode no longer restyles Admin. The Zoom timeline renders only the entries near the screen (about 500 buttons instead of 2,000+). Community forms have a **Copy it instead** button for people without a GitHub account.
 
 **Merged and tidied**
@@ -244,14 +244,14 @@ Photo Safari (items and timeline) now searches Wikipedia article images and Comm
 - All styles moved out of `index.html` into `style.css` (same cascade order). Admin buttons are grouped into Edit, Review and Tools.
 
 **The toy aisle**
-- **Mem**, an original pixel mascot (`mascot()` in icons.js), in four colors.
+- **Connie Ventional**, the mascot: a pixel memory module with gold contacts, a pink bow and a very good attitude (`mascot()` in icons.js), in four colors. She bobs, blinks, waves and taps her feet; click or tap her for a quip and a hop. Animations stop with reduced motion or Motion: off.
 - **Wish list** (`#/wish`, `toys.js`): one live list over circled items, "Want" marks in My collection and the swap-meet list. Max price per item, eBay and ShopGoodwill search links, a printable Dear Santa letter, and a share link (`#/wish/<code>`, up to 40 items, no server). In the mail-order catalog every entry has a red **Circle it** button; item pages have **Add to wish list**.
 - **Demo kiosk** (`#/kiosk`): attract mode with slides, "PRESS START", a big-button menu on any key or touch, back to the slides after 45 idle seconds, Escape to leave, optional full screen.
-- **Prize counter** (`#/prizes`): every 3 XP is a ticket plus one free ticket a day. Spend them on stickers, new Mem colors, and the Golden Floppy.
+- **Prize counter** (`#/prizes`): every 3 XP is a ticket plus one free ticket a day. Spend them on stickers, new Connie colors, and the Golden Floppy.
 - **Store intercom** on the home page ("Attention shoppers..." lines built from the day's exhibit, counts, and the timeline) and **aisle numbers** on the catalog department signs.
 - Tests: `tests/nav.js` (stuck states, not-found, zoom) and `tests/toys.js` (wish, backup, prizes, kiosk, tab bars). `tests/widths.js` accepts `WROUTES=a,b,c` to check a few pages.
 
-- **Makers** (`#/maker`, `#/maker/IBM`): every company with exhibits and timeline hardware; item pages link to their maker. **Manuals and references** (`#/manuals`) collects every link by exhibit. **Print labels** (`#/labels`): a sheet of item-number labels with the web address as text (no QR codes yet). **Start here** (`#/start`): six "how do you feel" paths with Mem.
+- **Makers** (`#/maker`, `#/maker/IBM`): every company with exhibits and timeline hardware; item pages link to their maker. **Manuals and references** (`#/manuals`) collects every link by exhibit. **Print labels** (`#/labels`): a sheet of item-number labels with the web address as text (no QR codes yet). **Start here** (`#/start`): six "how do you feel" paths with Connie.
 
 **Not done**: one shared streak across the three daily games (they share a tab bar but keep their own streaks), unified search results, visitor photo submissions, walk audio, a full accessibility pass.
 
@@ -287,3 +287,8 @@ Until then, labels printed with the github.io address keep working: GitHub redir
 - **About 630 rows show an asterisk.** Web checking was cut short when the research tool was rate-limited partway through, so roughly 360 of the new rows are from general knowledge and have no source. Those, and about 270 older ones, stay marked as unconfirmed until someone checks them (the `source` field is empty). Confirmed rows say "Wikipedia" or give the page.
 - **Fixes to existing rows**: 47 launch prices added, 18 dates made more precise or corrected (US launch dates for the 3DS, Vita, DSi, Balance Board and others), 136 older dates confirmed, 11 duplicate rows merged (links redirected), five rows moved to the right kind (HX-20, MX-80, ST-506, Virtual Boy, MDA), MS-DOS 3.0 and 3.30 dates and the Amiga 3000 date and price corrected.
 - **Still to do**: rerun the research for the asterisked rows when web access allows; a few dates the agents flagged as conflicting between sources were left alone (Populous, Civilization, Atari Lynx, Atari 5200, Pitfall!, Starcade, Crystal Caves, Heroes of Might and Magic II).
+
+### Round 20: Connie Ventional
+- The mascot is now **Connie Ventional**, a female memory module (hair, bow, gold edge contacts, little pin legs and shoes). Same four colors from the prize counter, plus three moods: happy, wow (the not-found page) and oops (the missing-label page).
+- **Animated everywhere she shows up**: Start here, About, not-found, missing label, the prize counter and shelf, the demo kiosk, and the PA announcement bar. She bobs, blinks, waves three times on arrival (and again on hover), taps her feet, and hops with a quip when clicked or tapped. Animation turns off with the system reduced-motion setting or the Motion: off button.
+- **About page, round two**: the save file chapters now run in release order with years (adventure games 1989 to 1995, Final Fantasy 1990, Warcraft and StarCraft 1994 to 1998, Diablo II 2000), and gained a Star Wars MUDs chapter (engineering empires and game economies), the Zack in every adventure party, and who did what (Tony drove, Matt mapped). Workstation gets four new hotspots for the real objects: PC Gamer, pager, Tamagotchi and Blockbuster card.

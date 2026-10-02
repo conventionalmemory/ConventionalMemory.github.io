@@ -823,3 +823,32 @@ code{overflow-wrap:anywhere}.lb-card code,.scn code,#app code{white-space:normal
 .ab-save{font-family:"VT323",monospace;font-size:20px;background:#000;color:#55ffff;padding:6px 12px;border:2px solid var(--line)}.ab-save b{color:#ffff55}
 .ab-log{list-style:none;margin:10px 0 16px;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}.ab-log li{border:2px solid var(--ink);background:var(--panel);padding:10px 14px;box-shadow:4px 4px 0 var(--line)}.ab-log h4{margin:2px 0 4px;font:400 26px/1.1 "VT323",monospace}.ab-log p{margin:0;font-size:15px}.ab-ch{display:inline-block;background:var(--ink);color:var(--bg);font:16px "VT323",monospace;padding:0 8px;letter-spacing:.06em;text-transform:uppercase}
 .ab-ach{max-width:520px}@media(max-width:600px){.ab-hot{border-width:1px}.ab-say{font-size:19px}}
+
+/* Connie Ventional, the mascot: all her animation is here. */
+.mascot{overflow:visible;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.mascot *{transform-box:fill-box}
+.mascot .mc-all{transform-origin:50% 100%;animation:mc-bob 2.4s steps(1,end) infinite}
+.mascot .mc-eyes{transform-origin:50% 50%;animation:mc-blink 4.6s steps(1,end) infinite}
+.mascot .mc-bow{transform-origin:50% 100%;animation:mc-bow 3.2s steps(2,end) infinite}
+.mascot .mc-armr{transform-origin:0% 50%;animation:mc-wave .5s steps(2,end) 3 .4s}
+.mascot .mc-arml{transform-origin:100% 50%}
+.mascot .mc-legl,.mascot .mc-legr{transform-origin:50% 0%}
+.mascot:hover .mc-armr,.mascot:focus .mc-armr{animation:mc-wave .45s steps(2,end) infinite}
+.mascot:hover .mc-legl{animation:mc-tap .5s steps(1,end) infinite}.mascot:hover .mc-legr{animation:mc-tap .5s steps(1,end) .25s infinite}
+.mascot.mc-hop .mc-all{animation:mc-hop .7s steps(6,end) 1}
+.mascot.mc-hop .mc-mouth{transform-origin:50% 0%;animation:mc-talk .18s steps(1,end) 4}
+.mascot.mc-oops .mc-all{animation:mc-shake 1.6s steps(1,end) infinite}.mascot.mc-oops .mc-armr{animation:none}
+.mascot.mc-wow .mc-all{animation:mc-jump 1.6s steps(1,end) infinite}
+@keyframes mc-bob{0%{transform:translateY(0)}50%{transform:translateY(-.5px)}100%{transform:translateY(0)}}
+@keyframes mc-blink{0%,92%{transform:scaleY(1)}94%,97%{transform:scaleY(.1)}100%{transform:scaleY(1)}}
+@keyframes mc-bow{0%,100%{transform:rotate(0)}50%{transform:rotate(-8deg)}}
+@keyframes mc-wave{0%{transform:rotate(0)}50%{transform:rotate(-35deg)}100%{transform:rotate(0)}}
+@keyframes mc-tap{0%{transform:translateY(0)}50%{transform:translateY(-.8px)}}
+@keyframes mc-hop{0%{transform:translateY(0)}20%{transform:translateY(-3px)}50%{transform:translateY(-4px)}80%{transform:translateY(-1px)}100%{transform:translateY(0)}}
+@keyframes mc-talk{0%{transform:scaleY(1)}50%{transform:scaleY(1.7)}}
+@keyframes mc-shake{0%,80%,100%{transform:translateX(0)}84%{transform:translateX(-.8px)}88%{transform:translateX(.8px)}92%{transform:translateX(-.8px)}96%{transform:translateX(.8px)}}
+@keyframes mc-jump{0%,70%,100%{transform:translateY(0)}78%{transform:translateY(-2.5px)}90%{transform:translateY(0)}}
+@media (prefers-reduced-motion:reduce){.mascot *{animation:none!important}}
+html[data-motion="off"] .mascot *{animation:none!important}
+.mc-bubble{position:absolute;z-index:300;box-sizing:border-box;padding:8px 12px;background:#ffff99;color:#000;border:2px solid #000;font:16px/1.3 "IBM Plex Sans",system-ui,sans-serif;box-shadow:3px 3px 0 rgba(0,0,0,.5);pointer-events:none;width:max-content}
+.pa-m .mascot{width:44px;height:44px}

@@ -41,7 +41,7 @@ const srv=http.createServer((q,r)=>{let f=path.join(root,decodeURIComponent(q.ur
  await go("kiosk/go");await p.waitForTimeout(300);await p.keyboard.press("x");await p.click('.k-menu a[href="#/daily"]');await p.waitForTimeout(500);ok(await p.evaluate(()=>!document.getElementById("kiosk")&&/#\/daily/.test(location.hash)),"kiosk menu button navigates and closes the kiosk");
  // tab bars + mascot
  for(const [r,t] of [["stats","Collection report"],["daily","Retro Bingo"],["changes","Follow"],["runs","Dream rig"],["mine","Wish list"]]){await go(r);ok(await p.evaluate(t=>[...document.querySelectorAll(".tbar a")].some(a=>a.textContent===t),t),"tab bar on #/"+r+" links to "+t)}
- await go("nowhere");ok(await p.evaluate(()=>!!document.querySelector(".nf svg.mascot")),"not-found page shows Mem");
+ await go("nowhere");ok(await p.evaluate(()=>!!document.querySelector(".nf svg.mascot")),"not-found page shows Connie");
  // makers, manuals, labels, start here
  await go("maker");ok(/Makers/.test(await txt())&&await p.evaluate(()=>document.querySelectorAll("#app .chips a").length)>3,"makers index lists companies");
  await p.click("#app .chips a.pri");await p.waitForTimeout(400);ok(await p.evaluate(()=>/#\/maker\//.test(location.hash)&&document.querySelectorAll("#app .card").length>0),"a maker page shows its exhibits");
@@ -51,7 +51,8 @@ const srv=http.createServer((q,r)=>{let f=path.join(root,decodeURIComponent(q.ur
  await p.click('[data-talk="matt"]');ok(await p.evaluate(()=>document.querySelector('[data-k="matt"] .ab-q').textContent.length>10),"Press START makes a character talk");
  await p.click('[data-room="2"]');ok(await p.evaluate(()=>/LOOK AT LAVA LAMP/.test(document.getElementById("abs").innerText)),"workstation hotspots answer like a text adventure");
  ok(await p.evaluate(()=>document.querySelectorAll("[data-room]").length>=10&&document.querySelectorAll(".ab-log li").length>=5&&[...document.querySelectorAll(".ab-rp img")].every(i=>i.complete&&i.naturalWidth>500)),"about page has the workstation picture, hotspots and the save file chapters");
+ await p.evaluate(()=>{});ok(await p.evaluate(()=>{var t=document.querySelector(".ab").innerText;return /Zack/.test(t)&&/Star Wars MUDs/.test(t)&&/Torin/.test(t)&&[...document.querySelectorAll("[data-room]")].some(b=>/PC Gamer/i.test(b.getAttribute("aria-label")||b.title||b.textContent))}),"about mentions Zack, the MUDs, favorites and the real objects");
  ok(await p.evaluate(()=>!!document.querySelector('footer a[href="#/about"]')&&!!document.querySelector('footer a[href="#/start"]')),"footer links to About and Start here");
- await go("start");ok(await p.evaluate(()=>document.querySelectorAll(".st .hm-tile").length===6&&!!document.querySelector(".st svg.mascot")),"start here page has six paths and Mem");
+ await go("start");ok(await p.evaluate(()=>document.querySelectorAll(".st .hm-tile").length===6&&!!document.querySelector(".st svg.mascot")),"start here page has six paths and Connie");
  ok(!errs.length,"no script errors"+(errs.length?": "+errs.join("|"):""));
  await b.close();srv.close();if(fails.length){console.error("FAILED "+fails.length);process.exit(1)}console.log("OK toys")})();
