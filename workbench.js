@@ -13,5 +13,5 @@ function workbench(){var l=wbVisible(),st=typeof isStaff==="function"&&isStaff()
  if(!l.length)h+='<div class="empty">'+(typeof conW==="function"?conW("The bench is being photographed. The tool list lands soon.","oops"):"The tool list lands soon.")+'</div>';
  var groups=[];l.forEach(function(t){var g=t.g||"Tools";if(groups.indexOf(g)<0)groups.push(g)});
  groups.forEach(function(g){h+='<h3 class="sub">'+esc(g)+'</h3><div class="wbl">'+l.filter(function(t){return(t.g||"Tools")===g}).map(function(t){var k=wbLink(t);return'<div class="wbt'+(t.draft?" wbd":"")+'"><b>'+esc(t.n)+(t.draft?' <span class="tag">draft</span>':"")+'</b><p>'+esc(t.why||"")+'</p>'+(k?'<small class="wbk">Find it: '+k+'</small>':"")+'</div>'}).join("")+'</div>'});
- if(typeof affOn==="function"&&affOn())h+='<p class="tn">'+esc(AFF_NOTE)+'</p>';
+ if(typeof affOn==="function"&&affOn())h+='<p class="affd tn">'+esc(AFF_SHORT)+' <a href="#/disclosure">Details</a></p>';
  app.innerHTML=h+'</section>'}
