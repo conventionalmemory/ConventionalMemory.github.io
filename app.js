@@ -1,6 +1,6 @@
 // ---- EDIT HERE: your socials and your catalog ----
 var HANDLE="ConventionalMemory";
-var EMAIL="conventionalmemory@gmail.com"; // your contact address, used by the mailbox
+var EMAIL="ConventionalMemory@gmail.com"; // your contact address, used by the mailbox
 var SITE_URL="https://conventionalmemory.github.io/"; // the one place the public address lives (set to https://conventionalmemory.io/ once the custom domain is live)
 var SITE_HOST=SITE_URL.replace(/^https?:\/\//,"").replace(/\/$/,"");
 try{if(window.top!==window.self){document.documentElement.style.display="none";window.top.location.replace(window.self.location.href)}}catch(e){document.documentElement.style.display="none"} // no clickjacking: a meta CSP cannot set frame-ancestors
@@ -387,9 +387,9 @@ function check(){var seen={},rows=[],ok=0;
  document.getElementById("cc").onclick=function(){try{navigator.clipboard.writeText(csv)}catch(e){ta.select();document.execCommand("copy")}}}
 function contactHtml(){var m="mailto:"+EMAIL;
  return '<section><h2>Contact</h2><div class="ctc"><a class="mbox" href="'+m+'?subject=Hello%20from%20ConventionalMemory.io" aria-label="Email me"><svg viewBox="0 0 160 130" role="img" aria-hidden="true"><rect x="70" y="80" width="10" height="50" fill="#7a5a3a" stroke="#333" stroke-width="2"/><path d="M30 82V58Q30 30 75 30Q120 30 120 58V82Z" fill="#c9ced6" stroke="#333" stroke-width="3"/><rect x="42" y="62" width="66" height="8" fill="#333"/><g class="flag"><rect x="118" y="30" width="5" height="36" fill="#d22" stroke="#333" stroke-width="1.5"/><rect x="123" y="30" width="18" height="12" fill="#d22" stroke="#333" stroke-width="1.5"/></g></svg></a>'
- +'<div><p><b>You&rsquo;ve got mail!</b> Click the mailbox to write to me.</p><p><a href="'+m+'?subject=Guestbook">Sign my guestbook</a></p></div></div></section>'}
+ +'<div><p><b>You&rsquo;ve got mail!</b> Click the mailbox to write to me, or email <a href="'+m+'">'+EMAIL+'</a>.</p><p><a href="'+m+'?subject=Guestbook">Sign my guestbook</a></p></div></div></section>'}
 function nowHtml(){NOW=NOW.filter(function(n){return!n.sample});return NOW.length?'<section><h2>Now working on</h2>'+NOW.map(function(n){return '<div class="src"><b>'+(n.item?'<a href="#/item/'+esc(n.item)+'">'+esc(n.t)+'</a>':esc(n.t))+'</b><p>'+esc(n.note)+'</p></div>'}).join("")+'</section>':""}
-function wanted(){var h='<section><h2>Wanted</h2><p>Items I am hunting for. If you have one to sell or donate, message me on any of my socials.</p>'+socials();
+function wanted(){var h='<section><h2>Wanted</h2><p>Items I am hunting for. If you have one to sell or donate, message me on any of my socials, or email <a href="mailto:'+EMAIL+'?subject=Wanted%20item">'+EMAIL+'</a>.</p>'+socials();
  h+=WANTED.filter(function(w){return!w.sample}).length?WANTED.filter(function(w){return!w.sample}).map(function(w){return '<div class="src"><b>'+esc(w.name)+'</b><span class="tag">'+esc(w.priority||"Wanted")+'</span>'+'<br>'+esc(w.type||"")+'<p>'+esc(w.note||"")+'</p></div>'}).join(""):'<div class="empty">Nothing on the list right now.</div>';
  var we=wantedExtras();if(we.length)h+='<h3 class="sub">Accessories and parts</h3>'+we.map(function(w){return '<div class="ex"><span class="tag want">'+w.s+'</span> '+esc(w.x.n)+' for <a href="#/item/'+esc(w.it.id)+'">'+esc(w.it.name)+'</a>'+(w.x.note?' <small class="tn">'+esc(w.x.note)+'</small>':'')+(typeof affInline==="function"?affInline(w.x.n+" "+w.it.name,""):"")+'</div>'}).join("")+(typeof affOn==="function"&&affOn()?'<p class="affd tn">'+esc(AFF_SHORT)+' <a href="#/disclosure">Details</a></p>':"");
  h+=tradeForm();app.innerHTML=h+'</section>';wireTrade()}

@@ -23,5 +23,5 @@ function affBox(name,maker,label){if(!affOn())return"";var q=affQ(name,maker),a=
 function affInline(name,maker){if(!affOn())return"";var q=affQ(name,maker),a=affUrl("amazon",q),e=affUrl("ebay",q);if(!q)return"";
  return' <small class="affi">Find it: '+(e?'<a href="'+esc(e)+'" target="_blank" rel="sponsored noopener noreferrer">eBay</a>':"")+(e&&a?" &middot; ":"")+(a?'<a href="'+esc(a)+'" target="_blank" rel="sponsored noopener noreferrer">Amazon</a>':"")+'</small>'}
 function affFooter(){var l=document.getElementById("affl");if(l)l.hidden=!affOn()}
-function disclosurePage(){app.innerHTML='<section><h2>Affiliate disclosure</h2><p>'+esc(AFF_NOTE)+'</p><p class="tn">Questions? Message Matt on any of the socials listed on the About page.</p></section>'}
+function disclosurePage(){app.innerHTML='<section><h2>Affiliate disclosure</h2><p>'+esc(AFF_NOTE)+'</p><p>Questions about a link? Email <a href="mailto:'+EMAIL+'">'+EMAIL+'</a>.</p><p class="tn">Questions? Message Matt on any of the socials listed on the About page.</p></section>'}
 document.addEventListener("DOMContentLoaded",affFooter);if(document.readyState!=="loading")affFooter();

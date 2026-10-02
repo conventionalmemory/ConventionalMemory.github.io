@@ -378,3 +378,10 @@ Until then, labels printed with the github.io address keep working: GitHub redir
 - Timeline Sort (play.js `sortSet`) now retries until it has a full set of five, narrowing the year gap only as a last resort. It used to hand out four cards about half the time in round 1.
 - Every catalog item and every timeline entry (hardware, peripherals, software, games, consoles, movies, events, legal, world events) now shows both an eBay and an Amazon search link, several where they apply (`gear.js` `gearFinds`, `tl.js`). The links are searches, never single listings, so they don't die when a listing ends. `tests/affiliate.js` checks all of them. The eBay campaign ID (5339217307) is set in `affiliate.js`.
 - `node tools/build-affiliate-csv.js` writes `affiliate/ebay-bulk-upload-NNN.csv` (one link per line, no header, 1500 per file, for the EPN bulk link tool) and `affiliate/ebay-search-map.csv` (each search with its entry and the plain and tracked links). Uploading is optional: the site already builds tracked links itself.
+
+### Round 33: Connie everywhere, the guys' wardrobe, sticker sheets, contact email
+- Connie has her own tab in the main nav, a corner on the home page, footer links, command-line shortcuts (`connie`, `funnies`, `closet`, `memman`, `stickers`) and a Start here tile.
+- Uncle Conrad and Raymond have a wardrobe (`OUTFITS` in `cast.js`): 14 outfits, board colors and accessories, picked in the closet (saved in `cm-connie.fam`) and shown on the family page and sticker page.
+- `node tools/build-sticker-sheets.js` writes the print-ready 8.5x11 in, 300 dpi PNG sheets to `stickers/` (Connie's looks, the family, two museum-joke sheets, Big Connie, Conrad, Raymond, Big Uncle and Dad). They are linked from the Stickers page.
+- House rule for jokes: Matt and Tony are brothers. Use "Player 2" or "brother", never anything that reads as a couple.
+- Contact email (ConventionalMemory@gmail.com) is `EMAIL` in `app.js`; it shows in the footer, mailbox, About, Wanted and the affiliate disclosure.
