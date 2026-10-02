@@ -1116,3 +1116,6 @@ html[data-motion=on] .ml-st:hover .ml-sg{animation:ml-flick .5s steps(2,end) 2}@
 .sh-bar{flex-wrap:wrap;overflow:visible;white-space:normal;border-bottom:0;gap:6px}.sh-bar a{border:2px solid var(--line)!important;border-bottom:2px solid var(--line)!important}
 .ml-dir ol a{display:grid}.ml-dir .ml-cart a{display:inline-block}
 .sh-bar a{padding:3px 8px!important;font-size:14px}
+/* top menu: nine tabs no longer fit one row on a desktop, so wrap them instead of showing a scroll bar; phones swipe with the bar hidden */
+@media(min-width:561px){header.top nav{flex-wrap:wrap;overflow:visible;justify-content:center}header.top nav a{padding:1px 8px;flex:0 0 auto}}
+header.top nav{scrollbar-width:none}header.top nav::-webkit-scrollbar{display:none}
