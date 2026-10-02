@@ -40,9 +40,19 @@ const srv=http.createServer((q,r)=>{let f=path.join(root,decodeURIComponent(q.ur
  const rd=await p.evaluate(()=>CMCast.readCount());ok(rd===22,"scrolling through every strip and gag counts them read ("+rd+")");
  ok((await p.evaluate(()=>CMCast.unlocked("look","aerobics").ok)),"reading them all unlocks the Aerobics look");
  // the closet
- await go("closet");ok(/Connie.s closet/.test(await txt())&&await p.evaluate(()=>document.querySelectorAll(".cl-t").length)===12+9+7,"closet shows 12 looks, 9 accessories and 7 colors");
+ await go("closet");ok(/Connie.s closet/.test(await txt())&&await p.evaluate(()=>document.querySelectorAll(".cl-t").length)===12+9+7+2*(14+7+5),"closet shows 12 looks, 9 accessories, 7 colors, and 14 outfits, 7 colors and 5 accessories for each of the guys");
  ok(await p.evaluate(()=>document.querySelectorAll(".cl-t.lock").length)>=10,"locked things are marked and say how to unlock them");
  ok(/Locked\./.test(await p.evaluate(()=>document.querySelector(".cl-t.lock").innerText)),"locked tile tells you what to do");
+ // the guys' closet
+ ok(await p.evaluate(()=>CMCast.OUTFIT_ORDER.length>=14&&CMCast.OUTFIT_ORDER.every(k=>CMCast.OUTFITS[k])&&["conrad","ram"].every(id=>CMCast.OUTFIT_ORDER.every(k=>CMCast.svg(id,60,{outfit:k,tall:1}).length>500))),"every outfit draws for Conrad and Raymond");
+ ok(await p.evaluate(()=>CMCast.svg("conrad",60,{outfit:"wizard"})!==CMCast.svg("conrad",60,{outfit:"classic"})&&CMCast.svg("ram",60,{outfit:"biker"})!==CMCast.svg("ram",60,{outfit:"classic"})),"outfits really change the drawing");
+ await p.click('[data-fam="conrad"][data-fk="o"][data-fv="biker"]');await p.waitForTimeout(200);
+ await p.click('[data-fam="ram"][data-fk="c"][data-fv="red"]');await p.waitForTimeout(200);
+ ok(await p.evaluate(()=>{const f=JSON.parse(localStorage.getItem("cm-connie")).fam;return f.conrad.o==="biker"&&f.ram.c==="red"}),"choosing an outfit and a color for the guys saves");
+ await go("connie");ok(await p.evaluate(()=>{const c=[...document.querySelectorAll(".cv-card")].find(x=>/Conrad/.test(x.innerText));return !!c&&c.querySelector("svg").innerHTML.indexOf("#1a1a1f")>=0}),"the family page shows the outfit you picked");
+ await go("stickers");ok(await p.evaluate(()=>{const t=document.getElementById("app").textContent;return /Conrad: Biker/.test(t)&&/Raymond: Grill master/.test(t)}),"stickers page has the guys' outfits");
+ await go("about");ok(await p.evaluate(()=>!/partner/i.test(document.getElementById("app").innerText)&&/brother/i.test(document.getElementById("app").innerText)),"the About page never calls Tony a partner");
+ await go("closet");
  await p.click('[data-kind="look"][data-id="punk"]');await p.waitForTimeout(200);ok(await p.evaluate(()=>JSON.parse(localStorage.getItem("cm-connie")).look==="punk"),"choosing a look saves it");
  await p.click('[data-kind="acc"][data-id="hp"]');await p.waitForTimeout(200);ok(await p.evaluate(()=>CMCast.cur().acc==="hp"&&CMCast.cur().look==="punk"),"accessory saves too");
  await go("zzzz");ok(await p.evaluate(()=>{const s=document.querySelector("svg.mascot");return!!s&&s.innerHTML.indexOf("#16161a")>=0}),"the not-found mascot wears the saved look");

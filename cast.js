@@ -116,6 +116,20 @@ var CMCast=(function(){
   if(c.pearls){for(var px=6;px<=17;px+=2)r(px,18,1,1,"#fff")}
   if(c.scarf){r(4,18,16,1,c.scarf);r(15,19,2,3,c.scarf)}
   if(c.bowtie){r(9,18,2,2,"#c0143c");r(13,18,2,2,"#c0143c");r(11,18,2,2,"#7a0a24")}
+  /* shirts, jackets and the rest of the grown-up wardrobe */
+  if(c.shorts&&c.shortsPat){var sp=c.shortsPat;
+   if(sp==="plaid"){r(5,20,6,1,"#ffffff66");r(13,20,6,1,"#ffffff66");r(7,19,1,3,"#ffffff44");r(16,19,1,3,"#ffffff44")}
+   if(sp==="hawaii"){[[6,19,"#fff"],[8,20,"#ffd54a"],[9,21,"#fff"],[6,21,"#ffd54a"],[14,19,"#ffd54a"],[16,20,"#fff"],[17,21,"#ffd54a"],[14,21,"#fff"]].forEach(function(q){r(q[0],q[1],1,1,q[2])})}
+   if(sp==="camo"){[[5,19,2,1],[8,20,2,1],[6,21,2,1],[13,20,2,1],[16,19,2,1],[15,21,3,1]].forEach(function(q){r(q[0],q[1],q[2],q[3],"#2c3a22")})}}
+  if(c.jacket){var jk=c.jacket;r(3,17,4,5,jk);r(17,17,4,5,jk);r(3,17,4,1,"#ffffff33");r(17,17,4,1,"#ffffff33");r(7,18,1,3,"#ffffff22");r(16,18,1,3,"#ffffff22");
+   if(c.studs){[18,19,20,21].forEach(function(y){r(3,y,1,1,SIL)});[18,20].forEach(function(y){r(20,y,1,1,SIL)})}
+   if(c.pens){r(4,18,1,2,"#2f6fe0");r(5,18,1,2,"#c0143c");r(6,18,1,1,"#222")}}
+  if(c.vest){r(5,18,3,4,c.vest);r(16,18,3,4,c.vest);r(5,18,3,1,"#ffffff33");r(16,18,3,1,"#ffffff33");r(6,20,1,1,GD);r(17,20,1,1,GD)}
+  if(c.tie){r(9,18,2,1,"#fff");r(13,18,2,1,"#fff");r(11,18,2,1,c.tie);r(11,19,2,3,c.tie);r(11,19,1,1,"#ffffff44")}
+  if(c.apron){r(7,18,10,4,c.apron);r(7,18,10,1,"#ffffff55");r(9,17,1,1,c.apron);r(14,17,1,1,c.apron);r(9,20,6,1,"#00000033");r(7,21,10,1,"#00000022")}
+  if(c.overalls){r(8,18,8,4,c.overalls);r(8,17,1,1,c.overalls);r(15,17,1,1,c.overalls);r(8,18,1,1,GD);r(15,18,1,1,GD);r(10,20,4,1,"#00000033");r(10,19,4,1,"#ffffff22")}
+  if(c.belt){r(5,19,14,1,"#7a4a1e");r(11,19,2,1,GD);r(5,20,3,2,"#9a6a2e");r(16,20,3,2,"#9a6a2e");r(18,17,1,3,"#b0764a");r(17,16,3,1,SIL)}
+  if(c.bandana){r(6,17,12,1,c.bandana);r(7,18,10,1,c.bandana);r(9,19,6,1,c.bandana);r(11,20,2,1,c.bandana);r(8,18,1,1,"#fff");r(12,19,1,1,"#fff");r(15,18,1,1,"#fff")}
   /* hair in front */
   if(st==="bob"||st==="long"){r(3,3,18,4,hr);r(4,2,16,1,hr);r(5,7,5,1,hr);r(14,7,5,1,hr);r(9,7,6,1,hr);r(3,7,2,6,hr);r(19,7,2,6,hr);r(5,3,3,1,"#ffffff44");r(6,5,2,1,"#ffffff33")}
   else if(st==="short"||st==="pony"||st==="bun"){r(4,3,16,4,hr);r(5,2,14,1,hr);r(4,7,4,1,hr);r(16,7,4,1,hr);r(3,5,2,5,hr);r(19,5,2,5,hr);r(6,3,3,1,"#ffffff44");
@@ -127,7 +141,15 @@ var CMCast=(function(){
   /* looks that sit on her head */
   if(c.band){r(4,5,16,1,"#ff3d9a");r(4,6,16,1,"#18c3b5")}
   if(c.hat==="hard"){r(5,0,14,4,"#ffd54a");r(4,3,16,1,"#e0a526");r(11,-1,2,1,"#e0a526");r(10,0,4,2,"#fff6b0");r(11,1,2,1,"#fff");r(6,1,2,1,"#ffffff88")}
-  if(c.beanie){r(3,0,18,6,"#8d8d96");r(3,2,18,1,"#6f6f78");r(3,4,18,1,"#6f6f78");r(3,5,18,1,"#a8a8b2");r(10,-2,4,2,"#e8e8f0");r(11,-3,2,1,"#e8e8f0")}
+  var hc=c.hatCol||"#555";
+  if(c.hat==="fedora"){r(7,-1,10,4,hc);r(11,-1,2,1,"#00000044");r(7,2,10,1,"#c0143c");r(3,3,18,1,hc);r(7,-1,10,1,"#ffffff33")}
+  if(c.hat==="top"){r(7,-5,10,8,hc);r(7,2,10,1,"#c0143c");r(4,3,16,1,hc);r(8,-5,2,6,"#ffffff22")}
+  if(c.hat==="cowboy"){r(7,0,10,3,hc);r(8,-1,3,1,hc);r(13,-1,3,1,hc);r(7,2,10,1,"#00000055");r(2,3,20,1,hc);r(1,2,2,1,hc);r(21,2,2,1,hc);r(8,0,2,1,"#ffffff33")}
+  if(c.hat==="bucket"){r(6,0,12,3,hc);r(3,3,18,1,hc);r(6,2,12,1,"#00000033");r(8,-1,8,1,hc);r(7,0,2,1,"#ffffff44")}
+  if(c.hat==="wizard"){r(8,1,8,2,hc);r(9,-1,6,2,hc);r(10,-3,4,2,hc);r(12,-5,2,2,hc);r(14,-6,1,1,hc);r(3,3,18,1,hc);r(8,2,8,1,GD);r(10,0,1,1,"#fff");r(13,-2,1,1,"#fff");r(11,1,1,1,"#ffe14a")}
+  if(c.hat==="chef"){r(7,-1,10,4,"#fff");r(6,-3,4,3,"#fff");r(10,-4,4,4,"#fff");r(14,-3,4,3,"#fff");r(7,2,10,1,"#b8b8c8");r(7,-1,1,3,"#d8d8e4");r(6,-3,4,1,"#c8c8d8");r(10,-4,4,1,"#c8c8d8");r(14,-3,4,1,"#c8c8d8");r(16,-1,1,3,"#d8d8e4")}
+  if(c.hat==="visor"){r(5,2,14,1,"#fff");r(3,3,18,1,hc);r(2,4,20,1,hc);r(5,2,14,1,"#ffffff")}
+  if(c.beanie){r(3,0,18,6,c.beanieCol||"#8d8d96");r(3,2,18,1,"#6f6f78");r(3,4,18,1,"#6f6f78");r(3,5,18,1,"#a8a8b2");r(10,-2,4,2,"#e8e8f0");r(11,-3,2,1,"#e8e8f0")}
   /* accessories that sit behind the bow */
   if(acc==="hp"){r(4,1,16,1,"#222");r(3,2,1,3,"#222");r(20,2,1,3,"#222");r(0,7,4,6,"#222");r(1,8,2,4,"#4a9eff");r(1,8,2,1,"#bfe3ff");r(20,7,4,6,"#222");r(21,8,2,4,"#4a9eff");r(21,8,2,1,"#bfe3ff");r(3,4,1,3,"#222");r(20,4,1,3,"#222")}
   if(acc==="headset"){r(4,1,16,1,"#2a2a33");r(3,2,1,3,"#2a2a33");r(20,2,1,3,"#2a2a33");r(1,7,3,5,"#2a2a33");r(2,8,1,3,"#c0143c");r(19,7,3,5,"#2a2a33");r(19,8,1,3,"#c0143c");r(3,12,1,3,"#2a2a33");r(4,14,3,1,"#2a2a33");r(7,14,1,2,"#c0143c")}
@@ -231,10 +253,38 @@ var CMCast=(function(){
   r(8,21,2,1,"#e8a0a0");r(14,21,2,1,"#e8a0a0");return o}
 
  /* inner SVG markup for a named cast member. o = {mood, size...} */
+
+ /* ---- the guys' wardrobe (Conrad and Raymond). Each outfit lists what it changes; "classic" is how they always look. */
+ var OUTFITS={
+  classic:{n:"Classic",note:"How they have always looked.",cfg:{}},
+  desk:{n:"Sysadmin",note:"Short sleeves, a tie and a pocket full of pens.",cfg:{bowtie:0,jacket:"#e8e8ee",pens:1,tie:"#c0143c"}},
+  fishing:{n:"Fishing trip",note:"Bucket hat and a vest with eleven pockets.",cfg:{bowtie:0,hat:"bucket",hatCol:"#c8b560",vest:"#a89a5a",shorts:"#8a7a4a"}},
+  grill:{n:"Grill master",note:"Chef hat, apron and absolute confidence.",cfg:{bowtie:0,hat:"chef",apron:"#c0392b"},acc:"shades"},
+  lab:{n:"Lab coat",note:"For anything that needs a clipboard.",cfg:{bowtie:0,jacket:"#f4f4f8",pens:1,tie:"#2f6fe0",shorts:"#3a424e"}},
+  hawaii:{n:"Vacation",note:"Loud shorts, cool shades, no plans.",cfg:{bowtie:0,shorts:"#ff7a3d",shortsPat:"hawaii"},acc:"shades"},
+  garage:{n:"Garage",note:"Overalls, a red cap and a tool belt.",cfg:{bowtie:0,hairStyle:"cap",cap:"#d6322a",overalls:"#2f5fb8",shorts:"#2f5fb8",belt:1}},
+  tux:{n:"Tuxedo",note:"Top hat and a bow tie, for the wedding.",cfg:{bowtie:1,hat:"top",hatCol:"#16161a",jacket:"#16161a",shorts:"#16161a"}},
+  cowboy:{n:"Cowpoke",note:"Cowboy hat, vest and a red bandana.",cfg:{bowtie:0,hat:"cowboy",hatCol:"#8a5a2b",vest:"#6b3a1b",bandana:"#c0143c",shorts:"#2f4f8a"}},
+  biker:{n:"Biker",note:"Black leather, studs and shades.",cfg:{bowtie:0,jacket:"#1a1a1f",studs:1,bandana:"#c0143c",shorts:"#222228"},acc:"shades"},
+  wizard:{n:"BIOS wizard",note:"Pointy hat. Knows every jumper setting.",cfg:{bowtie:0,hat:"wizard",hatCol:"#4b2f9a",jacket:"#4b2f9a"}},
+  winter:{n:"Winter",note:"Beanie, scarf and a puffy vest.",cfg:{bowtie:0,beanie:1,beanieCol:"#2f6b8a",scarf:"#c0392b",vest:"#2f6b8a",shorts:"#3a424e"}},
+  golf:{n:"Weekend golf",note:"Visor, plaid shorts, a lot of opinions.",cfg:{bowtie:0,hat:"visor",hatCol:"#2f8a4a",shorts:"#2f8a4a",shortsPat:"plaid"}},
+  road:{n:"Road trip",note:"Camo shorts, a trucker cap and a cooler.",cfg:{bowtie:0,hairStyle:"cap",cap:"#556b2f",shorts:"#4a5a32",shortsPat:"camo"},acc:"fl"}};
+ var OUTFIT_ORDER=["classic","desk","fishing","grill","lab","hawaii","garage","tux","cowboy","biker","wizard","winter","golf","road"];
+ var OUTFIT_FOR={conrad:1,ram:1};
+ var HEAD_ACC={hp:1,joy:1,prop:1,crown:1,halo:1,headset:1};
+ function famState(){var s=conState();return s.fam||{}}
+ /* what a guy is wearing right now: {o:outfit,c:color,a:accessory or null for the outfit's own} */
+ function famGet(id){var f=famState()[id]||{};return{o:OUTFITS[f.o]?f.o:"classic",c:COLORS[f.c]?f.c:"",a:f.a&&ACCS[f.a]?f.a:""}}
+ function famSet(id,patch){var s=conState();s.fam=s.fam||{};var f=s.fam[id]=s.fam[id]||{};for(var k in patch)f[k]=patch[k];try{localStorage.setItem("cm-connie",JSON.stringify(s))}catch(e){}}
+ function famOpts(id){if(!OUTFIT_FOR[id])return{};var f=famGet(id);return{outfit:f.o,color:f.c,acc:f.a||undefined,fam:1}}
  function castSvg(id,o){o=o||{};
   if(id==="connie")return inner(folk(connieCfg(o)));
   if(id==="floyd")return'<g class="mc-all">'+floyd(o.mood)+"</g>";if(id==="winnie")return'<g class="mc-all">'+winnie(o.mood)+"</g>";if(id==="tess")return'<g class="mc-all">'+tess(o.mood)+"</g>";if(id==="nibble")return'<g class="mc-all">'+nibble()+"</g>";
-  var s=CAST[id];if(!s||!s.cfg)return"";var c={},k;for(k in s.cfg)c[k]=s.cfg[k];c.mood=o.mood||"happy";if(c.skirt==null&&!c.shorts&&!c.sk)c.sk="#555";return inner(folk(c))}
+  var s=CAST[id];if(!s||!s.cfg)return"";var c={},k;for(k in s.cfg)c[k]=s.cfg[k];c.mood=o.mood||"happy";
+  if(OUTFIT_FOR[id]){var ou=OUTFITS[o.outfit];if(ou){for(k in ou.cfg)c[k]=ou.cfg[k]}
+   if(o.color&&COLORS[o.color]){c.b=COLORS[o.color].b;c.d=COLORS[o.color].d}
+   var ac=o.acc!=null?o.acc:(ou&&ou.acc)||"none";if(ACCS[ac]&&!((c.hat||c.beanie||c.hairStyle==="cap")&&HEAD_ACC[ac]))c.acc=ac}if(c.skirt==null&&!c.shorts&&!c.sk)c.sk="#555";return inner(folk(c))}
  /* a whole standalone <svg> for comics, cards and stickers */
  function svgOf(id,size,o){o=o||{};var h=size*(o.tall?1.3:1);return'<svg class="cc'+(o.cls?" "+o.cls:"")+'" viewBox="0 '+(o.tall?"-6":"0")+' 24 '+(o.tall?"31":"24")+'" width="'+size+'" height="'+h+'" shape-rendering="crispEdges" role="img" aria-label="'+(o.label||(CAST[id]?CAST[id].n:id))+'" xmlns="http://www.w3.org/2000/svg">'+castSvg(id,o)+"</svg>"}
 
@@ -256,5 +306,5 @@ var CMCast=(function(){
   {id:"mo",n:"Maureen “Mo” Dem",born:1979,role:"Friend",bio:"Connects slowly, makes a lot of noise doing it, and ties up the phone line all evening."},
   {id:"zack",n:"Zachary “Zack” Zip",born:1980,role:"The neighbor kid",bio:"Shows up folded small and unfolds in the living room. Nobody invited him. You know him from the Memory Maze."}];
 
- return{COLORS:COLORS,LOOKS:LOOKS,LOOK_ORDER:LOOK_ORDER,ACCS:ACCS,ACC_ORDER:ACC_ORDER,COLOR_PRIZE:COLOR_PRIZE,COLOR_ORDER:COLOR_ORDER,FUN_TOTAL:FUN_TOTAL,LEVELS:LEVELS,CAST:CAST,CAST_ORDER:CAST_ORDER,FAMILY:FAMILY,
+ return{OUTFITS:OUTFITS,OUTFIT_ORDER:OUTFIT_ORDER,OUTFIT_FOR:OUTFIT_FOR,famGet:famGet,famSet:famSet,famOpts:famOpts,COLORS:COLORS,LOOKS:LOOKS,LOOK_ORDER:LOOK_ORDER,ACCS:ACCS,ACC_ORDER:ACC_ORDER,COLOR_PRIZE:COLOR_PRIZE,COLOR_ORDER:COLOR_ORDER,FUN_TOTAL:FUN_TOTAL,LEVELS:LEVELS,CAST:CAST,CAST_ORDER:CAST_ORDER,FAMILY:FAMILY,
   folk:folk,inner:inner,rects:rects,connieCfg:connieCfg,castSvg:castSvg,svg:svgOf,cur:cur,save:save,unlocked:unlocked,state:conState,stars:stars,cleared:cleared,readCount:readCount,GL:GL}})();
