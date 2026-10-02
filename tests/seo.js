@@ -44,4 +44,13 @@ ok(/<meta name="description" content="[^"]{80,}"/.test(idx)&&/rel="canonical"/.t
  ok(rd("index.html").indexOf('<link rel="canonical" href="'+base+'/">')>=0&&rd("app.js").indexOf('SITE_URL="'+base+'/"')>=0&&rd("feed.xml").indexOf(base)>=0,"home page canonical, QR address and feed all use "+base)}
 ok(fs.existsSync(path.join(root,"og.png"))&&fs.statSync(path.join(root,"og.png")).size>10000,"og.png exists");
 ok(/noindex/.test(rd("admin.html")),"admin page stays out of search results");
+// the nightly-style rebuild must watch every file the generator reads and commit every folder it writes
+{const gen=rd("tools/build-seo.js"),yml=rd(".github/workflows/seo.yml"),pathsLine=(yml.match(/paths: \[([^\]]*)\]/)||[])[1]||"";
+ const inputs=new Set([...gen.matchAll(/["']([\w.-]+\.js)["']/g)].map(m=>m[1]).filter(f=>fs.existsSync(path.join(root,f))));
+ [...gen.matchAll(/\["(timeline[\w-]*\.js[^\]]*)\]/g)].forEach(m=>m[1].split(",").forEach(x=>{x=x.replace(/["\s]/g,"");if(/\.js$/.test(x)&&fs.existsSync(path.join(root,x)))inputs.add(x)}));
+ const unwatched=[...inputs].filter(f=>pathsLine.indexOf(f)<0);
+ ok(unwatched.length===0,"the rebuild workflow watches every file the generator reads"+(unwatched.length?" (missing: "+unwatched.join(", ")+")":""));
+ const gd=(gen.match(/const GEN=\[([^\]]*)\]/)||[])[1]||"",dirs=gd.replace(/["\s]/g,"").split(",").filter(Boolean),addl=(yml.match(/git add -A ([^\n]*)/)||[])[1]||"";
+ const nc=dirs.concat(["sitemap.xml","robots.txt","404.html"]).filter(d=>addl.split(/\s+/).indexOf(d)<0);
+ ok(nc.length===0,"the rebuild workflow commits every folder and file the generator writes"+(nc.length?" (missing: "+nc.join(", ")+")":""))}
 console.log(fails?"\n"+fails+" FAILED":"\nAll good.");process.exit(fails?1:0);

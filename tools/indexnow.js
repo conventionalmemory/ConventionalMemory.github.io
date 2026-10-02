@@ -10,7 +10,7 @@ let host="conventionalmemory.github.io";try{host=fs.readFileSync(path.join(root,
 let urls;
 if(process.argv.indexOf("--all")>=0)urls=[...fs.readFileSync(path.join(root,"sitemap.xml"),"utf8").matchAll(/<loc>([^<]+)<\/loc>/g)].map(m=>m[1]);
 else{const f=cp.execSync("git diff --name-only HEAD~1 HEAD",{cwd:root,maxBuffer:1e8}).toString().split("\n").filter(Boolean);
- urls=f.filter(x=>/(^|\/)index\.html$/.test(x)&&/^(history|year|decade|museum)\//.test(x)||x==="index.html").map(x=>"https://"+host+"/"+x.replace(/index\.html$/,""));
+ urls=f.filter(x=>/(^|\/)index\.html$/.test(x)&&/^(history|year|decade|museum|guides|books)\//.test(x)||x==="index.html").map(x=>"https://"+host+"/"+x.replace(/index\.html$/,""));
  if(f.indexOf("sitemap.xml")>=0)urls.push("https://"+host+"/sitemap.xml")}
 urls=[...new Set(urls)].slice(0,9000);
 console.log("IndexNow:",urls.length,"URLs for",host);
