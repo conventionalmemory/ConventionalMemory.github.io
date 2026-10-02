@@ -147,15 +147,24 @@ function qGame(list){var PCP=["DOS","Windows","Mac","Linux","PC-98","FM Towns"],
  if(x.n&&x.c==="high"&&!/knowledge/i.test(x.s||"")&&x.n.ramMB!=null&&x.n.ramMB>=1){var ram=x.n.ramMB,o=[ram*2,ram*4,Math.max(1,ram/2),ram*8].filter(function(v,j,a){return v!==ram&&a.indexOf(v)===j}).slice(0,3);if(o.length<3)return null;var f2=function(v){return v+" MB"};return mk('About how much RAM did "'+nameOf(r)+'" list as its minimum on a PC?',f2(ram),o.map(f2),"minram")}
  return null}
 /* ---- "too easy" guard: reject questions whose answer is spelled out in the question (the IBM Model M keyboard / IBM trap) ---- */
-var STOPW={the:1,and:1,for:1,with:1,from:1,that:1,this:1,was:1,were:1,what:1,which:1,did:1,his:1,her:1,its:1,are:1,has:1,had:1,one:1,two:1};
+var STOPW={the:1,and:1,for:1,with:1,from:1,that:1,this:1,was:1,were:1,what:1,which:1,did:1,his:1,her:1,its:1,are:1,has:1,had:1,one:1,two:1,out:1,came:1,first:1,last:1,game:1,games:1,released:1,release:1,these:1,followed:1,new:1,all:1,any:1,made:1,model:1,version:1,series:1};
 function toks(t){return String(t).toLowerCase().replace(/[^a-z0-9]+/g," ").split(" ").filter(function(w){return w.length>=3&&!STOPW[w]})}
 function leaks(q){var ans=String(q.o[q.c]);if(/^[\d$.,\s()*-]+$/.test(ans))return false;
  var qt=" "+String(q.q).toLowerCase().replace(/[^a-z0-9]+/g," ")+" ",at=toks(ans),whole=" "+ans.toLowerCase().replace(/[^a-z0-9]+/g," ").trim()+" ";
  if(whole.length>4&&qt.indexOf(whole)>=0)return true;
  if(at.length&&at.every(function(w){return qt.indexOf(" "+w+" ")>=0}))return true;
  var qk=toks(q.q),share=function(t){return toks(t).some(function(w){return w.length>=3&&qk.indexOf(w)>=0})};
- if(share(ans)){var others=q.o.filter(function(o,i){return i!==q.c&&share(o)});if(!others.length)return true}
+ if(q.tag!=="dos"&&share(ans)){var others=q.o.filter(function(o,i){return i!==q.c&&share(o)});if(!others.length)return true}
  return false}
+/* when a question gives itself away, blank out the giveaway words instead of throwing the question out: Who made the "IBM Model M Keyboard"? becomes Who made the "____ Model M Keyboard"? */
+function fix(q){if(["maker","dev","item","spec","price"].indexOf(q.tag)<0)return null;var ans=String(q.o[q.c]),qk=toks(q.q),hit=toks(ans).filter(function(w){return qk.indexOf(w)>=0}),txt=q.q;
+ if(!hit.length){var whole=ans.toLowerCase().replace(/[^a-z0-9]+/g," ").trim();if(whole.length>4&&(" "+q.q.toLowerCase().replace(/[^a-z0-9]+/g," ")+" ").indexOf(" "+whole+" ")>=0)hit=toks(ans)}
+ if(!hit.length)return null;
+ hit.forEach(function(w){txt=txt.replace(new RegExp("\\b"+w.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+"\\b","gi"),"____")});
+ txt=txt.replace(/(____[\s-]*)+/g,"____ ").replace(/____ ([\'\u2019,.;:?!"])/g,"____$1").replace(/\s+/g," ").trim();
+ var left=txt.replace(/____/g,"").replace(/[^A-Za-z0-9 ]/g," ").split(/\s+/).filter(function(w){return w.length>1&&!STOPW[w.toLowerCase()]});
+ if(left.length<2||/^[^A-Za-z0-9]*____[^A-Za-z0-9]*$/.test(txt))return null;
+ var r={q:txt,o:q.o,c:q.c,tag:q.tag,fixed:1};return leaks(r)?null:r}
 function nextQ(era,lvl){
  var wide=[4,6,9][lvl>=0?Math.min(lvl,2):0]+0,ok=D.tl.filter(function(r){return Math.abs(yr(r[0])-era)<=4}),okw=D.tl.filter(function(r){return Math.abs(yr(r[0])-era)<=9}),tries=0,q=null;
  while(!q&&tries++<40){var t=R();
@@ -177,7 +186,8 @@ function nextQ(era,lvl){
   else if(t<.90)q=qMostExpensive(okw);
   else if(t<.93)q=qCategory();
   else if(ok.length)q=qYear(pick(ok),lvl);
-  if(q&&(S.used[q.q]||leaks(q)))q=null}
+  if(q&&leaks(q)){var fx=fix(q);q=fx||null}
+  if(q&&S.used[q.q])q=null}
  if(!q){q=qStatic();var n=0;while((S.used[q.q]||leaks(q))&&n++<60)q=qStatic()}
  S.used[q.q]=1;return q}
 
@@ -328,7 +338,7 @@ var HEAD={
  spiky:["...h.h.h....","..hhhhhhh...","..khhhhhhk..","..khhhhhsk..","..khhhsksk..","..khhsssssk.","...ksssmsk..","....ksssk...",".....kss...."],
  bun:["....hhhh....","...hhhhhk...","..khhhhhhk..","..khhhhhsk..","..khhskksk..","..khhsssssk.","...ksssmsk..","....ksssk...",".....kss...."]};
 var BODY=["...kttttk...","..kttttttk..","..kttttttk..","..kttttttk..","..kuttttuk..","..kbbbbbbk..","..kppppppk..","..kppppppk.."];
-var MATT_UP=["      kkkkkk    ", "    kkwwwwwwk   ", "   kwwlwwlwwwk  ", "  kwlwwlwwlwwwk ", "  kwwwwwwwwwwwwk", "kkwwwwwwwwwwwwlk", "kwwwwkkwwwwwkRRk", " kkkk kkRRRRRRRk", "      kRRRkRRRk ", "      kRRRRRRRRk", "      knnnnnnRk ", "      knnnnnnk  ", "       knnnnk   ", "       kRRk     ", "    kkrrrrrykk  ", "   kbbrrrrrrykk ", "  kbbbbrrrrrrbk ", "  kbbbbbrrrrbbk ", "  kbbbbbbrrbbbk ", "  kbbbbbbbbbbbk ", "  kbbbbbbbbbbbk ", "  kddddddddddk  "];
+var MATT_UP=["       kkkk     ", "     kkwwwwkk   ", "    kwwwwwwwwk  ", "   kwwwwlwwlwwk ", "  kwwwwwlwwlwwwk", "  kwwwwwlwwlwwlk", "kwwwwllllllllkRk", "kllllkkkkkkkRRRk", "      kRRRkRRRk ", "      kRRRRRRRRk", "      knnnnnnRk ", "      knnnnnnk  ", "       knnnnk   ", "       kRRk     ","    kkrrrrrykk  ", "   kbbrrrrrrykk ", "  kbbbbrrrrrrbk ", "  kbbbbbrrrrbbk ", "  kbbbbbbrrbbbk ", "  kbbbbbbbbbbbk ", "  kbbbbbbbbbbbk ", "  kddddddddddk  "];
 var TONY_UP=["          yy    ","        rrrry   ","    bb rrrrrrk  ","  bbbbbrrrrrrk  "," bbbbbbrrrrrrrk ","ybbbbbkggggggggk"," kkkkkkgggggggk ","    kllllllRRRk ","    kllRRkRRRRk ","    kllRRRRRRRRk","    kllllllllRk ","    klllllllllk ","     kllllllllk ","      klllllk   ","  kyyggggggrrk  "," kyyyggggggrrrk "," krrrrggggrrrrrk","kRrrrrrrrrrrrrk ","krRrrRrrRrrRrrk ","kRrrrrrrrrrrrrk "," krrrrrrrrrrrk  ","  kddddddddddk  "];
 function mr(x,px,top,dir,c,r,w,h,col){rect(x,dir>0?px-MW/2+c:px-MW/2+(MW-c-w),top+r,w,h,col)}
 var MW=12;
@@ -467,6 +477,6 @@ function setData(d){deps=d;D.items=(d.items||[]).filter(function(i){return i&&i.
  D.quotes=d.quotes||[];D.x=d.tlx||{};D.gx=d.gx||{};D.byT={};D.tl.forEach(function(r){D.byT[r[2]]=r});}
 function mount(el,d){unmount();host=el;setData(d);patCache={};roomCache={};onKey=onk;onKeyUp=onku;window.addEventListener("keydown",onKey);window.addEventListener("keyup",onKeyUp);select()}
 function unmount(){cancelAnimationFrame(raf);raf=0;if(onKey)window.removeEventListener("keydown",onKey);if(onKeyUp)window.removeEventListener("keyup",onKeyUp);onKey=onKeyUp=null;S=null;keys={};host=null;cvs=null}
-function probe(d,n){setData(d);var keep=S,out=[];S={used:{}};for(var i=0;i<n;i++){var q=nextQ(1981+ri(30),ri(3));out.push({q:q.q,o:q.o,c:q.c,tag:q.tag})}S=keep;return out}
-window.CMGame=Object.freeze({mount:mount,unmount:unmount,probe:probe,leaks:leaks});
+function probe(d,n){setData(d);var keep=S,out=[];S={used:{}};for(var i=0;i<n;i++){var q=nextQ(1981+ri(30),ri(3));out.push({q:q.q,o:q.o,c:q.c,tag:q.tag,fixed:q.fixed||0})}S=keep;return out}
+window.CMGame=Object.freeze({mount:mount,unmount:unmount,probe:probe,leaks:leaks,fix:fix});
 })();
