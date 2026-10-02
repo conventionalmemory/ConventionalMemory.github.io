@@ -40,7 +40,7 @@ const srv=http.createServer((q,r)=>{let f=path.join(root,decodeURIComponent(q.ur
  await p.keyboard.press("Escape");await p.waitForTimeout(300);ok(await p.evaluate(()=>!document.getElementById("kiosk")),"Escape leaves the kiosk");
  await go("kiosk/go");await p.waitForTimeout(300);await p.keyboard.press("x");await p.click('.k-menu a[href="#/daily"]');await p.waitForTimeout(500);ok(await p.evaluate(()=>!document.getElementById("kiosk")&&/#\/daily/.test(location.hash)),"kiosk menu button navigates and closes the kiosk");
  // tab bars + mascot
- for(const [r,t] of [["stats","Collection report"],["daily","Today's find"],["changes","Follow"],["runs","Dream rig"],["mine","Wish list"]]){await go(r);ok(await p.evaluate(t=>[...document.querySelectorAll(".tbar a")].some(a=>a.textContent===t),t),"tab bar on #/"+r+" links to "+t)}
+ for(const [r,t] of [["stats","Collection report"],["daily","Retro Bingo"],["changes","Follow"],["runs","Dream rig"],["mine","Wish list"]]){await go(r);ok(await p.evaluate(t=>[...document.querySelectorAll(".tbar a")].some(a=>a.textContent===t),t),"tab bar on #/"+r+" links to "+t)}
  await go("nowhere");ok(await p.evaluate(()=>!!document.querySelector(".nf svg.mascot")),"not-found page shows Mem");
  // makers, manuals, labels, start here
  await go("maker");ok(/Makers/.test(await txt())&&await p.evaluate(()=>document.querySelectorAll("#app .chips a").length)>3,"makers index lists companies");

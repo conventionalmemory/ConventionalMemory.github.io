@@ -48,12 +48,11 @@ function hub(){var d=ld("cm-daily",{streak:0}),t=today(),H=ld("cm-higher",{raw:0
   ["#/mystery","Mystery Photo","A real photo starts blurry. Name it before it comes into focus.",p.st.msBest?"Best: "+p.st.msBest+"/24":"New","camera"],
   ["#/bingo","Retro Bingo","A daily bingo card of machines. Mark everything you owned or wanted.","","dice"],
   ["#/hangman","Disk Error Hangman","Guess the machine or game before the floppies run out.","","floppy"],
-  ["#/today","Today's find","A ready-to-post card for one piece of history. Story, square and wide sizes.","","camera"],
   ["#/build","Build Your Rig","Pick a year, spend your points, and run the era's real games. Beat the Wanted list.","","tower"],
   ["#/adlab","Ad Lab","Make a retro tribute ad for any item, with stickers, and download it as a picture.","","news"],
   ["#/maze","Memory Maze","The original: run the maze, grab the Ks, dodge the crashes.","","ghost"],
   ["#/trophies","Trophy room","Your level, badges and records across every game.",Object.keys(p.badges).length+" of "+PB.length+" badges","trophy"]];
- app.innerHTML='<section><h2>Play</h2><p>Small games built from the museum and the timeline. One profile levels up across all of them.</p><div class="pl-grid">'+cards.map(function(c){return'<a class="hm-tile" href="'+c[0]+'"><i class="hm-ic">'+glyph(c[4],28)+'</i><b>'+E(c[1])+'</b><span>'+E(c[2])+(c[3]?' <em>'+E(c[3])+'</em>':"")+'</span></a>'}).join("")+'</div><p class="tn"><a href="#/styleguide">Style guide</a></p></section>'}
+ app.innerHTML='<section><h2>Play</h2><p>Small games built from the museum and the timeline. One profile levels up across all of them.</p><div class="pl-grid">'+cards.map(function(c){return'<a class="hm-tile" href="'+c[0]+'"><i class="hm-ic">'+glyph(c[4],28)+'</i><b>'+E(c[1])+'</b><span>'+E(c[2])+(c[3]?' <em>'+E(c[3])+'</em>':"")+'</span></a>'}).join("")+'</div></section>'}
 
 /* ================= Daily Dig ================= */
 var DK="cm-daily";

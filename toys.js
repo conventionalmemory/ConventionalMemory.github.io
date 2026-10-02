@@ -184,7 +184,7 @@ var CMToys=(function(){
    +'<a class="hm-tile" href="#/walk/1995"><i class="hm-ic">'+glyph("clock",28)+'</i><b>I want to remember</b><span>Walk through a year: the news, the hardware, the games, the ad.</span></a>'
    +'<a class="hm-tile" href="#/daily"><i class="hm-ic">'+glyph("bulb",28)+'</i><b>I want a challenge</b><span>Three timeline questions a day, then the rest of the games.</span></a>'
    +'<a class="hm-tile" href="#/runs"><i class="hm-ic">'+glyph("chip",28)+'</i><b>I tinker</b><span>Does it run? Dream rigs, IRQ conflicts and benchmarks.</span></a>'
-   +'<a class="hm-tile" href="#/wish"><i class="hm-ic">'+glyph("heart",28)+'</i><b>I am shopping</b><span>A wish list, swap-meet mode and what to hunt for next.</span></a>'
+   +'<a class="hm-tile" href="#/wish"><i class="hm-ic">'+glyph("heart",28)+'</i><b>I am shopping</b><span>A wish list you can circle things for and share.</span></a>'
    +'<a class="hm-tile" href="#/theater"><i class="hm-ic">'+glyph("tv",28)+'</i><b>I just want to watch</b><span>The little CRT theater and the jukebox.</span></a></div>'
    +'<h3 class="sub">Good to know</h3><ul><li>Press <b>/</b> anywhere to search. Type <b>help</b> at the C:\\&gt; prompt in the footer for commands.</li><li>The menu bar groups everything: Catalog, Timeline, Explore, Play, Theater, My stuff, Community.</li><li>Your lists, scores and prizes stay in this browser. <a href="#/backup">Back them up</a> if you care about them.</li><li>Themes, motion and the CRT effect are the three buttons at the top right.</li></ul></section>'}
 

@@ -4,7 +4,7 @@ const http=require("http"),fs=require("fs"),path=require("path");const {chromium
 const root=path.join(__dirname,"..");const types={".html":"text/html",".js":"text/javascript",".css":"text/css",".json":"application/json",".png":"image/png",".svg":"image/svg+xml"};
 const srv=http.createServer((q,r)=>{let f=path.join(root,decodeURIComponent(q.url.split("?")[0]));if(f.endsWith("/"))f+="index.html";fs.readFile(f,(e,d)=>{if(e){r.writeHead(404);r.end();return}r.writeHead(200,{"content-type":types[path.extname(f)]||"application/octet-stream"});r.end(d)})});
 (async()=>{await new Promise(r=>srv.listen(0,r));const base="http://localhost:"+srv.address().port+"/index.html#/";
- const b=await chromium.launch({executablePath:process.env.PLAYWRIGHT_CHROMIUM||undefined});const ctx=await b.newContext({viewport:{width:1100,height:900},acceptDownloads:true});const p=await ctx.newPage();
+ const b=await chromium.launch({executablePath:process.env.PLAYWRIGHT_CHROMIUM||undefined});const ctx=await b.newContext({viewport:{width:1100,height:900},acceptDownloads:true});await ctx.addInitScript(()=>{try{localStorage.setItem("cm-admin","1")}catch(e){}});const p=await ctx.newPage();
  const fails=[],errs=[];p.on("pageerror",e=>errs.push(e.message));
  await p.addInitScript(()=>{window.__w=[];window.__dev=0;const ch={properties:{writeWithoutResponse:true,write:true},writeValueWithoutResponse(v){window.__w.push(Array.from(new Uint8Array(v.buffer?v.buffer.slice(v.byteOffset,v.byteOffset+v.byteLength):v)));return Promise.resolve()},writeValue(v){return this.writeValueWithoutResponse(v)}};
   const svc={getCharacteristic(u){return u===0xff02?Promise.resolve(ch):Promise.reject(new Error("nope"))},getCharacteristics(){return Promise.resolve([ch])}};
@@ -12,7 +12,7 @@ const srv=http.createServer((q,r)=>{let f=path.join(root,decodeURIComponent(q.ur
   const dev={name:"M221-TEST",gatt,addEventListener(){}};
   navigator.bluetooth={requestDevice(o){window.__dev++;window.__opt=JSON.stringify(o);return Promise.resolve(dev)}}});
  const ok=(c,m)=>{console.log((c?"ok   ":"FAIL ")+m);if(!c)fails.push(m)};const go=async h=>{await p.goto(base+h);await p.waitForTimeout(700)};const txt=()=>p.evaluate(()=>document.getElementById("app").innerText);
- await go("");await p.evaluate(()=>{localStorage.clear()});
+ await go("");await p.evaluate(()=>{localStorage.clear();localStorage.setItem("cm-admin","1")});
  // tags
  ok(await p.evaluate(()=>{const c=ALLITEMS.map(i=>i.cm);return c.every(n=>Number.isInteger(n)&&n>0)&&new Set(c).size===c.length}),"every item has a unique permanent label number");
  // routes
