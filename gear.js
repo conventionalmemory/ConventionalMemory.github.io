@@ -58,7 +58,7 @@ function gearParts(c,name,maker){var out=[];function add(l,q){if(out.length<5&&!
  if(mon)add("VGA cable","VGA cable male to male");
  if(comp||con||kb||cam||card||midi||hand){add("Electronics contact cleaner","DeoxIT contact cleaner");add("99% isopropyl alcohol for cleaning boards","99% isopropyl alcohol")}
  return out}
-function gearBooks(c){var out=[],txt=c.nm+" "+c.mk;GEAR_BOOKS.forEach(function(b){if(out.length<2&&b[0].test(txt)&&!out.some(function(o){return o[0]===b[1]}))out.push([b[1],b[2]])});
+function gearBooks(c){var out=[],txt=c.nm+" "+c.mk;if(c.kind==="bk")return out;GEAR_BOOKS.forEach(function(b){if(out.length<2&&b[0].test(txt)&&!out.some(function(o){return o[0]===b[1]}))out.push([b[1],b[2]])});
  if(!out.length&&/^(hw)$/.test(c.kind)&&c.yr&&c.yr<1995)GEAR_GENERIC.forEach(function(g){out.push([g[1],g[2]])});return out.slice(0,2)}
 /* The words that name an event's subject, for a book search: keep names and numbers, drop the verbs ("introduced", "decided", "first runs"). */
 function topicQ(name){var drop=/^(a|an|the|of|in|on|at|to|by|for|and|is|are|was|were|first|new|its|it|goes|go|sale|sends|sent|runs|ships|shipped|released|release|introduced|introduces|launched|launches|published|publishes|incorporated|founded|decided|signed|settle|settles|sues|sue|announced|announces|becomes|opens|opened|debuts|premieres|unveiled|unveils|ruling|v\.?|vs\.?)$/i;
@@ -71,6 +71,7 @@ function gearFinds(c,name,maker){var q=affQ(name,maker);if(!q)return[];var out=[
   if(k==="m"){add("Find it on Blu-ray or DVD",q+" Blu-ray DVD");if(c.yr&&c.yr<2006)add("Find it on VHS",q+" VHS");add("Find the soundtrack",q+" soundtrack");add("Find a poster",q+" movie poster")}
   else if(/^(gt|gn|gc)$/.test(k)){add("Find a copy",q+" game");add("Find the manual or strategy guide",q+" strategy guide manual");add("Find the soundtrack or merchandise",q+" soundtrack")}
   else if(/^(hw|pe)$/.test(k)){add("Find one of your own",q);add("Find manuals and paperwork",q+" manual");add("Find accessories",q+" accessories")}
+  else if(k==="bk"){var ax=(typeof TLX!=="undefined"&&TLX[name]&&TLX[name].specs&&TLX[name].specs.Author)||"",bq=(String(name).replace(/ \((book|novel|Boss Fight Books)\)$/,"")+" "+ax).trim();add("Find a copy",bq);add("Find the audiobook",bq+" audiobook")}
   else if(k==="sw"){add("Find a boxed copy",q+" software");add("Find the manual",q+" manual")}
   else if(k==="u"){add("Find books about it",t+" book")}
   else{add("Find books about it",t+" book");add("Find vintage memorabilia",t+" vintage")}

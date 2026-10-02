@@ -12,7 +12,7 @@ const load=f=>vm.runInContext(fs.readFileSync(path.join(root,f),"utf8"),ctx,{fil
 vm.runInContext('AFF.ebay=AFF.ebay||"0000000000"',ctx);
 const get=n=>vm.runInContext(n,ctx);
 const ITEMS=get("ITEMS"),TL=get("TL"),TLX=get("typeof TLX!=='undefined'?TLX:{}");
-const KIND={hw:"Hardware",pe:"Peripheral",gt:"Game",gn:"Game",gc:"Game",m:"Movie",sw:"Software",e:"Event",u:"Legal",w:"World event"};
+const KIND={hw:"Hardware",pe:"Peripheral",gt:"Game",gn:"Game",gc:"Game",m:"Movie",sw:"Software",bk:"Book",e:"Event",u:"Legal",w:"World event"};
 const rows=[],seen=new Map();
 function add(entry,type,label,q,key){if(!q)return;const k=q.toLowerCase();if(!seen.has(k))seen.set(k,{q,entries:[]});const s=seen.get(k);if(s.entries.length<3)s.entries.push(entry);rows.push([entry,type,label,q])}
 function collect(name,maker,key,entry,type){const c=vm.runInContext("gearCtx",ctx)(name,maker,key);

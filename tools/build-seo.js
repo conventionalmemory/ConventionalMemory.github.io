@@ -23,6 +23,8 @@ const ctx={window:{},document:{addEventListener(){},readyState:"complete",getEle
 ["timeline-data.js","timeline-extra.js","timeline-edits.js","items.js","draftfilter.js","affiliate.js","gear.js"].forEach(f=>vm.runInContext(fs.readFileSync(path.join(root,f),"utf8"),ctx,{filename:f}));
 const get=n=>vm.runInContext(n,ctx);
 const TL=get("TL"),TLX=get("typeof TLX!=='undefined'?TLX:{}"),ITEMS=get("ITEMS"),AFF_SHORT=get("AFF_SHORT");
+vm.runInContext(fs.readFileSync(path.join(root,"books.js"),"utf8"),ctx,{filename:"books.js"});const BOOKSHELF=get("BOOKSHELF");
+const castCtx={window:{},console,localStorage:{getItem(){return null},setItem(){}},document:{addEventListener(){},readyState:"complete"},navigator:{}};vm.createContext(castCtx);vm.runInContext(fs.readFileSync(path.join(root,"cast.js"),"utf8"),castCtx,{filename:"cast.js"});const CAST=vm.runInContext("CMCast",castCtx);
 const gearCtx=get("gearCtx"),gearFinds=get("gearFinds"),gearParts=get("gearParts"),gearBooks=get("gearBooks"),affUrl=get("affUrl"),affOn=get("affOn");
 
 /* ---- helpers ---- */
@@ -32,9 +34,9 @@ const {GUIDES,TIERS,UPDATED:GUIDES_UPDATED}=require("./guides.js");
 const MON=["January","February","March","April","May","June","July","August","September","October","November","December"];
 const dlabel=d=>{const p=String(d).split("-");return p.length===3?MON[+p[1]-1]+" "+(+p[2])+", "+p[0]:p.length===2?MON[+p[1]-1]+" "+p[0]:p[0]};
 const yr=r=>+String(r[0]).slice(0,4);
-const KIND={hw:"Computer or hardware",pe:"Peripheral",gt:"Game",gn:"Game",gc:"Game",m:"Movie",sw:"Software",e:"Event",u:"Legal milestone",w:"World event"};
-const KIND_PL={hw:"Computers and hardware",pe:"Peripherals",gt:"Games",gn:"Games",gc:"Games",m:"Movies",sw:"Software",e:"Events",u:"Legal milestones",w:"World events"};
-const KORDER=["hw","pe","sw","gt","gn","gc","m","e","u","w"];
+const KIND={hw:"Computer or hardware",pe:"Peripheral",gt:"Game",gn:"Game",gc:"Game",m:"Movie",sw:"Software",bk:"Book",e:"Event",u:"Legal milestone",w:"World event"};
+const KIND_PL={hw:"Computers and hardware",pe:"Peripherals",gt:"Games",gn:"Games",gc:"Games",m:"Movies",sw:"Software",bk:"Books",e:"Events",u:"Legal milestones",w:"World events"};
+const KORDER=["hw","pe","sw","gt","gn","gc","bk","m","e","u","w"];
 const clip=(s,n)=>{s=String(s||"").replace(/\s+/g," ").trim();if(s.length<=n)return s;s=s.slice(0,n-1);return s.replace(/\s+\S*$/,"")+"\u2026"};
 const lead=(s,n)=>{s=String(s||"").replace(/\s+/g," ").trim();const m=s.match(/^(.*?[.!?])(\s|$)/);let o=m?m[1]:s;if(o.length<90&&m){const m2=s.slice(o.length).trim().match(/^(.*?[.!?])(\s|$)/);if(m2&&(o+" "+m2[1]).length<=n)o+=" "+m2[1]}return clip(o,n)};
 const abs=p=>SITE+p;
@@ -65,10 +67,10 @@ function shell(o){const url=abs(o.path),desc=clip(o.desc,158),title=o.title;
  +'<meta name="twitter:card" content="summary_large_image">\n<meta name="twitter:title" content="'+H(title)+'">\n<meta name="twitter:description" content="'+H(desc)+'">\n<meta name="twitter:image" content="'+abs("/og.png")+'">\n'
  +'<meta name="theme-color" content="#000080">\n<link rel="icon" href="/icon.svg" type="image/svg+xml">\n<link rel="alternate" type="application/rss+xml" title="'+NAME+': recent changes" href="/feed.xml">\n'
  +'<link rel="preconnect" href="https://fonts.googleapis.com">\n<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n<link href="https://fonts.googleapis.com/css2?family=VT323&family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">\n<link rel="stylesheet" href="/style.css">\n'+ld+"\n</head>\n<body>\n"
- +'<div class="wrap sp">\n<header class="top"><a class="brand" href="/">C:\\&gt;ConventionalMemory.io</a><nav class="sp-nav" aria-label="Main"><a href="/#/">Museum</a> <a href="/history/">Timeline pages</a> <a href="/guides/">Guides</a> <a href="/#/catalog">Catalog</a> <a href="/#/play">Games</a> <a href="/#/connie">Connie</a></nav></header>\n'
+ +'<div class="wrap sp">\n<header class="top"><a class="brand" href="/">C:\\&gt;ConventionalMemory.io</a><nav class="sp-nav" aria-label="Main"><a href="/#/">Museum</a> <a href="/history/">Timeline pages</a> <a href="/guides/">Guides</a> <a href="/books/">Books</a> <a href="/#/catalog">Catalog</a> <a href="/#/play">Games</a> <a href="/#/connie">Connie</a></nav></header>\n'
  +(o.crumbs?'<nav class="sp-crumb" aria-label="Breadcrumb">'+o.crumbs.map((c,i)=>i<o.crumbs.length-1?'<a href="'+c[1]+'">'+H(c[0])+"</a>":"<span>"+H(c[0])+"</span>").join(" &rsaquo; ")+"</nav>\n":"")
  +"<main>\n"+o.body+"\n</main>\n"
- +'<footer class="sp-foot"><p><a href="/#/">Open the interactive museum</a> &middot; <a href="/history/">Timeline pages</a> &middot; <a href="/museum/">Exhibits</a> &middot; <a href="/guides/">Guides</a> &middot; <a href="/#/disclosure">Affiliate disclosure</a> &middot; <a href="/feed.xml">RSS</a></p><p class="tn">'+NAME+' is a museum of vintage computers, a timeline and retro games, by Matt and Tony. Dates and descriptions are summarized from public sources; check the source named on each page.</p></footer>\n</div>\n</body>\n</html>\n'}
+ +'<footer class="sp-foot"><p><a href="/#/">Open the interactive museum</a> &middot; <a href="/history/">Timeline pages</a> &middot; <a href="/museum/">Exhibits</a> &middot; <a href="/guides/">Guides</a> &middot; <a href="/books/">Books</a> &middot; <a href="/#/disclosure">Affiliate disclosure</a> &middot; <a href="/feed.xml">RSS</a></p><p class="tn">'+NAME+' is a museum of vintage computers, a timeline and retro games, by Matt and Tony. Dates and descriptions are summarized from public sources; check the source named on each page.</p></footer>\n</div>\n</body>\n</html>\n'}
 const crumbLD=c=>({"@context":"https://schema.org","@type":"BreadcrumbList",itemListElement:c.map((x,i)=>({"@type":"ListItem",position:i+1,name:x[0],item:abs(x[1])}))});
 const ORG={"@type":"Organization",name:NAME,url:abs("/"),logo:abs("/icon.svg")};
 
@@ -90,6 +92,31 @@ function guideLine(kind){const a=kind==="hw"||kind==="pe"||kind==="item"?["fix-a
 const out={};
 const put=(p,c)=>{out[p]=c};
 
+/* ---- Connie and the family on the static pages: pictures are shared SVG files in /cast/, so no page carries its own copy ---- */
+const castName=id=>id==="connie"?"Connie Ventional":(CAST.CAST[id]&&CAST.CAST[id].n)||(CAST.FAMILY.filter(f=>f.id===id)[0]||{}).n||id;
+function castImg(id,o,size,cls){o=o||{};const nm=id+(o.mood?"-"+o.mood:"")+(o.outfit?"-"+o.outfit:""),p="/cast/"+nm+".svg";
+ if(!out[p])out[p]=CAST.svg(id,64,Object.assign({tall:1},o)).replace(/ class="cc[^"]*"/,"").replace(/ style="--cd:[^"]*"/,"")+"\n";
+ return'<img class="'+cls+'" src="'+p+'" width="'+size+'" height="'+Math.round(size*1.3)+'" alt="'+H(castName(id))+'">'}
+/* Connie, with an optional family member beside her, saying one line. */
+function cameo(fam,text,o){o=o||{};return'<aside class="sp-cameo noprint" aria-label="A cameo from Connie\u2019s family">'+castImg("connie",{mood:o.mood||"wink"},o.big||72,"sp-cs")+(fam?castImg(fam[0],fam[1]||{},62,"sp-cg"):"")+'<div class="sp-ct"><p><b>Connie:</b> \u201c'+H(text)+'\u201d</p>'+(o.btn===false?"":'<a class="btn" href="/#/connie">Meet the family</a>')+"</div></aside>"}
+const hashS=s=>{let h=0;for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;return h};
+const ageLine=y=>y<1981?(1981-y===1?"That was a year before I was born.":"That was "+(1981-y)+" years before I was born."):y===1981?"That is the year I was born.":"I turned "+(y-1981)+" that year.";
+const fromCameo=(key)=>{const c=CAST.CAMEO[key];return{fam:[c[0],c[1]],text:c[2]}};
+const strip=n=>String(n).replace(/ \((book|novel|Boss Fight Books)\)$/,"");
+/* one family member and one line for a timeline entry, by what kind of thing it is */
+const KPOOL={
+ hw:[["ram",{outfit:"garage"},n=>"Dad, Raymond, has read the manual for "+n+". Twice. He found a typo."],["conrad",{outfit:"lab"},n=>"Uncle Conrad wants the jumper settings for "+n+". He always wants the jumper settings."],["winnie",{},n=>"Grandma Winnie asks whether "+n+" has room to spare. She asks that about everything."],["emma",{},n=>"Emma 386 has opinions about the memory map of "+n+". Please say no before she starts."],["hiram",{},n=>"Hiram says "+n+" sounds like a fine place to live, somewhere above the one-megabyte line."]],
+ pe:[["sandy",{},n=>"Sandy Blaster wants to know whether "+n+" shares her IRQ. There will be a discussion."],["viv",{},n=>"Viv G. Adapter says "+n+" would look better in 256 colors."],["dot",{},n=>"Dot Matrix would like to print the manual for "+n+", slowly, in triplicate."],["mat",{},n=>"Mat the Mouse has already clicked on "+n+". He takes no responsibility."],["conrad",{},n=>"Uncle Conrad says "+n+" needs a driver. Then another driver. Then a reboot."]],
+ sw:[["winnie",{},n=>"Grandma Winnie says "+n+" would fit on her hard drive with room to spare. She says that about everything."],["floyd",{},n=>"Grandpa Floyd Dysk says "+n+" came on 14 disks. He does not remember where disk 7 went."],["conrad",{},n=>"Uncle Conrad has already edited CONFIG.SYS to make room for "+n+". It did not work. He is editing it again."],["augusta",{},n=>"Auntie Autoexec added "+n+" to her morning list. It runs first. Everything else waits."]],
+ g:[["zack",{},n=>"Zack Zip says he finished "+n+". He did not. He folds up when you ask about the ending."],["sandy",{},n=>"Sandy Blaster says the music in "+n+" sounds best on her card. Nobody asked."],["viv",{},n=>"Viv G. Adapter says "+n+" looks best in 256 colors. She will tell you again."],["nibble",{},n=>"Nibble has been playing "+n+" on the family computer. His high score is one seed."],["emma",{},n=>"Emma 386 knows exactly how much memory "+n+" needs. Please do not ask her."]],
+ bk:[["winnie",{},n=>"Grandma Winnie has read "+n+" twice. She keeps it next to her 40 megabytes."],["floyd",{},n=>"Grandpa Floyd Dysk says he was there for all of it. He was a floppy, in a shirt pocket."],["rhoda",{},n=>"My mom, Rhoda, says "+n+" is read-only. You can borrow it, but you cannot edit it."],["zack",{},n=>"Zack Zip has read "+n+" in the bookstore without buying it. Nobody has caught him."],["emma",{},n=>"Emma 386 has read "+n+" and wants to explain the footnotes. Please say no."]],
+ m:[["viv",{},n=>"Viv G. Adapter watched "+n+" in sixteen colors and still cried."],["nibble",{},n=>"Nibble watched "+n+" six times for the seeds scene. There is no seeds scene."],["dot",{},n=>"Dot Matrix wants to print the credits for "+n+". All of them. In triplicate."],["sandy",{},n=>"Sandy Blaster says the soundtrack of "+n+" would sound better on her card."]],
+ x:[["augusta",{},n=>"Auntie Autoexec wrote this one down at boot, in order."],["rhoda",{},n=>"Mom, Rhoda, says it is in the record now, and the record is read-only."],["floyd",{},n=>"Grandpa Floyd Dysk remembers this. Mostly he remembers the disk swapping."],["mo",{},n=>"Mo Dem heard about this at 2400 baud. It took a while."]]};
+const poolOf=k=>/^g[tnc]$/.test(k)?KPOOL.g:KPOOL[k]||KPOOL.x;
+function entryCameo(e,slugKey){const pool=poolOf(e.k),p=pool[hashS(slugKey)%pool.length];return cameo([p[0],p[1]],ageLine(e.y)+" "+p[2](strip(e.name)))}
+const eraKeys=["timeline","era","day","about","changes"];
+function eraCameo(slugKey,y){const c=fromCameo(eraKeys[hashS(slugKey)%eraKeys.length]);return cameo(c.fam,(y?ageLine(y)+" ":"")+c.text)}
+
 /* ---- one page per timeline entry ---- */
 sorted.forEach((e,idx)=>{const r=e.r,x=e.x,y=e.y,kind=KIND[e.k]||"Entry",sub=x.sub&&x.sub!==kind?x.sub:"";
  const path_="/history/"+e.slug+"/",dstr=dlabel(r[0]);
@@ -107,7 +134,7 @@ sorted.forEach((e,idx)=>{const r=e.r,x=e.x,y=e.y,kind=KIND[e.k]||"Entry",sub=x.s
   +'<p><a class="btn pri" href="/#/timeline/'+y+'">See '+y+" in the interactive timeline</a></p>"
   +'<h2>Facts</h2><dl class="sp-facts">'+facts.map(f=>"<div><dt>"+H(f[0])+"</dt><dd>"+H(f[1])+"</dd></div>").join("")+"</dl>"
   +(srcHtml?'<p class="tn">'+srcHtml+"</p>":"")
-  +aff(e.name,x.maker,e.name)+guideLine(e.k)
+  +aff(e.name,x.maker,e.name)+guideLine(e.k)+entryCameo(e,e.slug)
   +(rel.length?"<h2>Related</h2><ul>"+rel.join("")+"</ul>":"")
   +(more.length?'<h2>Also in '+y+"</h2><ul class=\"sp-cols\">"+more.map(z=>'<li><a href="'+link(z)+'">'+H(z.name)+"</a> <small>"+H(KIND[z.k]||"")+"</small></li>").join("")+'</ul><p><a href="/year/'+y+'/">Everything from '+y+"</a></p>":"")
   +'<nav class="sp-pn" aria-label="Previous and next">'+(prev?'<a href="'+link(prev)+'">&larr; '+H(prev.name)+" ("+prev.y+")</a>":"<span></span>")+(next?'<a href="'+link(next)+'">'+H(next.name)+" ("+next.y+") &rarr;</a>":"")+"</nav></article>";
@@ -123,6 +150,7 @@ years.forEach(y=>{const list=byYear.get(y),path_="/year/"+y+"/",pages=list.filte
  const py=years[years.indexOf(y)-1],ny=years[years.indexOf(y)+1];
  const body='<article class="sp-art"><h1>'+y+" in computing, games and technology</h1><p class=\"sp-lead\">"+list.length+" milestones from "+y+": "+kinds.map(a=>a[1].length+" "+(KIND_PL[a[0]]||"").toLowerCase()).join(", ")+'.</p><p><a class="btn pri" href="/#/timeline/'+y+'">Open '+y+' in the interactive timeline</a> <a class="btn" href="/decade/'+dec+'/">The '+H(dlabelD(dec))+"</a></p>"
   +kinds.map(a=>"<h2>"+H(KIND_PL[a[0]])+"</h2><ul class=\"sp-cols\">"+a[1].map(e=>"<li>"+(e.page?'<a href="'+link(e)+'">'+H(e.name)+"</a>":H(e.name))+"</li>").join("")+"</ul>").join("")
+  +eraCameo("y"+y,y)
   +'<nav class="sp-pn" aria-label="Previous and next year">'+(py?'<a href="/year/'+py+'/">&larr; '+py+"</a>":"<span></span>")+(ny?'<a href="/year/'+ny+'/">'+ny+" &rarr;</a>":"")+"</nav></article>";
  put(path_+"index.html",shell({path:path_,title,desc,crumbs,body,og:"website",ld:[{"@context":"https://schema.org","@type":"CollectionPage",name:y+" in computing and games",description:desc,url:abs(path_),isPartOf:{"@type":"WebSite",name:NAME,url:abs("/")}},crumbLD(crumbs)]}))});
 
@@ -141,6 +169,7 @@ decades.forEach(d=>{const ys=years.filter(y=>decadeOf(y)===d),path_="/decade/"+d
   +'<h2>Years</h2><ul class="sp-years">'+ys.map(y=>'<li><a href="/year/'+y+'/">'+y+"</a> <small>"+byYear.get(y).length+"</small></li>").join("")+"</ul>"
   +(picks.length?"<h2>Computers and software to know</h2><ul class=\"sp-cols\">"+picks.map(e=>'<li><a href="'+link(e)+'">'+H(e.name)+"</a> <small>"+e.y+"</small></li>").join("")+"</ul>":"")
   +shopBox("Collect "+(d==="before-1950"?"early computing":"the "+d),shop)
+  +eraCameo("d"+d,0)
   +'<nav class="sp-pn" aria-label="Other decades">'+decades.map(z=>z===d?"<span>"+H(dlabelD(z))+"</span>":'<a href="/decade/'+z+'/">'+H(dlabelD(z))+"</a>").join(" ")+"</nav></article>";
  put(path_+"index.html",shell({path:path_,title,desc,crumbs,body,og:"website",ld:[{"@context":"https://schema.org","@type":"CollectionPage",name:"Computing and games in "+short,description:desc,url:abs(path_),isPartOf:{"@type":"WebSite",name:NAME,url:abs("/")}},crumbLD(crumbs)]}))});
 
@@ -150,6 +179,7 @@ decades.forEach(d=>{const ys=years.filter(y=>decadeOf(y)===d),path_="/decade/"+d
  const desc="A browsable history of computers, software, games, movies and events from "+years[0]+" to "+years[years.length-1]+": "+rows.length.toLocaleString("en-US")+" entries, by decade and year.";
  const body='<article class="sp-art"><h1>Computer, game and technology history</h1><p class="sp-lead">'+rows.length.toLocaleString("en-US")+" milestones from "+years[0]+" to "+years[years.length-1]+": the machines, the software, the games, the movies and the court cases. Start with a decade, or jump to a year.</p><p><a class=\"btn pri\" href=\"/#/timeline\">Open the interactive timeline</a></p>"
   +decades.map(d=>{const ys=years.filter(y=>decadeOf(y)===d);return'<h2><a href="/decade/'+d+'/">'+H(dlabelD(d))+"</a></h2><ul class=\"sp-years\">"+ys.map(y=>'<li><a href="/year/'+y+'/">'+y+"</a></li>").join("")+"</ul>"}).join("")
+  +eraCameo("front",0)
   +'<h2>Exhibits</h2><p><a href="/museum/">See the exhibits in the museum collection</a></p></article>';
  put("/history/index.html",shell({path:path_,title,desc,crumbs,body,og:"website",ld:[{"@context":"https://schema.org","@type":"CollectionPage",name:"Computer, game and technology history",description:desc,url:abs(path_),isPartOf:{"@type":"WebSite",name:NAME,url:abs("/")}},crumbLD(crumbs)]}))}
 
@@ -162,11 +192,11 @@ decades.forEach(d=>{const ys=years.filter(y=>decadeOf(y)===d),path_="/decade/"+d
   const body='<article class="sp-art"><p class="sp-kicker">'+H(it.cat||"Exhibit")+"</p><h1>"+H(it.name)+"</h1><p class=\"sp-lead\">"+H(clean(it.text))+'</p><p><a class="btn pri" href="/#/item/'+H(it.id)+'">See this exhibit in the museum</a></p>'
    +'<h2>Specifications</h2><dl class="sp-facts">'+facts.map(f=>"<div><dt>"+H(f[0])+"</dt><dd>"+H(f[1])+"</dd></div>").join("")+"</dl>"
    +(refs.length?"<h2>References</h2><ul>"+refs.map(r=>'<li><a href="'+H(r.u)+'" rel="nofollow noopener" target="_blank">'+H(r.t||r.u)+"</a></li>").join("")+"</ul>":"")
-   +aff(it.name,it.maker,it.id)+guideLine("item")+"</article>";
+   +aff(it.name,it.maker,it.id)+guideLine("item")+(()=>{const pl=CAST.CAMEO.item.pool,p=pl[hashS(it.id)%pl.length];return cameo([p[0],p[1]],p[2])})()+"</article>";
   put(path_+"index.html",shell({path:path_,title,desc,crumbs,body,ld:[{"@context":"https://schema.org","@type":"Article",headline:it.name,description:desc,about:{"@type":"Thing",name:it.name},image:abs("/og.png"),author:ORG,publisher:ORG,mainEntityOfPage:abs(path_),inLanguage:"en"},crumbLD(crumbs)]}))});
  const path_="/museum/",crumbs=[["Home","/"],["Exhibits","/museum/"]];
  put("/museum/index.html",shell({path:path_,title:"Vintage computer exhibits and specifications | "+NAME,desc:"The exhibits in the "+NAME+" collection, with specifications and history.",crumbs,og:"website",
-  body:'<article class="sp-art"><h1>The exhibits</h1><p class="sp-lead">Machines from the museum floor, with specifications and history.</p><ul class="sp-cols">'+ITEMS.map(it=>'<li><a href="/museum/'+H(it.id)+'/">'+H(it.name)+"</a> <small>"+H(it.year||"")+"</small></li>").join("")+'</ul><p><a class="btn pri" href="/#/catalog">Browse the whole catalog</a></p></article>',
+  body:'<article class="sp-art"><h1>The exhibits</h1><p class="sp-lead">Machines from the museum floor, with specifications and history.</p><ul class="sp-cols">'+ITEMS.map(it=>'<li><a href="/museum/'+H(it.id)+'/">'+H(it.name)+"</a> <small>"+H(it.year||"")+"</small></li>").join("")+'</ul><p><a class="btn pri" href="/#/catalog">Browse the whole catalog</a></p>'+cameo(["ram",{outfit:"desk"}],"Dad, Raymond, catalogs everything. He has a form for it. The form has a form.")+'</article>',
   ld:[crumbLD(crumbs)]}))}
 
 /* ---- buyer guides ---- */
@@ -177,33 +207,54 @@ decades.forEach(d=>{const ys=years.filter(y=>decadeOf(y)===d),path_="/decade/"+d
   return'<div class="sp-pick"><h3>'+H(p.n)+'</h3><p class="sp-ptag">'+H(p.t)+"</p><p>"+H(p.w)+"</p>"+(p.s?'<p class="sp-pskip"><b>Watch out:</b> '+H(p.s)+"</p>":"")+lk(p)+(p.g?'<p class="sp-plinks"><a href="/guides/'+p.g+'/">Read the repair guide</a></p>':"")+"</div>"};
  GUIDES.forEach(g=>{const path_="/guides/"+g.slug+"/",crumbs=[["Home","/"],["Guides","/guides/"],[g.h1,path_]];
   const tl=(g.links||[]).map(n=>{const e=byName.get(n);if(!e||!e.page){console.log("guide link skipped (no page):",n);return""}return'<li><a href="'+link(e)+'">'+H(e.name)+"</a> <small>"+e.y+"</small></li>"}).filter(Boolean);
-  const others=GUIDES.filter(o=>o!==g).map(o=>'<li><a href="/guides/'+o.slug+'/">'+H(o.h1)+"</a></li>");
+  const others=GUIDES.filter(o=>o!==g).map(o=>'<li><a href="/guides/'+o.slug+'/">'+H(o.h1)+"</a></li>").concat(['<li><a href="/books/">The Bookshelf: books on computer and game history</a></li>']);
   const body='<article class="sp-art sp-guide"><p class="sp-kicker">Guide &middot; Updated '+H(dlabel(GUIDES_UPDATED))+"</p><h1>"+H(g.h1)+"</h1><p class=\"sp-lead\">"+H(g.lead)+"</p>"
-   +'<p class="sp-connie"><b>Connie says:</b> '+H(g.quip)+"</p>"
+   +cameo(null,g.quip,{big:84})
    +'<p class="sp-how"><b>How we pick.</b> A product makes the list only when reviewers and long-time collectors keep recommending it, it does one job well and it will still work in five years. No filler, no mystery brands, and no paid placements. Not every item has been through our own bench, so we go by reputation. Prices change, so check the listing.</p>'
    +'<p class="tn sp-disc">Some links on this page are affiliate links. If you buy through one, Conventional Memory earns a small commission at no cost to you. '+H(AFF_SHORT)+' <a href="/#/disclosure">Disclosure</a></p>'
    +(g.paths?"<h2>Pick your path</h2><ol>"+g.paths.map(p=>"<li><b>"+H(p[0])+".</b> "+H(p[1])+"</li>").join("")+"</ol>":"")
    +(g.safety?'<p class="sp-safe"><b>'+H(g.safety.split(":")[0])+".</b>"+H(g.safety.slice(g.safety.indexOf(":")+1))+"</p>":"")
    +(g.steps?"<h2>Step by step</h2><ol class=\"sp-steps\">"+g.steps.map(t=>"<li><b>"+H(t[0])+".</b> "+H(t[1])+"</li>").join("")+"</ol>":"")
    +g.sections.map(sec=>"<h2>"+H(sec.h)+"</h2><p>"+H(sec.intro)+"</p>"+sec.picks.map(pick).join("")).join("")
-   +"<h2>Skip these</h2><ul>"+g.skip.map(t=>"<li>"+H(t)+"</li>").join("")+"</ul>"
+   +"<h2>Skip these</h2><ul>"+g.skip.map(t=>"<li>"+H(t)+"</li>").join("")+"</ul>"+cameo([g.fam[0],g.fam[1]],g.fam[2],{mood:"happy"})
    +(tl.length?"<h2>From the timeline</h2><ul class=\"sp-cols\">"+tl.join("")+"</ul>":"")
    +"<h2>More guides</h2><ul>"+others.join("")+'</ul><p><a class="btn pri" href="/#/">Visit the museum</a></p></article>';
   put(path_+"index.html",shell({path:path_,title:g.title+" | "+NAME,desc:g.desc,crumbs,body,ld:[{"@context":"https://schema.org","@type":"Article",headline:g.h1,description:g.desc,datePublished:GUIDES_UPDATED,dateModified:GUIDES_UPDATED,image:abs("/og.png"),author:ORG,publisher:ORG,mainEntityOfPage:abs(path_),inLanguage:"en"},crumbLD(crumbs)]}))});
  const path_="/guides/",crumbs=[["Home","/"],["Guides","/guides/"]];
  put("/guides/index.html",shell({path:path_,title:"Retro computing guides: buy, fix and play | "+NAME,desc:"Practical guides for vintage computers: the gear worth buying, how to fix a dead machine and how to play old PC games today.",crumbs,og:"website",
-  body:'<article class="sp-art"><h1>Guides</h1><p class="sp-lead">Practical, funny and honest. What to buy, how to fix it and how to play on it.</p><ul class="sp-guidelist">'+GUIDES.map(g=>'<li><a href="/guides/'+g.slug+'/">'+H(g.h1)+"</a><br><span>"+H(g.desc)+"</span></li>").join("")+'</ul><p class="tn">'+H(AFF_SHORT)+' <a href="/#/disclosure">Disclosure</a></p></article>',
+  body:'<article class="sp-art"><h1>Guides</h1><p class="sp-lead">Practical, funny and honest. What to buy, how to fix it and how to play on it.</p><ul class="sp-guidelist">'+GUIDES.map(g=>'<li><a href="/guides/'+g.slug+'/">'+H(g.h1)+"</a><br><span>"+H(g.desc)+"</span></li>").join("")+'<li><a href="/books/">The Bookshelf</a><br><span>Books on computer and game history, from Sierra and Doom to consoles and virtual worlds.</span></li>'+'</ul><p class="tn">'+H(AFF_SHORT)+' <a href="/#/disclosure">Disclosure</a></p>'+cameo(["ram",{outfit:"desk"}],"Dad, Raymond, wrote these guides down so you do not have to read the manual first. He still thinks you should.")+'</article>',
   ld:[{"@context":"https://schema.org","@type":"CollectionPage",name:"Retro computing guides",description:"Guides for buying, fixing and playing on vintage computers.",url:abs(path_),isPartOf:{"@type":"WebSite",name:NAME,url:abs("/")}},crumbLD(crumbs)]}))}
+
+/* ---- the bookshelf ---- */
+{const path_="/books/",crumbs=[["Home","/"],["Books","/books/"]];
+ const PAL={sierra:"#0000aa",doom:"#aa0000",blizzard:"#aa5500",consoles:"#00aa00",makers:"#aa00aa",design:"#00aaaa",history:"#555599",fun:"#ff55ff"};
+ const ink=c=>{const n=parseInt(c.slice(1),16),f=v=>{v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)},L=.2126*f(n>>16&255)+.7152*f(n>>8&255)+.0722*f(n&255);return L>.4?"#000":"#fff"};
+ const L=(u,t)=>u?'<a href="'+H(u)+'" target="_blank" rel="sponsored noopener noreferrer">'+t+"</a>":"";
+ const info=t=>{const e=byName.get(t);if(!e)throw new Error("book not in the timeline: "+t);const sp=(e.x&&e.x.specs)||{};return{t,e,name:strip(t),au:sp.Author||"",pub:(sp.Publisher||"").replace(/ \(original\).*/,""),pg:+sp.Pages||0,y:String(e.r[0]).slice(0,4),why:e.r[4]}};
+ const links=b=>{if(!affOn())return"";const c=gearCtx(b.t,b.pub,b.t),f=gearFinds(c,b.t,b.pub)[0];if(!f)return"";const a=affUrl("amazon",f[1]),e=affUrl("ebay",f[1]);return'<p class="bk-l">'+[L(a,"Check Amazon"),L(e,"Check eBay")].filter(Boolean).join(" &middot; ")+"</p>"};
+ const seen=new Set(),spines=[];BOOKSHELF.forEach(sh=>sh.books.forEach(t=>{if(seen.has(t))return;seen.add(t);const b=info(t),c=PAL[sh.id]||"#555",ht=120+Math.min(b.pg||320,800)/800*140,w=34+(hashS(t)%3)*8;
+  spines.push('<a class="spine" href="#bk-'+hashS(t)+'" style="height:'+ht.toFixed(0)+"px;width:"+w+"px;background:"+c+";color:"+ink(c)+'" title="'+H(b.name+(b.au?", "+b.au:""))+'" aria-label="'+H(b.name+(b.au?" by "+b.au:"")+", "+b.y)+'"><span>'+H(b.name)+"</span><small>"+H(b.y.slice(2))+"</small></a>")}));
+ const card=t=>{const b=info(t);return'<div class="bk" id="bk-'+hashS(t)+'"><h4>'+(b.e.page?'<a href="'+link(b.e)+'">'+H(b.name)+"</a>":H(b.name))+'</h4><p class="bk-m">'+H([b.au,b.y,b.pub,b.pg?b.pg+" pages":""].filter(Boolean).join(" \u00b7 "))+"</p><p>"+H(b.why)+"</p>"+links(b)+"</div>"};
+ const total=seen.size;
+ const body='<article class="sp-art sp-books"><p class="sp-kicker">The Bookshelf</p><h1>Books on computer and game history</h1><p class="sp-lead">'+total+' books on computer history, game history and how it all gets made, from Sierra and Doom to consoles, virtual worlds and one very violent cat. Each spine is a book, and taller means more pages.</p>'
+  +cameo(null,"Welcome to the library. Everything here is also a timeline entry, so you can read about the book and then about the thing it is about. No shushing.",{mood:"happy",big:84})
+  +'<p class="tn sp-disc">Some links on this page are affiliate links. If you buy through one, Conventional Memory earns a small commission at no cost to you. '+H(AFF_SHORT)+' <a href="/#/disclosure">Disclosure</a></p>'
+  +'<div class="shelfw"><div class="shelf">'+spines.join("")+"</div></div>"
+  +BOOKSHELF.map(sh=>'<h2 id="sh-'+H(sh.id)+'">'+H(sh.h)+"</h2><p>"+H(sh.intro)+"</p>"+cameo([sh.reader[0],sh.reader[1]],sh.reader[2],{mood:"happy",btn:false})+'<div class="bkgrid">'+sh.books.map(card).join("")+"</div>").join("")
+  +cameo(["winnie",{}],"Grandma Winnie says the best book is the next one. She has forty megabytes of room for it.",{mood:"wink"})
+  +'<h2>More</h2><ul><li><a href="/guides/">Guides: what to buy, how to fix it and how to play on it</a></li><li><a href="/history/">The timeline, with every book on it</a></li><li><a href="/#/books">The interactive Bookshelf</a></li></ul></article>';
+ put("/books/index.html",shell({path:path_,title:"Books on computer and game history | "+NAME,desc:"A bookshelf of the best books on computer history, game history and game development, from Sierra and Doom to consoles and virtual worlds.",crumbs,og:"website",body,
+  ld:[{"@context":"https://schema.org","@type":"CollectionPage",name:"Books on computer and game history",description:"Books on computer history, game history and game development.",url:abs(path_),isPartOf:{"@type":"WebSite",name:NAME,url:abs("/")},mainEntity:{"@type":"ItemList",itemListElement:[...seen].map((t,i)=>{const b=info(t);return{"@type":"ListItem",position:i+1,item:{"@type":"Book",name:b.name,author:{"@type":"Person",name:b.au},datePublished:b.y}}})}},crumbLD(crumbs)]}))}
 
 /* ---- 404, robots, sitemap ---- */
 put("/404.html",shell({path:"/404.html",title:"Page not found | "+NAME,desc:"That page is not in the museum. Try the timeline or the catalog.",noindex:1,og:"website",
- body:'<article class="sp-art"><h1>Page not found</h1><p class="sp-lead">That page is not in the museum, or it moved.</p><p><a class="btn pri" href="/#/">Go to the museum</a> <a class="btn" href="/history/">Browse the timeline</a> <a class="btn" href="/#/search">Search</a></p></article>'}));
+ body:'<article class="sp-art"><h1>Page not found</h1><p class="sp-lead">That page is not in the museum, or it moved.</p><p><a class="btn pri" href="/#/">Go to the museum</a> <a class="btn" href="/history/">Browse the timeline</a> <a class="btn" href="/#/search">Search</a></p>'+(()=>{const c=fromCameo("nf");return cameo(c.fam,c.text,{mood:"wow",big:84})})()+'</article>'}));
 put("/robots.txt","User-agent: *\nAllow: /\n\nSitemap: "+abs("/sitemap.xml")+"\n");
-{const urls=["/","/history/","/museum/","/guides/"].concat(GUIDES.map(g=>"/guides/"+g.slug+"/"),[]).concat(decades.map(d=>"/decade/"+d+"/"),years.map(y=>"/year/"+y+"/"),ITEMS.map(i=>"/museum/"+i.id+"/"),sorted.map(e=>"/history/"+e.slug+"/"));
- put("/sitemap.xml",'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+urls.map(u=>"<url><loc>"+H(abs(u))+"</loc>"+(u==="/"?"<changefreq>weekly</changefreq><priority>1.0</priority>":/^\/guides\//.test(u)?"<priority>0.8</priority>":/^\/(history|museum|decade)\/$|^\/decade\//.test(u)?"<priority>0.7</priority>":"")+"</url>").join("\n")+"\n</urlset>\n")}
+{const urls=["/","/history/","/museum/","/guides/","/books/"].concat(GUIDES.map(g=>"/guides/"+g.slug+"/"),[]).concat(decades.map(d=>"/decade/"+d+"/"),years.map(y=>"/year/"+y+"/"),ITEMS.map(i=>"/museum/"+i.id+"/"),sorted.map(e=>"/history/"+e.slug+"/"));
+ put("/sitemap.xml",'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+urls.map(u=>"<url><loc>"+H(abs(u))+"</loc>"+(u==="/"?"<changefreq>weekly</changefreq><priority>1.0</priority>":/^\/(guides|books)\//.test(u)?"<priority>0.8</priority>":/^\/(history|museum|decade)\/$|^\/decade\//.test(u)?"<priority>0.7</priority>":"")+"</url>").join("\n")+"\n</urlset>\n")}
 
 /* ---- write or check ---- */
-const GEN=["history","year","decade","museum","guides"],FILES=["sitemap.xml","robots.txt","404.html"];
+const GEN=["history","year","decade","museum","guides","books","cast"],FILES=["sitemap.xml","robots.txt","404.html"];
 function walk(d){const o=[];if(!fs.existsSync(d))return o;fs.readdirSync(d,{withFileTypes:true}).forEach(e=>{const p=path.join(d,e.name);if(e.isDirectory())o.push(...walk(p));else o.push(p)});return o}
 if(CHECK){const want=Object.keys(out),have=new Set([].concat(...GEN.map(g=>walk(path.join(root,g))),FILES.map(f=>path.join(root,f)).filter(f=>fs.existsSync(f))).map(f=>"/"+path.relative(root,f).split(path.sep).join("/")));
  const miss=want.filter(p=>!have.has(p)),extra=[...have].filter(p=>!out[p]),diff=want.filter(p=>have.has(p)&&fs.readFileSync(path.join(root,p),"utf8")!==out[p]);

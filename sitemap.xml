@@ -4,6 +4,7 @@
 <url><loc>https://conventionalmemory.io/history/</loc><priority>0.7</priority></url>
 <url><loc>https://conventionalmemory.io/museum/</loc><priority>0.7</priority></url>
 <url><loc>https://conventionalmemory.io/guides/</loc><priority>0.8</priority></url>
+<url><loc>https://conventionalmemory.io/books/</loc><priority>0.8</priority></url>
 <url><loc>https://conventionalmemory.io/guides/retro-pc-starter-kit/</loc><priority>0.8</priority></url>
 <url><loc>https://conventionalmemory.io/guides/fix-a-dead-vintage-computer/</loc><priority>0.8</priority></url>
 <url><loc>https://conventionalmemory.io/guides/play-old-pc-games-on-modern-gear/</loc><priority>0.8</priority></url>
@@ -309,6 +310,7 @@
 <url><loc>https://conventionalmemory.io/history/imagic-founded-1981/</loc></url>
 <url><loc>https://conventionalmemory.io/history/cranston-manor-1981/</loc></url>
 <url><loc>https://conventionalmemory.io/history/kaboom-1981/</loc></url>
+<url><loc>https://conventionalmemory.io/history/the-soul-of-a-new-machine-1981/</loc></url>
 <url><loc>https://conventionalmemory.io/history/donkey-kong-1981/</loc></url>
 <url><loc>https://conventionalmemory.io/history/microsoft-buys-86-dos-from-seattle-computer-products-1981/</loc></url>
 <url><loc>https://conventionalmemory.io/history/cassette-vision-1981/</loc></url>
@@ -491,6 +493,7 @@
 <url><loc>https://conventionalmemory.io/history/epyx-500xj-joystick-1984/</loc></url>
 <url><loc>https://conventionalmemory.io/history/f-15-strike-eagle-1984/</loc></url>
 <url><loc>https://conventionalmemory.io/history/fidonet-created-1984/</loc></url>
+<url><loc>https://conventionalmemory.io/history/hackers-heroes-of-the-computer-revolution-1984/</loc></url>
 <url><loc>https://conventionalmemory.io/history/impossible-mission-1984/</loc></url>
 <url><loc>https://conventionalmemory.io/history/intel-above-board-1984/</loc></url>
 <url><loc>https://conventionalmemory.io/history/kung-fu-master-1984/</loc></url>
@@ -858,6 +861,7 @@
 <url><loc>https://conventionalmemory.io/history/sony-promavica-mvc-2000/</loc></url>
 <url><loc>https://conventionalmemory.io/history/subor-1989/</loc></url>
 <url><loc>https://conventionalmemory.io/history/test-drive-ii-the-duel-1989/</loc></url>
+<url><loc>https://conventionalmemory.io/history/the-cuckoos-egg-1989/</loc></url>
 <url><loc>https://conventionalmemory.io/history/their-finest-missions-volume-one-1989/</loc></url>
 <url><loc>https://conventionalmemory.io/history/tseng-labs-et4000/</loc></url>
 <url><loc>https://conventionalmemory.io/history/us-robotics-sportster-1989/</loc></url>
@@ -1098,6 +1102,7 @@
 <url><loc>https://conventionalmemory.io/history/turtle-beach-multisound-1992/</loc></url>
 <url><loc>https://conventionalmemory.io/history/vesa-local-bus-standard-1992/</loc></url>
 <url><loc>https://conventionalmemory.io/history/watara-supervision-1992/</loc></url>
+<url><loc>https://conventionalmemory.io/history/accidental-empires-1992/</loc></url>
 <url><loc>https://conventionalmemory.io/history/amiga-600-1992/</loc></url>
 <url><loc>https://conventionalmemory.io/history/intel-486dx2-1992/</loc></url>
 <url><loc>https://conventionalmemory.io/history/star-wars-the-empire-strikes-back-1992-video-game/</loc></url>
@@ -1179,6 +1184,7 @@
 <url><loc>https://conventionalmemory.io/history/macintosh-color-classic-1993/</loc></url>
 <url><loc>https://conventionalmemory.io/history/fm-towns-marty-1993/</loc></url>
 <url><loc>https://conventionalmemory.io/history/star-fox-1993/</loc></url>
+<url><loc>https://conventionalmemory.io/history/game-over-how-nintendo-zapped-an-american-industry-1993/</loc></url>
 <url><loc>https://conventionalmemory.io/history/intel-pentium-1993/</loc></url>
 <url><loc>https://conventionalmemory.io/history/kirbys-adventure-1993/</loc></url>
 <url><loc>https://conventionalmemory.io/history/nba-jam-1993/</loc></url>
@@ -1244,6 +1250,7 @@
 <url><loc>https://conventionalmemory.io/history/epson-stylus-color-1994/</loc></url>
 <url><loc>https://conventionalmemory.io/history/ess-audiodrive-es1688/</loc></url>
 <url><loc>https://conventionalmemory.io/history/gravis-blackhawk-digital-joystick-1994/</loc></url>
+<url><loc>https://conventionalmemory.io/history/insanely-great-1994/</loc></url>
 <url><loc>https://conventionalmemory.io/history/intel-pentium-p54c-1994/</loc></url>
 <url><loc>https://conventionalmemory.io/history/jumpstart-kindergarten-1994/</loc></url>
 <url><loc>https://conventionalmemory.io/history/kings-quest-vii-the-princeless-bride-1994/</loc></url>
@@ -1470,6 +1477,7 @@
 <url><loc>https://conventionalmemory.io/history/sony-vaio-1996/</loc></url>
 <url><loc>https://conventionalmemory.io/history/turtle-beach-tropez-1996/</loc></url>
 <url><loc>https://conventionalmemory.io/history/videologic-apocalypse-3d-powervr-pcx1-1996/</loc></url>
+<url><loc>https://conventionalmemory.io/history/where-wizards-stay-up-late-1996/</loc></url>
 <url><loc>https://conventionalmemory.io/history/usb-1-0-1996/</loc></url>
 <url><loc>https://conventionalmemory.io/history/amd-completes-purchase-of-nexgen-1996/</loc></url>
 <url><loc>https://conventionalmemory.io/history/duke-nukem-3d-1996/</loc></url>
@@ -1683,6 +1691,7 @@
 <url><loc>https://conventionalmemory.io/history/starsiege-tribes-1998/</loc></url>
 <url><loc>https://conventionalmemory.io/history/alcatel-speed-touch-usb-1999/</loc></url>
 <url><loc>https://conventionalmemory.io/history/bonzi-buddy-1999/</loc></url>
+<url><loc>https://conventionalmemory.io/history/dealers-of-lightning-1999/</loc></url>
 <url><loc>https://conventionalmemory.io/history/elsa-revelator-1999/</loc></url>
 <url><loc>https://conventionalmemory.io/history/epson-stylus-photo-700-1999/</loc></url>
 <url><loc>https://conventionalmemory.io/history/ibm-microdrive-1999/</loc></url>
@@ -1746,6 +1755,7 @@
 <url><loc>https://conventionalmemory.io/history/ieee-802-11b-wi-fi-1999/</loc></url>
 <url><loc>https://conventionalmemory.io/history/handspring-visor-1999/</loc></url>
 <url><loc>https://conventionalmemory.io/history/age-of-empires-ii-the-age-of-kings-1999/</loc></url>
+<url><loc>https://conventionalmemory.io/history/code-the-hidden-language-of-computer-hardware-and-software-1999/</loc></url>
 <url><loc>https://conventionalmemory.io/history/hp-pavilion-notebooks-1999/</loc></url>
 <url><loc>https://conventionalmemory.io/history/microsoft-intellimouse-explorer-1999/</loc></url>
 <url><loc>https://conventionalmemory.io/history/microsoft-intellimouse-with-intellieye-1999/</loc></url>
@@ -1879,6 +1889,7 @@
 <url><loc>https://conventionalmemory.io/history/nintendo-gamecube-japan-2001/</loc></url>
 <url><loc>https://conventionalmemory.io/history/nimda-worm-spreads-2001/</loc></url>
 <url><loc>https://conventionalmemory.io/history/silent-hill-2-2001/</loc></url>
+<url><loc>https://conventionalmemory.io/history/the-ultimate-history-of-video-games-2001/</loc></url>
 <url><loc>https://conventionalmemory.io/history/zoo-tycoon-2001/</loc></url>
 <url><loc>https://conventionalmemory.io/history/archos-jukebox-studio-2001/</loc></url>
 <url><loc>https://conventionalmemory.io/history/pocket-pc-2002/</loc></url>
@@ -1952,6 +1963,8 @@
 <url><loc>https://conventionalmemory.io/history/ieee-1394b-firewire-800-published/</loc></url>
 <url><loc>https://conventionalmemory.io/history/linksys-wrt54g-2002/</loc></url>
 <url><loc>https://conventionalmemory.io/history/creative-commons-releases-its-first-licenses-2002/</loc></url>
+<url><loc>https://conventionalmemory.io/history/designing-virtual-worlds-2003/</loc></url>
+<url><loc>https://conventionalmemory.io/history/dungeons-and-dreamers-2003/</loc></url>
 <url><loc>https://conventionalmemory.io/history/gameking-2003/</loc></url>
 <url><loc>https://conventionalmemory.io/history/logitech-z-5500/</loc></url>
 <url><loc>https://conventionalmemory.io/history/olympus-e-1-2003/</loc></url>
@@ -1972,6 +1985,7 @@
 <url><loc>https://conventionalmemory.io/history/windows-server-2003/</loc></url>
 <url><loc>https://conventionalmemory.io/history/apple-ipod-3rd-generation-2003/</loc></url>
 <url><loc>https://conventionalmemory.io/history/linkedin-2003/</loc></url>
+<url><loc>https://conventionalmemory.io/history/masters-of-doom-2003/</loc></url>
 <url><loc>https://conventionalmemory.io/history/enter-the-matrix-2003/</loc></url>
 <url><loc>https://conventionalmemory.io/history/rise-of-nations-2003/</loc></url>
 <url><loc>https://conventionalmemory.io/history/wordpress-2003/</loc></url>
@@ -2014,6 +2028,7 @@
 <url><loc>https://conventionalmemory.io/history/deus-ex-invisible-war-2003/</loc></url>
 <url><loc>https://conventionalmemory.io/history/playstation-extra-psx-2003/</loc></url>
 <url><loc>https://conventionalmemory.io/history/linux-2-6-2003/</loc></url>
+<url><loc>https://conventionalmemory.io/history/a-theory-of-fun-for-game-design-2004/</loc></url>
 <url><loc>https://conventionalmemory.io/history/belkin-nostromo-speedpad-n52-2004/</loc></url>
 <url><loc>https://conventionalmemory.io/history/c64-direct-to-tv-2004/</loc></url>
 <url><loc>https://conventionalmemory.io/history/elgato-eyetv-2004/</loc></url>
@@ -2249,6 +2264,7 @@
 <url><loc>https://conventionalmemory.io/history/apple-ipod-shuffle-3rd-generation-2009/</loc></url>
 <url><loc>https://conventionalmemory.io/history/internet-explorer-8-2009/</loc></url>
 <url><loc>https://conventionalmemory.io/history/leisure-suit-larry-box-office-bust-2009/</loc></url>
+<url><loc>https://conventionalmemory.io/history/racing-the-beam-2009/</loc></url>
 <url><loc>https://conventionalmemory.io/history/nintendo-dsi-2009/</loc></url>
 <url><loc>https://conventionalmemory.io/history/gp2x-wiz-2009/</loc></url>
 <url><loc>https://conventionalmemory.io/history/minecraft-first-public-build-2009/</loc></url>
@@ -2279,11 +2295,13 @@
 <url><loc>https://conventionalmemory.io/history/just-dance-2009/</loc></url>
 <url><loc>https://conventionalmemory.io/history/nintendo-dsi-xl-2009/</loc></url>
 <url><loc>https://conventionalmemory.io/history/doom-ii-rpg-2009/</loc></url>
+<url><loc>https://conventionalmemory.io/history/commodore-a-company-on-the-edge-2010/</loc></url>
 <url><loc>https://conventionalmemory.io/history/pandora-2010/</loc></url>
 <url><loc>https://conventionalmemory.io/history/megazeux-2-83-2010/</loc></url>
 <url><loc>https://conventionalmemory.io/history/google-nexus-one-2010/</loc></url>
 <url><loc>https://conventionalmemory.io/history/heavy-rain-2010/</loc></url>
 <url><loc>https://conventionalmemory.io/history/nvidia-geforce-gtx-480-2010/</loc></url>
+<url><loc>https://conventionalmemory.io/history/replay-the-history-of-video-games-2010/</loc></url>
 <url><loc>https://conventionalmemory.io/history/fruit-ninja-2010/</loc></url>
 <url><loc>https://conventionalmemory.io/history/steam-launches-for-mac-os-x-2010/</loc></url>
 <url><loc>https://conventionalmemory.io/history/samsung-galaxy-s-2010/</loc></url>
@@ -2309,6 +2327,8 @@
 <url><loc>https://conventionalmemory.io/history/world-of-warcraft-cataclysm-2010/</loc></url>
 <url><loc>https://conventionalmemory.io/history/infinity-blade-2010/</loc></url>
 <url><loc>https://conventionalmemory.io/history/canon-powershot-s100-2011/</loc></url>
+<url><loc>https://conventionalmemory.io/history/super-mario-how-nintendo-conquered-america-2011/</loc></url>
+<url><loc>https://conventionalmemory.io/history/the-making-of-prince-of-persia-journals-1985-1993/</loc></url>
 <url><loc>https://conventionalmemory.io/history/intel-sandy-bridge-2nd-generation-core-2011/</loc></url>
 <url><loc>https://conventionalmemory.io/history/fujifilm-finepix-x100-2011/</loc></url>
 <url><loc>https://conventionalmemory.io/history/apple-ipad-2-2011/</loc></url>
@@ -2328,6 +2348,7 @@
 <url><loc>https://conventionalmemory.io/history/bastion-2011/</loc></url>
 <url><loc>https://conventionalmemory.io/history/mac-os-x-10-7-lion-2011/</loc></url>
 <url><loc>https://conventionalmemory.io/history/temple-run-2011/</loc></url>
+<url><loc>https://conventionalmemory.io/history/ready-player-one-novel-2011/</loc></url>
 <url><loc>https://conventionalmemory.io/history/deus-ex-human-revolution-2011/</loc></url>
 <url><loc>https://conventionalmemory.io/history/steve-jobs-resigns-as-apple-ceo-2011/</loc></url>
 <url><loc>https://conventionalmemory.io/history/dark-souls-2011/</loc></url>
@@ -2349,6 +2370,8 @@
 <url><loc>https://conventionalmemory.io/history/amd-radeon-hd-7970/</loc></url>
 <url><loc>https://conventionalmemory.io/history/mario-kart-7-2011/</loc></url>
 <url><loc>https://conventionalmemory.io/history/zynga-goes-public-2011/</loc></url>
+<url><loc>https://conventionalmemory.io/history/atari-inc-business-is-fun-2012/</loc></url>
+<url><loc>https://conventionalmemory.io/history/playing-at-the-world-2012/</loc></url>
 <url><loc>https://conventionalmemory.io/history/indie-game-the-movie-2012/</loc></url>
 <url><loc>https://conventionalmemory.io/history/sopa-and-pipa-blackout-protests-2012/</loc></url>
 <url><loc>https://conventionalmemory.io/history/megaupload-shut-down-by-us-authorities-2012/</loc></url>
@@ -2399,6 +2422,7 @@
 <url><loc>https://conventionalmemory.io/history/wii-mini-2012/</loc></url>
 <url><loc>https://conventionalmemory.io/history/neo-geo-x-2012/</loc></url>
 <url><loc>https://conventionalmemory.io/history/thq-files-for-bankruptcy-2012/</loc></url>
+<url><loc>https://conventionalmemory.io/history/stay-awhile-and-listen-book-i-2013/</loc></url>
 <url><loc>https://conventionalmemory.io/history/ouya-2013/</loc></url>
 <url><loc>https://conventionalmemory.io/history/nvidia-shield-portable-2013/</loc></url>
 <url><loc>https://conventionalmemory.io/history/nintendo-2ds-2013/</loc></url>
@@ -2406,6 +2430,9 @@
 <url><loc>https://conventionalmemory.io/history/gamestick-2013/</loc></url>
 <url><loc>https://conventionalmemory.io/history/playstation-4-2013/</loc></url>
 <url><loc>https://conventionalmemory.io/history/xbox-one-2013/</loc></url>
+<url><loc>https://conventionalmemory.io/history/console-wars-2014/</loc></url>
+<url><loc>https://conventionalmemory.io/history/stay-awhile-and-listen-book-ii-2014/</loc></url>
+<url><loc>https://conventionalmemory.io/history/zzt-boss-fight-books-2014/</loc></url>
 <url><loc>https://conventionalmemory.io/history/new-nintendo-3ds-2014/</loc></url>
 <url><loc>https://conventionalmemory.io/history/zx-spectrum-vega-2015/</loc></url>
 <url><loc>https://conventionalmemory.io/history/nvidia-shield-android-tv-2015/</loc></url>
@@ -2414,23 +2441,31 @@
 <url><loc>https://conventionalmemory.io/history/fuze-tomahawk-f1-2016/</loc></url>
 <url><loc>https://conventionalmemory.io/history/duke-nukem-3d-20th-anniversary-world-tour-2016/</loc></url>
 <url><loc>https://conventionalmemory.io/history/nes-classic-edition-2016/</loc></url>
+<url><loc>https://conventionalmemory.io/history/blood-sweat-and-pixels-2017/</loc></url>
+<url><loc>https://conventionalmemory.io/history/once-upon-a-point-and-click-2017/</loc></url>
 <url><loc>https://conventionalmemory.io/history/analogue-nt-mini-2017/</loc></url>
 <url><loc>https://conventionalmemory.io/history/nintendo-switch-2017/</loc></url>
 <url><loc>https://conventionalmemory.io/history/super-nes-classic-edition-2017/</loc></url>
 <url><loc>https://conventionalmemory.io/history/doom-vfr-2017/</loc></url>
+<url><loc>https://conventionalmemory.io/history/stairway-to-badass-the-making-and-remaking-of-doom-2018/</loc></url>
 <url><loc>https://conventionalmemory.io/history/analogue-super-nt-2018/</loc></url>
 <url><loc>https://conventionalmemory.io/history/neo-geo-mini-2018/</loc></url>
+<url><loc>https://conventionalmemory.io/history/game-engine-black-book-doom-2018/</loc></url>
 <url><loc>https://conventionalmemory.io/history/playstation-classic-2018/</loc></url>
+<url><loc>https://conventionalmemory.io/history/rocket-jump-quake-and-the-golden-age-of-first-person-shooters-2019/</loc></url>
 <url><loc>https://conventionalmemory.io/history/analogue-mega-sg-2019/</loc></url>
 <url><loc>https://conventionalmemory.io/history/apple-ipod-touch-7th-generation-2019/</loc></url>
 <url><loc>https://conventionalmemory.io/history/sega-genesis-mini-2019/</loc></url>
 <url><loc>https://conventionalmemory.io/history/nintendo-switch-lite-2019/</loc></url>
+<url><loc>https://conventionalmemory.io/history/not-all-fairy-tales-have-happy-endings-2020/</loc></url>
 <url><loc>https://conventionalmemory.io/history/doom-eternal-2020/</loc></url>
 <url><loc>https://conventionalmemory.io/history/evercade-2020/</loc></url>
 <url><loc>https://conventionalmemory.io/history/turbografx-16-mini-2020/</loc></url>
+<url><loc>https://conventionalmemory.io/history/dungeon-crawler-carl-2020/</loc></url>
 <url><loc>https://conventionalmemory.io/history/doom-eternal-the-ancient-gods-2020/</loc></url>
 <url><loc>https://conventionalmemory.io/history/xbox-series-x-and-series-s-2020/</loc></url>
 <url><loc>https://conventionalmemory.io/history/playstation-5-2020/</loc></url>
+<url><loc>https://conventionalmemory.io/history/press-reset-2021/</loc></url>
 <url><loc>https://conventionalmemory.io/history/atari-vcs-2021/</loc></url>
 <url><loc>https://conventionalmemory.io/history/polymega-2021/</loc></url>
 <url><loc>https://conventionalmemory.io/history/nintendo-switch-oled-model-2021/</loc></url>
@@ -2439,6 +2474,7 @@
 <url><loc>https://conventionalmemory.io/history/steam-deck-2022/</loc></url>
 <url><loc>https://conventionalmemory.io/history/playdate-2022/</loc></url>
 <url><loc>https://conventionalmemory.io/history/sega-genesis-mini-2-2022/</loc></url>
+<url><loc>https://conventionalmemory.io/history/doom-guy-life-in-first-person-2023/</loc></url>
 <url><loc>https://conventionalmemory.io/history/lenovo-legion-go-2023/</loc></url>
 <url><loc>https://conventionalmemory.io/history/atari-2600/</loc></url>
 <url><loc>https://conventionalmemory.io/history/analogue-duo-2023/</loc></url>

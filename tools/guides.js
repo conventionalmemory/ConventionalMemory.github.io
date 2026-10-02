@@ -38,6 +38,7 @@ const GUIDES=[
  h1:"Retro PC starter kit: the gear worth buying",
  lead:"You found a beige box at a garage sale. Congratulations, you now own a project. Here is the short list of gear that is worth the money, and the stuff that is not.",
  quip:"Rule one of vintage computers: it will not work the first time. Rule two: that is the fun part.",
+ fam:["conrad",{outfit:"lab"},"That is my Uncle Conrad. He writes the jumper settings on a sticker inside the case. Then he loses the sticker."],
  links:["IBM PC (5150)","IBM PC/AT","Intel 80486DX","Intel Pentium","MS-DOS 6.22","Windows 95","IBM Model M keyboard","CompactFlash"],
  sections:[
   {h:"The bench basics",
@@ -83,6 +84,7 @@ const GUIDES=[
  h1:"How to fix a dead vintage computer",
  lead:"It sat in a basement for twenty years and now it will not turn on. Do not panic, do not plug it in yet, and do not open the monitor. Most dead machines have one of five problems, and four of them are cheap to fix.",
  quip:"If the computer smells like a swimming pool, the battery leaked. If it smells like toast, unplug it. Right now.",
+ fam:["ram",{outfit:"garage"},"My dad, Raymond, in his garage clothes. He supervises every repair by counting the screwdrivers. He has never touched one."],
  links:["Commodore Amiga 500","Macintosh SE/30","Apple Macintosh SE","Atari 520ST","IBM PC/AT","Intel 80486DX","Commodore 64","Apple II"],
  safety:"Safety first: CRT monitors and old power supplies can hold a dangerous charge long after they are unplugged, so leave them closed unless you know how to discharge them. Work with leaded solder in a ventilated room and wash your hands afterward. Touch bare metal before you touch a board, or wear a wrist strap.",
  steps:[
@@ -137,6 +139,7 @@ const GUIDES=[
  h1:"How to play old PC games today",
  lead:"The games are older than some of your coworkers, and they are still good. There are three ways to play them, and each has a few pieces of gear worth owning.",
  quip:"Yes, you can play Doom on a fridge. Please do not make me prove it.",
+ fam:["zack",{},"Zack Zip says he finished every one of these games. He did not. He folds up when you ask about the ending."],
  links:["Doom","Descent","Myst","Sound Blaster 16","Roland MT-32","Gravis UltraSound","Windows 95"],
  paths:[
   ["The easy way: emulators","Use a modern PC and free software. DOSBox-Staging and ScummVM handle DOS and adventure games, and 86Box or PCem can run Windows 95 and 98 era games. Buy legal copies of the games from stores such as GOG, which sell DOS classics ready to run."],

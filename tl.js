@@ -5,7 +5,7 @@
 /* Approximate US consumer price index (CPI-U annual averages), used only for the "in today's money" hint. */
 var TLMIN=1972,TLMAX=2026;
 var CPI={1972:41.8,1973:44.4,1974:49.3,1975:53.8,1976:56.9,1977:60.6,1978:65.2,1979:72.6,1980:82.4,1981:90.9,1982:96.5,1983:99.6,1984:103.9,1985:107.6,1986:109.6,1987:113.6,1988:118.3,1989:124.0,1990:130.7,1991:136.2,1992:140.3,1993:144.5,1994:148.2,1995:152.4,1996:156.9,1997:160.5,1998:163.0,1999:166.6,2000:172.2,2001:177.1,2002:179.9,2003:184.0,2004:188.9,2005:195.3,2006:201.6,2007:207.3,2008:215.3,2009:214.5,2010:218.1},CPI_NOW=322;
-var TLGROUP={hw:"tech",pe:"tech",sw:"tech",p:"tech",gt:"games",gn:"games",gc:"games",e:"ind",i:"mus",m:"cult",w:"cult",u:"cult"};
+var TLGROUP={hw:"tech",pe:"tech",sw:"tech",p:"tech",gt:"games",gn:"games",gc:"games",e:"ind",i:"mus",m:"cult",bk:"cult",w:"cult",u:"cult"};
 var TLGN={tech:["Tech","#0000aa"],games:["Games","#00aa00"],ind:["Industry","#aa0000"],mus:["Museum","#aa00aa"],cult:["Culture","#aa5500"]};
 var TLY=0,TLOPEN={},TLQ2="";
 
@@ -41,7 +41,7 @@ var TLMODE="year",TLX2={price:0,conf:0,conn:0};
 function tlPass(x){if(x.k==="i"||x.k==="p")return true;if(TLX2.price&&!usdOf(x.p))return false;if(TLX2.conf&&!x.s)return false;if(TLX2.conn&&!tlLinks(x.t).length)return false;return true}
 function tlHay(x){if(x.i)return x.i.name+" "+x.i.maker+" "+(x.i.text||"");var e=typeof TLX!=="undefined"?TLX[x.t]:null,s="";if(e){s=(e.maker||"")+" "+(e.dev||"")+" "+(e.detail||"")+" "+Object.keys(e.specs||{}).map(function(k){return e.specs[k]}).join(" ")}var g=typeof GX!=="undefined"?GX[x.t]:null;if(g)s+=" "+(g.g||"")+" "+gxPlats(g).join(" ");return x.t+" "+(x.n||"")+" "+s}
 var TLREV=null,TLREL={"sequel":"sequel","prequel":"prequel","successor":"successor","predecessor":"predecessor","requires":"requires","ran on":"ran on","same series":"same series","same studio":"same studio","competitor":"rival","based on":"based on","bundled with":"bundled with","upgrade of":"upgrade of","uses":"uses"};
-var TLINV={"sequel":"prequel","prequel":"sequel","successor":"predecessor","predecessor":"successor","requires":"needed by","ran on":"ran this","same series":"same series","same studio":"same studio","competitor":"rival","based on":"inspired","bundled with":"bundled with","upgrade of":"upgraded by","uses":"used by"};
+var TLINV={"sequel":"prequel","prequel":"sequel","successor":"predecessor","predecessor":"successor","requires":"needed by","ran on":"ran this","same series":"same series","same studio":"same studio","competitor":"rival","based on":"inspired","bundled with":"bundled with","upgrade of":"upgraded by","uses":"used by","about":"covered in","mentions":"mentioned in"};
 function tlLinks(title){if(typeof TLX==="undefined")return[];if(!TLREV){TLREV={};Object.keys(TLX).forEach(function(k){(TLX[k].links||[]).forEach(function(l){(TLREV[l[0]]=TLREV[l[0]]||[]).push([k,TLINV[l[1]]||l[1]])})})}
  var out=[],seen={};((TLX[title]||{}).links||[]).map(function(l){return[l[0],TLREL[l[1]]||l[1]]}).concat(TLREV[title]||[]).forEach(function(l){if(!seen[l[0]]){seen[l[0]]=1;out.push(l)}});return out}
 function tlWeb(title,links){if(!links.length)return"";var n=Math.min(links.length,8),W=420,H=220,cx=W/2,cy=H/2,o='<svg class="tlweb" viewBox="0 0 '+W+' '+H+'" role="group" aria-label="Connections for '+esc(title)+'">';

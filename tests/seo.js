@@ -30,6 +30,13 @@ ok(affPages>1000&&badAff===0,"affiliate links appear on "+affPages+" pages and e
  ok(pages.every(p=>/affiliate links/i.test(p)&&/Amazon Associate/.test(p)&&(p.match(/class="sp-pick"/g)||[]).length>=5),"every guide shows the disclosure and at least five picks");
  ok(pages.every(p=>(p.match(/<a [^>]*href="https:\/\/www\.(?:ebay|amazon)\.com[^>]*>/g)||[]).every(x=>/rel="sponsored noopener noreferrer"/.test(x))),"guide product links are all rel=sponsored");
  }
+{const bp=(()=>{try{return rd("books/index.html")}catch(e){return""}})();
+ ok(!!bp&&urls.some(u=>/\/books\/$/.test(u)),"the Books page is in the sitemap");
+ ok((bp.match(/class="bk"/g)||[]).length>=35&&(bp.match(/class="spine"/g)||[]).length>=35,"the Books page has a spine and a card for every book");
+ ok((bp.match(/<a [^>]*href="https:\/\/www\.(?:ebay|amazon)\.com[^>]*>/g)||[]).length>=60&&!/<a [^>]*href="https:\/\/www\.(?:ebay|amazon)\.com[^>]*>/.test(bp.replace(/<a [^>]*rel="sponsored noopener noreferrer"[^>]*>/g,"")),"book links are affiliate links and all rel=sponsored");
+ const cast=["connie-wink","connie-happy","ram-garage","zack"].every(n=>fs.existsSync(path.join(root,"cast/"+n+".svg")));
+ ok(cast&&/class="sp-cameo/.test(bp)&&/class="sp-cameo/.test(rd("guides/retro-pc-starter-kit/index.html"))&&/class="sp-cameo/.test(rd("404.html")),"Connie and the family appear on the books, guides and 404 pages");
+ const some=files.filter((f,i)=>i%97===0);ok(some.every(f=>/class="sp-cameo/.test(rd(f))||/\/(museum|guides)\/index\.html$/.test(f)||f==="/index.html"),"static pages carry a Connie cameo (sampled)")}
 const idx=rd("index.html");
 ok(/<meta name="description" content="[^"]{80,}"/.test(idx)&&/rel="canonical"/.test(idx)&&/property="og:image"/.test(idx)&&/application\/ld\+json/.test(idx),"home page has description, canonical, social tags and structured data");
 {const host=base.replace(/^https:\/\//,"");let cn="";try{cn=rd("CNAME").trim()}catch(e){}
