@@ -2,8 +2,8 @@
 // WB_PHOTO: a picture of the bench. Save it in this folder (for example portraits/workbench.jpg) and put the path here.
 // Each tool: {n:"name", g:"group", why:"one line on how it gets used", q:"what to search for", asin:"optional Amazon product code", draft:true}
 //   q   : the search words the Amazon and eBay links use (a brand and model works best)
-//   asin: if you know the exact Amazon product, add its 10 character code and the Amazon link goes straight to it
-//   draft:true hides the tool from visitors (staff still see it). Delete that word when you confirm you really use it.
+//   asin: 10 character Amazon product code; the Amazon link then goes straight to that product
+//   draft:true hides the tool from visitors (staff still see it). 
 var WB_PHOTO="";
 var WB_INTRO="Where the repairs happen. These are the tools and supplies I actually reach for. Some links are affiliate links, which cost you nothing and help keep the museum going.";
 var WB_TOOLS=[

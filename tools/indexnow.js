@@ -1,4 +1,4 @@
-/* Tells Bing, Yandex and other IndexNow search engines about new or changed pages (Google does not use IndexNow; use Search Console for Google).
+/* Tells Bing, Yandex and other IndexNow search engines about new or changed pages (Google does not use IndexNow).
    Run: node tools/indexnow.js --all        every URL in sitemap.xml
         node tools/indexnow.js              only the pages changed in the last commit
         node tools/indexnow.js --dry        print what would be sent

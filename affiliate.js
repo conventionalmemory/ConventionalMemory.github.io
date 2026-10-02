@@ -1,7 +1,7 @@
 /* Affiliate links (Amazon Associates and eBay Partner Network).
-   Nothing shows until you fill in your own IDs below. Until then the site has no affiliate links at all.
-     AFF.amazon : your Amazon Associates tracking ID, like  conventionalm-20
-     AFF.ebay   : your eBay Partner Network campaign ID, a 10 digit number
+   Links appear only for a network whose ID below is set and well formed.
+     AFF.amazon : Amazon Associates tracking ID
+     AFF.ebay   : eBay Partner Network campaign ID, a 10 digit number
    The links only search for the product by name; they never show or copy prices. The required disclosure sits
    in each shelf box (one short line) and on the Disclosure page linked from the footer. Every link is rel="sponsored". */
 var AFF={amazon:"conventionalm-20",ebay:"5339217307",ebayCustom:"cm"};

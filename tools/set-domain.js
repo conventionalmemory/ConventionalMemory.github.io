@@ -1,7 +1,7 @@
 /* Points the whole site at a custom domain (or back at github.io).
    Run: node tools/set-domain.js conventionalmemory.io        (writes CNAME, rewrites every public address, rebuilds the generated files)
         node tools/set-domain.js --github                     (back to conventionalmemory.github.io, removes CNAME)
-   Do this only AFTER the DNS records point at GitHub (see "Your own domain" in the README), or the site will redirect in a circle. */
+   Do this only AFTER the DNS records point at GitHub (GitHub Pages custom domain setup), or the site will redirect in a circle. */
 const fs=require("fs"),path=require("path"),cp=require("child_process");const root=path.join(__dirname,"..");
 const arg=process.argv[2];if(!arg){console.log("usage: node tools/set-domain.js <domain> | --github");process.exit(1)}
 const GH="conventionalmemory.github.io",host=arg==="--github"?GH:arg.replace(/^https?:\/\//,"").replace(/\/.*$/,"").toLowerCase();

@@ -3,7 +3,7 @@
    #/shop/<store>    connie, stickers, cards, pins, plush, ipods
    #/shop/cart       the cart and a mock order request (email, copy or print; no payment of any kind)
    #/ipods           shortcut to Tony's iPod Works
-   Prices, stock and what fits what are all placeholders for Tony and Matt to replace. Connie is the anchor store and the star of every window.
+   Prices, stock and what fits what are placeholder data. Connie is the anchor store and the star of every window.
    The cart lives in this browser only, under "cm-cart". */
 window.CMShop=(function(){
  var app,EMAIL="ConventionalMemory@gmail.com";
