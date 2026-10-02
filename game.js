@@ -149,21 +149,39 @@ function qGame(list){var PCP=["DOS","Windows","Mac","Linux","PC-98","FM Towns"],
 /* ---- "too easy" guard: reject questions whose answer is spelled out in the question (the IBM Model M keyboard / IBM trap) ---- */
 var STOPW={the:1,and:1,for:1,with:1,from:1,that:1,this:1,was:1,were:1,what:1,which:1,did:1,his:1,her:1,its:1,are:1,has:1,had:1,one:1,two:1,out:1,came:1,first:1,last:1,game:1,games:1,released:1,release:1,these:1,followed:1,new:1,all:1,any:1,made:1,model:1,version:1,series:1};
 function toks(t){return String(t).toLowerCase().replace(/[^a-z0-9]+/g," ").split(" ").filter(function(w){return w.length>=3&&!STOPW[w]})}
-function leaks(q){var ans=String(q.o[q.c]);if(/^[\d$.,\s()*-]+$/.test(ans))return false;
+/* A token is a "tell" if it is distinctive. Company names always count (IBM in "IBM Model M"); everyday title words (star, sound, pro) and bare numbers do not. */
+function brandQ(q){return q.tag==="maker"||q.tag==="dev"||/^(Who made|Which company|Which studio|Who developed)/.test(q.q)}
+function isSig(q,w){return brandQ(q)||(!/^\d+$/.test(w)&&((D.df&&D.df[w])||0)<4)}
+function sigToks(q,t){return toks(t).filter(function(w){return isSig(q,w)})}
+function leaks(q){var ans=String(q.o[q.c]);if(q.tag==="dos"||/^[\d$.,\s()*-]+$/.test(ans))return false;
  var qt=" "+String(q.q).toLowerCase().replace(/[^a-z0-9]+/g," ")+" ",at=toks(ans),whole=" "+ans.toLowerCase().replace(/[^a-z0-9]+/g," ").trim()+" ";
  if(whole.length>4&&qt.indexOf(whole)>=0)return true;
- if(at.length&&at.every(function(w){return qt.indexOf(" "+w+" ")>=0}))return true;
- var qk=toks(q.q),share=function(t){return toks(t).some(function(w){return w.length>=3&&qk.indexOf(w)>=0})};
+ if(at.length>1&&at.every(function(w){return qt.indexOf(" "+w+" ")>=0}))return true;
+ var qk=sigToks(q,q.q),share=function(t){return sigToks(q,t).some(function(w){return qk.indexOf(w)>=0})};
  if(q.tag!=="dos"&&share(ans)){var others=q.o.filter(function(o,i){return i!==q.c&&share(o)});if(!others.length)return true}
  return false}
-/* when a question gives itself away, blank out the giveaway words instead of throwing the question out: Who made the "IBM Model M Keyboard"? becomes Who made the "____ Model M Keyboard"? */
-function fix(q){if(["maker","dev","item","spec","price"].indexOf(q.tag)<0)return null;var ans=String(q.o[q.c]),qk=toks(q.q),hit=toks(ans).filter(function(w){return qk.indexOf(w)>=0}),txt=q.q;
+/* ---- on-the-fly scrubbing: when a question gives itself away, blank the giveaway words and, if the title is left too bare, add a data-driven clue (year, kind, maker) ---- */
+var STATS={fixed:0,rej:0};
+function kindNoun(k){var g=group(k);return g==="g"?"game":g==="m"?"movie":k==="hw"?"machine":k==="pe"?"accessory":k==="sw"?"program":"release"}
+function describe(title,avoid){var r=D.byT[title]||D.byN[title],it=null,year,noun,mk;
+ if(!r){D.items.some(function(i){if(i.name===title){it=i;return true}});if(!it)return null}
+ year=r?yr(r[0]):it.year;noun=r?kindNoun(r[1]):String(it.cat||"item").toLowerCase().replace(/s$/,"");mk=r?(tx(r)&&(tx(r).dev||tx(r).maker)):it.maker;
+ var d="the "+(year?year+" ":"")+noun;if(mk&&mk!=="Unknown"&&!avoid(mk))d+=" from "+mk;return d}
+function maskWords(t,hit){hit.forEach(function(w){t=t.replace(new RegExp("\\b"+w.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+"\\b","gi"),"____")});
+ return t.replace(/(____[\s-]*)+/g,"____ ").replace(/____ ([\'\u2019,.;:?!"])/g,"____$1").replace(/ +/g," ").trim()}
+function fix(q){var ans=String(q.o[q.c]),qk=toks(q.q),hit=sigToks(q,ans).filter(function(w){return qk.indexOf(w)>=0});
  if(!hit.length){var whole=ans.toLowerCase().replace(/[^a-z0-9]+/g," ").trim();if(whole.length>4&&(" "+q.q.toLowerCase().replace(/[^a-z0-9]+/g," ")+" ").indexOf(" "+whole+" ")>=0)hit=toks(ans)}
+ if(!hit.length){var at2=toks(ans);if(at2.length>1&&at2.every(function(w){return qk.indexOf(w)>=0}))hit=at2}
  if(!hit.length)return null;
- hit.forEach(function(w){txt=txt.replace(new RegExp("\\b"+w.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+"\\b","gi"),"____")});
- txt=txt.replace(/(____[\s-]*)+/g,"____ ").replace(/____ ([\'\u2019,.;:?!"])/g,"____$1").replace(/\s+/g," ").trim();
- var left=txt.replace(/____/g,"").replace(/[^A-Za-z0-9 ]/g," ").split(/\s+/).filter(function(w){return w.length>1&&!STOPW[w.toLowerCase()]});
- if(left.length<2||/^[^A-Za-z0-9]*____[^A-Za-z0-9]*$/.test(txt))return null;
+ var segs=[],txt=q.q.replace(/"([^"]+)"/g,function(m,seg){
+  var here=toks(seg).filter(function(w){return hit.indexOf(w)>=0});
+  if(!here.length){segs.push(m);return"\u0001"+(segs.length-1)+"\u0001"}
+  var ms=maskWords(seg,hit),remain=toks(ms.replace(/____/g," ")).length,out='"'+ms+'"';
+  if(remain<2||q.tag==="series"||q.tag==="first"){var d=describe(seg,function(mk){return brandQ(q)||toks(mk).some(function(w){return hit.indexOf(w)>=0})});if(d)out+=" ("+d+")"}
+  segs.push(out);return"\u0001"+(segs.length-1)+"\u0001"});
+ txt=maskWords(txt,hit).replace(/\u0001(\d+)\u0001/g,function(m,i){return segs[+i]});
+ var left=txt.replace(/____/g," ").replace(/[^A-Za-z0-9 ]/g," ").split(/\s+/).filter(Boolean);
+ if(left.length<4)return null;
  var r={q:txt,o:q.o,c:q.c,tag:q.tag,fixed:1};return leaks(r)?null:r}
 function nextQ(era,lvl){
  var wide=[4,6,9][lvl>=0?Math.min(lvl,2):0]+0,ok=D.tl.filter(function(r){return Math.abs(yr(r[0])-era)<=4}),okw=D.tl.filter(function(r){return Math.abs(yr(r[0])-era)<=9}),tries=0,q=null;
@@ -186,7 +204,7 @@ function nextQ(era,lvl){
   else if(t<.90)q=qMostExpensive(okw);
   else if(t<.93)q=qCategory();
   else if(ok.length)q=qYear(pick(ok),lvl);
-  if(q&&leaks(q)){var fx=fix(q);q=fx||null}
+  if(q&&leaks(q)){var fx=fix(q);if(fx)STATS.fixed++;else{STATS.rej++;(STATS.log=STATS.log||[]).push(q.tag+" | "+q.q+" => "+q.o[q.c])}q=fx||null}
   if(q&&S.used[q.q])q=null}
  if(!q){q=qStatic();var n=0;while((S.used[q.q]||leaks(q))&&n++<60)q=qStatic()}
  S.used[q.q]=1;return q}
@@ -474,9 +492,9 @@ function onk(e){if(!S||!host||!document.body.contains(host))return;var k=e.key;
 function onku(e){var k=e.key.length===1?e.key.toLowerCase():e.key;keys[k]=0;if(S&&S.qHeld)delete S.qHeld[k]}
 function setData(d){deps=d;D.items=(d.items||[]).filter(function(i){return i&&i.name});
  D.tl=(d.tl||[]).filter(function(r){return r[5]&&(String(r[3]||"").indexOf("*")<0||true)&&r[0]&&r[2]});
- D.quotes=d.quotes||[];D.x=d.tlx||{};D.gx=d.gx||{};D.byT={};D.tl.forEach(function(r){D.byT[r[2]]=r});}
+ D.quotes=d.quotes||[];D.x=d.tlx||{};D.gx=d.gx||{};D.byT={};D.byN={};D.df={};D.tl.forEach(function(r){D.byT[r[2]]=r;D.byN[nameOf(r)]=r});var cnt=function(t){var seen={};toks(t).forEach(function(w){if(!seen[w]){seen[w]=1;D.df[w]=(D.df[w]||0)+1}})};D.tl.forEach(function(r){cnt(r[2])});D.items.forEach(function(i){cnt(i.name)})}
 function mount(el,d){unmount();host=el;setData(d);patCache={};roomCache={};onKey=onk;onKeyUp=onku;window.addEventListener("keydown",onKey);window.addEventListener("keyup",onKeyUp);select()}
 function unmount(){cancelAnimationFrame(raf);raf=0;if(onKey)window.removeEventListener("keydown",onKey);if(onKeyUp)window.removeEventListener("keyup",onKeyUp);onKey=onKeyUp=null;S=null;keys={};host=null;cvs=null}
-function probe(d,n){setData(d);var keep=S,out=[];S={used:{}};for(var i=0;i<n;i++){var q=nextQ(1981+ri(30),ri(3));out.push({q:q.q,o:q.o,c:q.c,tag:q.tag,fixed:q.fixed||0})}S=keep;return out}
+function probe(d,n){setData(d);STATS.fixed=0;STATS.rej=0;var keep=S,out=[];S={used:{}};for(var i=0;i<n;i++){var q=nextQ(1981+ri(30),ri(3));out.push({q:q.q,o:q.o,c:q.c,tag:q.tag,fixed:q.fixed||0})}S=keep;return{list:out,stats:{fixed:STATS.fixed,rej:STATS.rej,log:(STATS.log||[]).slice(0,25)}}}
 window.CMGame=Object.freeze({mount:mount,unmount:unmount,probe:probe,leaks:leaks,fix:fix});
 })();
