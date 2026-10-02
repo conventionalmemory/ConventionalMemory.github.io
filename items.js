@@ -412,7 +412,7 @@ var ITEMS=[
    "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f1/Ibm_pc_5150.jpg/960px-Ibm_pc_5150.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
   ],
   "credit": "Photo: Ruben de Rijcke, CC BY-SA 3.0, via Wikimedia Commons",
-  "msrp": "US$1,565 (equivalent to $5,540 in 2025)",
+  "msrp": "$1,565 (base: 16 KB RAM, CGA, keyboard, no drives)",
   "year": 1981,
   "rel": "1981-08-12",
   "refs": [
@@ -2210,7 +2210,7 @@ var ITEMS=[
    "Expansion": "Two PCMCIA slots"
   },
   "src": "shopgoodwill",
-  "msrp": "1515",
+  "msrp": "$1,515 (base, no mass storage; $1,950 with 40 MB HDD, $2,375 with 10 MB flash)",
   "year": 1993,
   "rel": "1993-06",
   "refs": [
@@ -2329,7 +2329,7 @@ var ITEMS=[
   },
   "src": "shopgoodwill",
   "partno": "Z100P2",
-  "msrp": "200",
+  "msrp": "Just under $200 (with one cartridge)",
   "year": 1995,
   "refs": [
    {
@@ -2457,7 +2457,7 @@ var ITEMS=[
   "src": "shopgoodwill",
   "draft": true,
   "model": "Game Boy Pocket",
-  "msrp": "69.99",
+  "msrp": "$69.99",
   "year": 1996,
   "rel": "1996-09-02",
   "specs": {
@@ -2508,7 +2508,7 @@ var ITEMS=[
   "src": "shopgoodwill",
   "draft": true,
   "model": "Wii (RVL-001)",
-  "msrp": "249.99",
+  "msrp": "$249.99",
   "year": 2006,
   "rel": "2006-11-19",
   "specs": {
