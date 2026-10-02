@@ -275,12 +275,15 @@ Photo Safari (items and timeline) now searches Wikipedia article images and Comm
 - **Cleanup**: dead functions and CSS removed, label numbers in the Book now use the permanent `cm` number, long URLs wrap on phones. New tests: `tests/catalog.js`, `tests/crawl.js`, `tests/security.js`.
 
 ## Your own domain
-The site is served by GitHub Pages at `https://conventionalmemory.github.io/`. Forwarding a domain to it (a redirect) means visitors end up on the github.io address, so QR codes and shared links should always use the real address. To make a domain permanent:
-1. In the repository, Settings, Pages, "Custom domain": enter your domain (for example `conventionalmemory.io`; double check the spelling) and tick "Enforce HTTPS" once it is available.
-2. At the registrar, remove the forwarding and add DNS records: four `A` records for the apex (`185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`) and a `CNAME` for `www` pointing to `conventionalmemory.github.io`. Check GitHub's current docs, since these can change.
-3. Wait for DNS and the certificate (minutes to a day). GitHub adds a `CNAME` file to the repo.
-4. Change `SITE_URL` and `SITE_HOST` in app.js, the fallback in labelprint.js, and `BASE` in tools/build-feed.js to the new address, update the CSP `connect-src` if needed, bump the cache name in sw.js and reprint any labels (old QR codes keep working through the redirect, so this is optional).
-Until then, labels printed with the github.io address keep working: GitHub redirects the old address to the custom domain automatically once it is set.
+The site is served by GitHub Pages at `https://conventionalmemory.github.io/`. Forwarding a domain to it (a redirect) leaves visitors on the github.io address, so use real DNS records instead. The order matters: if the repo gets a `CNAME` file while the domain still forwards to github.io, the two redirect to each other in a circle.
+1. At the registrar, remove the forwarding and add four `A` records for the apex (`185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`) and a `CNAME` for `www` pointing to `conventionalmemory.github.io`. Check GitHub's current docs, since these can change. (Optional: matching `AAAA` records `2606:50c0:8000::153`, `...8001::153`, `...8002::153`, `...8003::153`.)
+2. Wait until `conventionalmemory.io` resolves to those addresses (minutes to a day).
+3. Run `node tools/set-domain.js conventionalmemory.io` and push. It writes `CNAME`, changes `SITE_URL` in app.js and the fallback in labelprint.js, rewrites the canonical, social and JSON-LD addresses in index.html, bumps the cache name in sw.js and regenerates admin.html, feed.xml and every search page. (`--github` undoes it.)
+4. In the repository, Settings, Pages: check the custom domain shows as verified and tick "Enforce HTTPS" when it appears.
+Old QR codes and shared links keep working: GitHub redirects the github.io address to the custom domain.
+
+## Search Console and Bing
+Sign in with the Google account that should own the site and add a **Domain** property for `conventionalmemory.io` (verify with the DNS TXT record Google shows, which covers every address at once), then Sitemaps, add `sitemap.xml`. In Bing Webmaster Tools use "Import from Google Search Console". Afterwards watch Pages (indexing problems), Performance (queries and pages) and Core Web Vitals. A URL-prefix property can instead be verified with the meta tag or HTML file Google gives you: paste the meta tag into index.html (then run `node tools/build-admin.js`) or drop the HTML file in the repo root.
 
 ### Round 19: timeline fill-out
 - **Timeline grew from 2,083 to 3,070 entries** (about 1,000 added), with detail records for most hardware, peripherals, software and games. New rows cover 1971 to 2012: processors, consoles, home computers worldwide, peripherals, operating systems, games, company and industry events, US law and court cases, key web and internet launches, and a few movies and TV shows.

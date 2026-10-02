@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://conventionalmemory.github.io/sitemap.xml
+Sitemap: https://conventionalmemory.io/sitemap.xml

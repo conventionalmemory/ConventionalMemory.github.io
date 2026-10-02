@@ -13,7 +13,7 @@ var CMLabel=(function(){
  function load(){var s={},k;try{s=JSON.parse(localStorage.getItem(KEY)||"{}")||{}}catch(e){}var o={};for(k in DEF)o[k]=s[k]!=null?s[k]:DEF[k];
   if(!o.base)o.base=defBase();return fix(o)}
  function save(s){try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}}
- function defBase(){return typeof SITE_URL==="string"?SITE_URL:"https://conventionalmemory.github.io/"}
+ function defBase(){return typeof SITE_URL==="string"?SITE_URL:"https://conventionalmemory.io/"}
  function num(v,lo,hi,d){v=+v;return isFinite(v)?Math.min(hi,Math.max(lo,v)):d}
  function fix(s){if(s.size!=="custom"){var m=String(s.size).match(/^(\d+)x(\d+)$/);if(m){s.w=+m[1];s.h=+m[2]}else{s.size="40x30";s.w=40;s.h=30}}
   s.w=num(s.w,15,80,40);s.h=num(s.h,10,100,30);s.dens=Math.round(num(s.dens,1,15,8));s.speed=Math.round(num(s.speed,1,5,3));s.shift=num(s.shift,-10,10,0);s.copies=Math.round(num(s.copies,1,20,1));

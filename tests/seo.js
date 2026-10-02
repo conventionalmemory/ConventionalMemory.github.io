@@ -26,6 +26,9 @@ ok([...descs.values()].filter(n=>n>1).length<=Math.ceil(files.length*.02),"descr
 ok(affPages>1000&&badAff===0,"affiliate links appear on "+affPages+" pages and every one is rel=sponsored");
 const idx=rd("index.html");
 ok(/<meta name="description" content="[^"]{80,}"/.test(idx)&&/rel="canonical"/.test(idx)&&/property="og:image"/.test(idx)&&/application\/ld\+json/.test(idx),"home page has description, canonical, social tags and structured data");
+{const host=base.replace(/^https:\/\//,"");let cn="";try{cn=rd("CNAME").trim()}catch(e){}
+ ok(!cn||cn===host,"sitemap host matches the CNAME ("+host+")");
+ ok(rd("index.html").indexOf('<link rel="canonical" href="'+base+'/">')>=0&&rd("app.js").indexOf('SITE_URL="'+base+'/"')>=0&&rd("feed.xml").indexOf(base)>=0,"home page canonical, QR address and feed all use "+base)}
 ok(fs.existsSync(path.join(root,"og.png"))&&fs.statSync(path.join(root,"og.png")).size>10000,"og.png exists");
 ok(/noindex/.test(rd("admin.html")),"admin page stays out of search results");
 console.log(fails?"\n"+fails+" FAILED":"\nAll good.");process.exit(fails?1:0);
