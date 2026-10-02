@@ -7,11 +7,13 @@ var C={k:"#000000",b:"#0000AA",g:"#00AA00",c:"#00AAAA",r:"#AA0000",m:"#AA00AA",n
 var W=320,H=136,FLOOR=78,COLS=5,ROWS=4,ROOMS=COLS*ROWS,MIDNIGHT=240,PENALTY=32;
 var S=null,host=null,cvs=null,cx=null,raf=0,last=0,onKey=null,onKeyUp=null,keys={},D={},patCache={},roomCache={},deps=null;
 var DIRS=[["N",0,-1],["E",1,0],["S",0,1],["W",-1,0]],OPP={N:"S",S:"N",E:"W",W:"E"};
-var NAMES=["Boot Room","Sound Card Salon","Floppy Library","Green Phosphor Lounge","BIOS Basement","Modem Nook","Cable Closet","Cartridge Gallery","Keyboard Parlor","Patch Panel Pantry","Beige Box Bedroom","Dial-Up Den","Scanline Solarium","Upper Memory Attic","Extended Memory Wing","Expansion Slot Corridor","Turbo Button Terrace","Diagnostic Lab"];
-var FLAVOR=["Rain lashes the tall windows.","A grandfather clock ticks. It sounds a little like a hard drive seeking.","Something hums inside the walls. Probably the fridge. Probably.","The floor creaks in a way that feels like a warning.","A lamp flickers. Somewhere a power supply sighs.","The air smells like warm plastic and old carpet.","Thunder rolls. The whole house loses a K.","You are certain that portrait blinked."];
-var MATT_LINES=["Matt: \"Every item in here has a story. Some of the stories are about a shipping error.\"","Matt: \"Do not touch that. I have not finished cataloging it. Or fixing it.\"","Matt: \"If it boots, it goes in the museum. If it does not boot, it goes in the museum faster.\""];
-var TONY_LINES=["Tony: \"Don't touch anything warm. Or cold. Or that clicks.\"","Tony: \"I can fix that. Give me a screwdriver and a bad idea.\"","Tony: \"Somebody left a jumper on the wrong pins. It was me. Keep walking.\""];
-var AUNT=["Auntie Autoexec: \"Dear, the master disk is that way. I have always known. I just never got asked.\"","Auntie Autoexec: \"Take your time. Actually, do not. It is nearly midnight.\""];
+var NAMES=["Boot Room","Sound Card Salon","Floppy Library","Green Phosphor Lounge","BIOS Basement","Modem Nook","Cable Closet","Cartridge Gallery","Keyboard Parlor","Patch Panel Pantry","Beige Box Bedroom","Dial-Up Den","Scanline Solarium","Upper Memory Attic","Extended Memory Wing","Expansion Slot Corridor","Turbo Button Terrace","Diagnostic Lab","Robotic Workshop","Cable Drawer of Infinite Cables","The Totally Real Cow Level","Dupe Vault (No Questions)","Jester Hat Annex","Wrong Button Gallery","Hoard Room","Bench of Many Screwdrivers"];
+var FLAVOR=["Rain lashes the tall windows.","A grandfather clock ticks. It sounds a little like a hard drive seeking.","Something hums inside the walls. Probably the fridge. Probably.","The floor creaks in a way that feels like a warning.","A lamp flickers. Somewhere a power supply sighs.","The air smells like warm plastic and old carpet.","Thunder rolls. The whole house loses a K.","You are certain that portrait blinked.","Somewhere a pager beeps. Nobody owns up to it.","A lava lamp blorps in the dark. It is not on.","You smell Doritos. There are no Doritos.","A modem screeches far away, then gives up.","Something skitters. You hope it is a cable."];
+var MATT_LINES=["Matt: \"Every item in here has a story. Some of the stories are about a shipping error.\"","Matt: \"Do not touch that. I have not finished cataloging it. Or fixing it.\"","Matt: \"If it boots, it goes in the museum. If it does not boot, it goes in the museum faster.\"","Matt: \"I am an EMT. I can tell you exactly what killed this floppy. It was the 90s.\"","Matt: \"That is not junk. That is a rare item I have not identified yet.\"","Matt: \"I have a cable for this. I have a cable for everything. I will not be taking questions.\"","Matt: \"I built Doom levels for this. Hundreds of them. Okay, four. Finished, one.\"","Matt: \"Do not tell the boys. Someday all of this is theirs, and I want to see their faces.\"","Matt: \"The map is on graph paper. The graph paper is lost. We will not discuss it.\""];
+var TONY_LINES=["Tony: \"Don't touch anything warm. Or cold. Or that clicks.\"","Tony: \"I can fix that. Give me a screwdriver and a bad idea.\"","Tony: \"Somebody left a jumper on the wrong pins. It was me. Keep walking.\"","Tony: \"I did NOT axe that guy on purpose. The button was right there.\"","Tony: \"Matt drew the map. I hold the controller. This is how it has always worked.\"","Tony: \"I drew every sprite in this house. You are welcome. Stop looking at the hat.\"","Tony: \"If you see a quest giver, let me go first. Actually, no. Stay back.\"","Tony: \"Permadeath is a strong word. I prefer 'a learning moment with consequences'.\""];
+var CONNIE=["Connie: \"Hi! I'm Connie Ventional. I live in the first 640K. Here, take some.\"","Connie: \"I have 640K of personality. Okay, 639K. The rest is the BIOS. Here is a little extra.\"","Connie: \"Careful with your memory. Mine is all gold contacts, no refunds.\"","Connie: \"Have you tried blowing on the cartridge? ...I am not a cartridge. Please stop.\"","Connie: \"I am a memory chip with a bow. That is my whole brand. Take 16K.\""];
+var ZACK=["Zack: \"Hey. I'm here. What are we doing?\" (Nobody remembers inviting him. He is always here.)","Zack: \"I'm in the party now, right? I'm in the party.\"","Zack: \"Don't worry about me. I'll just stand in the doorway.\"","Zack: \"I think I have been here the whole time. Was I here the whole time?\""];
+var AUNT=["Auntie Autoexec: \"Dear, the master disk is that way. I have always known. I just never got asked.\"","Auntie Autoexec: \"Take your time. Actually, do not. It is nearly midnight.\"","Auntie Autoexec: \"Those boys of Matt's will love this house. Eventually. I have been told to say that.\""];
 var STATIC=[
 ["How much conventional memory could a DOS program use?","640K",["256K","512K","1024K"]],
 ["What does the HIMEM.SYS driver manage?","Extended memory",["Expanded memory cards","The hard drive cache","The sound card"]],
@@ -38,6 +40,14 @@ var STATIC=[
 ["How much did a standard high-density 3.5-inch floppy hold?","1.44 MB",["360 KB","720 MB","100 MB"]],
 ["Which Encarta '95 feature was a maze you escaped by answering questions?","MindMaze",["Sound Maze","Mosaic","Word Search 95"]],
 ["What did EMM386.EXE provide?","Upper memory blocks and expanded memory emulation",["Sound card drivers","A screen saver","Disk compression"]],
+["What was the scripting language in MegaZeux called?","Robotic",["ZZT-OOP","LPC","Batch"]],
+["Which text-mode game maker from Tim Sweeney came before MegaZeux?","ZZT",["Kroz","Rogue","Scorched Earth"]],
+["What does MUD stand for?","Multi-User Dungeon",["Multi-User Disk","Modem Utility Driver","Memory Upgrade Device"]],
+["Which codebase was Star Wars Reality built from?","SMAUG",["ROM","CircleMUD","TinyMUD"]],
+["What does a Doom WAD file hold?","Levels and other game data",["Only sound effects","Saved games","Modem settings"]],
+["Which game engine did Duke Nukem 3D use?","The Build engine",["The Doom engine","The Quake engine","Unreal"]],
+["Which language shipped with MS-DOS 5.0 and came with Nibbles and Gorillas?","QBasic",["Turbo Pascal","Visual Basic","COBOL"]],
+["What is the secret bonus level in Diablo II?","The Secret Cow Level",["The Hidden Floppy","Tristram Mall","The Gremlin Pit"]],
 ["Which Windows version first added TrueType fonts?","Windows 3.1",["Windows 1.0","Windows 3.0","Windows 95"]],
 ["In DOS, what usually refers to the first floppy drive?","A:",["C:","Z:","F1"]],
 ["What does the DOS command CHKDSK do?","Checks a disk and reports its status",["Formats a disk","Checks the keyboard","Checks for viruses only"]],
@@ -175,8 +185,7 @@ function newGame(who,sd){
  S.rooms[S.goal].ex={kind:"goal",title:"Master Boot Disk",year:1981,note:"The disk that started it all."};
  var ids=S.rooms.map(function(r){return r.i}).filter(function(i){return i!==S.start&&i!==S.goal});
  var far=ids.filter(function(i){return S.rooms[i].depth>=3});S.gr={room:pick(far.length?far:ids),wait:0};
- shuf(ids).slice(0,3).forEach(function(i){S.npcs[i]="aunt"});
- var other=who==="matt"?"tony":"matt";shuf(ids).slice(0,2).forEach(function(i){if(!S.npcs[i])S.npcs[i]=other});
+ var other=who==="matt"?"tony":"matt",cast=["aunt","aunt","connie","connie","zack",other,other];shuf(ids).slice(0,cast.length).forEach(function(i,k){S.npcs[i]=cast[k]});
  enter(S.start,null,true)}
 function room(){return S.rooms[S.room]}
 function say(t){S.msg=t;var el=host.querySelector("#gmsg");if(el)el.innerHTML=esc(t).replace(/\n/g,"<br>");S.log.push(t)}
@@ -191,10 +200,10 @@ function enter(i,dir,first){
  if(dir==="N"){S.px=160;S.py=FLOOR+40}else if(dir==="S"){S.px=160;S.py=FLOOR+14}else if(dir==="E"){S.px=14;S.py=FLOOR+26}else if(dir==="W"){S.px=W-14;S.py=FLOOR+26}
  S.fade=1;var t=rm.name+" ("+rm.era+")\n"+pick(FLAVOR);
  if(rm.ex&&!rm.taken)t+="\nOn a pedestal: "+rm.ex.title+(rm.ex.year?" ("+rm.ex.year+")":"")+".";
- if(S.npcs[i]&&!S.talk[i])t+="\n"+({aunt:"Auntie Autoexec is here.",matt:"Matt is here.",tony:"Tony is here."})[S.npcs[i]]+" (Talk)";
+ if(S.npcs[i]&&!S.talk[i])t+="\n"+({aunt:"Auntie Autoexec is here.",matt:"Matt is here.",tony:"Tony is here.",connie:"Connie Ventional is here.",zack:"Zack is here. Nobody invited him."})[S.npcs[i]]+" (Talk)";
  if(i===S.goal&&!first){t="THE VAULT. The Master Boot Disk glows on its pedestal. Take it!"}
  if(!first&&S.gr.room!==i){var near=Object.keys(rm.d).some(function(k){return rm.d[k].to===S.gr.room});if(near)t+="\nSomething chitters in the next room."}
- say(first?"You are "+(S.who==="matt"?"Matt":"Tony")+". The Master Boot Disk has vanished from the museum vault, the storm has knocked out the exit, and midnight is coming. Reach the Vault before the clock strikes twelve. Answer the locked doors' questions to pass. Wrong answers cost memory.\n"+t:t);
+ say(first?"You are "+(S.who==="matt"?"Matt":"Tony")+". The Master Boot Disk has vanished from the museum vault, the storm has knocked out the exit, and midnight is coming. Connie Ventional, the memory chip with the bow, might share some memory if you find her. Reach the Vault before the clock strikes twelve. Answer the locked doors' questions to pass. Wrong answers cost memory.\n"+t:t);
  hud();if(S.gr.room===i&&!first)gremlin()}
 function moveGremlin(){var path=bfs(S.gr.room,S.room);if(path.length)S.gr.room=path[0].f===S.gr.room?S.rooms[S.gr.room].d[path[0].k].to:S.gr.room}
 function gremlin(){S.mode="q";var q=nextQ(room().era,2);S.q=q;S.door={gremlin:true};showQ("The Memory Gremlin leaps out. \"Answer me, or I take "+S.pen+"K!\"")}
@@ -240,6 +249,8 @@ function talk(){var rm=room(),n=S.npcs[rm.i];if(S.mode!=="play")return;S.acts.pu
  if(!n){say("You mutter to yourself. The house does not answer.");return}
  if(S.talk[rm.i]){say("They have nothing more to say.");return}S.talk[rm.i]=1;
  if(n==="aunt"){var p=bfs(rm.i,S.goal),dir=p.length?p[0].k:"N";S.hints++;say(pick(AUNT)+"\n(She points "+({N:"north",E:"east",S:"south",W:"west"})[dir]+" and hands you a hint.)")}
+ else if(n==="connie"){var gain=Math.min(16,640-S.mem);S.mem+=gain;beep(990,.08);say(pick(CONNIE)+"\n"+(gain?"(She tops up your memory: +"+gain+"K.)":"(You are already full, so she gives you a high five instead.)"))}
+ else if(n==="zack")say(pick(ZACK));
  else say(pick(n==="matt"?MATT_LINES:TONY_LINES));hud()}
 /* ---------- run codes: every finished game can be replayed and checked ---------- */
 function fnv(t){var h=2166136261;for(var i=0;i<t.length;i++){h^=t.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}
@@ -266,9 +277,9 @@ function bestFromStore(){try{var c=localStorage.getItem("cm-maze-code");if(!c)re
 function win(){S.mode="over";S.win=true;var t=deps.tier(S.mem),lbl=t&&t.n?t.n:"",best=0,code=makeCode();
  if(!S.replay){var b=bestFromStore();best=b?b.mem:0;try{if(S.mem>best)localStorage.setItem("cm-maze-code",code)}catch(e){}}
  var left=MIDNIGHT-S.min;if(S.replay)return;
- finish('<h3>You found the Master Boot Disk!</h3><p>'+clock(S.min)+', with '+left+' minutes to spare.</p><pre class="dir">MEM /C\n\nConventional memory free: '+S.mem+'K of 640K\nExhibits collected:       '+S.taken+' of '+(ROOMS-2)+'\nRank on the 640K scale:   '+esc(lbl)+'</pre><p>'+(S.mem>best?"That is your best run in this browser.":"Your best in this browser: "+best+"K.")+'</p><p class="gnote">Run code (anyone can paste it on the Memory Maze start screen to replay and check your score):</p><textarea class="gcode" readonly rows="3" aria-label="Run code">'+esc(code)+'</textarea>')}
+ finish('<h3>You found the Master Boot Disk!</h3><p>'+clock(S.min)+', with '+left+' minutes to spare.</p><pre class="dir">MEM /C\n\nConventional memory free: '+S.mem+'K of 640K\nExhibits collected:       '+S.taken+' of '+(ROOMS-2)+'\nRank on the 640K scale:   '+esc(lbl)+'</pre><p>'+(S.who==="tony"?"Tony put down the axe. For now.":"Matt tried to keep the Master Boot Disk. It went back in the vault anyway.")+'</p><p>'+(S.mem>best?"That is your best run in this browser.":"Your best in this browser: "+best+"K.")+'</p><p class="gnote">Run code (anyone can paste it on the Memory Maze start screen to replay and check your score):</p><textarea class="gcode" readonly rows="3" aria-label="Run code">'+esc(code)+'</textarea>')}
 function end(win,txt){S.mode="over";finish('<h3>Game over</h3><p>'+esc(txt).replace(/\n/g,"<br>")+'</p>')}
-function finish(html){var box=host.querySelector("#gq");box.hidden=false;box.innerHTML=html+report()+'<p><button class="btn pri" type="button" id="gagain">Play again</button> <a class="btn" href="#/">Back to the site</a></p>';
+function finish(html){var box=host.querySelector("#gq");box.hidden=false;var cn=typeof mascot==="function"?'<p class="gcon">'+mascot(52,S&&S.win?"wow":"oops")+'<span>'+(S&&S.win?(S.who==="tony"?"Connie: \u201cYou did it, Tony, and you did not axe a single quest giver. I checked.\u201d":"Connie: \u201cYou did it, Matt! Yes, you can keep the junk. No, not the Disk.\u201d"):"Connie: \u201cOh no. Press any key to try again. Not that one. The other any key.\u201d")+'</span></p>':"";box.innerHTML=html+cn+report()+'<p><button class="btn pri" type="button" id="gagain">Play again</button> <a class="btn" href="#/">Back to the site</a></p>';
  box.querySelector("#gagain").onclick=function(){box.hidden=true;select()};hud()}
 
 /* ---------- drawing ---------- */
@@ -279,10 +290,18 @@ function person(x,px,py,o,step,dir){var lg=step%2?1:0;
  rect(x,px-3,py-19,6,6,o.skin);rect(x,px-3,py-20,6,2,o.hair);if(o.hat)rect(x,px-4,py-21,8,2,o.hat);rect(x,px-1+dir,py-17,1,1,"k");
  rect(x,px-4,py-13,8,8,o.shirt);rect(x,px-5,py-12,1,6,o.skin);rect(x,px+4,py-12,1,6,o.skin);
  rect(x,px-3,py-5,3,5-lg,o.pants);rect(x,px,py-5,3,4+lg,o.pants);rect(x,px-4,py-1,3,1,"k");rect(x,px,py-1,3,1,"k");
- if(o.extra)o.extra(x,px,py)}
-var LOOK={matt:{skin:"R",hair:"n",shirt:"B",pants:"b",extra:function(x,px,py){rect(x,px-2,py-10,4,1,"w")}},
- tony:{skin:"R",hair:"k",hat:"r",shirt:"R",pants:"d",extra:function(x,px,py){rect(x,px-4,py-6,8,1,"n");rect(x,px+2,py-8,2,3,"l")}},
- aunt:{skin:"R",hair:"w",shirt:"m",pants:"m"},gr:{skin:"G",hair:"g",shirt:"g",pants:"g",extra:function(x,px,py){rect(x,px-2,py-18,1,1,"R");rect(x,px+1,py-18,1,1,"R")}}};
+ if(o.extra)o.extra(x,px,py,dir)}
+function chip(x,px,py,step,dir){var hop=Math.floor(Math.abs(Math.sin(Date.now()/260))*2),lg=step%2?1:0;py=py-hop+3;
+ rect(x,px-5,py-22,10,12,"n");rect(x,px+1,py-25,4,3,"M");rect(x,px+2,py-24,1,1,"w");rect(x,px-4,py-20,8,9,"g");rect(x,px-4,py-20,8,1,"G");
+ rect(x,px-3,py-17,2,3,"k");rect(x,px+1,py-17,2,3,"k");rect(x,px-3,py-17,1,1,"w");rect(x,px+1,py-17,1,1,"w");
+ rect(x,px-4,py-14,2,1,"M");rect(x,px+2,py-14,2,1,"M");rect(x,px-1,py-13,2,1,"R");
+ for(var i=0;i<4;i++)rect(x,px-3+i*2,py-11,1,1,"y");
+ rect(x,px-6,py-16,2,1,"y");rect(x,px+4,py-16,2,1,"y");
+ rect(x,px-3,py-10,1,6-lg,"y");rect(x,px+2,py-10,1,5+lg,"y");rect(x,px-4,py-4-lg,3,1,"g");rect(x,px+1,py-5+lg,3,1,"g")}
+var LOOK={matt:{skin:"R",hair:"w",shirt:"r",pants:"b",extra:function(x,px,py,dir){rect(x,px-4,py-8,8,3,"b");rect(x,px-1,py-13,2,1,"y");rect(x,px-3,py-15,6,1,"n");rect(x,px-3,py-21,6,2,"w");rect(x,dir>0?px-5:px+3,py-19,2,1,"w")}},
+ tony:{skin:"R",hair:"l",shirt:"r",pants:"d",extra:function(x,px,py,dir){rect(x,px-3,py-15,6,2,"l");rect(x,px-3,py-13,6,2,"g");rect(x,px-4,py-21,8,2,"g");rect(x,px-5,py-24,2,4,"r");rect(x,px-1,py-26,2,6,"G");rect(x,px+3,py-24,2,4,"B");rect(x,px-5,py-25,1,1,"y");rect(x,px-1,py-27,1,1,"y");rect(x,px+4,py-25,1,1,"y")}},
+ aunt:{skin:"R",hair:"w",shirt:"m",pants:"m"},zack:{skin:"R",hair:"y",shirt:"g",pants:"b",extra:function(x,px,py){rect(x,px-3,py-18,6,1,"k");rect(x,px-3,py-12,8,1,"G")}},
+ gr:{skin:"G",hair:"g",shirt:"g",pants:"g",extra:function(x,px,py){rect(x,px-2,py-18,1,1,"R");rect(x,px+1,py-18,1,1,"R")}}};
 function icon(x,e,X,Y){if(!e)return;var t=(e.title||"").toLowerCase();
  if(e.kind==="goal"){rect(x,X-7,Y-10,14,14,"k");rect(x,X-6,Y-9,12,12,"B");rect(x,X-3,Y-9,6,5,"w");rect(x,X-2,Y-2,4,4,"k");rect(x,X-5,Y+1,10,1,"y");return}
  if(/disk|floppy|zip/.test(t)){rect(x,X-6,Y-10,12,12,"d");rect(x,X-4,Y-10,8,4,"l");rect(x,X-4,Y-4,8,5,"w")}
@@ -316,7 +335,7 @@ function draw(){var rm=room(),x=cx;x.imageSmoothingEnabled=false;
  doorDraw(x,rm);
  if(rm.ex&&!rm.taken)icon(x,rm.ex,160,FLOOR+2);
  var sp=[];sp.push({y:S.py,f:function(){person(x,S.px|0,S.py|0,LOOK[S.who],S.step,S.dir)}});
- var n=S.npcs[rm.i];if(n&&n!=="aunt"||n==="aunt")sp.push({y:FLOOR+34,f:function(){person(x,262,FLOOR+34,LOOK[n],0,-1)}});
+ var n=S.npcs[rm.i];if(n&&n!=="aunt"||n==="aunt")sp.push({y:FLOOR+34,f:function(){if(n==="connie")chip(x,262,FLOOR+34,0,-1);else person(x,262,FLOOR+34,LOOK[n],0,-1)}});
  if(S.gr.room===rm.i&&S.mode!=="over")sp.push({y:FLOOR+30,f:function(){person(x,56,FLOOR+30,LOOK.gr,S.step,1)}});
  sp.sort(function(a,b){return a.y-b.y}).forEach(function(s){s.f()});
  var dim=Math.max(0,(rm.depth||0)/(S.mx||1)*.0);if(S.fade>0){x.fillStyle="rgba(0,0,0,"+S.fade+")";x.fillRect(0,0,W,H)}
@@ -351,11 +370,12 @@ function shell(){host.innerHTML='<section class="gm"><div class="gbar"><b>MEMORY
  host.querySelector("#gsound").onclick=function(){S.sound=!S.sound;beep(660,.1);hud()}}
 function select(){roomCache={};S=null;
  host.innerHTML='<section class="gm"><div class="gbar"><b>MEMORY MAZE</b><span>A Conventional Memory mystery</span></div><div class="gsel"><h2>Who are you tonight?</h2><p>The Master Boot Disk has vanished from the Conventional Memory Museum on a stormy night. The house is a maze of locked doors. Each lock wants a right answer, and every wrong one costs you memory. Find the Vault before midnight.</p>'
- +'<div class="gchars"><button class="gchar" data-w="matt" type="button"><canvas width="60" height="90" data-p="matt"></canvas><b>Matt</b><span>The curator. Knows where everything is and why it is broken. Starts with 3 hints.</span></button>'
- +'<button class="gchar" data-w="tony" type="button"><canvas width="60" height="90" data-p="tony"></canvas><b>Tony</b><span>The tinkerer. Steady hands: wrong answers cost only 16K. Starts with 1 hint.</span></button></div>'
- +'<p class="gnote">Best run in this browser: <b id="gbest">none yet</b>. The characters here are cartoon stand-ins, so they look like nobody in particular. <a href="#/">Back to the site</a></p><h3 class="sub">Check a run code</h3><p class="gnote">Paste a code from someone\'s win screen. The game replays every move and confirms the score, so scores cannot be faked.</p><textarea id="gvin" class="gcode" rows="2" aria-label="Run code"></textarea><p><button class="btn" id="gvgo" type="button">Check it</button> <span id="gvout" aria-live="polite"></span></p></div></section>';
+ +(typeof mascot==="function"?'<p class="gcon">'+mascot(52,"happy")+'<span>Connie: \u201cI live in the first 640K. If you find me in the house, I will share some.\u201d</span></p>':"")
+ +'<div class="gchars"><button class="gchar" data-w="matt" type="button"><canvas width="60" height="90" data-p="matt"></canvas><b>Matt</b><span>The curator and collector. Hoards everything, knows where all of it is and exactly why it is broken. Starts with 3 hints.</span></button>'
+ +'<button class="gchar" data-w="tony" type="button"><canvas width="60" height="90" data-p="tony"></canvas><b>Tony</b><span>The tinkerer in the jester hat. Steady hands, mostly: wrong answers cost only 16K. Starts with 1 hint.</span></button></div>'
+ +'<h3 class="sub">Also in the house</h3><div class="gcast"><div><canvas width="60" height="90" data-p="connie"></canvas><b>Connie Ventional</b><span>A memory chip with a bow. Gives you 16K.</span></div><div><canvas width="60" height="90" data-p="aunt"></canvas><b>Auntie Autoexec</b><span>Points the way.</span></div><div><canvas width="60" height="90" data-p="zack"></canvas><b>Zack</b><span>Always in the party. Nobody knows why.</span></div></div><p class="gnote">Best run in this browser: <b id="gbest">none yet</b>. Look for Connie Ventional in the house. She gives out memory. Zack will also be there. We do not know why. <a href="#/">Back to the site</a></p><h3 class="sub">Check a run code</h3><p class="gnote">Paste a code from someone\'s win screen. The game replays every move and confirms the score, so scores cannot be faked.</p><textarea id="gvin" class="gcode" rows="2" aria-label="Run code"></textarea><p><button class="btn" id="gvgo" type="button">Check it</button> <span id="gvout" aria-live="polite"></span></p></div></section>';
  var bb=bestFromStore();if(bb)host.querySelector("#gbest").textContent=bb.mem+"K free"+(bb.ok?" (checked)":" (unchecked: the museum has changed since)");
- host.querySelectorAll("canvas[data-p]").forEach(function(c){var x=c.getContext("2d");x.imageSmoothingEnabled=false;x.fillStyle=C.b;x.fillRect(0,0,60,90);x.save();x.scale(4,4);person(x,7,20,LOOK[c.dataset.p],0,1);x.restore()});
+ host.querySelectorAll("canvas[data-p]").forEach(function(c){var x=c.getContext("2d");x.imageSmoothingEnabled=false;x.fillStyle=C.b;x.fillRect(0,0,60,90);x.save();x.scale(3,3);if(c.dataset.p==="connie")chip(x,10,28,0,1);else person(x,10,29,LOOK[c.dataset.p],0,1);x.restore()});
  host.querySelector("#gvgo").onclick=function(){var r=verify(host.querySelector("#gvin").value),o=host.querySelector("#gvout");o.textContent=r.ok?"Valid. "+(r.who==="matt"?"Matt":"Tony")+" finished at "+clock(r.min)+" with "+r.mem+"K free and "+r.taken+" exhibits.":"Not valid. "+r.why};
  host.querySelectorAll(".gchar").forEach(function(b){b.onclick=function(){begin(b.dataset.w)}})}
 function begin(who){shell();keys={};newGame(who);last=performance.now();cancelAnimationFrame(raf);raf=requestAnimationFrame(loop)}
