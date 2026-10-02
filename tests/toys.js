@@ -75,5 +75,16 @@ const srv=http.createServer((q,r)=>{let f=path.join(root,decodeURIComponent(q.ur
  await go("catalog?q="+encodeURIComponent("zzzzqqqq"));await p.waitForTimeout(500);ok(await p.evaluate(()=>!!document.querySelector(".mc-empty svg.mascot")),"Connie shows up on an empty catalog search");
  await go("staff");await p.evaluate(()=>{localStorage.removeItem("cm-admin")});await go("staff");ok(await p.evaluate(()=>!!document.querySelector("svg.mascot")&&/guarding/.test(document.getElementById("app").innerText)),"Connie guards the staff-only door");
  await go("about");ok(await p.evaluate(()=>{var h=[...document.querySelectorAll("[data-room]")].find(b=>/Blockbuster/.test(b.getAttribute("aria-label")));return !!h&&parseFloat(h.style.left)>50&&parseFloat(h.style.top)<62}),"Blockbuster card hotspot sits at the right of the monitor base");
+ // trading cards for Matt and Tony, trimmed bios
+ await go("about");await p.waitForTimeout(300);
+ ok(await p.evaluate(()=>{const c=document.querySelectorAll(".ab-tcs .tc");return c.length===2&&[...c].map(x=>x.dataset.card).join()==="matt,tony"&&[...c].every(x=>x.querySelector("img")&&x.querySelectorAll(".tc-st dd").length===4)&&/AMATEUR EXTRA/.test(c[0].textContent)&&!document.querySelector(".ab-tcs .holo")}),"About has trading cards for Matt (with the ham license as a stat) and Tony; only Connie is holofoil");
+ ok(await p.evaluate(()=>{const m=document.querySelector('.ab-card[data-k="matt"]'),t=document.querySelector('.ab-card[data-k="tony"]'),b=m.querySelectorAll("p")[3].textContent;return !/Minecraft/.test(m.textContent)&&!/Minecraft/.test(t.textContent)&&!/ham radio operator/.test(b)&&b.split(" ").length<190&&/younger brother/.test(t.textContent)}),"Matt's bio is short, the ham license is only a stat, Minecraft lives only in the shared story, and Tony is the younger brother");
+ ok(await p.evaluate(()=>/Minecraft/.test(document.querySelector(".ab-log").textContent)),"the shared story still has Minecraft");
+ // the kiosk stage
+ await go("kiosk");await p.click("#kgo");await p.waitForTimeout(1200);
+ ok(await p.evaluate(()=>{const s=document.getElementById("kstage");return !!s&&s.querySelectorAll(".stg-a").length>=2&&!!s.querySelector(".stg-a.star svg.cc-connie")}),"the kiosk has a stage with Connie and others working");
+ ok(await p.evaluate(()=>{const c=document.querySelector("#kstage .stg-a.star"),w=parseFloat(c.querySelector("svg").getAttribute("width"));return [...document.querySelectorAll("#kstage .stg-a:not(.star) svg")].every(v=>parseFloat(v.getAttribute("width"))<w)}),"Connie is the biggest one on the stage");
+ await p.keyboard.press("x");await p.waitForTimeout(600);ok(await p.evaluate(()=>document.querySelectorAll("#kstage .stg-a").length>=5&&/Touch/.test(document.querySelector("#kstage").textContent)),"the menu brings everybody out to wave at the visitor");
+ await p.keyboard.press("Escape");await p.waitForTimeout(300);ok(await p.evaluate(()=>!document.getElementById("kiosk")),"leaving the kiosk stops the stage");
  ok(!errs.length,"no script errors"+(errs.length?": "+errs.join("|"):""));
  await b.close();srv.close();if(fails.length){console.error("FAILED "+fails.length);process.exit(1)}console.log("OK toys")})();

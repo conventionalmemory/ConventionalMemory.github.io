@@ -94,6 +94,7 @@ var CMCast=(function(){
   /* arms */
   cur=G.arml;r(2,11,3,1,GD);r(1,10,2,3,SKIN);if(c.wrist){var wc=c.wrist==="neon"?"#ff3d9a":"#16161a";r(2,10,1,3,wc);if(c.wrist!=="neon")r(2,11,1,1,SIL)}
   cur=G.armr;r(19,11,3,1,GD);r(21,10,2,3,SKIN);if(c.wrist){r(21,10,1,3,wc);if(c.wrist!=="neon")r(21,11,1,1,SIL)}
+  if(c.sleeve){cur=G.arml;r(1,10,3,3,c.sleeve);cur=G.armr;r(20,10,3,3,c.sleeve)}
   if(c.holds==="mug"){cur=G.arml;r(0,11,3,3,"#f4f4f4");r(0,11,3,1,"#c0143c");r(3,11,1,2,"#f4f4f4");r(1,9,1,1,"#ffffff99");r(2,8,1,1,"#ffffff66")}
   if(c.holds==="manual"){cur=G.armr;r(21,10,3,4,"#fff");r(21,10,1,4,"#2f6fe0");r(22,11,2,1,"#2f6fe0");r(22,13,2,1,"#c8c8d4")}
   cur=G.body;
@@ -126,6 +127,7 @@ var CMCast=(function(){
   if(c.jacket){var jk=c.jacket;r(3,17,4,5,jk);r(17,17,4,5,jk);r(3,17,4,1,"#ffffff33");r(17,17,4,1,"#ffffff33");r(7,18,1,3,"#ffffff22");r(16,18,1,3,"#ffffff22");
    if(c.studs){[18,19,20,21].forEach(function(y){r(3,y,1,1,SIL)});[18,20].forEach(function(y){r(20,y,1,1,SIL)})}
    if(c.pens){r(4,18,1,2,"#2f6fe0");r(5,18,1,2,"#c0143c");r(6,18,1,1,"#222")}}
+  if(c.turtle){var tu=c.turtle;r(5,18,14,2,tu);r(8,17,8,1,tu);r(8,17,8,1,"#ffffff1a");r(5,20,14,1,tu);r(5,18,14,1,"#ffffff22");r(6,19,12,1,"#00000033")}
   if(c.vest){r(5,18,3,4,c.vest);r(16,18,3,4,c.vest);r(5,18,3,1,"#ffffff33");r(16,18,3,1,"#ffffff33");r(6,20,1,1,GD);r(17,20,1,1,GD)}
   if(c.tie){r(9,18,2,1,"#fff");r(13,18,2,1,"#fff");r(11,18,2,1,c.tie);r(11,19,2,3,c.tie);r(11,19,1,1,"#ffffff44")}
   if(c.apron){r(7,18,10,4,c.apron);r(7,18,10,1,"#ffffff55");r(9,17,1,1,c.apron);r(14,17,1,1,c.apron);r(9,20,6,1,"#00000033");r(7,21,10,1,"#00000022")}
@@ -263,6 +265,30 @@ var CMCast=(function(){
   to("eyes");r(8,13,2,2,"#222");r(14,13,2,2,"#222");r(8,13,1,1,"#fff");r(14,13,1,1,"#fff");
   to("mouth");r(11,16,2,1,"#c0143c");return q.G}
 
+ /* the family pets: Mat, a wired mouse, and Toner, a toner-cartridge puppy */
+ function mat(mood){var q=sp(),r=q.r,to=q.to;
+  to("legl");r(7,19,3,3,"#b8ae8a");r(6,21,4,1,"#8a8060");to("legr");r(14,19,3,3,"#b8ae8a");r(14,21,4,1,"#8a8060");r(17,20,3,1,"#2a2a33");r(19,19,2,1,"#2a2a33");r(20,18,1,1,"#2a2a33");/* the tail is the cable */
+  to("arml");r(3,12,3,2,"#d8cfae");to("armr");r(18,12,3,2,"#d8cfae");
+  to("body");r(4,6,4,4,"#6b5f3a");r(5,7,2,2,"#e8a0b8");r(16,6,4,4,"#6b5f3a");r(17,7,2,2,"#e8a0b8");/* ears */
+  r(5,8,14,12,"#6b5f3a");r(6,9,12,10,"#d8cfae");r(6,9,12,1,"#ffffff66");r(6,9,12,4,"#cfc59e");r(11,9,2,5,"#6b5f3a");r(6,13,12,1,"#6b5f3a");/* two buttons */
+  to("eyes");
+  if(mood==="sleep"){r(8,16,2,1,K);r(14,16,2,1,K)}
+  else if(mood==="love"){r(8,15,2,2,"#ff2d6f");r(14,15,2,2,"#ff2d6f");r(8,15,1,1,"#ffb0cd")}
+  else if(mood==="wow"){r(8,14,3,3,"#fff");r(14,14,3,3,"#fff");r(9,15,1,1,K);r(15,15,1,1,K);r(7,13,1,1,K);r(17,13,1,1,K)}
+  else{r(8,15,2,2,K);r(8,15,1,1,"#fff");if(mood==="wink"){r(14,16,2,1,K)}else{r(14,15,2,2,K);r(14,15,1,1,"#fff")}if(mood==="oops"){r(18,13,1,3,"#7fd8ff")}}
+  to("cheek");r(6,17,2,1,"#e8a0b8");r(16,17,2,1,"#e8a0b8");to("mouth");if(mood==="oops"||mood==="wow"){r(11,17,2,2,"#c0143c")}else{r(11,17,2,1,"#c0143c");r(11,16,2,1,"#e8a0b8")}return q.G}
+ function toner(mood){var q=sp(),r=q.r,to=q.to;
+  to("legl");r(6,19,4,3,"#2a2a33");r(6,21,4,1,"#6b6b78");to("legr");r(14,19,4,3,"#2a2a33");r(14,21,4,1,"#6b6b78");
+  to("arml");r(1,10,3,6,"#14141a");r(1,10,3,1,"#3a3a46");to("armr");r(20,10,3,6,"#14141a");r(20,10,3,1,"#3a3a46");r(21,5,1,4,"#2a2a33");r(22,4,1,2,"#2a2a33");/* ears flop, tail wags */
+  to("body");r(4,6,16,14,"#14141a");r(5,7,14,12,"#2a2a33");r(5,7,14,1,"#4a4a58");r(9,5,6,2,"#14141a");r(10,4,4,1,"#3a3a46");/* the cartridge handle */
+  r(7,15,10,4,"#f4f4f4");r(8,16,3,1,"#c0143c");r(12,16,4,1,"#6b6b78");r(8,18,8,1,"#c8c8d4");r(6,12,2,1,"#6b6b78");r(16,9,1,1,"#6b6b78");r(18,13,1,1,"#6b6b78");r(8,9,1,1,"#6b6b78");/* a label and a few smudges */
+  to("eyes");
+  if(mood==="sleep"){r(7,11,4,1,"#fff");r(13,11,4,1,"#fff")}
+  else if(mood==="love"){r(7,9,4,4,"#ff2d6f");r(13,9,4,4,"#ff2d6f");r(8,10,1,1,"#ffb0cd");r(14,10,1,1,"#ffb0cd")}
+  else if(mood==="wow"){r(7,9,4,4,"#fff");r(13,9,4,4,"#fff");r(8,11,2,1,"#111");r(14,11,2,1,"#111");r(6,8,2,1,"#fff");r(16,8,2,1,"#fff")}
+  else{r(7,9,4,4,"#fff");r(13,9,4,4,"#fff");r(8,10,2,3,"#111");r(8,10,1,1,"#fff");if(mood==="wink"){r(13,11,4,1,"#fff")}else{r(14,10,2,3,"#111");r(14,10,1,1,"#fff")}if(mood==="oops"){r(19,8,1,3,"#7fd8ff")}}
+  to("mouth");if(mood==="wow"||mood==="oops"){r(11,13,2,3,"#111")}else{r(10,13,4,1,"#111");r(11,14,2,2,"#ff7a96")}return q.G}
+
  /* inner SVG markup for a named cast member. o = {mood, size...} */
 
  /* ---- the guys' wardrobe (Conrad and Raymond). Each outfit lists what it changes; "classic" is how they always look. */
@@ -275,13 +301,14 @@ var CMCast=(function(){
   hawaii:{n:"Vacation",note:"Loud shorts, cool shades, no plans.",cfg:{bowtie:0,shorts:"#ff7a3d",shortsPat:"hawaii"},acc:"shades"},
   garage:{n:"Garage",note:"Overalls, a red cap and a tool belt.",cfg:{bowtie:0,hairStyle:"cap",cap:"#d6322a",overalls:"#2f5fb8",shorts:"#2f5fb8",belt:1}},
   tux:{n:"Tuxedo",note:"Top hat and a bow tie, for the wedding.",cfg:{bowtie:1,hat:"top",hatCol:"#16161a",jacket:"#16161a",shorts:"#16161a"}},
+  keynote:{n:"Keynote",note:"Black turtleneck, round glasses, jeans. One more thing.",cfg:{bowtie:0,turtle:"#16161a",sleeve:"#16161a",shorts:"#4a6a9a",glasses:"round",gcol:"#c8c8d4"}},
   cowboy:{n:"Cowpoke",note:"Cowboy hat, vest and a red bandana.",cfg:{bowtie:0,hat:"cowboy",hatCol:"#8a5a2b",vest:"#6b3a1b",bandana:"#c0143c",shorts:"#2f4f8a"}},
   biker:{n:"Biker",note:"Black leather, studs and shades.",cfg:{bowtie:0,jacket:"#1a1a1f",studs:1,bandana:"#c0143c",shorts:"#222228"},acc:"shades"},
   wizard:{n:"BIOS wizard",note:"Pointy hat. Knows every jumper setting.",cfg:{bowtie:0,hat:"wizard",hatCol:"#4b2f9a",jacket:"#4b2f9a"}},
   winter:{n:"Winter",note:"Beanie, scarf and a puffy vest.",cfg:{bowtie:0,beanie:1,beanieCol:"#2f6b8a",scarf:"#c0392b",vest:"#2f6b8a",shorts:"#3a424e"}},
   golf:{n:"Weekend golf",note:"Visor, plaid shorts, a lot of opinions.",cfg:{bowtie:0,hat:"visor",hatCol:"#2f8a4a",shorts:"#2f8a4a",shortsPat:"plaid"}},
   road:{n:"Road trip",note:"Camo shorts, a trucker cap and a cooler.",cfg:{bowtie:0,hairStyle:"cap",cap:"#556b2f",shorts:"#4a5a32",shortsPat:"camo"},acc:"fl"}};
- var OUTFIT_ORDER=["classic","desk","fishing","grill","lab","hawaii","garage","tux","cowboy","biker","wizard","winter","golf","road"];
+ var OUTFIT_ORDER=["classic","desk","fishing","grill","lab","hawaii","garage","tux","keynote","cowboy","biker","wizard","winter","golf","road"];
  var OUTFIT_FOR={conrad:1,ram:1};
  var HEAD_ACC={hp:1,joy:1,prop:1,crown:1,halo:1,headset:1};
  function famState(){var s=conState();return s.fam||{}}
@@ -291,9 +318,9 @@ var CMCast=(function(){
  function famOpts(id){if(!OUTFIT_FOR[id])return{};var f=famGet(id);return{outfit:f.o,color:f.c,acc:f.a||undefined,fam:1}}
  function castSvg(id,o){o=o||{};
   if(id==="connie")return inner(folk(connieCfg(o)));
-  if(id==="floyd")return inner(floyd(o.mood));if(id==="winnie")return inner(winnie(o.mood));if(id==="tess")return inner(tess(o.mood));if(id==="nibble")return inner(nibble());
+  if(id==="floyd")return inner(floyd(o.mood));if(id==="winnie")return inner(winnie(o.mood));if(id==="tess")return inner(tess(o.mood));if(id==="nibble")return inner(nibble());if(id==="mat")return inner(mat(o.mood));if(id==="toner")return inner(toner(o.mood));
   var s=CAST[id];if(!s||!s.cfg)return"";var c={},k;for(k in s.cfg)c[k]=s.cfg[k];c.mood=o.mood||"happy";
-  if(OUTFIT_FOR[id]){var ou=OUTFITS[o.outfit];if(ou){for(k in ou.cfg)c[k]=ou.cfg[k]}
+  if(OUTFIT_FOR[id]||o.outfit){var ou=OUTFITS[o.outfit];if(ou){for(k in ou.cfg)c[k]=ou.cfg[k]}
    if(o.color&&COLORS[o.color]){c.b=COLORS[o.color].b;c.d=COLORS[o.color].d}
    var ac=o.acc!=null?o.acc:(ou&&ou.acc)||"none";if(ACCS[ac]&&!((c.hat||c.beanie||c.hairStyle==="cap")&&HEAD_ACC[ac]))c.acc=ac}if(c.skirt==null&&!c.shorts&&!c.sk)c.sk="#555";return inner(folk(c))}
  /* a whole standalone <svg> for comics, cards and stickers */
@@ -321,6 +348,8 @@ var CMCast=(function(){
   trophies:["nibble",{},"Nibble runs the wheel in our hallway. That is where the tickets come from. (It is not, but he believes it.)"],
   prizes:["nibble",{},"Nibble keeps the tickets safe. He says. We counted. Please count again."],
   gate:["rhoda",{},"My mom, Rhoda, on the door. She is read-only. You can look, but you cannot edit."],
+  search:["mat",{},"This is Mat, our pet mouse. He clicks on everything on this page, which is how it got so many results."],
+  report:["toner",{},"Toner, our puppy. He signs every printout with a pawprint. That smudge on your report is not a bug. It is a signature."],
   nf:["zack",{},"That was Zack. He was not invited, and yet he ends up on every page that does not exist."]};
  var FAMILY=[
   {id:"connie",n:"Connie Ventional",born:1981,role:"Our heroine",bio:"A memory module with a bow, born on the same day as the IBM PC. She lives in the first 640K and shares what she has."},
@@ -338,7 +367,45 @@ var CMCast=(function(){
   {id:"viv",n:"Vivian G. Adapter",born:1987,role:"Friend",bio:"Sixteen colors on a good day, 256 on a great one. Dresses accordingly."},
   {id:"sandy",n:"Sandy Blaster",born:1989,role:"Friend",bio:"Loud. Always on IRQ 5. Always arguing with somebody about IRQ 5."},
   {id:"mo",n:"Maureen “Mo” Dem",born:1979,role:"Friend",bio:"Connects slowly, makes a lot of noise doing it, and ties up the phone line all evening."},
-  {id:"zack",n:"Zachary “Zack” Zip",born:1980,role:"The neighbor kid",bio:"Shows up folded small and unfolds in the living room. Nobody invited him. You know him from the Memory Maze."}];
+  {id:"zack",n:"Zachary “Zack” Zip",born:1980,role:"The neighbor kid",bio:"Shows up folded small and unfolds in the living room. Nobody invited him. You know him from the Memory Maze."},
+  {id:"mat",n:"Mat the Mouse",born:1984,role:"Family pet",bio:"A wired mouse with a long tail, born the year the Macintosh made the mouse famous. Lives under the mouse pad and chases the cursor, which he has never once caught. Does not need any memory at all."},
+  {id:"toner",n:"Toner",born:1986,role:"Family pet",bio:"A laser-printer toner cartridge who thinks he is a puppy. Leaves a fine black pawprint on everything he loves. Dot Matrix claims she can print the same thing faster. Toner does not care. Toner wants to play."}];
 
+
+ /* ---- trading cards (used by About for Matt and Tony, and by the Cards page for the family) */
+ function esc2(t){return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
+ /* o = {id,n,hp,type,art(html),stats:[[label,0-10|text]],move:[name,text],flavor,no,rar,col,holo} */
+ function card(o){var st=o.stats.map(function(x){var v=x[1];if(typeof v==="number"){var p="",i;for(i=0;i<10;i++)p+="<i"+(i<v?' class="on"':"")+"></i>";return"<dt>"+esc2(x[0])+'</dt><dd class="pp" aria-label="'+v+' of 10">'+p+"</dd>"}return"<dt>"+esc2(x[0])+"</dt><dd>"+esc2(v)+"</dd>"}).join("");
+  return'<article class="tc'+(o.holo?" holo":"")+'" data-card="'+esc2(o.id)+'" style="--tc:'+(o.col||"#2fa39a")+'"><header><b>'+esc2(o.n)+"</b><span>"+esc2(o.hp)+'</span></header><div class="tc-art">'+o.art+'<em class="tc-shine" aria-hidden="true"></em></div><p class="tc-type">'+esc2(o.type)+'</p><dl class="tc-st">'+st+'</dl><p class="tc-mv"><b>'+esc2(o.move[0])+".</b> "+esc2(o.move[1])+'</p><p class="tc-fl">\u201c'+esc2(o.flavor)+'\u201d</p><footer><span>'+esc2(o.no)+"</span><span>"+esc2(o.rar)+"</span></footer></article>"}
+
+ /* ---- the animation library. Every character is an <svg class="cc"> made of named groups (mc-all, mc-arml, mc-armr, mc-legl, mc-legr, mc-bow, mc-eyes, mc-mouth),
+    so one set of CSS animations (style.css, "animation library") works on all of them. Use: CMCast.play(svgElement,"cheer") or "wave talk" for two at once.
+    once = how many ms a one-shot lasts before the character returns to idle. Nothing moves when the visitor has motion turned off. */
+ var ANIMS=[
+  {k:"wave",n:"Wave",d:"Right arm up and down. The hello."},
+  {k:"hop",n:"Hop",d:"A little jump, over and over. Good news."},
+  {k:"cheer",n:"Cheer",d:"Both arms up and hopping. Level cleared."},
+  {k:"dance",n:"Dance",d:"Sway, tap and wiggle the bow."},
+  {k:"talk",n:"Talk",d:"The mouth opens and closes. Use with a speech bubble."},
+  {k:"think",n:"Think",d:"A head tilt and eyes glancing around."},
+  {k:"point",n:"Point",d:"Right arm out, pointing at something."},
+  {k:"nod",n:"Nod",d:"Yes, yes, absolutely yes."},
+  {k:"shiver",n:"Shiver",d:"A fast tremble. Cold, nervous or just loaded too high."},
+  {k:"sleep",n:"Sleep",d:"Eyes shut and slow breathing."},
+  {k:"peek",n:"Peek in",d:"Slides in from the side, once.",once:1100},
+  {k:"walk",n:"Walk in",d:"Strolls in from the left with tapping feet, once.",once:2100},
+  {k:"turn",n:"Turn around",d:"A flip, like turning to face the other way, once.",once:1300},
+  {k:"bow",n:"Take a bow",d:"A deep bow, once.",once:1700},
+  {k:"stroll",n:"Stroll",d:"Walking along: feet tapping and a little bob. Pair it with a move in position."},
+  {k:"carry",n:"Carry",d:"Both arms up, holding a crate. Combine with stroll: \u201cstroll carry\u201d."},
+  {k:"dust",n:"Dust",d:"Right arm swings back and forth with a feather duster."},
+  {k:"stir",n:"Stir",d:"A small circular stir, for cooking."},
+  {k:"solder",n:"Solder",d:"A steady, tiny hand tremor over a circuit board."},
+  {k:"read",n:"Read",d:"A slow lean in and nod, reading the manual."},
+  {k:"scurry",n:"Scurry",d:"Side to side, quick. For pets and for Zack."}];
+ function stopAnim(el){if(!el)return;clearTimeout(el._ant);var c=(el.getAttribute("class")||"").split(/\s+/).filter(function(x){return x&&x.indexOf("an-")!==0});el.setAttribute("class",c.join(" "))}
+ function play(el,names,ms){if(!el||!names)return;stopAnim(el);var c=(el.getAttribute("class")||"").split(/\s+/).filter(Boolean),once=0;
+  names.split(" ").forEach(function(n){c.push("an-"+n);var a=ANIMS.filter(function(x){return x.k===n})[0];if(a&&a.once)once=Math.max(once,a.once)});
+  el.setAttribute("class",c.join(" "));ms=ms||once;if(ms)el._ant=setTimeout(function(){stopAnim(el)},ms)}
  return{CAMEO:CAMEO,OUTFITS:OUTFITS,OUTFIT_ORDER:OUTFIT_ORDER,OUTFIT_FOR:OUTFIT_FOR,famGet:famGet,famSet:famSet,famOpts:famOpts,COLORS:COLORS,LOOKS:LOOKS,LOOK_ORDER:LOOK_ORDER,ACCS:ACCS,ACC_ORDER:ACC_ORDER,COLOR_PRIZE:COLOR_PRIZE,COLOR_ORDER:COLOR_ORDER,FUN_TOTAL:FUN_TOTAL,LEVELS:LEVELS,CAST:CAST,CAST_ORDER:CAST_ORDER,FAMILY:FAMILY,
-  folk:folk,inner:inner,rects:rects,connieCfg:connieCfg,castSvg:castSvg,svg:svgOf,cur:cur,save:save,unlocked:unlocked,state:conState,stars:stars,cleared:cleared,readCount:readCount,GL:GL}})();
+  card:card,ANIMS:ANIMS,play:play,stopAnim:stopAnim,folk:folk,inner:inner,rects:rects,connieCfg:connieCfg,castSvg:castSvg,svg:svgOf,cur:cur,save:save,unlocked:unlocked,state:conState,stars:stars,cleared:cleared,readCount:readCount,GL:GL}})();

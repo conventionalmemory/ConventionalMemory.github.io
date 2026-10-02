@@ -1,4 +1,4 @@
-/* Prints the Connie sticker sheets: 8.5x11 in PNGs at 300 dpi, white background, thin dashed cut guides.
+/* Prints the Connie sticker sheets and trading-card sheets: 8.5x11 in PNGs at 300 dpi, white background, thin dashed cut guides.
    Run: node tools/build-sticker-sheets.js [outdir]     (default: stickers/)
    The characters come straight from cast.js, so a new look or accessory shows up here after a rebuild. */
 const fs=require("fs"),path=require("path"),vm=require("vm");const {chromium}=require("playwright");
@@ -29,7 +29,7 @@ const pair={classic:["fl","green","happy"],punk:["shades","black","wink"],skate:
 sheets["1-connie-looks"]=sheet("CONNIE: THE WARDROBE","12 looks, 1 memory chip",C.LOOK_ORDER.map((l,i)=>{const p=pair[l]||["none","green","happy"];return round(690,"connie",{look:l,acc:p[0],skin:p[1],mood:p[2]},C.LOOKS[l].n,BG[i%6],46)}).join(""),"top:300px;bottom:150px;grid-template-columns:repeat(3,690px);grid-template-rows:repeat(4,690px);align-content:space-between");
 // 2. Family
 const fam=[["connie","Connie","happy"],["emma","Emma 386","happy"],["hiram","Himmy","happy"],["ram","Raymond (Dad)","happy"],["rhoda","Mom (Read-Only)","happy"],["floyd","Grandpa Floyd","happy"],["winnie","Grandma Winnie","happy"],["augusta","Auntie Autoexec","happy"],["conrad","Uncle Conrad","happy"],["tess","Tessie (TSR)","happy"],["nibble","Nibble","happy"],["dot","Dot Matrix","happy"],["viv","Viv G. Adapter","happy"],["sandy","Sandy Blaster","happy"],["mo","Mo Dem","happy"],["zack","Zack (uninvited)","happy"]];
-sheets["2-the-ventional-family"]=sheet("THE VENTIONAL FAMILY","all 16, one very full 640K",fam.map((f,i)=>round(560,f[0],{mood:f[2]},f[1],BG[i%6],38)).join(""),"top:300px;bottom:150px;grid-template-columns:repeat(4,560px);grid-template-rows:repeat(4,560px);align-content:space-around;justify-content:space-between");
+sheets["2-the-ventional-family"]=sheet("THE VENTIONAL FAMILY","all 16 (the pets have their own sheet)",fam.map((f,i)=>round(560,f[0],{mood:f[2]},f[1],BG[i%6],38)).join(""),"top:300px;bottom:150px;grid-template-columns:repeat(4,560px);grid-template-rows:repeat(4,560px);align-content:space-around;justify-content:space-between");
 // 3. Museum jokes: lines from the site (marquee, mascot, About), in a mix of cute and tough
 // [title, sub, bg, fg, accent, size(1|2), hazard?]
 const SL=[
@@ -75,11 +75,31 @@ sheets["4-laptop-size-connie"]=sheet("BIG CONNIE","laptop-lid sized (3 in across
 // 5-6. The guys
 function guySheet(id,title,sub,full,textA,textB){const list=C.OUTFIT_ORDER.map((o,i)=>round(560,id,{outfit:o,mood:"happy"},C.OUTFITS[o].n,BG[i%6],42));
  const tb=(t,u,bg,fg)=>`<div class="rd" style="width:560px;height:560px"><div class="in" style="background:${bg};color:${fg};flex-direction:column;text-align:center;padding:40px"><b style="font-size:62px;line-height:1.05;display:block">${E(t)}</b><span style="font-size:32px;margin-top:14px;display:block">${E(u)}</span></div></div>`;
- return sheet(title,sub,list.join("")+tb(textA[0],textA[1],"#111","#ffd54a")+tb(textB[0],textB[1],"#556b2f","#fff"),"top:300px;bottom:150px;grid-template-columns:repeat(4,560px);grid-template-rows:repeat(4,560px);align-content:space-around;justify-content:space-between")}
-sheets["5-uncle-conrad"]=guySheet("conrad","UNCLE CONRAD FIGSYS","14 outfits, 1 very organized uncle",0,["CONFIG.SYS","has opinions"],["DEVICE=","HIMEM.SYS"]);
+ return sheet(title,sub,list.join("")+tb(textA[0],textA[1],"#111","#ffd54a"),"top:300px;bottom:150px;grid-template-columns:repeat(4,560px);grid-template-rows:repeat(4,560px);align-content:space-around;justify-content:space-between")}
+sheets["5-uncle-conrad"]=guySheet("conrad","UNCLE CONRAD FIGSYS","15 outfits, 1 very organized uncle",0,["CONFIG.SYS","has opinions"],["DEVICE=","HIMEM.SYS"]);
 sheets["6-raymond"]=guySheet("ram","RAYMOND VENTIONAL","Dad. Reads the manual first.",0,["READ THE MANUAL","first."],["ASK YOUR","MOTHER (READ-ONLY)"]);
 const bigGuys=[["conrad","biker","BIKER CONRAD"],["conrad","wizard","BIOS WIZARD"],["conrad","grill","GRILL MASTER"],["ram","garage","GARAGE DAD"],["ram","cowboy","COWPOKE RAY"],["ram","tux","FORMAL RAYMOND"]];
 sheets["7-big-guys"]=sheet("BIG UNCLE AND DAD","laptop-lid sized (3 in across)",bigGuys.map((b,i)=>round(900,b[0],{outfit:b[1],mood:"happy"},b[2],BG[(i*2+1)%6],56)).join(""),"top:300px;bottom:150px;grid-template-columns:repeat(2,900px);grid-template-rows:repeat(3,900px);align-content:space-between;justify-content:space-around");
+// 8. The pets
+const petMoods=["happy","wink","wow","oops","love","sleep"];
+const tb2=(t,u,bg,fg)=>`<div class="rd" style="width:560px;height:560px"><div class="in" style="background:${bg};color:${fg};flex-direction:column;text-align:center;padding:40px"><b style="font-size:62px;line-height:1.05;display:block">${E(t)}</b><span style="font-size:32px;margin-top:14px;display:block">${E(u)}</span></div></div>`;
+const petList=[];petMoods.forEach((m,i)=>{petList.push(round(560,"mat",{mood:m,tall:0},"Mat the Mouse",BG[i%6],42));petList.push(round(560,"toner",{mood:m,tall:0},"Toner",BG[(i+3)%6],42))});
+sheets["8-pets-mat-and-toner"]=sheet("MAT AND TONER","the family pets",petList.slice(0,12).join("")+tb2("CLICK.","(Mat, in full)","#d8cfae","#3a3320")+tb2("WOOF","(smudge)","#1a1a22","#ffd54a")+tb2("640K","no pets were harmed","#000080","#fff")+tb2("LOAD IT HIGH","ask Connie","#38b24a","#fff"),"top:300px;bottom:150px;grid-template-columns:repeat(4,560px);grid-template-rows:repeat(4,560px);align-content:space-around;justify-content:space-between");
+// 9-11. Trading cards at 2.5 x 3.5 in (750 x 1050 px), nine to a page, cut on the dashes
+const cardCss=fs.readFileSync(path.join(root,"style.css"),"utf8").split("/* trading cards")[1].split("*/").slice(1).join("*/").split(".ab-tcs")[0];
+const cs={window:{},localStorage:{getItem(){return null},setItem(){}},document:{},console};vm.createContext(cs);
+vm.runInContext(fs.readFileSync(path.join(root,"cast.js"),"utf8")+";window.CMCast=CMCast;this.CMCast=CMCast",cs);
+vm.runInContext(fs.readFileSync(path.join(root,"connie.js"),"utf8")+";this.CT=window.CMConnie._t",cs);
+const cardsHtml=cs.CT.CARDS.map((c,i)=>cs.CT.cardOf(c,i));
+const img=n=>"data:image/png;base64,"+fs.readFileSync(path.join(root,"portraits",n+".png")).toString("base64");
+const crew=[["matt","Matt","EXTRA","CREATOR · PLAYER 1",[["Repair",9],["Hoarding",10],["Patience",3],["Ham radio","AMATEUR EXTRA"]],["Soldering Iron","Fix one broken beige box. Then bring home two more."],"There is a cable for that.","No. 1 of 2","#2f6fe0"],["tony","Tony","MAX","MAKER · PLAYER 2",[["Selling",10],["Crafting",9],["Axe control",2],["Skill trees","ALL OF THEM"]],["Locker Black Market","Trade candy, yo-yos or beef jerky for anything."],"I can make that.","No. 2 of 2","#d6322a"]].map(c=>C&&cs.CMCast.card({id:c[0],n:c[1],hp:c[2],type:c[3],art:'<img src="'+img(c[0])+'" alt="">',stats:c[4],move:c[5],flavor:c[6],no:c[7],rar:"RARE",col:c[8]}));
+const back=`<div class="tcb"><div class="tcb-in"><small>CONVENTIONAL MEMORY</small><div>${sprite("connie",330,{mood:"happy"})}</div><b>TRADING CARDS</b><small>There is always room for one more.</small></div></div>`;
+const cardPage=cells=>`<div class="sheet cardsheet"><div class="cgrid">${cells.map(h=>`<div class="cell">${h}</div>`).join("")}</div></div>`;
+const cardExtra=`.cardsheet .cgrid{position:absolute;left:150px;top:75px;display:grid;grid-template-columns:repeat(3,750px);grid-template-rows:repeat(3,1050px)}
+.cell{width:750px;height:1050px;outline:2px dashed #b8b8c8;outline-offset:-1px;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#fff}
+.cell .tc{zoom:3;width:250px;height:350px;box-shadow:none;border-radius:10px;display:flex;flex-direction:column;border-width:7px}.cell .tc-art{height:auto;flex:1;min-height:0}.cell .tc-art svg{height:94%;width:auto;max-height:none}.cell .tc-art img{height:100%}
+.tcb{width:750px;height:1050px;padding:45px;background:#fff}.tcb-in{width:100%;height:100%;border:18px solid #e0a526;border-radius:34px;background:radial-gradient(circle at 50% 38%,#4a4ac0,#000080);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:space-around;text-align:center;padding:30px}.tcb-in small{font-size:34px;letter-spacing:.12em}.tcb-in b{font-size:84px;color:#ffd54a;letter-spacing:.05em}`;
+const cardSheets={"9-trading-cards-1":cardPage(cardsHtml.slice(0,9)),"9-trading-cards-2":cardPage(cardsHtml.slice(9,18)),"9-trading-cards-3-creators-and-backs":cardPage(crew.concat([back,back,back,back,back,back,back]))};
 (async()=>{const b=await chromium.launch();const p=await b.newPage({viewport:{width:2550,height:3300}});
- for(const k of Object.keys(sheets)){await p.setContent("<style>"+css+"</style>"+sheets[k]);await p.waitForTimeout(150);await (await p.$(".sheet")).screenshot({path:path.join(out,"conventional-memory-stickers-"+k+".png")});console.log("wrote",k)}
+ for(const k of Object.keys(sheets).concat(Object.keys(cardSheets))){await p.setContent("<style>"+css+cardCss+cardExtra+"</style>"+(sheets[k]||cardSheets[k]));await p.waitForTimeout(150);await (await p.$(".sheet")).screenshot({path:path.join(out,"conventional-memory-stickers-"+k+".png")});console.log("wrote",k)}
  await b.close()})();
