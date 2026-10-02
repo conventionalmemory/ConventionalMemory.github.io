@@ -1269,7 +1269,7 @@ header.top nav .mn-c:hover,header.top nav .mn-c.on{background:color-mix(in srgb,
 header.top nav a[aria-current=page]+.mn-c{background:var(--line);color:var(--bg)}
 @media(min-width:900px){header.top nav{justify-content:space-between}header.top nav a{flex:0 0 auto;padding:1px 3px;font-size:17px}header.top nav .mn-i{margin-right:4px}header.top nav a[data-s=search] .mn-t{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}header.top nav a[data-s=search] .mn-i{margin:0}header.top nav a[data-s=search]{padding:1px 6px}}
 @media(min-width:900px) and (hover:hover){header.top nav .mn-c{display:inline-flex;width:12px;margin:0 1px 0 -3px}header.top nav a[data-mn]{padding-right:2px}}
-header.top .mnp{position:fixed;z-index:12;box-sizing:border-box;background:var(--panel);border:2px solid var(--line);box-shadow:6px 6px 0 var(--line);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none;transform-origin:20px 0}
+header.top .mnp{position:fixed;z-index:40;box-sizing:border-box;background:var(--panel);border:2px solid var(--line);box-shadow:6px 6px 0 var(--line);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none;transform-origin:20px 0}
 header.top .mnp::-webkit-scrollbar{display:none}
 header.top .mnp[hidden]{display:none}
 .mnp-h{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 12px;padding:6px 12px;background:var(--line);color:var(--bg)}

@@ -51,5 +51,11 @@ const srv=http.createServer((q,r)=>{let f=path.join(root,decodeURIComponent(q.ur
  ok(await m.evaluate(()=>{const e=document.getElementById("mnp");return !e.hidden&&location.hash!=="#/hub/play"&&e.getBoundingClientRect().width>340&&e.getBoundingClientRect().right<=375}),"on a phone, tapping Play opens its list instead of leaving the page");
  await m.tap('#mnp a[href="#/kiosk"]');await m.waitForTimeout(500);ok(await m.evaluate(()=>location.hash==="#/kiosk"&&document.getElementById("mnp").hidden),"and tapping a page in the list goes there");
  ok(await m.evaluate(()=>document.documentElement.scrollWidth<=376),"the phone page does not scroll sideways");
+ // nothing on any page may sit on top of an open menu list
+ {const covered=[];for(const r of ["","catalog","catalog/cat/Laptops","timeline","timeline/1995","play","books","wish","walk/1995","hub/read","cards","stats"]){await m.goto(base+r);await m.waitForTimeout(900);
+   for(const sec of ["explore","connie"]){await m.evaluate(()=>window.scrollTo(0,0));await m.tap('header.top nav a[data-s="'+sec+'"]');await m.waitForTimeout(350);
+    const bad=await m.evaluate(()=>{const e=document.getElementById("mnp");if(e.hidden)return"not open";const R=e.getBoundingClientRect(),o=new Set();for(let y=R.top+6;y<R.bottom-6&&y<innerHeight;y+=24)for(let x=R.left+8;x<R.right-8;x+=40){const t=document.elementFromPoint(x,y);if(t&&!t.closest("#mnp"))o.add(String(t.className||t.tagName))}return[...o].join(",")});
+    if(bad)covered.push(r+"/"+sec+": "+bad);await m.evaluate(()=>document.dispatchEvent(new KeyboardEvent("keydown",{key:"Escape"})))}}
+  ok(covered.length===0,"on a phone the menu list is never covered by other page parts"+(covered.length?" ("+covered.slice(0,3).join("; ")+")":""))}
  ok(errs.length===0,"no page errors"+(errs.length?": "+errs[0]:""));
  await b.close();srv.close();if(fails.length){console.error("FAILED "+fails.length);process.exit(1)}console.log("OK menu")})();
