@@ -146,6 +146,16 @@ function qGame(list){var PCP=["DOS","Windows","Mac","Linux","PC-98","FM Towns"],
  if(kind<.7&&pl.length>=3){var last=x.r[x.r.length-1][0];if(last==="Other"||last===x.r[0][0])return null;var w2=shuf(all.filter(function(p){return p!==last&&p!==x.r[0][0]})).slice(0,3);if(w2.length<3)return null;return mk('Which of these systems got "'+nameOf(r)+'" last?',last,w2,"lastsys")}
  if(x.n&&x.c==="high"&&!/knowledge/i.test(x.s||"")&&x.n.ramMB!=null&&x.n.ramMB>=1){var ram=x.n.ramMB,o=[ram*2,ram*4,Math.max(1,ram/2),ram*8].filter(function(v,j,a){return v!==ram&&a.indexOf(v)===j}).slice(0,3);if(o.length<3)return null;var f2=function(v){return v+" MB"};return mk('About how much RAM did "'+nameOf(r)+'" list as its minimum on a PC?',f2(ram),o.map(f2),"minram")}
  return null}
+/* ---- "too easy" guard: reject questions whose answer is spelled out in the question (the IBM Model M keyboard / IBM trap) ---- */
+var STOPW={the:1,and:1,for:1,with:1,from:1,that:1,this:1,was:1,were:1,what:1,which:1,did:1,his:1,her:1,its:1,are:1,has:1,had:1,one:1,two:1};
+function toks(t){return String(t).toLowerCase().replace(/[^a-z0-9]+/g," ").split(" ").filter(function(w){return w.length>=3&&!STOPW[w]})}
+function leaks(q){var ans=String(q.o[q.c]);if(/^[\d$.,\s()*-]+$/.test(ans))return false;
+ var qt=" "+String(q.q).toLowerCase().replace(/[^a-z0-9]+/g," ")+" ",at=toks(ans),whole=" "+ans.toLowerCase().replace(/[^a-z0-9]+/g," ").trim()+" ";
+ if(whole.length>4&&qt.indexOf(whole)>=0)return true;
+ if(at.length&&at.every(function(w){return qt.indexOf(" "+w+" ")>=0}))return true;
+ var qk=toks(q.q),share=function(t){return toks(t).some(function(w){return w.length>=3&&qk.indexOf(w)>=0})};
+ if(share(ans)){var others=q.o.filter(function(o,i){return i!==q.c&&share(o)});if(!others.length)return true}
+ return false}
 function nextQ(era,lvl){
  var wide=[4,6,9][lvl>=0?Math.min(lvl,2):0]+0,ok=D.tl.filter(function(r){return Math.abs(yr(r[0])-era)<=4}),okw=D.tl.filter(function(r){return Math.abs(yr(r[0])-era)<=9}),tries=0,q=null;
  while(!q&&tries++<40){var t=R();
@@ -167,8 +177,8 @@ function nextQ(era,lvl){
   else if(t<.90)q=qMostExpensive(okw);
   else if(t<.93)q=qCategory();
   else if(ok.length)q=qYear(pick(ok),lvl);
-  if(q&&S.used[q.q])q=null}
- if(!q){q=qStatic();var n=0;while(S.used[q.q]&&n++<40)q=qStatic()}
+  if(q&&(S.used[q.q]||leaks(q)))q=null}
+ if(!q){q=qStatic();var n=0;while((S.used[q.q]||leaks(q))&&n++<60)q=qStatic()}
  S.used[q.q]=1;return q}
 
 /* ---------- maze ---------- */
@@ -210,7 +220,7 @@ function newGame(who,sd){
  S.rooms[S.goal].ex={kind:"goal",title:"Master Boot Disk",year:1981,note:"The disk that started it all."};
  var ids=S.rooms.map(function(r){return r.i}).filter(function(i){return i!==S.start&&i!==S.goal});
  var far=ids.filter(function(i){return S.rooms[i].depth>=3});S.gr={room:pick(far.length?far:ids),wait:0};
- var other=who==="matt"?"tony":"matt",cast=["aunt","aunt","connie","connie","zack",other,other];shuf(ids).slice(0,cast.length).forEach(function(i,k){S.npcs[i]=cast[k]});
+ var other=who==="matt"?"tony":"matt",cast=["aunt","aunt","connie","connie","connie","zack",other,other];shuf(ids).slice(0,cast.length).forEach(function(i,k){S.npcs[i]=cast[k]});
  enter(S.start,null,true)}
 function room(){return S.rooms[S.room]}
 function say(t){S.msg=t;var el=host.querySelector("#gmsg");if(el)el.innerHTML=esc(t).replace(/\n/g,"<br>");S.log.push(t)}
@@ -236,24 +246,25 @@ function gremlin(){S.mode="q";var q=nextQ(room().era,2);S.q=q;S.door={gremlin:tr
 /* ---------- questions UI ---------- */
 function TOPIC(t){return t==="item"?"Museum items":t==="dos"?"DOS lore":t==="quote"?"Famous quotes":"Timeline"}
 function report(){var r=S.rep||{},k=Object.keys(r);return k.length?'<p class="gnote">Trivia report: '+k.map(function(x){return esc(x)+" "+r[x][0]+"/"+r[x][1]}).join(" &middot; ")+'</p>':""}
-function showQ(pre){var box=host.querySelector("#gq"),o="";
+function showQ(pre){var box=host.querySelector("#gq"),o="";S.qAt=performance.now();S.qHeld={};Object.keys(keys).forEach(function(k){if(keys[k])S.qHeld[k]=1});keys={};
  var q=S.q,hide=S.hidden||[];
  q.o.forEach(function(t,i){if(hide.indexOf(i)>=0)return;o+='<button type="button" class="btn" data-a="'+i+'"><b>'+"ABCD"[i]+'</b> '+esc(t)+'</button>'});
- box.innerHTML='<p class="gpre">'+esc(pre||"")+'</p><p class="gnote">Topic: '+esc(TOPIC(q.tag))+'</p><p><b>'+esc(q.q)+'</b></p><div class="gopts">'+o+'</div><p><button type="button" class="btn" data-h="1">Ask Auntie Autoexec ('+S.hints+' left)</button></p>';
+ box.innerHTML='<p class="gcon">'+(typeof mascot==="function"?mascot(40,S.door&&S.door.gremlin?"oops":"happy"):"")+'<span class="gpre">'+esc(pre||"")+'</span></p><p class="gnote">Topic: '+esc(TOPIC(q.tag))+'</p><p><b>'+esc(q.q)+'</b></p><div class="gopts">'+o+'</div><p><button type="button" class="btn" data-h="1">Ask Auntie Autoexec ('+S.hints+' left)</button></p>';
  box.hidden=false;box.querySelectorAll("[data-a]").forEach(function(b){b.onclick=function(){answer(+b.dataset.a)}});
  var hb=box.querySelector("[data-h]");hb.onclick=useHint;var fb=box.querySelector("[data-a]");if(fb)fb.focus()}
+var CQ_OK=["Connie: \"Nice one!\"","Connie: \"I knew you had that in you.\"","Connie: \"That went straight into my memory bank.\"","Connie: \"Correct! I did a little hop.\""],CQ_NO=["Connie: \"Ooh, so close. Maybe.\"","Connie: \"It happens to the best of us. And to Zack.\"","Connie: \"Do not worry, I will remember it for you.\"","Connie: \"Chin up. You still have most of your 640K.\""];
 function useHint(){if(S.hints<1||!S.q||S.mode!=="q")return;S.acts.push("h");S.hints--;var w=[];S.q.o.forEach(function(t,i){if(i!==S.q.c)w.push(i)});S.hidden=shuf(w).slice(0,2);showQ("Auntie Autoexec whispers, \"Not those two, dear.\"");hud()}
 function answer(i){var q=S.q;if(!q||S.mode!=="q"||S.locked)return;if(!(i===0||i===1||i===2||i===3)||i>=q.o.length||(S.hidden||[]).indexOf(i)>=0)return;S.acts.push(String(i));var ok=i===q.c,box=host.querySelector("#gq");S.hidden=null;S.min+=2;var tp=TOPIC(q.tag),rp=S.rep||(S.rep={});rp[tp]=rp[tp]||[0,0];rp[tp][1]++;if(ok)rp[tp][0]++;
  if(ok){beep(880,.12);box.hidden=true;S.q=null;
   if(S.door&&S.door.gremlin){S.mode="play";S.gr.room=pick(S.rooms.map(function(r){return r.i}).filter(function(x){return x!==S.room&&x!==S.start}));say("The Gremlin shrieks and scuttles away.");hud();return}
   if(S.door&&S.door.finale){win();return}
   var d=S.door;S.rooms[d.from].d[d.dir].locked=false;var back=S.rooms[d.to].d[OPP[d.dir]];if(back)back.locked=false;
-  S.mode="play";say("Correct. The lock clicks open.");go(d.from,d.dir)}
+  S.mode="play";say("Correct. The lock clicks open.\n"+pick(CQ_OK));go(d.from,d.dir)}
  else{beep(160,.3);S.mem-=S.pen;S.flash=6;
   var right=q.o[q.c];box.hidden=true;S.q=null;
   if(S.door&&S.door.gremlin){S.mode="play";say("Wrong. The Gremlin nibbles "+S.pen+"K and cackles. The answer was "+right+".");hud();check();return}
   if(S.door&&S.door.finale){S.mode="play";say("Wrong, and the disk drive spits out a sad noise (-"+S.pen+"K). The answer was "+right+". Try the disk again.");hud();check();return}
-  S.mode="play";say("Wrong! That cost "+S.pen+"K of memory. The answer was "+right+". The door stays locked.");hud();check()}
+  S.mode="play";say("Wrong! That cost "+S.pen+"K of memory. The answer was "+right+". The door stays locked.\n"+pick(CQ_NO));hud();check()}
  hud()}
 function check(){if(S.mode==="over")return;if(S.mem<=0){S.mem=0;end(false,"DIVIDE OVERFLOW\nYou ran out of conventional memory. The house reboots, and so do you.")}
  else if(S.min>=MIDNIGHT)end(false,"The clock strikes twelve. The lights go out and the Master Boot Disk stays missing.\nAbort, Retry, Fail?")}
@@ -279,7 +290,7 @@ function talk(){var rm=room(),n=S.npcs[rm.i];if(S.mode!=="play")return;S.acts.pu
  else say(pick(n==="matt"?MATT_LINES:TONY_LINES));hud()}
 /* ---------- run codes: every finished game can be replayed and checked ---------- */
 function fnv(t){var h=2166136261;for(var i=0;i<t.length;i++){h^=t.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}
-function dataHash(){var a="g2|"+D.items.map(function(i){return i.id||i.name}).join("|"),t=D.tl;return fnv(a+"#"+t.length+"#"+(t[0]||[])[2]+"#"+(t[t.length-1]||[])[2]+"#"+Object.keys(D.x||{}).length+"#"+Object.keys(D.gx||{}).length).toString(36)}
+function dataHash(){var a="g3|"+D.items.map(function(i){return i.id||i.name}).join("|"),t=D.tl;return fnv(a+"#"+t.length+"#"+(t[0]||[])[2]+"#"+(t[t.length-1]||[])[2]+"#"+Object.keys(D.x||{}).length+"#"+Object.keys(D.gx||{}).length).toString(36)}
 function makeCode(){var body="CM1."+S.who.charAt(0)+"."+S.seed0.toString(36)+"."+S.acts.join("")+"."+S.mem+"."+dataHash();return body+"."+fnv(body+"|cm").toString(36)}
 function verify(code){var p=String(code||"").replace(/\s+/g,"").split(".");
  if(p.length!==7||p[0]!=="CM1")return{ok:false,why:"That is not a run code."};
@@ -311,29 +322,34 @@ function finish(html){var box=host.querySelector("#gq");box.hidden=false;var cn=
 function pat(a,b){var k=a+b;if(patCache[k])return patCache[k];var c=document.createElement("canvas");c.width=2;c.height=2;var x=c.getContext("2d");x.fillStyle=C[a];x.fillRect(0,0,2,2);x.fillStyle=C[b];x.fillRect(0,0,1,1);x.fillRect(1,1,1,1);return patCache[k]=cx.createPattern(c,"repeat")}
 function rect(x,X,y,w,h,c){x.fillStyle=C[c];x.fillRect(X,y,w,h)}
 function dith(x,X,y,w,h,a,b){x.fillStyle=pat(a,b);x.fillRect(X,y,w,h)}
-/* ---- sprites: 12 wide, 27 tall, drawn facing right and mirrored for left. Letters map to EGA colors per character. ---- */
+/* ---- sprites: pixel grids drawn facing right and mirrored for left. Letters are EGA colors (see C), "." is clear. Legs and the walk cycle are drawn by code. ---- */
 var HEAD={
  std:["....kkkk....","...khhhhk...","..khhhhhhk..","..khhhhhsk..","..khhhsksk..","..khhsssssk.","...ksssmsk..","....ksssk...",".....kss...."],
- glass:["....kkkk....","...khhhhk...","..khhhhhhk..","..khhhhhsk..","..khhskksk..","..khhsssssk.","...kqqqmsk..","....kqqqk...",".....kqq...."],
  spiky:["...h.h.h....","..hhhhhhh...","..khhhhhhk..","..khhhhhsk..","..khhhsksk..","..khhsssssk.","...ksssmsk..","....ksssk...",".....kss...."],
  bun:["....hhhh....","...hhhhhk...","..khhhhhhk..","..khhhhhsk..","..khhskksk..","..khhsssssk.","...ksssmsk..","....ksssk...",".....kss...."]};
 var BODY=["...kttttk...","..kttttttk..","..kttttttk..","..kttttttk..","..kuttttuk..","..kbbbbbbk..","..kppppppk..","..kppppppk.."];
-function mr(x,px,top,dir,c,r,w,h,col){rect(x,dir>0?px-6+c:px-6+(12-c-w),top+r,w,h,col)}
-function spr(x,rows,px,top,dir,pal,r0){for(var r=0;r<rows.length;r++){var s=rows[r];for(var c=0;c<s.length;c++){var ch=s.charAt(c);if(ch===".")continue;var col=pal[ch];if(col)mr(x,px,top,dir,c,(r0||0)+r,1,1,col)}}}
+var MATT_UP=["      kkkkkk    ", "    kkwwwwwwk   ", "   kwwlwwlwwwk  ", "  kwlwwlwwlwwwk ", "  kwwwwwwwwwwwwk", "kkwwwwwwwwwwwwlk", "kwwwwkkwwwwwkRRk", " kkkk kkRRRRRRRk", "      kRRRkRRRk ", "      kRRRRRRRRk", "      knnnnnnRk ", "      knnnnnnk  ", "       knnnnk   ", "       kRRk     ", "    kkrrrrrykk  ", "   kbbrrrrrrykk ", "  kbbbbrrrrrrbk ", "  kbbbbbrrrrbbk ", "  kbbbbbbrrbbbk ", "  kbbbbbbbbbbbk ", "  kbbbbbbbbbbbk ", "  kddddddddddk  "];
+var TONY_UP=["          yy    ","        rrrry   ","    bb rrrrrrk  ","  bbbbbrrrrrrk  "," bbbbbbrrrrrrrk ","ybbbbbkggggggggk"," kkkkkkgggggggk ","    kllllllRRRk ","    kllRRkRRRRk ","    kllRRRRRRRRk","    kllllllllRk ","    klllllllllk ","     kllllllllk ","      klllllk   ","  kyyggggggrrk  "," kyyyggggggrrrk "," krrrrggggrrrrrk","kRrrrrrrrrrrrrk ","krRrrRrrRrrRrrk ","kRrrrrrrrrrrrrk "," krrrrrrrrrrrk  ","  kddddddddddk  "];
+function mr(x,px,top,dir,c,r,w,h,col){rect(x,dir>0?px-MW/2+c:px-MW/2+(MW-c-w),top+r,w,h,col)}
+var MW=12;
+function spr(x,rows,px,top,dir,pal,r0){for(var r=0;r<rows.length;r++){var s=rows[r];for(var c=0;c<s.length;c++){var ch=s.charAt(c);if(ch==="."||ch===" ")continue;var col=pal?pal[ch]:ch;if(col)mr(x,px,top,dir,c,(r0||0)+r,1,1,col)}}}
 function palOf(o){return{k:"k",s:o.skin,h:o.hair,q:o.beard||o.hair,t:o.shirt,u:o.shade||o.shirt,b:o.belt||o.pants,p:o.pants,m:"r"}}
-function leg(x,px,top,dir,c,h,col,sy){mr(x,px,top,dir,c-1,17,5,h+1,"k");mr(x,px,top,dir,c,17,3,h,col);mr(x,px,top,dir,c-1,sy,6,2,"k");mr(x,px,top,dir,c,sy,4,1,"d")}
+function leg(x,px,top,dir,c,h,col,sy,lw,o,r0){lw=lw||3;mr(x,px,top,dir,c-1,r0,lw+2,h+1,"k");mr(x,px,top,dir,c,r0,lw,h,col);
+ if(o&&o.stripe)mr(x,px,top,dir,c+((lw-1)>>1),r0,1,h,o.stripe);
+ mr(x,px,top,dir,c-1,sy,lw+3,2,"k");mr(x,px,top,dir,c,sy,lw+1,1,(o&&o.shoe)||"d");if(o&&o.sole)mr(x,px,top,dir,c,sy+1,lw+1,1,o.sole)}
 function person(x,px,py,o,step,dir,walk){
- var f=walk?step%4:0,bob=(walk&&(f===1||f===3))?1:0,top=py-27-bob,pal=palOf(o);
- x.fillStyle="rgba(0,0,0,.35)";x.fillRect(px-7,py-1,14,2);
+ var up=o.up||(o.up=HEAD[o.head||"std"].concat(BODY.slice(0,o.skirt?5:8))),w=up[0].length,r0=up.length;MW=w;
+ var f=walk?step%4:0,bob=(walk&&(f===1||f===3))?1:0,top=py-r0-10-bob,pal=o.raw?null:palOf(o);
+ x.fillStyle="rgba(0,0,0,.35)";x.fillRect(px-(w>>1)-1,py-1,w+2,2);
  if(o.skirt){var sw=walk?(f%2?1:-1):0;
-  mr(x,px,top,dir,2,15,8,3,o.pants);mr(x,px,top,dir,1,18,10,4,o.pants);mr(x,px,top,dir,0,22,12,3,o.pants);mr(x,px,top,dir,0,25,12,1,o.shade||"d");
-  mr(x,px,top,dir,3+sw,26,3,1,"k");mr(x,px,top,dir,6-sw,26,3,1,"k")}
- else{var off=walk?[[2,-2],[0,0],[-2,2],[0,0]][f]:[0,0],lb=[0,1,0,0][f],lf=[0,0,0,1][f];
-  // back leg first (darker), then front leg
-  leg(x,px,top,dir,3+off[1],8-lb,o.pshade||"d",25-lb);leg(x,px,top,dir,6+off[0],8-lf,o.pants,25-lf)}
- spr(x,HEAD[o.head||"std"],px,top,dir,pal);spr(x,BODY.slice(0,o.skirt?5:8),px,top,dir,pal,9);
- // near arm swings against the front leg
- var sw2=[-1,0,1,0][f];mr(x,px,top,dir,4+sw2,10,3,5,o.shade||o.shirt);mr(x,px,top,dir,4+sw2,10,3,1,o.shirt);mr(x,px,top,dir,4+sw2*2,15,3,2,o.skin);
+  mr(x,px,top,dir,2,r0-2,8,3,o.pants);mr(x,px,top,dir,1,r0+1,10,4,o.pants);mr(x,px,top,dir,0,r0+5,12,3,o.pants);mr(x,px,top,dir,0,r0+8,12,1,o.shade||"d");
+  mr(x,px,top,dir,3+sw,r0+9,3,1,"k");mr(x,px,top,dir,6-sw,r0+9,3,1,"k")}
+ else{var lg=o.lg||[3,6],lw=o.lw||3,off=walk?[[2,-2],[0,0],[-2,2],[0,0]][f]:[0,0],lb=[0,1,0,0][f],lf=[0,0,0,1][f];
+  leg(x,px,top,dir,lg[0]+off[1],8-lb,o.pshade||"d",r0+8-lb,lw,o,r0);leg(x,px,top,dir,lg[1]+off[0],8-lf,o.pants,r0+8-lf,lw,o,r0)}
+ spr(x,up,px,top,dir,pal,0);
+ var a=o.arm||[4,10,3,5],sw2=[-1,0,1,0][f];
+ mr(x,px,top,dir,a[0]+sw2-1,a[1],a[2]+2,a[3]+1,"k");mr(x,px,top,dir,a[0]+sw2,a[1],a[2],a[3],o.sleeve||o.shade||o.shirt);mr(x,px,top,dir,a[0]+sw2,a[1],a[2],1,o.shirt||o.sleeve);mr(x,px,top,dir,a[0]+sw2*2,a[1]+a[3],a[2],2,o.skin||"R");
+ if(o.cuff)mr(x,px,top,dir,a[0]+sw2,a[1]+a[3]-1,a[2],1,o.cuff);
  if(o.extra)o.extra(x,px,top,dir)}
 function chip(x,px,py,step,dir){var hop=Math.floor(Math.abs(Math.sin(Date.now()/260))*2),lg=step%2?1:0;py=py-hop+3;
  x.fillStyle="rgba(0,0,0,.35)";x.fillRect(px-7,py+2,14,2);
@@ -343,15 +359,13 @@ function chip(x,px,py,step,dir){var hop=Math.floor(Math.abs(Math.sin(Date.now()/
  for(var i=0;i<4;i++)rect(x,px-3+i*2,py-11,1,1,"y");
  rect(x,px-6,py-16,2,1,"y");rect(x,px+4,py-16,2,1,"y");
  rect(x,px-3,py-10,1,6-lg,"y");rect(x,px+2,py-10,1,5+lg,"y");rect(x,px-4,py-4-lg,3,1,"g");rect(x,px+1,py-5+lg,3,1,"g")}
-function drawGr(x,px,py,step,dir){var hop=Math.abs(Math.sin(Date.now()/150))*3|0;py-=hop;
+function drawGr(x,px,py,step,dir){MW=12;var hop=Math.abs(Math.sin(Date.now()/150))*3|0;py-=hop;
  x.fillStyle="rgba(0,0,0,.35)";x.fillRect(px-6,py+hop-1,12,2);
  var P={".":0,k:"k",g:"g",G:"G",r:"R",y:"y",w:"w"},rows=["k..........k","kk........kk","kgk.kkkk.kgk",".kgkgGGGgkgk.","..kgGGGGGgk..","..kgrGGrGgk..",".kgGGGGGGGgk.",".kgGwkwkwGgk.","..kgGGGGGgk..","..kkgggggkk..",".kgkgGGGgkgk.","kyk.kkkkk.kyk","y.y..k.k..y.y","....kk.kk...."];
  for(var r=0;r<rows.length;r++)for(var c=0;c<12;c++){var ch=rows[r].charAt(c);if(ch!=="."&&P[ch])mr(x,px,py-14,dir,c,r,1,1,P[ch])}}
 var LOOK={
- matt:{head:"glass",skin:"R",hair:"w",beard:"l",shirt:"r",shade:"R",pants:"b",pshade:"B",belt:"n",extra:function(x,px,top,dir){mr(x,px,top,dir,6,12,2,2,"y");mr(x,px,top,dir,1,14,2,1,"d");mr(x,px,top,dir,8,13,1,4,"l");mr(x,px,top,dir,7,17,3,1,"y")}},
- tony:{head:"std",skin:"R",hair:"l",shirt:"g",shade:"G",pants:"d",pshade:"k",belt:"n",extra:function(x,px,top,dir){
-  mr(x,px,top,dir,2,0,8,2,"g");mr(x,px,top,dir,3,-2,6,2,"G");mr(x,px,top,dir,0,-4,3,4,"r");mr(x,px,top,dir,9,-4,3,4,"B");mr(x,px,top,dir,5,-6,3,5,"G");
-  mr(x,px,top,dir,0,-5,1,1,"y");mr(x,px,top,dir,10,-5,1,1,"y");mr(x,px,top,dir,6,-7,1,1,"y");mr(x,px,top,dir,3,2,6,1,"y");mr(x,px,top,dir,4,12,4,1,"r")}},
+ matt:{raw:1,up:MATT_UP,skin:"R",pants:"d",pshade:"k",shoe:"k",lg:[4,8],lw:4,arm:[6,16,4,5],sleeve:"b",shirt:"b",cuff:"r",extra:function(x,px,top,dir){mr(x,px,top,dir,9,17,2,3,"y")}},
+ tony:{raw:1,up:TONY_UP,skin:"R",pants:"d",pshade:"k",stripe:"k",shoe:"w",sole:"l",lg:[4,8],lw:4,arm:[6,16,5,4],sleeve:"R",shirt:"r",cuff:"y",extra:function(x,px,top,dir){mr(x,px,top,dir,0,5,1,1,"y");mr(x,px,top,dir,10,16,1,1,"y");mr(x,px,top,dir,3,15,1,1,"y")}},
  aunt:{head:"bun",skin:"R",hair:"w",shirt:"m",shade:"M",pants:"m",skirt:1,extra:function(x,px,top,dir){mr(x,px,top,dir,4,13,4,1,"w");mr(x,px,top,dir,7,9,1,1,"w")}},
  zack:{head:"spiky",skin:"R",hair:"y",shirt:"c",shade:"B",pants:"b",pshade:"B",belt:"b",extra:function(x,px,top,dir){mr(x,px,top,dir,3,13,6,1,"w");mr(x,px,top,dir,1,9,2,1,"c")}}};
 function icon(x,e,X,Y){if(!e)return;var t=(e.title||"").toLowerCase();
@@ -428,24 +442,31 @@ function select(){roomCache={};S=null;
  +'<button class="gchar" data-w="tony" type="button"><canvas width="60" height="105" data-p="tony"></canvas><b>Tony</b><span>The tinkerer in the jester hat. Steady hands, mostly: wrong answers cost only 16K. Starts with 1 hint.</span></button></div>'
  +'<h3 class="sub">Also in the house</h3><div class="gcast"><div><canvas width="60" height="105" data-p="connie"></canvas><b>Connie Ventional</b><span>A memory chip with a bow. Gives you 16K.</span></div><div><canvas width="60" height="105" data-p="aunt"></canvas><b>Auntie Autoexec</b><span>Points the way.</span></div><div><canvas width="60" height="105" data-p="zack"></canvas><b>Zack</b><span>Always in the party. Nobody knows why.</span></div></div><p class="gnote">Best run in this browser: <b id="gbest">none yet</b>. Look for Connie Ventional in the house. She gives out memory. Zack will also be there. We do not know why. <a href="#/">Back to the site</a></p><h3 class="sub">Check a run code</h3><p class="gnote">Paste a code from someone\'s win screen. The game replays every move and confirms the score, so scores cannot be faked.</p><textarea id="gvin" class="gcode" rows="2" aria-label="Run code"></textarea><p><button class="btn" id="gvgo" type="button">Check it</button> <span id="gvout" aria-live="polite"></span></p></div></section>';
  var bb=bestFromStore();if(bb)host.querySelector("#gbest").textContent=bb.mem+"K free"+(bb.ok?" (checked)":" (unchecked: the museum has changed since)");
- host.querySelectorAll("canvas[data-p]").forEach(function(c){var x=c.getContext("2d");x.imageSmoothingEnabled=false;x.fillStyle=C.k;x.fillRect(0,0,60,105);x.save();x.scale(3,3);if(c.dataset.p==="connie")chip(x,10,33,0,1);else person(x,10,33,LOOK[c.dataset.p],0,1,0);x.restore()});
+ host.querySelectorAll("canvas[data-p]").forEach(function(c){var x=c.getContext("2d");x.imageSmoothingEnabled=false;x.fillStyle=C.k;x.fillRect(0,0,60,105);x.save();x.scale(3,3);if(c.dataset.p==="connie")chip(x,10,33,0,1);else person(x,10,34,LOOK[c.dataset.p],0,1,0);x.restore()});
  host.querySelector("#gvgo").onclick=function(){var r=verify(host.querySelector("#gvin").value),o=host.querySelector("#gvout");o.textContent=r.ok?"Valid. "+(r.who==="matt"?"Matt":"Tony")+" finished at "+clock(r.min)+" with "+r.mem+"K free and "+r.taken+" exhibits.":"Not valid. "+r.why};
  host.querySelectorAll(".gchar").forEach(function(b){b.onclick=function(){begin(b.dataset.w)}})}
 function begin(who){shell();keys={};newGame(who);last=performance.now();cancelAnimationFrame(raf);raf=requestAnimationFrame(loop)}
 
 /* ---------- lifecycle ---------- */
 function onk(e){if(!S||!host||!document.body.contains(host))return;var k=e.key;
- if(S.mode==="q"){var i="1234".indexOf(k);if(i<0)i="abcd".indexOf(k.toLowerCase());if(i>=0&&S.q&&i<S.q.o.length&&(S.hidden||[]).indexOf(i)<0){e.preventDefault();answer(i)}else if(k.toLowerCase()==="h")useHint();return}
+ if(S.mode==="q"){
+  // movement keys (arrows, WASD) must never answer: ignore key repeat, keys that were already held when the question opened, and the first moments after it opens
+  if(k.indexOf("Arrow")===0){e.preventDefault();return}
+  if(e.repeat||e.ctrlKey||e.metaKey||e.altKey)return;
+  var lc=k.length===1?k.toLowerCase():k;if(S.qHeld&&S.qHeld[lc])return;
+  if(performance.now()-(S.qAt||0)<500)return;
+  var i="1234".indexOf(k);if(i<0)i="abcd".indexOf(lc);if(k.length!==1)i=-1;
+  if(i>=0&&S.q&&i<S.q.o.length&&(S.hidden||[]).indexOf(i)<0){e.preventDefault();answer(i)}else if(lc==="h")useHint();return}
  if(S.mode!=="play")return;
  var lk=k.length===1?k.toLowerCase():k;
  if(lk==="l")look();else if(lk==="e")take();else if(lk==="t")talk();else if(lk==="h")say("Hints work on a question. You have "+S.hints+".");
  else if("ArrowLeft ArrowRight ArrowUp ArrowDown a d w s".indexOf(lk)>=0){keys[lk]=1;if(lk.indexOf("Arrow")===0)e.preventDefault()}}
-function onku(e){var k=e.key.length===1?e.key.toLowerCase():e.key;keys[k]=0}
+function onku(e){var k=e.key.length===1?e.key.toLowerCase():e.key;keys[k]=0;if(S&&S.qHeld)delete S.qHeld[k]}
 function setData(d){deps=d;D.items=(d.items||[]).filter(function(i){return i&&i.name});
  D.tl=(d.tl||[]).filter(function(r){return r[5]&&(String(r[3]||"").indexOf("*")<0||true)&&r[0]&&r[2]});
  D.quotes=d.quotes||[];D.x=d.tlx||{};D.gx=d.gx||{};D.byT={};D.tl.forEach(function(r){D.byT[r[2]]=r});}
 function mount(el,d){unmount();host=el;setData(d);patCache={};roomCache={};onKey=onk;onKeyUp=onku;window.addEventListener("keydown",onKey);window.addEventListener("keyup",onKeyUp);select()}
 function unmount(){cancelAnimationFrame(raf);raf=0;if(onKey)window.removeEventListener("keydown",onKey);if(onKeyUp)window.removeEventListener("keyup",onKeyUp);onKey=onKeyUp=null;S=null;keys={};host=null;cvs=null}
 function probe(d,n){setData(d);var keep=S,out=[];S={used:{}};for(var i=0;i<n;i++){var q=nextQ(1981+ri(30),ri(3));out.push({q:q.q,o:q.o,c:q.c,tag:q.tag})}S=keep;return out}
-window.CMGame=Object.freeze({mount:mount,unmount:unmount,probe:probe});
+window.CMGame=Object.freeze({mount:mount,unmount:unmount,probe:probe,leaks:leaks});
 })();

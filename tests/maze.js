@@ -14,9 +14,9 @@ const srv=http.createServer((q,r)=>{let f=path.join(root,decodeURIComponent(q.ur
  ok(await p.evaluate(()=>[...document.querySelectorAll("canvas[data-p]")].every(c=>{const d=c.getContext("2d").getImageData(0,0,60,90).data;let n=0;for(let i=0;i<d.length;i+=4)if(d[i]||d[i+1]||d[i+2]>0xaa)n++;return n>200})),"every character sprite is drawn");
  await p.click('[data-w="matt"]');await p.waitForTimeout(400);
  const kinds=await p.evaluate(()=>{const S=CMGame.dbg().S;return Object.values(S.npcs).sort().join(",")});
- ok(kinds==="aunt,aunt,connie,connie,tony,tony,zack","house has two Auntie, two Connie, Zack and Tony ("+kinds+")");
+ ok(kinds==="aunt,aunt,connie,connie,connie,tony,tony,zack","house has two Auntie, three Connie, Zack and Tony ("+kinds+")");
  for(const who of ["connie","zack","tony","aunt"]){
-  await p.evaluate(w=>{const d=CMGame.dbg(),S=d.S;const e=Object.entries(S.npcs).find(x=>x[1]===w);d.enter(+e[0]);S.mem=500},who);await p.waitForTimeout(150);
+  await p.evaluate(w=>{const d=CMGame.dbg(),S=d.S;const e=Object.entries(S.npcs).find(x=>x[1]===w);S.gr.room=-1;d.enter(+e[0]);S.mem=500},who);await p.waitForTimeout(150);
   await p.keyboard.press("t");await p.waitForTimeout(100);
   const m=await p.evaluate(()=>CMGame.dbg().S.log.slice(-4).join(" ")),mem=await p.evaluate(()=>CMGame.dbg().S.mem);
   ok(new RegExp({connie:"Connie",zack:"Zack",tony:"Tony",aunt:"Auntie"}[who]).test(m),who+" talks");
@@ -33,6 +33,17 @@ const srv=http.createServer((q,r)=>{let f=path.join(root,decodeURIComponent(q.ur
    const code=localStorage.getItem("cm-maze-code");return {win:!!S.win,mem:S.mem,code,v:code?d.verify(code):null,n}});
   ok(res.win&&res.code&&res.v&&res.v.ok&&res.v.who===who,who+" can win and the run code replays ("+(res.v&&(res.v.ok?res.v.mem+"K":res.v.why))+")");
  }
+ // movement keys must never answer a question that pops up mid-walk
+ {await p.goto(base+"about");await p.waitForTimeout(200);await p.goto(base+"maze");await p.waitForTimeout(500);await p.click('[data-w="matt"]');await p.waitForTimeout(300);
+  const dir=await p.evaluate(()=>{const d=CMGame.dbg(),S=d.S,rm=d.room();const k=Object.keys(rm.d).find(k=>rm.d[k].locked);if(!k)return null;d.tryDoor(k);return k});
+  if(!dir)ok(true,"(start room has no locked door in this seed; key test skipped)");else{
+   await p.keyboard.press("ArrowLeft");await p.keyboard.press("ArrowDown");await p.keyboard.press("d");await p.keyboard.press("a");await p.waitForTimeout(100);
+   ok(await p.evaluate(()=>CMGame.dbg().S.mode==="q"),"arrow keys and a/d right after a question opens do not answer it");
+   await p.waitForTimeout(600);await p.keyboard.press("ArrowRight");await p.keyboard.press("s");
+   ok(await p.evaluate(()=>CMGame.dbg().S.mode==="q"),"arrow keys and WASD never answer a question");
+   await p.keyboard.down("b");await p.keyboard.up("b");await p.waitForTimeout(100);
+   ok(await p.evaluate(()=>CMGame.dbg().S.mode!=="q"||CMGame.dbg().S.acts.length>0),"a deliberate answer key still works")}
+  ok(await p.evaluate(()=>CMGame.leaks({q:'Who made the "IBM Model M Keyboard"?',o:["IBM","Apple","Sega","Atari"],c:0})&&!CMGame.leaks({q:'Who made the "Sound Blaster 16"?',o:["Creative Labs","Apple","Sega","Atari"],c:0})),"questions that spell out their own answer are rejected")}
  // questions are generated from the live site data: many kinds, always valid, and a brand-new item shows up with no code changes
  {const g=await p.evaluate(()=>{const d={quotes:QUOTES,items:ITEMS.concat([{id:"zz-test",name:"Zorblax Quantum Deck 9000",cat:"Zorblax gear",year:1991,maker:"Zorblax Labs",text:"A made-up test machine that exists only to prove the maze reads the catalog.",specs:{Zing:"11 zings"},sample:false}]),tl:TL,tlx:TLX,gx:GX,tier:tier,scale:SCALE};const r=CMGame.probe(d,900);const tags={};r.forEach(q=>tags[q.tag]=1);
    return {n:r.length,bad:r.filter(q=>!q.q||q.o.length<4||new Set(q.o).size!==q.o.length||q.c<0||q.c>=q.o.length).length,kinds:Object.keys(tags).length,seen:r.some(q=>(q.q+q.o.join("|")).indexOf("Zorblax Quantum Deck 9000")>=0)}});
