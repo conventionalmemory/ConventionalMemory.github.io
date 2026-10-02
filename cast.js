@@ -94,6 +94,8 @@ var CMCast=(function(){
   /* arms */
   cur=G.arml;r(2,11,3,1,GD);r(1,10,2,3,SKIN);if(c.wrist){var wc=c.wrist==="neon"?"#ff3d9a":"#16161a";r(2,10,1,3,wc);if(c.wrist!=="neon")r(2,11,1,1,SIL)}
   cur=G.armr;r(19,11,3,1,GD);r(21,10,2,3,SKIN);if(c.wrist){r(21,10,1,3,wc);if(c.wrist!=="neon")r(21,11,1,1,SIL)}
+  if(c.holds==="mug"){cur=G.arml;r(0,11,3,3,"#f4f4f4");r(0,11,3,1,"#c0143c");r(3,11,1,2,"#f4f4f4");r(1,9,1,1,"#ffffff99");r(2,8,1,1,"#ffffff66")}
+  if(c.holds==="manual"){cur=G.armr;r(21,10,3,4,"#fff");r(21,10,1,4,"#2f6fe0");r(22,11,2,1,"#2f6fe0");r(22,13,2,1,"#c8c8d4")}
   cur=G.body;
   /* hair behind the head */
   var st=c.hairStyle||"bob";
@@ -136,6 +138,7 @@ var CMCast=(function(){
    if(st==="bun"){r(10,0,4,3,hr);r(11,-1,2,1,hr);r(10,0,1,1,"#ffffff44")}}
   else if(st==="spike"){r(4,3,16,4,hr);r(5,1,2,2,hr);r(9,0,2,3,hr);r(13,0,2,3,hr);r(17,1,2,2,hr);r(7,2,2,1,hr);r(11,1,2,2,hr);r(15,2,2,1,hr);r(6,7,3,1,hr);r(15,7,3,1,hr)}
   else if(st==="comb"){r(3,5,2,7,hr);r(19,5,2,7,hr);r(4,4,3,2,hr);r(17,4,3,2,hr);r(9,4,6,1,hr)}
+  else if(st==="fringe"){r(3,5,2,8,hr);r(19,5,2,8,hr);r(4,4,2,2,hr);r(18,4,2,2,hr);r(7,5,10,1,hr);r(9,4,6,1,hr);r(9,7,5,1,"#ffffff55")}
   else if(st==="cap"){r(4,2,16,5,c.cap||"#2f6fe0");r(5,1,14,1,c.cap||"#2f6fe0");r(4,6,16,1,"#0000004d");r(3,7,18,1,c.cap||"#2f6fe0");r(11,0,2,1,"#ffffff66");r(8,3,8,2,"#ffffff55")}
   if(c.streak){r(9,3,1,5,c.streak);r(9,7,2,1,c.streak)}
   /* looks that sit on her head */
@@ -184,6 +187,7 @@ var CMCast=(function(){
   cur=G.accF;
   if(acc==="shades"){r(5,9,5,4,"#111");r(13,9,5,4,"#111");r(10,10,3,1,"#111");r(6,10,2,1,"#6b7bd0");r(14,10,2,1,"#6b7bd0");r(5,9,5,1,"#333");r(13,9,5,1,"#333");r(4,10,1,1,"#111");r(18,10,1,1,"#111")}
   if(c.glasses==="round"){var gc=c.gcol||"#e0a526";r(5,9,5,1,gc);r(5,14,5,1,gc);r(5,9,1,6,gc);r(9,9,1,6,gc);r(13,9,5,1,gc);r(13,14,5,1,gc);r(13,9,1,6,gc);r(17,9,1,6,gc);r(10,10,3,1,gc);r(6,10,1,1,"#ffffff88");r(14,10,1,1,"#ffffff88")}
+  if(c.glasses==="brow"){var gb=c.gcol||"#111";r(5,8,5,2,gb);r(13,8,5,2,gb);r(5,10,1,5,gb);r(9,10,1,5,gb);r(13,10,1,5,gb);r(17,10,1,5,gb);r(5,14,5,1,"#777");r(13,14,5,1,"#777");r(10,9,3,1,gb);r(6,10,1,1,"#ffffff88");r(14,10,1,1,"#ffffff88")}
   if(c.glasses==="cat"){var gc2=c.gcol||"#c0143c";r(5,10,5,1,gc2);r(5,14,5,1,gc2);r(5,10,1,5,gc2);r(9,10,1,5,gc2);r(13,10,5,1,gc2);r(13,14,5,1,gc2);r(13,10,1,5,gc2);r(17,10,1,5,gc2);r(4,9,1,1,gc2);r(18,9,1,1,gc2);r(10,11,3,1,gc2)}
   if(c.freckles){r(7,14,1,1,"#a0522d");r(9,14,1,1,"#a0522d");r(14,14,1,1,"#a0522d");r(16,14,1,1,"#a0522d")}
   if(c.corsage){cur=G.armr;r(21,10,1,1,"#fff");r(21,11,1,1,"#ff8aa8");r(22,10,1,1,"#ffd0e0");cur=G.accF}
@@ -194,6 +198,7 @@ var CMCast=(function(){
   else if(f==="wow"){r(10,15,3,3,L);r(11,16,1,1,"#40000e")}
   else{r(10,15,1,1,L);r(11,16,2,1,L);r(13,15,1,1,L);if(!c.noGloss)r(11,15,2,1,c.liner?"#c2304f":"#ff7a96")}
   if(c.stache){r(8,14,7,1,c.stache);r(7,15,1,1,c.stache);r(15,15,1,1,c.stache)}
+  if(c.goatee){r(10,17,4,1,c.goatee);r(10,18,4,1,c.goatee);r(11,19,2,1,c.goatee)}
   return G}
 
  function rects(a){var o="",i,q;for(i=0;i<a.length;i++){q=a[i];o+='<rect x="'+q[0]+'" y="'+q[1]+'" width="'+q[2]+'" height="'+q[3]+'" fill="'+q[4]+'"/>'}return o}
@@ -210,10 +215,10 @@ var CMCast=(function(){
   connie:{n:"Connie Ventional",b:null},
   emma:{n:"Emma 386 Ventional",cfg:{b:"#7a4fd0",d:"#2d1766",hr:"#2a1a4a",hairStyle:"pony",sk:"#7a4fd0",hem:"#d9c8ff",bow:"#ffd54a",knot:"#fff",glasses:"round",gcol:"#ff3d9a",plain:0,clip:"none",blush:"#d9a0ff"}},
   hiram:{n:"Hiram Ventional",cfg:{b:"#e8892f",d:"#6b3a0b",hr:"#7a3b1e",hairStyle:"cap",cap:"#2f6fe0",shorts:"#2f6fe0",noLash:1,freckles:1,noGloss:1,lips:"#a0522d"}},
-  ram:{n:"Raymond Ventional",cfg:{b:"#4a73b8",d:"#17305e",hr:"#9a9aa6",hairStyle:"comb",shorts:"#b8a77a",socks:1,stache:"#6b4a2b",noLash:1,glasses:"round",gcol:"#555",blush:"#c08070",lips:"#9a4a3a",noGloss:1}},
+  ram:{n:"Raymond Ventional",cfg:{b:"#4a73b8",d:"#17305e",hr:"#9a9aa6",hairStyle:"short",shorts:"#b8a77a",socks:1,stache:"#8a8a94",noLash:1,glasses:"round",gcol:"#555",blush:"#c08070",lips:"#9a4a3a",noGloss:1,holds:"manual"}},
   rhoda:{n:"Rhoda Ventional",cfg:{b:"#2fa39a",d:"#0c4a46",hr:"#3a2410",hairStyle:"bob",sk:"#8a3d7a",hem:"#e8c8e0",plain:0,pearls:1,scarf:"#e8c34a",bow:null,clip:"none",blush:"#f0a090"}},
   augusta:{n:"Augusta Batch",cfg:{b:"#9b7fd0",d:"#3a2670",hr:"#d8d8e0",hairStyle:"bun",sk:"#5a4a7a",hem:"#e0d8f0",cardigan:"#c0506a",glasses:"cat",gcol:"#c0143c",pearls:1,bow:null,clip:"none",blush:"#e0a0b0"}},
-  conrad:{n:"Conrad Figsys",cfg:{b:"#7a8f3a",d:"#2c3a0c",hr:"#7a5a3a",hairStyle:"comb",shorts:"#5a4a3a",bowtie:1,glasses:"round",gcol:"#3a3a3a",noLash:1,stache:"#7a5a3a",noGloss:1,lips:"#8a4a3a",blush:"#c09070"}},
+  conrad:{n:"Conrad Figsys",cfg:{b:"#7a8f3a",d:"#2c3a0c",hr:"#7a5a3a",hairStyle:"fringe",shorts:"#5a4a3a",bowtie:1,glasses:"brow",gcol:"#1a1a1a",noLash:1,stache:"#7a5a3a",goatee:"#7a5a3a",noGloss:1,lips:"#8a4a3a",blush:"#c09070",holds:"mug"}},
   dot:{n:"Dot Matrix",cfg:{b:"#f2e8d0",d:"#6b5a3a",hr:"#c0143c",hairStyle:"bob",holes:1,sk:"#222",hem:"#fff",bow:"#222",knot:"#fff",stripe:"#8ee08a",clip:"none",blush:"#f0a090"}},
   viv:{n:"Vivian G. Adapter",cfg:{b:"#27b3c8",d:"#0b4a55",hr:"#2a1a4a",hairStyle:"long",rgb:1,hem:"#fff",plain:0,bow:"#fff",knot:"#2fb34a",clip:"star"}},
   sandy:{n:"Sandy Blaster",cfg:{b:"#f2c230",d:"#7a5a08",hr:"#7a3b1e",hairStyle:"pony",sk:"#e8402f",hem:"#fff",bow:"#2f6fe0",knot:"#fff",acc:"hp",clip:"none"}},
@@ -222,35 +227,41 @@ var CMCast=(function(){
  var CAST_ORDER=["connie","emma","hiram","ram","rhoda","augusta","conrad","dot","viv","sandy","mo","zack"];
 
  /* the ones who are not memory chips: Grandpa Floyd (a floppy), Grandma Winnie (a hard drive), Tessie (a TSR gremlin), Nibble (half a byte) */
- function floyd(mood){var o="",r=function(x,y,w,h,f){o+='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" fill="'+f+'"/>'};
-  r(8,19,1,4,PIN);r(15,19,1,4,PIN);r(6,22,5,1,"#6b6b78");r(13,22,5,1,"#6b6b78");r(6,23,5,1,"#444");r(13,23,5,1,"#444");r(2,11,3,1,"#8a6a4a");r(1,10,2,3,SKIN);r(19,11,3,1,"#8a6a4a");r(21,10,2,3,SKIN);
-  r(3,3,18,17,"#242a5e");r(4,4,16,15,"#2f3a86");r(17,3,3,3,"#e8e8ee");r(18,3,1,1,"#242a5e");/* write-protect notch */
+ /* the four special characters are built from the same groups as everyone else, so they blink, wave and tap too */
+ function sp(){var G=G0(),o={G:G,cur:null,r:function(x,y,w,h,f){o.cur.push([x,y,w,h,f])},to:function(n){o.cur=G[n]}};o.to("body");return o}
+ function floyd(mood){var q=sp(),r=q.r,to=q.to;
+  to("legl");r(8,19,1,4,PIN);r(6,22,5,1,"#6b6b78");r(6,23,5,1,"#444");to("legr");r(15,19,1,4,PIN);r(13,22,5,1,"#6b6b78");r(13,23,5,1,"#444");
+  to("arml");r(2,11,3,1,"#8a6a4a");r(1,10,2,3,SKIN);to("armr");r(19,11,3,1,"#8a6a4a");r(21,10,2,3,SKIN);
+  to("body");r(3,3,18,17,"#242a5e");r(4,4,16,15,"#2f3a86");r(17,3,3,3,"#e8e8ee");r(18,3,1,1,"#242a5e");/* write-protect notch */
   r(7,3,9,5,"#c9c9d2");r(8,3,2,4,"#6b6b78");r(7,3,9,1,"#e8e8ee");/* metal shutter */
-  r(5,9,14,9,"#f4efe0");r(5,9,14,1,"#e0d8c0");r(5,17,14,1,"#d8d0b8");
-  r(7,11,3,3,K);r(7,11,1,1,"#fff");r(14,11,3,3,K);r(14,11,1,1,"#fff");r(6,11,5,1,"#6b6b78");r(13,11,5,1,"#6b6b78");r(6,14,5,1,"#6b6b78");r(13,14,5,1,"#6b6b78");r(5,11,1,4,"#6b6b78");r(10,11,1,1,"#6b6b78");r(11,11,2,1,"#6b6b78");r(11,10,0,0,"#000");r(18,11,1,4,"#6b6b78");
-  r(8,15,8,1,"#b0b0b0");r(9,16,6,1,"#d8d0b8");r(10,16,4,1,mood==="oops"?"#8c0f2c":"#c0143c");
-  r(9,5,0,0,"#000");r(4,17,16,1,"#00000033");r(3,19,18,1,"#1a1e4a");return o}
- function winnie(mood){var o="",r=function(x,y,w,h,f){o+='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" fill="'+f+'"/>'};
-  r(8,19,1,4,PIN);r(15,19,1,4,PIN);r(6,22,5,1,"#e8a0b8");r(13,22,5,1,"#e8a0b8");r(6,23,5,1,"#b0607a");r(13,23,5,1,"#b0607a");r(2,11,3,1,"#c8a8d8");r(1,10,2,3,SKIN);r(19,11,3,1,"#c8a8d8");r(21,10,2,3,SKIN);
-  r(2,3,20,5,"#c8d8f0");r(1,5,2,6,"#c8d8f0");r(21,5,2,6,"#c8d8f0");r(4,2,16,1,"#c8d8f0");r(6,1,12,1,"#c8d8f0");r(5,3,3,1,"#ffffff");/* a fresh perm */
+  r(5,9,14,9,"#f4efe0");r(5,9,14,1,"#e0d8c0");r(5,17,14,1,"#d8d0b8");r(4,17,16,1,"#00000033");r(3,19,18,1,"#1a1e4a");
+  to("eyes");r(7,11,3,3,K);r(7,11,1,1,"#fff");r(14,11,3,3,K);r(14,11,1,1,"#fff");
+  to("accF");r(6,11,5,1,"#6b6b78");r(13,11,5,1,"#6b6b78");r(6,14,5,1,"#6b6b78");r(13,14,5,1,"#6b6b78");r(5,11,1,4,"#6b6b78");r(10,11,1,1,"#6b6b78");r(11,11,2,1,"#6b6b78");r(18,11,1,4,"#6b6b78");
+  to("mouth");r(8,15,8,1,"#b0b0b0");r(9,16,6,1,"#d8d0b8");r(10,16,4,1,mood==="oops"?"#8c0f2c":"#c0143c");return q.G}
+ function winnie(mood){var q=sp(),r=q.r,to=q.to;
+  to("legl");r(8,19,1,4,PIN);r(6,22,5,1,"#e8a0b8");r(6,23,5,1,"#b0607a");to("legr");r(15,19,1,4,PIN);r(13,22,5,1,"#e8a0b8");r(13,23,5,1,"#b0607a");
+  to("arml");r(2,11,3,1,"#c8a8d8");r(1,10,2,3,SKIN);to("armr");r(19,11,3,1,"#c8a8d8");r(21,10,2,3,SKIN);
+  to("body");r(2,3,20,5,"#c8d8f0");r(1,5,2,6,"#c8d8f0");r(21,5,2,6,"#c8d8f0");r(4,2,16,1,"#c8d8f0");r(6,1,12,1,"#c8d8f0");r(5,3,3,1,"#ffffff");/* a fresh perm */
   r(3,6,18,14,"#4a5260");r(4,7,16,12,"#9aa4b4");r(4,7,16,1,"#c8d0dc");r(5,8,1,1,"#4a5260");r(18,8,1,1,"#4a5260");r(5,17,1,1,"#4a5260");r(18,17,1,1,"#4a5260");/* screws */
-  r(6,12,3,3,K);r(6,12,1,1,"#fff");r(15,12,3,3,K);r(15,12,1,1,"#fff");r(5,12,5,1,"#c0143c");r(14,12,5,1,"#c0143c");r(5,15,5,1,"#c0143c");r(14,15,5,1,"#c0143c");r(5,12,1,4,"#c0143c");r(9,12,1,4,"#c0143c");r(14,12,1,4,"#c0143c");r(18,12,1,4,"#c0143c");r(10,13,4,1,"#c0143c");
-  r(5,15,0,0,"#000");r(8,17,8,1,"#fff");r(10,16,4,1,"#c0143c");r(11,16,2,1,"#c0143c");r(4,15,2,1,"#e8a0a0");r(18,15,2,1,"#e8a0a0");
   r(9,19,6,1,"#fff");r(10,19,1,1,"#e8e8f0");r(12,19,1,1,"#e8e8f0");/* pearls */
-  return o}
- function tess(mood){var o="",r=function(x,y,w,h,f){o+='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" fill="'+f+'"/>'};
-  r(7,20,3,3,"#2a8a3a");r(14,20,3,3,"#2a8a3a");r(6,22,5,1,"#1a5a24");r(13,22,5,1,"#1a5a24");r(2,12,3,1,"#2a8a3a");r(1,10,2,3,"#3ab04a");r(19,12,3,1,"#2a8a3a");r(21,10,2,3,"#3ab04a");
-  r(2,3,2,5,"#2a8a3a");r(20,3,2,5,"#2a8a3a");r(1,2,2,3,"#3ab04a");r(21,2,2,3,"#3ab04a");
+  to("eyes");r(6,12,3,3,K);r(6,12,1,1,"#fff");r(15,12,3,3,K);r(15,12,1,1,"#fff");
+  to("accF");r(5,12,5,1,"#c0143c");r(14,12,5,1,"#c0143c");r(5,15,5,1,"#c0143c");r(14,15,5,1,"#c0143c");r(5,12,1,4,"#c0143c");r(9,12,1,4,"#c0143c");r(14,12,1,4,"#c0143c");r(18,12,1,4,"#c0143c");r(10,13,4,1,"#c0143c");
+  to("cheek");r(4,15,2,1,"#e8a0a0");r(18,15,2,1,"#e8a0a0");
+  to("mouth");r(8,17,8,1,"#fff");r(10,16,4,1,"#c0143c");r(11,16,2,1,"#c0143c");return q.G}
+ function tess(mood){var q=sp(),r=q.r,to=q.to;
+  to("legl");r(7,20,3,3,"#2a8a3a");r(6,22,5,1,"#1a5a24");to("legr");r(14,20,3,3,"#2a8a3a");r(13,22,5,1,"#1a5a24");
+  to("arml");r(2,12,3,1,"#2a8a3a");r(1,10,2,3,"#3ab04a");to("armr");r(19,12,3,1,"#2a8a3a");r(21,10,2,3,"#3ab04a");
+  to("body");r(2,3,2,5,"#2a8a3a");r(20,3,2,5,"#2a8a3a");r(1,2,2,3,"#3ab04a");r(21,2,2,3,"#3ab04a");
   r(4,6,16,14,"#1a5a24");r(5,7,14,12,"#3ab04a");r(5,7,14,1,"#7fe08a");r(8,5,8,2,"#1a5a24");
-  r(6,10,4,4,"#fff");r(14,10,4,4,"#fff");r(7,11,2,3,"#222");r(15,11,2,3,"#222");r(7,11,1,1,"#fff");r(15,11,1,1,"#fff");
-  r(7,16,10,2,"#222");r(8,16,1,1,"#fff");r(10,16,1,1,"#fff");r(12,16,1,1,"#fff");r(14,16,1,1,"#fff");r(15,16,1,1,"#fff");
   r(9,19,6,3,"#ffd54a");r(10,20,4,1,"#b8861b");/* a stolen 16K, held in both hands like a sandwich */
-  return o}
- function nibble(){var o="",r=function(x,y,w,h,f){o+='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" fill="'+f+'"/>'};
-  r(6,10,3,3,"#c89060");r(15,10,3,3,"#c89060");r(7,11,1,1,"#e8a0a0");r(16,11,1,1,"#e8a0a0");r(5,13,14,8,"#8a5a30");r(6,12,12,9,"#d8a870");r(7,11,10,1,"#d8a870");r(7,14,10,6,"#f4e0c0");
-  r(8,13,2,2,"#222");r(14,13,2,2,"#222");r(8,13,1,1,"#fff");r(14,13,1,1,"#fff");r(11,15,2,1,"#e8a0a0");r(11,16,2,1,"#c0143c");r(10,17,4,1,"#f4e0c0");
-  r(10,18,4,3,"#d8a870");r(11,19,2,2,"#222");r(11,19,1,1,"#fff");/* a stamp: half a byte */
-  r(8,21,2,1,"#e8a0a0");r(14,21,2,1,"#e8a0a0");return o}
+  to("eyes");r(6,10,4,4,"#fff");r(14,10,4,4,"#fff");r(7,11,2,3,"#222");r(15,11,2,3,"#222");r(7,11,1,1,"#fff");r(15,11,1,1,"#fff");
+  to("mouth");r(7,16,10,2,"#222");r(8,16,1,1,"#fff");r(10,16,1,1,"#fff");r(12,16,1,1,"#fff");r(14,16,1,1,"#fff");r(15,16,1,1,"#fff");return q.G}
+ function nibble(){var q=sp(),r=q.r,to=q.to;
+  to("legl");r(8,21,2,1,"#e8a0a0");to("legr");r(14,21,2,1,"#e8a0a0");
+  to("body");r(6,10,3,3,"#c89060");r(15,10,3,3,"#c89060");r(7,11,1,1,"#e8a0a0");r(16,11,1,1,"#e8a0a0");r(5,13,14,8,"#8a5a30");r(6,12,12,9,"#d8a870");r(7,11,10,1,"#d8a870");r(7,14,10,6,"#f4e0c0");
+  r(11,15,2,1,"#e8a0a0");r(10,17,4,1,"#f4e0c0");r(10,18,4,3,"#d8a870");r(11,19,2,2,"#222");r(11,19,1,1,"#fff");/* a stamp: half a byte */
+  to("eyes");r(8,13,2,2,"#222");r(14,13,2,2,"#222");r(8,13,1,1,"#fff");r(14,13,1,1,"#fff");
+  to("mouth");r(11,16,2,1,"#c0143c");return q.G}
 
  /* inner SVG markup for a named cast member. o = {mood, size...} */
 
@@ -280,14 +291,37 @@ var CMCast=(function(){
  function famOpts(id){if(!OUTFIT_FOR[id])return{};var f=famGet(id);return{outfit:f.o,color:f.c,acc:f.a||undefined,fam:1}}
  function castSvg(id,o){o=o||{};
   if(id==="connie")return inner(folk(connieCfg(o)));
-  if(id==="floyd")return'<g class="mc-all">'+floyd(o.mood)+"</g>";if(id==="winnie")return'<g class="mc-all">'+winnie(o.mood)+"</g>";if(id==="tess")return'<g class="mc-all">'+tess(o.mood)+"</g>";if(id==="nibble")return'<g class="mc-all">'+nibble()+"</g>";
+  if(id==="floyd")return inner(floyd(o.mood));if(id==="winnie")return inner(winnie(o.mood));if(id==="tess")return inner(tess(o.mood));if(id==="nibble")return inner(nibble());
   var s=CAST[id];if(!s||!s.cfg)return"";var c={},k;for(k in s.cfg)c[k]=s.cfg[k];c.mood=o.mood||"happy";
   if(OUTFIT_FOR[id]){var ou=OUTFITS[o.outfit];if(ou){for(k in ou.cfg)c[k]=ou.cfg[k]}
    if(o.color&&COLORS[o.color]){c.b=COLORS[o.color].b;c.d=COLORS[o.color].d}
    var ac=o.acc!=null?o.acc:(ou&&ou.acc)||"none";if(ACCS[ac]&&!((c.hat||c.beanie||c.hairStyle==="cap")&&HEAD_ACC[ac]))c.acc=ac}if(c.skirt==null&&!c.shorts&&!c.sk)c.sk="#555";return inner(folk(c))}
  /* a whole standalone <svg> for comics, cards and stickers */
- function svgOf(id,size,o){o=o||{};var h=size*(o.tall?1.3:1);return'<svg class="cc'+(o.cls?" "+o.cls:"")+'" viewBox="0 '+(o.tall?"-6":"0")+' 24 '+(o.tall?"31":"24")+'" width="'+size+'" height="'+h+'" shape-rendering="crispEdges" role="img" aria-label="'+(o.label||(CAST[id]?CAST[id].n:id))+'" xmlns="http://www.w3.org/2000/svg">'+castSvg(id,o)+"</svg>"}
+ function svgOf(id,size,o){o=o||{};var h=size*(o.tall?1.3:1);var dl=0,q;for(q=0;q<id.length;q++)dl+=id.charCodeAt(q);return'<svg class="cc cc-'+id+(o.cls?" "+o.cls:"")+'" style="--cd:-'+((dl%30)/10)+'s" viewBox="0 '+(o.tall?"-6":"0")+' 24 '+(o.tall?"31":"24")+'" width="'+size+'" height="'+h+'" shape-rendering="crispEdges" role="img" aria-label="'+(o.label||(CAST[id]?CAST[id].n:id))+'" xmlns="http://www.w3.org/2000/svg">'+castSvg(id,o)+"</svg>"}
 
+
+ /* Cameos: where the family turns up around the site, each for a reason that fits who they are. Connie always introduces them. [who, outfit options, what Connie says] */
+ var CAMEO={
+  manuals:["ram",{},"That is my dad, Raymond. He reads the manual first. Always. He asked to be put on this page, and honestly the page is better for it."],
+  workbench:["ram",{outfit:"garage"},"My dad, Raymond, in his garage clothes. This is technically his workbench. He lent it to the museum and checks that we put the screwdrivers back."],
+  journal:["ram",{outfit:"desk"},"Raymond again. He keeps a repair journal of his own. It is mostly what he paid for each screw."],
+  runs:["conrad",{outfit:"lab"},"My Uncle Conrad. He has been fine-tuning his CONFIG.SYS since 1981 and has never once called it finished. Ask him about jumpers, and only jumpers."],
+  advisor:["conrad",{outfit:"desk"},"Uncle Conrad, our unofficial compatibility department. He will tell you what fits, with a mug of something in his hand."],
+  compare:["emma",{},"My sister, Emma 386. She can borrow more room than I can, and she compares everything, including me."],
+  scale:["hiram",{},"My little brother Hiram lives above the 640K line, which is why this scale stops where it does. He says the view up there is great."],
+  backup:["floyd",{},"Grandpa Floyd Dysk. He backs everything up to disk. Disk 7 of 14 is somewhere around here."],
+  install:["winnie",{},"Grandma Winnie Chester lives on the hard drive. She says installing something is just moving it in with her."],
+  daily:["augusta",{},"My Aunt Augusta, known as Auntie Autoexec. She runs the same things every morning whether anyone asked or not."],
+  today:["augusta",{},"Auntie Autoexec. She starts the day at boot, loudly and in the same order."],
+  kiosk:["tess",{},"This is Tessie, our TSR. She stays resident. We tried to get her to leave in 1983, and now she runs the demo."],
+  jukebox:["sandy",{},"Sandy Blaster handles the sound for the family. She would like you to turn it up. That is all she ever says."],
+  labels:["dot",{},"My best friend Dot Matrix prints the labels. Slowly, loudly and with great affection."],
+  adlab:["viv",{},"Viv G. Adapter, my friend who does the graphics. She says 256 colors is plenty and 16 is a lifestyle."],
+  follow:["mo",{},"This is Mo Dem. He will connect you at 2400 baud. Please do not pick up the phone."],
+  trophies:["nibble",{},"Nibble runs the wheel in our hallway. That is where the tickets come from. (It is not, but he believes it.)"],
+  prizes:["nibble",{},"Nibble keeps the tickets safe. He says. We counted. Please count again."],
+  gate:["rhoda",{},"My mom, Rhoda, on the door. She is read-only. You can look, but you cannot edit."],
+  nf:["zack",{},"That was Zack. He was not invited, and yet he ends up on every page that does not exist."]};
  var FAMILY=[
   {id:"connie",n:"Connie Ventional",born:1981,role:"Our heroine",bio:"A memory module with a bow, born on the same day as the IBM PC. She lives in the first 640K and shares what she has."},
   {id:"emma",n:"Emma 386 Ventional",born:1985,role:"Little sister",bio:"Born the year of the 386 chip, and she can borrow more room than anyone else in the house. Wears glasses and a ponytail, and will explain page frames if you let her."},
@@ -306,5 +340,5 @@ var CMCast=(function(){
   {id:"mo",n:"Maureen “Mo” Dem",born:1979,role:"Friend",bio:"Connects slowly, makes a lot of noise doing it, and ties up the phone line all evening."},
   {id:"zack",n:"Zachary “Zack” Zip",born:1980,role:"The neighbor kid",bio:"Shows up folded small and unfolds in the living room. Nobody invited him. You know him from the Memory Maze."}];
 
- return{OUTFITS:OUTFITS,OUTFIT_ORDER:OUTFIT_ORDER,OUTFIT_FOR:OUTFIT_FOR,famGet:famGet,famSet:famSet,famOpts:famOpts,COLORS:COLORS,LOOKS:LOOKS,LOOK_ORDER:LOOK_ORDER,ACCS:ACCS,ACC_ORDER:ACC_ORDER,COLOR_PRIZE:COLOR_PRIZE,COLOR_ORDER:COLOR_ORDER,FUN_TOTAL:FUN_TOTAL,LEVELS:LEVELS,CAST:CAST,CAST_ORDER:CAST_ORDER,FAMILY:FAMILY,
+ return{CAMEO:CAMEO,OUTFITS:OUTFITS,OUTFIT_ORDER:OUTFIT_ORDER,OUTFIT_FOR:OUTFIT_FOR,famGet:famGet,famSet:famSet,famOpts:famOpts,COLORS:COLORS,LOOKS:LOOKS,LOOK_ORDER:LOOK_ORDER,ACCS:ACCS,ACC_ORDER:ACC_ORDER,COLOR_PRIZE:COLOR_PRIZE,COLOR_ORDER:COLOR_ORDER,FUN_TOTAL:FUN_TOTAL,LEVELS:LEVELS,CAST:CAST,CAST_ORDER:CAST_ORDER,FAMILY:FAMILY,
   folk:folk,inner:inner,rects:rects,connieCfg:connieCfg,castSvg:castSvg,svg:svgOf,cur:cur,save:save,unlocked:unlocked,state:conState,stars:stars,cleared:cleared,readCount:readCount,GL:GL}})();

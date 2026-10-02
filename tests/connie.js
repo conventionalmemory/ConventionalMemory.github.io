@@ -63,6 +63,13 @@ const srv=http.createServer((q,r)=>{let f=path.join(root,decodeURIComponent(q.ur
  await p.click('[data-buy="lk-plaid"]');await p.waitForTimeout(300);ok(await p.evaluate(()=>CMCast.unlocked("look","plaid").ok&&CMCast.cur().look==="plaid"),"buying a look unlocks and wears it");
  // Memory Manager UI: level 1 solved by hand
  await go("memman");ok(/Level 1/.test(await txt())&&await p.evaluate(()=>document.querySelectorAll(".mm-r").length)===7,"Memory Manager shows level 1 and seven drivers");
+ // help: the How to play panel and clickable-but-explained High buttons
+ok(await p.evaluate(()=>!!document.querySelector(".mm-how[open]")&&/Off.*Low.*High/.test(document.querySelector(".mm-how").innerText)),"the first visit opens the How to play panel");
+ ok(await p.evaluate(()=>[...document.querySelectorAll('input[data-d][value="2"]')].every(i=>!i.disabled)),"High is never a dead button");
+ await p.click('label.mm-o:has(input[data-d="mouse"][value="2"])');await p.waitForTimeout(200);
+ ok(await p.evaluate(()=>/Why not High/.test(document.getElementById("app").innerText)&&/no upper memory/i.test(document.querySelector(".mm-tip").innerText)),"clicking High on level 1 says why not");
+ await p.click("#mmhint");await p.waitForTimeout(150);ok(await p.evaluate(()=>/Hint:/.test(document.getElementById("app").innerText)),"the Hint button gives a hint");
+ await p.click("#mmsol");await p.waitForTimeout(150);ok(await p.evaluate(()=>/leaves \d+K free/.test(document.getElementById("app").innerText)),"Show a solution spells out the setup");
  await p.click("#mmrun");await p.waitForTimeout(200);ok(/cannot find/.test(await txt()),"running without the needed driver fails with a DOS-style message");
  await p.click('label.mm-o:has(input[data-d="mouse"][value="1"])');await p.waitForTimeout(200);await p.click("#mmrun");await p.waitForTimeout(200);ok(/Not enough memory|free\./.test(await txt()),"running reports the result");
  ok(await p.evaluate(()=>(JSON.parse(localStorage.getItem("cm-connie")||"{}").stars||{})[1])>=1,"a clear saves stars");
@@ -82,5 +89,20 @@ const srv=http.createServer((q,r)=>{let f=path.join(root,decodeURIComponent(q.ur
  // mascot and backup still fine
  await go("backup");ok(/closet/i.test(await p.evaluate(()=>document.getElementById("app").textContent)),"backup page lists the closet");
  await go("hub/play");ok(/Memory Manager/.test(await txt())&&/Funnies/.test(await txt())&&/closet/i.test(await txt()),"the Play hub links the new pages");
+ await p.evaluate(()=>{const s=JSON.parse(localStorage.getItem("cm-connie")||"{}");s.stars=Object.assign({},s.stars,{1:3,2:3});localStorage.setItem("cm-connie",JSON.stringify(s))});
+ await go("memman/3");await p.waitForTimeout(300);
+ await p.click('label.mm-o:has(input[data-d="mouse"][value="2"])');await p.waitForTimeout(200);
+ ok(await p.evaluate(()=>/EMM386/.test(document.querySelector(".mm-tip").innerText)&&!!document.getElementById("mmfix")),"on level 3, High explains that EMM386 comes first");
+ await p.click("#mmfix");await p.waitForTimeout(200);await p.click('label.mm-o:has(input[data-d="mouse"][value="2"])');await p.waitForTimeout(200);
+ ok(await p.evaluate(()=>document.querySelector('input[data-d="mouse"][value="2"]').checked),"after the fix button, High works");
+ // cameos: the family turns up, with Connie introducing them
+ for(const [route,who] of [["manuals","ram"],["scale","hiram"],["backup","floyd"],["follow","mo"],["zzzzqq","zack"]]){await go(route);await p.waitForTimeout(1800);
+  ok(await p.evaluate(w=>{const c=document.querySelector(".cm-cameo");return !!c&&!!c.querySelector("svg.mascot")&&!!c.querySelector("svg.cc-"+w)&&/Connie:/.test(c.innerText)},who),"cameo on "+route+": "+who+", introduced by Connie")}
+ await go("catalog");await p.waitForTimeout(1800);ok(await p.evaluate(()=>!document.querySelector(".cm-cameo")),"the catalog stays Connie-only (no cameo)");
+ await go("connie");await p.waitForTimeout(500);
+ ok(await p.evaluate(()=>["tess","nibble","floyd","winnie","conrad","ram","zack"].every(id=>{const g=document.querySelector("svg.cc-"+id+" .mc-all");return !!g&&getComputedStyle(g).animationName!=="none"})),"the family idles (every character has an animation)");
+ ok(await p.evaluate(()=>["floyd","winnie","tess","nibble"].every(id=>{const v=document.querySelector("svg.cc-"+id);return !!v&&!!v.querySelector(".mc-eyes")&&!!v.querySelector(".mc-mouth")&&!!v.querySelector(".mc-legl")})),"the four special characters have eyes, mouth and legs that move");
+ ok(await p.evaluate(()=>/You will find them on/.test(document.getElementById("app").innerText)),"family cards say where each one hangs out");
+ ok(await p.evaluate(()=>CMCast.svg("conrad",60,{})!==CMCast.svg("ram",60,{})&&CMCast.CAST.conrad.cfg.hairStyle!==CMCast.CAST.ram.cfg.hairStyle&&CMCast.CAST.conrad.cfg.glasses!==CMCast.CAST.ram.cfg.glasses),"Conrad and Raymond look different (hair, glasses, beard)");
  ok(errs.length===0,"no script errors"+(errs.length?" ("+errs[0]+")":""));
  console.log(fails.length?"\n"+fails.length+" FAILED":"\nAll good.");await b.close();srv.close();process.exit(fails.length?1:0)})();

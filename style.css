@@ -933,3 +933,31 @@ svg.cc{overflow:visible;display:block;margin:0 auto;image-rendering:pixelated}
 @media (max-width:520px){.mm-hd,.mm-r{grid-template-columns:1fr 44px}.mm-hd span:last-child,.mm-ch{grid-column:1/-1}}
 
 .shf-l{list-style:none;padding:0;margin:6px 0}.shf-l .shf{margin:4px 0}
+.mm-o.na{opacity:.55;border-style:dashed}.mm-o.na:hover{opacity:.9}
+.mm-how{border:2px solid var(--line);padding:8px 12px;margin:10px 0;background:var(--bg)}.mm-how summary{cursor:pointer;font-weight:bold}.mm-how ol{margin:8px 0;padding-left:22px}.mm-how li{margin:5px 0}.mm-gl{display:grid;grid-template-columns:max-content 1fr;gap:3px 12px;margin:8px 0 2px}.mm-gl dt{font-weight:bold}.mm-gl dd{margin:0}
+@media(max-width:560px){.mm-gl{grid-template-columns:1fr}.mm-gl dd{margin-bottom:6px}}
+.mm-tip{border:2px solid var(--line);border-left:8px solid #ffd54a;padding:8px 12px;margin:8px 0;background:var(--bg)}
+.cm-cameo{display:flex;gap:12px;align-items:flex-end;margin:28px 0 8px;padding:10px 12px;border:2px dashed var(--line);background:var(--bg)}
+.cm-cameo .cm-cs{flex:0 0 auto}.cm-cameo .cm-cg{flex:0 0 auto;margin-left:-6px}.cm-cameo .cm-ct{flex:1 1 auto;min-width:0}.cm-cameo .cm-ct p{margin:0 0 6px}
+@media(max-width:560px){.cm-cameo{flex-wrap:wrap}.cm-cameo .cm-ct{flex-basis:100%}}
+/* the whole family idles; Connie keeps her own animation above */
+html[data-motion=on] svg.cc *{transform-box:fill-box}
+html[data-motion=on] svg.cc .mc-all{transform-origin:50% 100%;animation:mc-bob 2.6s steps(1,end) var(--cd,0s) infinite}
+html[data-motion=on] svg.cc .mc-eyes{transform-origin:50% 50%;animation:mc-blink 5s steps(1,end) var(--cd,0s) infinite}
+html[data-motion=on] svg.cc:hover .mc-armr,html[data-motion=on] svg.cc:focus .mc-armr{transform-origin:0% 50%;animation:mc-wave .45s steps(2,end) infinite}
+html[data-motion=on] svg.cc:hover .mc-arml{transform-origin:100% 50%;animation:mc-wave .45s steps(2,end) .2s infinite reverse}
+html[data-motion=on] svg.cc:hover .mc-legl{transform-origin:50% 0%;animation:mc-tap .5s steps(1,end) infinite}html[data-motion=on] svg.cc:hover .mc-legr{transform-origin:50% 0%;animation:mc-tap .5s steps(1,end) .25s infinite}
+html[data-motion=on] svg.cc-hiram .mc-all,html[data-motion=on] svg.cc-emma .mc-all{animation:mc-jump 2.8s steps(1,end) var(--cd,0s) infinite}
+html[data-motion=on] svg.cc-ram .mc-all{animation:mc-shake 5s steps(1,end) var(--cd,0s) infinite}
+html[data-motion=on] svg.cc-zack .mc-all{animation:mc-jitter .8s steps(2,end) infinite}
+html[data-motion=on] svg.cc-sandy .mc-all,html[data-motion=on] svg.cc-dot .mc-all{animation:mc-bounce .9s steps(2,end) var(--cd,0s) infinite}
+html[data-motion=on] svg.cc-tess .mc-all{animation:mc-wobble 1.6s steps(2,end) var(--cd,0s) infinite}
+html[data-motion=on] svg.cc-nibble .mc-all{animation:mc-scurry 1.4s steps(4,end) var(--cd,0s) infinite}
+html[data-motion=on] svg.cc-floyd .mc-all,html[data-motion=on] svg.cc-winnie .mc-all{animation:mc-bob 4.2s steps(1,end) var(--cd,0s) infinite}
+html[data-motion=on] svg.cc-conrad .mc-all,html[data-motion=on] svg.cc-rhoda .mc-all,html[data-motion=on] svg.cc-augusta .mc-all{animation:mc-sway 3.4s steps(3,end) var(--cd,0s) infinite}
+html[data-motion=on] svg.cc-mo .mc-all{animation:mc-shake 3s steps(1,end) var(--cd,0s) infinite}
+@keyframes mc-sway{0%,100%{transform:rotate(0)}50%{transform:rotate(1.6deg)}}
+@keyframes mc-wobble{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+@keyframes mc-scurry{0%,100%{transform:translateX(-1.5px)}50%{transform:translateX(1.5px)}}
+@keyframes mc-jitter{0%{transform:translate(0,0)}50%{transform:translate(.6px,-.6px)}100%{transform:translate(-.6px,0)}}
+@keyframes mc-bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-1.2px)}}

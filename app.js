@@ -623,6 +623,12 @@ function navMark(){var h=hparts(),k=h[0]==="hub"?h[1]:NAVMAP[h[0]];
  else if(h[0]!=="catalog"&&h[0]!=="timeline"&&h[0]!=="search"&&h[0]!=="hub"&&h[0]!=="more"&&pg)parts.push(["",pg]);
  if(h[0]==="item"&&pg)parts.push(["",pg]);
  c.hidden=false;c.innerHTML='<a href="#/">C:\\MUSEUM</a>'+parts.map(function(p){return'\\'+(p[0]?'<a href="'+p[0]+'">'+esc(p[1])+'</a>':'<span aria-current="location">'+esc(p[1])+'</span>')}).join("")+"&gt;"}
+function addCameo(){var a=document.getElementById("app");if(!a||a.querySelector(".cm-cameo")||typeof CMCast==="undefined"||typeof mascot!=="function")return;var n=hparts()[0],c,h2=a.querySelector("h2");
+ if(a.querySelector(".nf"))c=CMCast.CAMEO.nf;else if(h2&&/^Staff only$/.test(h2.textContent))c=CMCast.CAMEO.gate;else c=CMCast.CAMEO[n];if(!c)return;
+ var o={tall:1},k;for(k in c[1])o[k]=c[1][k];var d=document.createElement("aside");d.className="cm-cameo noprint";d.setAttribute("aria-label","A cameo from Connie\u2019s family");
+ d.innerHTML='<div class="cm-cs">'+mascot(72,"wink",undefined,false)+'</div><div class="cm-cg">'+CMCast.svg(c[0],60,o)+'</div><div class="cm-ct"><p><b>Connie:</b> \u201c'+esc(c[2])+'\u201d</p><a class="btn" href="#/connie">Meet the family</a></div>';a.appendChild(d)}
+function cameoSoon(){[450,1500].forEach(function(t){setTimeout(addCameo,t)})}
+window.addEventListener("hashchange",cameoSoon);cameoSoon();
 window.addEventListener("hashchange",route);route();
 document.addEventListener("keydown",function(e){if(e.key==="/"&&!e.ctrlKey&&!e.metaKey&&!e.altKey&&!/^(INPUT|TEXTAREA|SELECT)$/.test((e.target||{}).tagName)){e.preventDefault();location.hash="#/search"}});
 var ti=0;try{ti=+localStorage.getItem("cm-theme")||0}catch(e){}
