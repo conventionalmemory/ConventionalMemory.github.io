@@ -70,9 +70,6 @@ function qFirst(list){var g=group(pick(list)[1]),c=shuf(list.filter(function(r){
  if(o.length<4)return null;var f=o.slice().sort(function(a,b){return dn(a[0])-dn(b[0])})[0];
  var q=g==="g"?"Which of these games came out first?":g==="m"?"Which of these movies opened first?":g==="x"?"Which of these happened first?":"Which of these was released first?";
  return mk(q,nameOf(f),o.filter(function(x){return x!==f}).map(nameOf),"first")}
-function qPrice(list,r){var g=list.filter(function(x){return x[1]===r[1]&&x!==r&&/^\$[\d,.]+$/.test(x[3])&&x[3]!==r[3]}),seen={},o=[];
- shuf(g).forEach(function(x){if(!seen[x[3]]&&o.length<3){seen[x[3]]=1;o.push(x[3])}});
- if(o.length<3)return null;return mk('What was the US launch price of the "'+nameOf(r)+'"?',r[3],o,"price")}
 function qItem(it){var t=R(),o=[],y=it.year;
  if(t<.5&&y){for(var d=1;o.length<3;d++){var v=y+(o.length%2?d:-d);if(v>=1970&&v!==y&&o.indexOf(v)<0)o.push(v)}return mk('In what year was the "'+it.name+'" released?',String(y),o.map(String),"item")}
  if(it.maker&&it.maker!=="Unknown"){var w=shuf(MAKERS.filter(function(m){return m!==it.maker})).slice(0,3);return mk('Who made the "'+it.name+'"?',it.maker,w,"item")}
@@ -161,7 +158,6 @@ function depths(){var d={},q=[S.start];d[S.start]=0;var mx=0;
  return{d:d,mx:mx}}
 
 /* ---------- game state ---------- */
-function exhibitFor(rm,pool){var e=pool.shift();return e}
 function newGame(who,sd){
  seed=sd||((Date.now()&0xffffff)^0x5bd1e995);
  S={seed0:seed,acts:[],who:who,mem:640,min:0,taken:0,hints:who==="matt"?3:1,pen:who==="tony"?16:PENALTY,used:{},msg:"",room:0,px:40,py:112,dir:1,step:0,mode:"play",q:null,door:null,sound:false,talk:{},moves:0,flash:0,fade:0,log:[],npcs:{}};

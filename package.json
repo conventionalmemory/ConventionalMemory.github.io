@@ -2,6 +2,6 @@
   "name": "conventionalmemory-site",
   "private": true,
   "description": "Static site. This package.json only exists to run the smoke test.",
-  "scripts": { "test": "node tests/smoke.js && node tests/admin.js && node tests/admin-images.js && node tests/lab.js && node tests/nav.js && node tests/toys.js && node tests/labels.js && node tests/widths.js && node tests/print.js" },
+  "scripts": { "test": "node tests/smoke.js && node tests/admin.js && node tests/admin-images.js && node tests/lab.js && node tests/nav.js && node tests/catalog.js && node tests/crawl.js && node tests/toys.js && node tests/labels.js && node tests/security.js && node tests/widths.js && node tests/print.js" },
   "devDependencies": { "playwright": "^1.48.0" }
 }

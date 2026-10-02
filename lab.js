@@ -21,7 +21,6 @@ function debutYear(g){var d=gxDebut(g.x);return d?String(d[1]).slice(0,4):""}
 function savedRigs(){var l=[];try{l=(JSON.parse(localStorage.getItem("cm-rigs"))||{}).l||[]}catch(e){}return l.filter(function(x){return x&&x.r&&isFinite(x.r.cls)}).map(function(x){return{n:"Dream rig: "+String(x.n).slice(0,40),y:"",cls:+x.r.cls,mhz:+x.r.mhz,ram:+x.r.ram,vram:+x.r.vram}})}
 function allRigs(){var mus=museumRigs(),c=RN.cust;return{pre:GXRIGS,mus:mus,sav:savedRigs(),cust:{n:"Custom rig",y:"",cls:+c.cls,mhz:+c.mhz,ram:+c.ram,vram:+c.vram}}}
 function curRig(){var A=allRigs(),k=RN.rig;if(k==="c")return A.cust;if(k&&k.charAt(0)==="m"){var m=A.mus[+k.slice(1)];if(m)return m}if(k&&k.charAt(0)==="p"){var p=A.pre[+k.slice(1)];if(p)return p}if(k&&k.charAt(0)==="s"){var q=A.sav[+k.slice(1)];if(q)return q}return A.mus.length?A.mus[0]:A.pre[5]}
-function rigKey(R){var A=allRigs(),i=A.mus.indexOf(R);if(i>=0)return"m"+i;i=A.pre.indexOf(R);if(i>=0)return"p"+i;i=A.sav.indexOf(R);if(i>=0)return"s"+i;return"c"}
 function verdict(R,g){var a=gxMeets(R,g.x.n);if(a.ok===null)return{k:"nodata",l:"No numbers on file",c:"nd"};if(!a.ok)return{k:"no",l:"Short: "+a.miss.join("; "),c:"no"};var b=g.x.m?gxMeets(R,g.x.m):null;return b&&b.ok?{k:"great",l:"Runs well",c:"ok"}:{k:"min",l:"Runs, minimum",c:"mid"}}
 function runs(arg){
  if(arg&&/^[a-z0-9-]+$/.test(arg)){var mu=museumRigs();for(var i=0;i<mu.length;i++)if(mu[i].item===arg){RN.rig="m"+i;RN.mode="machine"}}

@@ -7,10 +7,11 @@ const srv=http.createServer((q,r)=>{let f=path.join(root,decodeURIComponent(q.ur
  const b=await chromium.launch({executablePath:process.env.PLAYWRIGHT_CHROMIUM||undefined});const p=await b.newPage({viewport:{width:1100,height:900}});
  const fails=[],errs=[];p.on("pageerror",e=>errs.push(e.message));
  const ok=(c,m)=>{console.log((c?"ok   ":"FAIL ")+m);if(!c)fails.push(m)};
- const front=()=>p.evaluate(()=>{const f=document.getElementById("fr");return !!f&&!f.hidden&&f.offsetHeight>0});
- const fresh=async()=>{await p.goto(base+"catalog");await p.evaluate(()=>{localStorage.clear();sessionStorage.clear()});await p.goto(base+"catalog");await p.reload();await p.waitForTimeout(500)};
+ let BIG=true;const front=()=>p.evaluate(()=>{const f=document.getElementById("fr");return !!f&&!f.hidden&&f.offsetHeight>0});
+ const fresh=async()=>{await p.goto(base+"catalog");await p.evaluate(()=>{localStorage.clear();sessionStorage.clear()});await p.goto(base+"catalog");await p.reload();await p.waitForTimeout(500);if(BIG)await p.evaluate(()=>{CATFRONT_MIN=1;route()});await p.waitForTimeout(300)};
  const menu=async()=>{await p.click('header.top nav a[href="#/catalog"]');await p.waitForTimeout(400)};
- await fresh();ok(await front(),"catalog opens on the front");
+ BIG=false;await fresh();ok(!(await front())&&await p.evaluate(()=>document.querySelectorAll("#g .card").length>0),"a small museum opens straight on the exhibits (no aisle splash)");BIG=true;
+ await fresh();ok(await front(),"a big museum opens on the front");
  const cases=[["department tile",async()=>p.click(".dept")],["MEM segment",async()=>p.click(".ms")],["browse all",async()=>p.click(".fall .btn")],["search",async()=>{await p.click("#q");await p.keyboard.type("sb")}],["decade chip",async()=>{await p.click("#fb");await p.click(".chip.dec")}],["shelf tile",async()=>p.click(".wt[data-go=shelf]")]];
  for(const [n,fn] of cases){await fresh();await fn();await p.waitForTimeout(300);const filtered=!(await front());const h=await p.evaluate(()=>location.hash);await menu();ok(filtered&&await front(),"Catalog menu link returns to the front after: "+n+" ("+h+")")}
  // Back restores filters

@@ -47,6 +47,9 @@ const srv=http.createServer((q,r)=>{let f=path.join(root,decodeURIComponent(q.ur
  await p.click("#app .chips a.pri");await p.waitForTimeout(400);ok(await p.evaluate(()=>/#\/maker\//.test(location.hash)&&document.querySelectorAll("#app .card").length>0),"a maker page shows its exhibits");
  await go("item/"+await p.evaluate(()=>ITEMS.filter(i=>i.maker&&i.maker!=="Unknown")[0].id));ok(await p.evaluate(()=>!!document.querySelector('.ihero a.ib[href^="#/maker/"]')),"item page links the maker");
  await go("manuals");ok(/Manuals and references/.test(await txt()),"manuals page renders");
+ await go("about");ok(await p.evaluate(()=>document.querySelectorAll(".ab-card").length===2&&[...document.querySelectorAll(".ab-pt img")].every(i=>i.complete&&i.naturalWidth>100)),"about page shows both portraits");
+ await p.click('[data-talk="matt"]');ok(await p.evaluate(()=>document.querySelector('[data-k="matt"] .ab-q').textContent.length>10),"Press START makes a character talk");
+ ok(await p.evaluate(()=>!!document.querySelector('footer a[href="#/about"]')&&!!document.querySelector('footer a[href="#/start"]')),"footer links to About and Start here");
  await go("start");ok(await p.evaluate(()=>document.querySelectorAll(".st .hm-tile").length===6&&!!document.querySelector(".st svg.mascot")),"start here page has six paths and Mem");
  ok(!errs.length,"no script errors"+(errs.length?": "+errs.join("|"):""));
  await b.close();srv.close();if(fails.length){console.error("FAILED "+fails.length);process.exit(1)}console.log("OK toys")})();

@@ -92,8 +92,16 @@ var CMToys=(function(){
  function present(){var o={};ALLOW.forEach(function(k){try{var v=localStorage.getItem(k);if(v!=null)o[k]=v}catch(e){}});return o}
  function validate(txt){var j;try{j=JSON.parse(txt)}catch(e){return{err:"That file is not a backup (it could not be read)."}}
   if(!j||j.app!=="conventionalmemory"||typeof j.data!=="object"||j.data===null)return{err:"That file is not a Conventional Memory backup."};
-  var ok={},skipped=0,total=0;Object.keys(j.data).forEach(function(k){var v=j.data[k];if(ALLOW.indexOf(k)<0||typeof v!=="string"||v.length>200000){skipped++;return}total+=v.length;if(total>1500000){skipped++;return}ok[k]=v});
+  var ok={},skipped=0,total=0;Object.keys(j.data).forEach(function(k){var v=j.data[k];if(ALLOW.indexOf(k)<0||typeof v!=="string"||v.length>200000){skipped++;return}v=clean(k,v);if(v==null){skipped++;return}total+=v.length;if(total>1500000){skipped++;return}ok[k]=v});
   return Object.keys(ok).length?{ok:ok,skipped:skipped,date:j.date}:{err:"Nothing in that file can be restored."}}
+ /* Values from a backup file are untrusted: keep only the shapes the site itself writes. */
+ function clean(k,v){var o;if(k==="cm-labelset"||k==="cm-play"||k==="cm-daily"||k==="cm-theater"){try{o=JSON.parse(v)}catch(e){return null}if(!o||typeof o!=="object"||Array.isArray(o))return null}
+  var nz=function(x){x=Math.floor(+x);return isFinite(x)&&x>0?Math.min(x,1e9):0};
+  if(k==="cm-labelset"){delete o.base;return JSON.stringify(o)}
+  if(k==="cm-play"){o.xp=nz(o.xp);return JSON.stringify(o)}
+  if(k==="cm-daily"){["streak","best","total","shield","perfect","saved"].forEach(function(f){o[f]=nz(o[f])});return JSON.stringify(o)}
+  if(k==="cm-theater"){o.l=(Array.isArray(o.l)?o.l:[]).filter(function(x){return x&&/^[\w-]{11}$/.test(x.id||"")}).slice(0,200).map(function(x){return{id:x.id,t:String(x.t||"").slice(0,120)}});return JSON.stringify(o)}
+  return v}
  function backup(){var cur=present(),ks=Object.keys(cur);
   app.innerHTML='<section class="bkp"><h2>Back up my stuff</h2><p>Everything you do here (collection, wish list, game progress, saved rigs, settings) lives only in this browser. Save it to a file to move it to another device or keep a copy. Nothing is uploaded anywhere. Admin passphrases and tokens are never included.</p>'
    +'<p><button class="btn pri" id="bsave" type="button"'+(ks.length?"":" disabled")+'>Save a backup file ('+ks.length+' items)</button></p>'
@@ -148,6 +156,29 @@ var CMToys=(function(){
    var sc=document.createElement("script");sc.src=f;sc.setAttribute("data-lbl",f);sc.onload=nx;sc.onerror=function(){app.innerHTML='<section><h2>Oops</h2><p class="empty">The label tools could not be loaded. Try again in a moment.</p></section>'};document.head.appendChild(sc)})()}
  function labels(arg){var el=app;app.innerHTML='<section><h2>Print labels</h2><p>Loading the label tools...</p></section>';needs(["qr.js","labelprint.js","labelui.js"],function(){if(app===el&&/^#\/labels/.test(location.hash))CMLabelUI.labels(el,arg)})}
  function scan(){var el=app;app.innerHTML='<section><h2>Scan a label</h2><p>Loading...</p></section>';needs(["qr.js","labelprint.js","labelui.js"],function(){if(app===el&&/^#\/scan/.test(location.hash))CMLabelUI.scan(el)})}
+
+ /* ------------------------------------------------------------------ About */
+ /* Edit the crew here. Portraits are pixel art in /portraits. Everything below is plain text. */
+ var CREW=[
+  {k:"matt",n:"Matt",role:"Creator and curator",tag:"PLAYER 1",img:"portraits/matt.png",w:543,h:724,pix:0,art:"Rendered in the style of The Colonel's Bequest (1989)",alt:"Portrait of Matt in a backwards white cap, in a Colonel's Bequest style mansion with a fireplace and a framed portrait",
+   bio:"Started the museum, wrote the code, owns the soldering iron. Backwards cap is part of the uniform.",
+   stats:[["Patience with IRQ conflicts","LOW"],["Cables in the drawer","INFINITE"],["Backwards cap","EQUIPPED"]],
+   quips:["It works on my machine. It is also my only machine.","I swear it booted yesterday.","One more exhibit. Then I will stop. (I will not stop.)","Did you try the Konami code?"]},
+  {k:"tony",n:"Tony",role:"Matt's brother, co-op partner",tag:"PLAYER 2",img:"portraits/tony.png",w:561,h:701,pix:0,art:"Painted in the style of Torin's Passage (1995)",alt:"Painted cartoon portrait of Tony in a red, green and blue jester hat",
+   bio:"Matt's brother. Joined the game in progress and brought a jester hat.",
+   stats:[["Jester hat","EQUIPPED"],["Brother status","CONFIRMED"],["Thumbs up","x2"]],
+   quips:["Player 2 has entered the game.","Where is the any key?","I was told there would be snacks.","Both thumbs up. Ship it."]}];
+ function about(){var items=ITEMS.length,tl=typeof TL!=="undefined"?TL.length:0;
+  app.innerHTML='<section class="ab"><h2>About</h2><div class="k-intro">'+mascot(96,"happy")+'<div><p><b>Conventional Memory</b> is a museum of vintage computers, the people who kept them running, and the games and ads that went with them. The name is the first 640K of DOS memory, where every program had to squeeze in. Everything we love about this era had to fit in there too.</p><p>New things show up on <a href="#/follow">TikTok, YouTube, Instagram and Facebook</a> first, and here once they have a proper page.</p></div></div>'
+  +'<h3 class="sub">Character select</h3><div class="ab-crew">'+CREW.map(function(c){return'<article class="ab-card" data-k="'+E(c.k)+'"><p class="ab-tag">'+E(c.tag)+'</p><div class="ab-pt"><img class="'+(c.pix?"pix":"smooth")+'" src="'+E(c.img)+'" width="'+c.w+'" height="'+c.h+'" alt="'+E(c.alt)+'"></div><p class="ab-art">'+E(c.art)+'</p><h3>'+E(c.n)+'</h3><p class="ab-role">'+E(c.role)+'</p><p>'+E(c.bio)+'</p><dl class="ab-st">'+c.stats.map(function(s){return'<dt>'+E(s[0])+'</dt><dd>'+E(s[1])+'</dd>'}).join("")+'</dl><p class="ab-q" role="status" aria-live="polite"></p><button class="btn" type="button" data-talk="'+E(c.k)+'">Press START to talk</button></article>'}).join("")+'</div>'
+  +'<h3 class="sub">What is in here</h3><div class="pl-grid">'
+  +'<a class="hm-tile" href="#/catalog"><i class="hm-ic">'+glyph("tower",28)+'</i><b>'+items+' exhibits</b><span>Each with a permanent label number and a QR code on the shelf.</span></a>'
+  +'<a class="hm-tile" href="#/timeline"><i class="hm-ic">'+glyph("clock",28)+'</i><b>'+tl+' timeline entries</b><span>1975 to 2012: hardware, games, and the news around them.</span></a>'
+  +'<a class="hm-tile" href="#/hub/play"><i class="hm-ic">'+glyph("joystick",28)+'</i><b>Games and puzzles</b><span>Daily questions, Higher or Lower, a trivia maze, and a prize counter.</span></a>'
+  +'<a class="hm-tile" href="#/start"><i class="hm-ic">'+glyph("flag",28)+'</i><b>New here?</b><span>Six ways in, depending on your mood.</span></a></div>'
+  +'<h3 class="sub">Good to know</h3><ul><li>Your lists, scores and prizes stay in your browser. Nothing is sent anywhere. <a href="#/backup">Back them up</a> if they matter to you.</li><li>Type <b>help</b> at the C:\\&gt; prompt in the footer. There are secrets. The Konami code is only the first one.</li><li>Found a mistake, or have something the museum should hunt for? <a href="#/community">Tell us</a>.</li><li>The crew portraits were redrawn from real photos in two old-school adventure-game styles. The ads, logos and illustrations are all drawn in code.</li></ul>'
+  +'<pre class="ab-dos" aria-label="README.TXT">C:\\&gt;TYPE README.TXT\n\nConventional Memory LLC\nOne museum. Two brothers. 640K of conventional memory.\n\nPress any key to continue . . .</pre></section>';
+  var seen={};$$("[data-talk]").forEach(function(b){b.onclick=function(){var c=CREW.filter(function(x){return x.k===b.dataset.talk})[0],i=(seen[c.k]=((seen[c.k]==null?-1:seen[c.k])+1)%c.quips.length);var q=b.parentNode.querySelector(".ab-q");q.textContent="\u201c"+c.quips[i]+"\u201d";b.textContent="Again";b.parentNode.classList.remove("talk");void b.parentNode.offsetWidth;b.parentNode.classList.add("talk")}})}
  function start(){app.innerHTML='<section class="st"><h2>Start here</h2><div class="k-intro">'+mascot(96,"happy")+'<div><p>Hi, I am Mem. Conventional Memory is a museum of vintage computers, the people who kept them running, and the games and ads that went with them. There is no wrong way in. Pick how you feel:</p></div></div>'
    +'<div class="pl-grid"><a class="hm-tile" href="#/catalog"><i class="hm-ic">'+glyph("tower",28)+'</i><b>I like looking at stuff</b><span>Browse the exhibits: departments, a mail-order catalog and a shelf.</span></a>'
    +'<a class="hm-tile" href="#/walk/1995"><i class="hm-ic">'+glyph("clock",28)+'</i><b>I want to remember</b><span>Walk through a year: the news, the hardware, the games, the ad.</span></a>'
@@ -158,5 +189,5 @@ var CMToys=(function(){
    +'<h3 class="sub">Good to know</h3><ul><li>Press <b>/</b> anywhere to search. Type <b>help</b> at the C:\\&gt; prompt in the footer for commands.</li><li>The menu bar groups everything: Catalog, Timeline, Explore, Play, Theater, My stuff, Community.</li><li>Your lists, scores and prizes stay in this browser. <a href="#/backup">Back them up</a> if you care about them.</li><li>Themes, motion and the CRT effect are the three buttons at the top right.</li></ul></section>'}
 
  return{mount:function(el,page,args){app=el;try{
-   if(page==="wish")wish(args[0]);else if(page==="kiosk")kiosk(args[0]==="go");else if(page==="prizes")prizes();else if(page==="backup")backup();else if(page==="maker")maker(args[0]);else if(page==="manuals")manuals();else if(page==="labels")labels(args[0]);else if(page==="scan")scan();else if(page==="start")start()
+   if(page==="wish")wish(args[0]);else if(page==="kiosk")kiosk(args[0]==="go");else if(page==="prizes")prizes();else if(page==="backup")backup();else if(page==="maker")maker(args[0]);else if(page==="manuals")manuals();else if(page==="labels")labels(args[0]);else if(page==="scan")scan();else if(page==="about")about();else if(page==="start")start()
   }catch(e){app.innerHTML='<section><h2>Something broke</h2><p class="empty">This page could not load ('+E(e.message)+').</p></section>'}},unmount:function(){kStop();if(window.CMLabelUI)CMLabelUI.unmount()}}})();

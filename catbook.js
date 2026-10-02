@@ -9,7 +9,7 @@ var CMBook=(function(){
  var PAL=["#c3202f","#10307a","#0b7a4b","#d97b00","#7a2a8c","#0c7fa0","#b5380e","#3a3a9e"];
  function E(s){return esc(s)}
  function all(){return window.ALLITEMS||ITEMS}
- function itemNo(it){var n=all().indexOf(it)+1;return"CM-"+(n<1000?("000"+n).slice(-4):n)}
+ function itemNo(it){var n=it.cm||all().indexOf(it)+1;return"CM-"+(n<1000?("000"+n).slice(-4):n)}
  function motionOn(){return document.documentElement.getAttribute("data-motion")!=="off"&&!(window.matchMedia&&matchMedia("(prefers-reduced-motion:reduce)").matches)}
  function wide(){return window.innerWidth>=900}
  function gl(n,s){return typeof pxCat==="function"?pxCat(n,s):""}

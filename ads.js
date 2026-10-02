@@ -106,7 +106,6 @@ function adShelf(picks){if(!picks.length)return"";var d=picks[0][0];
   +'<p class="cz-fine">Tribute ad in the style of 1990s computer software store flyers. Made-up store, real timeline data. Nothing here can be ordered. Prices marked * are estimates and dates marked * are unconfirmed.</p></section>'}
 function adBanner(r){var p=guessPrice(r,dyear(r[0]));
  return'<aside class="cz cz-bar" aria-label="Tribute advertisement"><div class="cz-art sm">'+adArt(r,72,60,"b")+'</div><div class="cz-bt">'+czLogo(adStore(r))+'<b>'+esc(r[2])+'</b><span>'+esc(adWhen(r))+'</span></div>'+czFlag(p)+'<button class="adx" type="button" aria-label="Close this ad">&times;</button></aside>'}
-function adBar(picks){var gone=false;try{gone=sessionStorage.getItem("cm-adx")==="1"}catch(e){}return picks.length&&!gone?adBanner(picks[0]):""}
 function adItem(it){var k=prodKind(it),p=priceOf(it),sp=pickSpecs(it,k),head=(AD_HEAD[k]||AD_HEAD.box),h=head[hstr(it.name)%head.length],
   ph=it.photos&&it.photos.length?safeUrl(it.photos[0],"img"):"",art=ph?'<img src="'+esc(ph)+'" alt="'+esc(it.name)+'" loading="lazy">':prodSvg(it,240,180,"i"),
   store=(k==="card"||k==="synth"||k==="keyboard"||k==="mouse"||k==="joystick"||k==="disk"||k==="drive"||k==="modem")?"Bit Barn Computers":(k==="laptop"||k==="tower"||k==="monitor"||k==="printer")?"Bit Barn Computers":"Bargain Bytes Software",

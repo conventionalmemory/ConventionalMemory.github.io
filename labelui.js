@@ -25,6 +25,7 @@ var CMLabelUI=(function(){
   +'<label>Code <select id="lbst2">'+opt("qr","QR code",S.style)+opt("both","QR code and Code 128 bars",S.style)+opt("c128","Code 128 bars only",S.style)+'</select></label></div>'
   +'<p><label>Web address in the QR code <input id="lbbase" type="url" class="lb-url" value="'+E(S.base)+'"></label></p>'
   +'<p class="tn">Labels you stick on things carry this address forever, so only change it if the site moves. Right now the code opens <code id="lbex"></code></p>'
+  +'<p id="lbwarn" class="tn" role="status"></p><p><button class="btn" id="lbrb" type="button">Reset to the museum address</button></p>'
   +'<details><summary>Advanced printer settings</summary><div class="lb-row">'
   +'<label>Darkness (1 to 15) <input id="lbde" type="number" min="1" max="15" value="'+E(S.dens)+'" class="mx-n"></label>'
   +'<label>Speed (1 slow, 5 fast) <input id="lbsp" type="number" min="1" max="5" value="'+E(S.speed)+'" class="mx-n"></label>'
@@ -47,12 +48,14 @@ var CMLabelUI=(function(){
    $$("#lbl-list [data-pv]").forEach(function(b){b.onclick=function(){prev=+b.dataset.pv;pv();$$("#lbl-list .lb-r").forEach(function(r){r.classList.remove("cur")});b.parentNode.classList.add("cur")}});count()}
   function count(){var n=items().length;$("#lbpr").textContent="Print "+n+" selected to the label printer";$("#lbpr").disabled=!CMLabel.supported()||!n;$("#lbdl").disabled=!n;$("#lbbr").disabled=!n}
   function pv(){var s=readSettings(),it=ALLITEMS.filter(function(i){return i.cm===prev})[0]||pool(true).filter(function(i){return i.cm})[0],box=$("#lbpv");
-   $("#lbex").textContent=s.base+"#/t/7";
+   $("#lbex").textContent=s.base+"#/t/7";var w=$("#lbwarn"),own=typeof SITE_URL==="string"?SITE_URL:s.base;
+   w.textContent=s.base!==own?"Careful: this is not the museum's own address ("+own+"). Labels printed with it will open somewhere else. Reset it unless you changed domains.":(/github\.io/.test(own)?"Tip: your own domain keeps printed stickers working if the site ever moves. See the README, \"Your own domain\".":"");w.className="tn"+(s.base!==own?" bad":"");
    if(!it){box.innerHTML='<p class="empty">No exhibit has a label number yet. Save once in Admin and they are assigned.</p>';return}
    try{var c=CMLabel.render(CMLabel.info(it,s),s),im=new Image();im.src=c.toDataURL("image/png");im.alt="Preview of label "+CMLabel.tagNo(it.cm);im.className="lb-img";im.style.width=Math.round(s.w*5.2)+"px";box.innerHTML="";box.appendChild(im);
     $("#lbpc").textContent=CMLabel.tagNo(it.cm)+": "+s.w+" x "+s.h+" mm at 203 dpi, QR opens "+CMLabel.urlFor(it,s)}catch(e){box.innerHTML='<p class="empty">Could not draw the label: '+E(e.message)+'</p>'}}
   function changed(){var s=readSettings();CMLabel.save(s);$("#lbcu").hidden=$("#lbsz").value!=="custom";pv()}
   ["#lbsz","#lbw","#lbh","#lbst2","#lbbase","#lbde","#lbsp","#lbsh","#lbmd","#lbec","#lbslow","#lbcp"].forEach(function(q){var e=$(q);if(e){e.onchange=changed;if(e.type==="number"||e.type==="url")e.oninput=changed}});
+  $("#lbrb").onclick=function(){$("#lbbase").value=typeof SITE_URL==="string"?SITE_URL:"";changed()};
   $("#lbq").oninput=list;$("#lbdr").onchange=function(){sv("cm-labelall",this.checked?1:0);list()};
   $("#lbsa").onclick=function(){rows().forEach(function(i){if(i.cm)sel[i.cm]=1});list()};$("#lbsn").onclick=function(){sel={};list();pv()};
   function status(t,bad){var e=$("#lbst");if(e){e.textContent=t;e.className="lb-st"+(bad?" bad":"")}}
