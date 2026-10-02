@@ -49,6 +49,8 @@ const srv=http.createServer((q,r)=>{let f=path.join(root,decodeURIComponent(q.ur
  await go("manuals");ok(/Manuals and references/.test(await txt()),"manuals page renders");
  await go("about");ok(await p.evaluate(()=>document.querySelectorAll(".ab-card").length===2&&[...document.querySelectorAll(".ab-pt img")].every(i=>i.complete&&i.naturalWidth>100)),"about page shows both portraits");
  await p.click('[data-talk="matt"]');ok(await p.evaluate(()=>document.querySelector('[data-k="matt"] .ab-q').textContent.length>10),"Press START makes a character talk");
+ await p.click('[data-room="2"]');ok(await p.evaluate(()=>/LOOK AT LAVA LAMP/.test(document.getElementById("abs").innerText)),"workstation hotspots answer like a text adventure");
+ ok(await p.evaluate(()=>document.querySelectorAll("[data-room]").length>=10&&document.querySelectorAll(".ab-log li").length>=5&&[...document.querySelectorAll(".ab-rp img")].every(i=>i.complete&&i.naturalWidth>500)),"about page has the workstation picture, hotspots and the save file chapters");
  ok(await p.evaluate(()=>!!document.querySelector('footer a[href="#/about"]')&&!!document.querySelector('footer a[href="#/start"]')),"footer links to About and Start here");
  await go("start");ok(await p.evaluate(()=>document.querySelectorAll(".st .hm-tile").length===6&&!!document.querySelector(".st svg.mascot")),"start here page has six paths and Mem");
  ok(!errs.length,"no script errors"+(errs.length?": "+errs.join("|"):""));

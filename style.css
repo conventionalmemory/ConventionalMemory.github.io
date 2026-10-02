@@ -815,3 +815,11 @@ html[data-motion="off"] .ab-card.talk .ab-pt{animation:none}
 }
 code{overflow-wrap:anywhere}.lb-card code,.scn code,#app code{white-space:normal;word-break:break-all}
 #lbpc,.lb-card .tn{overflow-wrap:anywhere;word-break:break-word}
+
+/* About: the workstation and the save file */
+.ab-room{margin:0 0 18px}.ab-rp{position:relative;border:3px double var(--ink);background:#101028;line-height:0;max-width:760px}.ab-rp img{width:100%;height:auto;display:block}
+.ab-hot{position:absolute;padding:0;margin:0;background:transparent;border:2px solid transparent;cursor:pointer;border-radius:2px}.ab-hot:hover,.ab-hot:focus-visible{border-color:#ffff55;background:rgba(255,255,85,.14);outline:none}.ab-hot:focus-visible{box-shadow:0 0 0 2px #000}
+.ab-say{max-width:760px;box-sizing:border-box;margin:0;padding:10px 14px;background:#000;color:#c0c0c0;border:2px solid var(--line);border-top:0;font-family:"VT323","Courier New",monospace;font-size:22px;line-height:1.25;min-height:3.4em}.ab-say span{color:#55ff55;margin-right:8px}
+.ab-save{font-family:"VT323",monospace;font-size:20px;background:#000;color:#55ffff;padding:6px 12px;border:2px solid var(--line)}.ab-save b{color:#ffff55}
+.ab-log{list-style:none;margin:10px 0 16px;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}.ab-log li{border:2px solid var(--ink);background:var(--panel);padding:10px 14px;box-shadow:4px 4px 0 var(--line)}.ab-log h4{margin:2px 0 4px;font:400 26px/1.1 "VT323",monospace}.ab-log p{margin:0;font-size:15px}.ab-ch{display:inline-block;background:var(--ink);color:var(--bg);font:16px "VT323",monospace;padding:0 8px;letter-spacing:.06em;text-transform:uppercase}
+.ab-ach{max-width:520px}@media(max-width:600px){.ab-hot{border-width:1px}.ab-say{font-size:19px}}
