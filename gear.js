@@ -71,7 +71,7 @@ function gearFinds(c,name,maker){var q=affQ(name,maker);if(!q)return[];var out=[
   if(k==="m"){add("Find it on Blu-ray or DVD",q+" Blu-ray DVD");if(c.yr&&c.yr<2006)add("Find it on VHS",q+" VHS");add("Find the soundtrack",q+" soundtrack");add("Find a poster",q+" movie poster")}
   else if(/^(gt|gn|gc)$/.test(k)){add("Find a copy",q+" game");add("Find the manual or strategy guide",q+" strategy guide manual");add("Find the soundtrack or merchandise",q+" soundtrack")}
   else if(/^(hw|pe)$/.test(k)){add("Find one of your own",q);add("Find manuals and paperwork",q+" manual");add("Find accessories",q+" accessories")}
-  else if(k==="bk"){var ax=(typeof TLX!=="undefined"&&TLX[name]&&TLX[name].specs&&TLX[name].specs.Author)||"",bq=(String(name).replace(/ \((book|novel|Boss Fight Books)\)$/,"")+" "+ax).trim();add("Find a copy",bq);add("Find the audiobook",bq+" audiobook")}
+  else if(k==="bk"){var ax=(typeof TLX!=="undefined"&&TLX[name]&&TLX[name].specs&&TLX[name].specs.Author)||"",bq=(String(name).replace(/ \((book|novel|Boss Fight Books)\)$/,"")+" "+ax).trim();var ib=(typeof TLX!=="undefined"&&TLX[name]&&TLX[name].specs&&TLX[name].specs.ISBN||"").replace(/[^0-9X]/gi,"");add("Find a copy",BOOKS+(/^(97[89]\d{10}|\d{9}[\dXx])$/.test(ib)?ib:bq));add("Find the audiobook",bq+" audiobook")}
   else if(k==="sw"){add("Find a boxed copy",q+" software");add("Find the manual",q+" manual")}
   else if(k==="u"){add("Find books about it",t+" book")}
   else{add("Find books about it",t+" book");add("Find vintage memorabilia",t+" vintage")}

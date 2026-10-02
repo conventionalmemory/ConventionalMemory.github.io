@@ -300,7 +300,7 @@ function cardSvg(text){var L=text.split("\n"),title=L[0],url=(L.filter(function(
  body.forEach(function(l,i){s+='<text x="70" y="'+(262+i*62)+'" '+M+' font-size="'+(/[■□◩]/.test(l)?64:46)+'" fill="#111">'+xesc(l)+'</text>'});
  return s+'<rect x="30" y="520" width="1140" height="80" fill="#000080"/><text x="600" y="572" text-anchor="middle" '+M+' font-size="36" font-weight="bold" fill="#ffff55">'+xesc(url)+'</text></svg>'}
 function search(arg){var q0=arg?decodeURIComponent(arg):"";
- app.innerHTML='<section class="pl"><h2>Search</h2><p><label for="sq">Search the catalog, the timeline and the games. Press / anywhere to get here.</label></p><p><input id="sq" type="search" autocomplete="off" placeholder="Voodoo, Sega, 1994, modem..." value="'+E(q0)+'"></p><div id="sr" aria-live="polite"></div>'+bk()+'</section>';
+ app.innerHTML='<section class="pl"><h2>Search</h2><p><label for="sq">Search the catalog, the timeline and the games. Press / anywhere to get here.</label></p><p><input id="sq" type="search" autocomplete="off" placeholder="Voodoo, Sega, 1994, kiosk, books..." value="'+E(q0)+'"></p><div id="sr" aria-live="polite"></div>'+bk()+'</section>';
  function run(){var q=$("#sq").value.toLowerCase().trim(),h="";if(q.length<2){$("#sr").innerHTML='<p class="tn">Type at least two letters.</p>';return}
   var w=q.split(/\s+/),has=function(t){t=t.toLowerCase();return w.every(function(x){return t.indexOf(x)>=0})};
   var its=ITEMS.filter(function(it){return has([it.name,it.maker,it.model,(it.tags||[]).join(" "),it.year,it.text].join(" "))}),
@@ -308,7 +308,7 @@ function search(arg){var q0=arg?decodeURIComponent(arg):"";
   var tlg=tl.filter(function(r){return/^(gt|gn|gc|sw)$/.test(r[1])}),tlh=tl.filter(function(r){return!/^(gt|gn|gc|sw)$/.test(r[1])});
   function grp(t,n,list,fn){return list.length?'<h3 class="sub">'+t+' ('+list.length+')</h3><ul class="pl-sr">'+list.slice(0,n).map(fn).join("")+'</ul>'+(list.length>n?'<p class="tn">Showing the first '+n+'. Add a word to narrow it down.</p>':""):""}
   var rowf=function(r){return'<li><a href="#/timeline/'+r[0].slice(0,4)+'/'+encodeURIComponent(r[2])+'">'+E(r[2])+'</a> <small class="tn">'+E(fmtDate(r[0]))+(r[3]?", "+E(r[3].replace(/\*$/,"")):"")+'</small></li>'};
-  h=grp("Museum items",20,its,function(it){return'<li><a href="#/item/'+E(it.id)+'">'+E(it.name)+'</a> <small class="tn">'+E(it.maker||"")+" "+E(it.year||"")+'</small></li>'})+grp("Timeline hardware and events",25,tlh,rowf)+grp("Games and software",25,tlg,rowf);
+  var pg=typeof findPages==="function"?findPages(q,8):[];h=(pg.length?'<h3 class="sub">Pages and features ('+pg.length+')</h3><ul class="pl-sr">'+pg.map(function(x){return'<li><a href="'+E(x.h)+'">'+E(x.t)+'</a> <small class="tn">'+E(x.d)+'</small></li>'}).join("")+"</ul>":"")+grp("Museum items",20,its,function(it){return'<li><a href="#/item/'+E(it.id)+'">'+E(it.name)+'</a> <small class="tn">'+E(it.maker||"")+" "+E(it.year||"")+'</small></li>'})+grp("Timeline hardware and events",25,tlh,rowf)+grp("Games and software",25,tlg,rowf);
   $("#sr").innerHTML=h||conW('<p class="empty">Nothing found for "'+E(q)+'".</p>')}
  $("#sq").oninput=run;run();if(!q0)$("#sq").focus()}
 function todayPage(){var P=dpool().filter(function(r){return/^(hw|pe)$/.test(r[1])&&typeof CIMG!=="undefined"&&CIMG[r[2]]}),pool=P.length?P:dpool().filter(function(r){return/^(hw|pe)$/.test(r[1])}),r=pool[hstr("today"+today())%pool.length],d=adData({kind:"tl",r:r,t:r[2]}),x=TLXS[r[2]]||{},it=ITEMS.filter(function(i){return i.name===r[2]})[0];

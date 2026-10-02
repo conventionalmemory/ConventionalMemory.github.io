@@ -10,9 +10,11 @@ var AFF_NOTE="Some links on this site are affiliate links. If you buy through on
 function affId(k){var v=String(AFF[k]||"").trim();if(k==="amazon")return/^[a-z0-9][a-z0-9-]{1,38}-\d{2}$/i.test(v)?v:"";if(k==="ebay")return/^\d{8,12}$/.test(v)?v:"";return""}
 function affOn(){return!!(affId("amazon")||affId("ebay"))}
 function affQ(name,maker){var n=String(name||"").replace(/\s*\((Japan|North America|Europe|US|UK|NA|EU|JP|PAL|NTSC)\)\s*$/i,"").replace(/[^\w .&'+-]+/g," ").replace(/\s+/g," ").trim();if(maker){var m=String(maker).split(/[ ,]/)[0];if(m&&n.toLowerCase().indexOf(m.toLowerCase())<0)n=m+" "+n}return n}
-function affUrl(k,q){var id=affId(k);if(!id||!q)return"";var e=encodeURIComponent(q);
- if(k==="amazon")return"https://www.amazon.com/s?k="+e+"&tag="+encodeURIComponent(id);
- return"https://www.ebay.com/sch/i.html?_nkw="+e+"&_sacat=0&mkcid=1&mkrid=711-53200-19255-0&siteid=0&campid="+id+"&customid="+encodeURIComponent(String(AFF.ebayCustom||"cm").replace(/[^\w-]/g,"").slice(0,30))+"&toolid=10001&mkevt=1"}
+/* A search that starts with the BOOKS marker is a book search: it is limited to the Books department (Amazon i=stripbooks, eBay category 267). */
+var BOOKS="\u00a7b\u00a7";
+function affUrl(k,q){var id=affId(k);if(!id||!q)return"";var bk=String(q).indexOf(BOOKS)===0;if(bk)q=String(q).slice(BOOKS.length).trim();if(!q)return"";var e=encodeURIComponent(q);
+ if(k==="amazon")return"https://www.amazon.com/s?k="+e+(bk?"&i=stripbooks":"")+"&tag="+encodeURIComponent(id);
+ return"https://www.ebay.com/sch/i.html?_nkw="+e+"&_sacat="+(bk?"267":"0")+"&mkcid=1&mkrid=711-53200-19255-0&siteid=0&campid="+id+"&customid="+encodeURIComponent(String(AFF.ebayCustom||"cm").replace(/[^\w-]/g,"").slice(0,30))+"&toolid=10001&mkevt=1"}
 /* One link to the preferred store (Amazon first, eBay if that is all that is set). */
 function affLink(label,q,exact){var u=affUrl("amazon",q)||affUrl("ebay",q);if(!u)return"";return'<a href="'+esc(u)+'" target="_blank" rel="sponsored noopener noreferrer">'+esc(label)+'</a>'}
 /* Simple search box, kept for pages that only need "find one". Returns "" when no IDs are set. */

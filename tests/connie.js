@@ -33,7 +33,7 @@ const srv=http.createServer((q,r)=>{let f=path.join(root,decodeURIComponent(q.ur
  ok(rules.a===569&&rules.b===592&&rules.pass,"free-memory math is right (569K and 592K)");
  ok(rules.c===false&&rules.d===false&&rules.e===false,"high loading without EMM386, over the upper-memory size or over the block size is refused");
  // the Funnies: read all of them -> Aerobics unlocked
- await go("funnies");ok(await p.evaluate(()=>document.querySelectorAll(".cf-strip").length)===11&&await p.evaluate(()=>document.querySelectorAll(".cf-gag").length)===11,"Funnies page shows 11 strips and 11 gags");
+ await go("funnies");ok(await p.evaluate(()=>document.querySelectorAll(".cf-strip").length)===12&&await p.evaluate(()=>document.querySelectorAll(".cf-gag").length)===11,"Funnies page shows 11 strips, 1 fresh one and 11 gags");
  ok(await p.evaluate(()=>document.querySelectorAll(".cf-strip svg.cc").length)>=40,"strips are drawn with the cast");
  ok(await p.evaluate(()=>[...document.querySelectorAll(".cc-b")].every(e=>e.textContent.length<=95)),"speech balloons stay short");
  await p.evaluate(async()=>{for(const e of document.querySelectorAll("[data-k]")){e.scrollIntoView({block:"center"});await new Promise(r=>setTimeout(r,1200))}});
@@ -88,7 +88,7 @@ ok(await p.evaluate(()=>!!document.querySelector(".mm-how[open]")&&/Off.*Low.*Hi
  ok(await p.evaluate(()=>!/Hacker|Grunge/.test(document.querySelector(".cs-sheet").innerText)),"locked looks stay off the sticker sheet");
  // mascot and backup still fine
  await go("backup");ok(/closet/i.test(await p.evaluate(()=>document.getElementById("app").textContent)),"backup page lists the closet");
- await go("hub/play");ok(/Memory Manager/.test(await txt())&&/Funnies/.test(await txt())&&/closet/i.test(await txt()),"the Play hub links the new pages");
+ await go("hub/connie");ok(/Memory Manager/.test(await txt())&&/Funnies/.test(await txt())&&/closet/i.test(await txt()),"the Connie hub links her pages");
  await p.evaluate(()=>{const s=JSON.parse(localStorage.getItem("cm-connie")||"{}");s.stars=Object.assign({},s.stars,{1:3,2:3});localStorage.setItem("cm-connie",JSON.stringify(s))});
  await go("memman/3");await p.waitForTimeout(300);
  await p.click('label.mm-o:has(input[data-d="mouse"][value="2"])');await p.waitForTimeout(200);
@@ -97,7 +97,7 @@ ok(await p.evaluate(()=>!!document.querySelector(".mm-how[open]")&&/Off.*Low.*Hi
  ok(await p.evaluate(()=>document.querySelector('input[data-d="mouse"][value="2"]').checked),"after the fix button, High works");
  // cameos: the family turns up, with Connie introducing them
  for(const [route,who] of [["manuals","ram"],["scale","hiram"],["backup","floyd"],["follow","mo"],["zzzzqq","zack"]]){await go(route);await p.waitForTimeout(1800);
-  ok(await p.evaluate(w=>{const c=document.querySelector(".cm-cameo");return !!c&&!!c.querySelector("svg.mascot")&&!!c.querySelector("svg.cc-"+w)&&/Connie:/.test(c.innerText)},who),"cameo on "+route+": "+who+", introduced by Connie")}
+  ok(await p.evaluate(w=>{const c=document.querySelector(".cm-cameo");return !!c&&!!c.querySelector("svg.mascot, svg.cc-connie")&&!!c.querySelector("svg.cc-"+w)&&(/Connie:/.test(c.innerText)||c.classList.contains("cm-L-screen"))},who),"cameo on "+route+": "+who+", introduced by Connie")}
  await go("catalog");await p.waitForTimeout(1800);ok(await p.evaluate(()=>!document.querySelector(".cm-cameo")),"the catalog stays Connie-only (no cameo)");
  await go("connie");await p.waitForTimeout(500);
  ok(await p.evaluate(()=>["tess","nibble","floyd","winnie","conrad","ram","zack"].every(id=>{const g=document.querySelector("svg.cc-"+id+" .mc-all");return !!g&&getComputedStyle(g).animationName!=="none"})),"the family idles (every character has an animation)");

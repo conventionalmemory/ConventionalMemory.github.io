@@ -212,6 +212,49 @@ var CMCast=(function(){
   for(k in sk)c[k]=sk[k];for(k in lk)c[k]=lk[k];if(lk.hair)c.hr=lk.hair;
   c.acc=o.acc!=null?o.acc:cu.acc;c.mood=o.mood||"happy";if(o.look==="explorer"||lk.hat)c.hat=lk.hat;return c}
 
+ /* ---------------------------------------------------------------- props
+    Things a person can be doing or holding: o.holds = "walkman", "laptop", "book" and so on, drawn on top of anyone (family pets too),
+    so the same cameo can be Dad reading, Sandy listening, Hiram typing. Each prop is a list of [x,y,w,h,color] on the 24 by 24 grid,
+    and may switch on a head accessory (acc) such as the big foam headphones. */
+ var PROPS={
+  walkman:{n:"Walkman and headphones",acc:"hp",r:[[19,14,5,7,"#f2b705"],[19,14,5,1,"#ffe27a"],[20,15,3,2,"#1a1a1a"],[20,15,3,1,"#4a4a55"],[20,18,1,1,"#d6322a"],[21,18,1,1,"#2f6fe0"],[22,18,1,1,"#4ad66d"],[19,20,5,1,"#8a6a08"],[22,12,1,2,"#222"]]},
+  laptop:{n:"Laptop",r:[[4,15,16,7,"#b9bac6"],[4,15,16,1,"#e4e5ec"],[4,15,1,7,"#9a9ba8"],[19,15,1,7,"#9a9ba8"],[11,17,2,2,"#ffffff"],[11,17,2,1,"#d6d7e0"],[2,22,20,1,"#8a8b98"],[3,23,18,1,"#6e6f7c"]]},
+  book:{n:"A book",r:[[5,14,14,8,"#c0143c"],[5,14,1,8,"#7a0a24"],[7,16,10,1,"#ffd54a"],[7,18,6,1,"#ffd54a99"],[5,22,14,1,"#fffbe6"],[4,17,2,3,SKIN],[18,17,2,3,SKIN]]},
+  magnifier:{n:"Magnifying glass",r:[[18,3,6,1,"#6b4a2b"],[18,8,6,1,"#6b4a2b"],[18,3,1,6,"#6b4a2b"],[23,3,1,6,"#6b4a2b"],[19,4,4,4,"#bfe8ff"],[19,4,2,1,"#ffffff"],[22,9,1,6,"#7a4a1e"]]},
+  iron:{n:"Soldering iron",r:[[20,13,4,2,"#2a2a33"],[20,13,4,1,"#c0143c"],[23,8,1,5,"#9a9aa8"],[23,7,1,1,"#ff7a00"],[22,5,1,1,"#ffffff99"],[23,3,1,1,"#ffffff66"],[22,1,1,1,"#ffffff44"]]},
+  controller:{n:"Game controller",r:[[5,19,14,4,"#3a3a46"],[5,19,14,1,"#6a6a7a"],[7,21,3,1,"#c9c9d2"],[8,20,1,3,"#c9c9d2"],[15,20,1,1,"#d6322a"],[17,21,1,1,"#ffd54a"],[11,21,2,1,"#999"],[4,20,1,2,SKIN],[19,20,1,2,SKIN]]},
+  stick:{n:"Arcade stick",r:[[6,19,12,4,"#222"],[6,19,12,1,"#4a4a55"],[11,15,2,4,"#c9c9d2"],[10,12,4,3,"#d6322a"],[10,12,2,1,"#ff9a8a"],[15,20,1,1,"#ffd54a"],[16,21,1,1,"#4ad66d"]]},
+  camera:{n:"Camera",r:[[5,14,14,7,"#2a2a33"],[5,14,14,1,"#55556a"],[7,12,4,2,"#2a2a33"],[10,15,5,5,"#555"],[11,16,3,3,"#9fd8ff"],[11,16,1,1,"#fff"],[16,15,2,1,"#fff6b0"],[6,16,2,1,"#d6322a"]]},
+  clipboard:{n:"Clipboard",r:[[14,12,8,10,"#7a4a1e"],[15,14,6,7,"#ffffff"],[16,12,4,2,"#c9c9d2"],[16,15,4,1,"#9aa"],[16,17,3,1,"#9aa"],[16,19,4,1,"#9aa"],[15,14,1,1,"#2f6fe0"]]},
+  floppy:{n:"A big floppy",r:[[14,10,9,10,"#2a3f9e"],[16,10,5,3,"#c9c9d2"],[18,10,1,2,"#2a3f9e"],[15,15,7,5,"#ffffff"],[16,16,5,1,"#c0143c"],[16,18,3,1,"#9aa"]]},
+  pizza:{n:"A slice of pizza",r:[[17,11,6,2,"#e8a33a"],[18,13,4,2,"#ffd54a"],[19,15,2,2,"#ffd54a"],[20,17,1,1,"#ffd54a"],[19,12,1,1,"#c0143c"],[21,14,1,1,"#c0143c"],[20,16,1,1,"#c0143c"]]},
+  phone:{n:"Phone handset",r:[[18,6,5,2,"#222"],[18,6,5,1,"#555"],[21,8,2,7,"#222"],[18,13,5,2,"#222"],[22,15,1,6,"#444"]]},
+  pencil:{n:"A pencil",r:[[21,6,1,1,"#ff8a9a"],[21,7,1,7,"#ffd54a"],[21,14,1,1,"#e8c8a0"],[21,15,1,1,"#222"],[20,10,1,3,"#ffd54a"]]},
+  flag:{n:"A little flag",r:[[21,2,1,15,"#7a4a1e"],[22,2,2,4,"#d6322a"],[22,6,1,1,"#d6322a"],[22,3,1,1,"#fff"]]},
+  tape:{n:"A cassette",r:[[17,12,7,5,"#2a2a33"],[18,13,5,2,"#c9c9d2"],[19,14,1,1,"#222"],[21,14,1,1,"#222"],[17,16,7,1,"#555"]]},
+  mouse:{n:"A computer mouse",r:[[18,15,5,6,"#e8e8ee"],[18,15,5,1,"#ffffff"],[20,15,1,3,"#9a9aa6"],[20,13,1,2,"#9a9aa6"],[20,12,1,1,"#9a9aa6"]]}};
+ var PROP_ORDER=["walkman","laptop","book","magnifier","iron","controller","stick","camera","clipboard","floppy","pizza","phone","pencil","flag","tape","mouse"];
+ function addProp(G,o,cfg){var p=o&&PROPS[o.holds];if(!p||!G)return G;var i,q;G.accF=G.accF||[];for(i=0;i<p.r.length;i++){q=p.r[i];G.accF.push([q[0],q[1],q[2],q[3],q[4]])}return G}
+
+
+ /* One cameo, in one of six layouts, so the family does not turn up the same way everywhere.
+    c = [family id, family options, Connie's line, extras], where the extras are {lay, flip, mood, cp (Connie's own options), cap (a caption saying what they are doing)}.
+    draw(id, options, size, class) makes the picture (an inline drawing in the app, a shared image file on the web pages). */
+ var LAYOUTS=["box","bubble","peek","sign","screen","note"];
+ function cameoHtml(c,line,draw,href,extra){var x=c[3]||{},lay=LAYOUTS.indexOf(x.lay)>=0?x.lay:"box",fo={tall:1},co={tall:1,mood:x.mood||"wink"},k;
+  for(k in c[1])fo[k]=c[1][k];if(x.flip)fo.flip=1;if(x.cp)for(k in x.cp)co[k]=x.cp[k];
+  var big=lay==="bubble"||lay==="sign"||lay==="note",cs=draw("connie",co,lay==="peek"?64:big?64:72,"cm-cs"),cg=draw(c[0],fo,lay==="peek"?64:big?96:64,"cm-cg"),
+   q=function(t){return String(t==null?"":t).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})},
+   cap=x.cap?'<small class="cm-cap">'+q(x.cap)+'</small>':"",
+   t='<p><b>Connie:</b> \u201c'+q(line)+'\u201d</p>'+cap,btn='<a class="btn" href="'+(href||"#/connie")+'">Meet the family</a>',body;
+  if(lay==="bubble")body=cg+'<div class="cm-ct cm-bub">'+t+btn+'</div>'+cs;
+  else if(lay==="peek")body='<div class="cm-ct">'+t+btn+'</div><div class="cm-pk">'+cs+cg+'</div>';
+  else if(lay==="sign")body=cg+'<div class="cm-ct cm-signb">'+t+'</div><div class="cm-sgc">'+cs+btn+'</div>';
+  else if(lay==="screen")body=cs+'<div class="cm-ct cm-scr">'+t.replace("<b>Connie:</b>","<b>C:\\&gt;</b>")+btn+'</div>'+cg;
+  else if(lay==="note")body='<div class="cm-ct cm-note">'+t+btn+'</div><div class="cm-nc">'+cg+cs+'</div>';
+  else body=cs+cg+'<div class="cm-ct">'+t+btn+'</div>';
+  return'<aside class="cm-cameo cm-L-'+lay+(extra?" "+extra:"")+' noprint" aria-label="A cameo from Connie\u2019s family">'+body+'</aside>'}
+
  /* ---------------------------------------------------------------- the family */
  var CAST={
   connie:{n:"Connie Ventional",b:null},
@@ -317,89 +360,93 @@ var CMCast=(function(){
  function famSet(id,patch){var s=conState();s.fam=s.fam||{};var f=s.fam[id]=s.fam[id]||{};for(var k in patch)f[k]=patch[k];try{localStorage.setItem("cm-connie",JSON.stringify(s))}catch(e){}}
  function famOpts(id){if(!OUTFIT_FOR[id])return{};var f=famGet(id);return{outfit:f.o,color:f.c,acc:f.a||undefined,fam:1}}
  function castSvg(id,o){o=o||{};
-  if(id==="connie")return inner(folk(connieCfg(o)));
-  if(id==="floyd")return inner(floyd(o.mood));if(id==="winnie")return inner(winnie(o.mood));if(id==="tess")return inner(tess(o.mood));if(id==="nibble")return inner(nibble());if(id==="mat")return inner(mat(o.mood));if(id==="toner")return inner(toner(o.mood));
+  var hp=PROPS[o.holds];
+  if(id==="connie"){var cc=connieCfg(o);if(hp&&hp.acc&&(o.acc==null))cc.acc=hp.acc;return inner(addProp(folk(cc),o))}
+  if(id==="floyd")return inner(addProp(floyd(o.mood),o));if(id==="winnie")return inner(addProp(winnie(o.mood),o));if(id==="tess")return inner(addProp(tess(o.mood),o));if(id==="nibble")return inner(addProp(nibble(),o));if(id==="mat")return inner(addProp(mat(o.mood),o));if(id==="toner")return inner(addProp(toner(o.mood),o));
   var s=CAST[id];if(!s||!s.cfg)return"";var c={},k;for(k in s.cfg)c[k]=s.cfg[k];c.mood=o.mood||"happy";
   if(OUTFIT_FOR[id]||o.outfit){var ou=OUTFITS[o.outfit];if(ou){for(k in ou.cfg)c[k]=ou.cfg[k]}
    if(o.color&&COLORS[o.color]){c.b=COLORS[o.color].b;c.d=COLORS[o.color].d}
-   var ac=o.acc!=null?o.acc:(ou&&ou.acc)||"none";if(ACCS[ac]&&!((c.hat||c.beanie||c.hairStyle==="cap")&&HEAD_ACC[ac]))c.acc=ac}if(c.skirt==null&&!c.shorts&&!c.sk)c.sk="#555";return inner(folk(c))}
+   var ac=o.acc!=null?o.acc:(ou&&ou.acc)||"none";if(ACCS[ac]&&!((c.hat||c.beanie||c.hairStyle==="cap")&&HEAD_ACC[ac]))c.acc=ac}
+  else if(o.acc!=null&&ACCS[o.acc]&&!((c.hat||c.beanie||c.hairStyle==="cap")&&HEAD_ACC[o.acc]))c.acc=o.acc;
+  if(hp&&hp.acc&&o.acc==null&&!c.acc&&!(c.hat||c.beanie||c.hairStyle==="cap"))c.acc=hp.acc;
+  if(c.skirt==null&&!c.shorts&&!c.sk)c.sk="#555";return inner(addProp(folk(c),o))}
  /* a whole standalone <svg> for comics, cards and stickers */
- function svgOf(id,size,o){o=o||{};var h=size*(o.tall?1.3:1);var dl=0,q;for(q=0;q<id.length;q++)dl+=id.charCodeAt(q);return'<svg class="cc cc-'+id+(o.cls?" "+o.cls:"")+'" style="--cd:-'+((dl%30)/10)+'s" viewBox="0 '+(o.tall?"-6":"0")+' 24 '+(o.tall?"31":"24")+'" width="'+size+'" height="'+h+'" shape-rendering="crispEdges" role="img" aria-label="'+(o.label||(CAST[id]?CAST[id].n:id))+'" xmlns="http://www.w3.org/2000/svg">'+castSvg(id,o)+"</svg>"}
+ function svgOf(id,size,o){o=o||{};var h=size*(o.tall?1.3:1);var dl=0,q;for(q=0;q<id.length;q++)dl+=id.charCodeAt(q);return'<svg class="cc cc-'+id+(o.cls?" "+o.cls:"")+'" style="--cd:-'+((dl%30)/10)+'s" viewBox="0 '+(o.tall?"-6":"0")+' 24 '+(o.tall?"31":"24")+'" width="'+size+'" height="'+h+'" shape-rendering="crispEdges" role="img" aria-label="'+(o.label||(CAST[id]?CAST[id].n:id))+'" xmlns="http://www.w3.org/2000/svg">'+(o.flip?'<g transform="translate(24 0) scale(-1 1)">'+castSvg(id,o)+'</g>':castSvg(id,o))+"</svg>"}
 
 
  /* Cameos: where the family turns up around the site, each for a reason that fits who they are. Connie always introduces them. [who, outfit options, what Connie says] */
  var CAMEO={
-  manuals:["ram",{},"That is my dad, Raymond. He reads the manual first. Always. He is reading this one right now."],
-  workbench:["ram",{outfit:"garage"},"My dad, Raymond, in his garage clothes. It is technically his workbench. He lent it to the museum and counts the screwdrivers."],
-  journal:["ram",{outfit:"desk"},"Raymond again. He keeps a repair journal too. It is mostly what he paid for each screw."],
-  runs:["conrad",{outfit:"lab"},"My Uncle Conrad. He has tuned his CONFIG.SYS since 1983 and has never called it finished. Ask him about jumpers. Only jumpers."],
-  advisor:["conrad",{outfit:"desk"},"Uncle Conrad, our unofficial compatibility department. Mug in hand, he will tell you what fits. With a sigh, he will tell you what does not."],
-  compare:["emma",{},"My sister Emma 386. She can borrow more room than I can, and she compares everything. Including me. I lose."],
-  scale:["hiram",{},"My little brother Hiram lives above the 640K line, which is why this scale stops here. He says the view is great. He will not come down to prove it."],
-  backup:["floyd",{},"Grandpa Floyd Dysk backs up everything to disk. Disk 7 of 14 is around here somewhere. It is always disk 7."],
-  install:["winnie",{},"Grandma Winnie Chester lives on the hard drive. She says installing a program is just a guest moving in. She checks references."],
-  daily:["augusta",{},"My Aunt Augusta, known as Auntie Autoexec. She runs the same list every morning whether anyone asked or not. Nobody has ever asked."],
-  today:["augusta",{},"Auntie Autoexec starts the day at boot, loudly, in the same order. Ask her to change it. Go on."],
-  kiosk:["tess",{},"This is Tessie, our TSR. She stays resident. We tried to evict her in 1983 and now she runs the demo."],
-  jukebox:["sandy",{},"Sandy Blaster does the sound for the family. She would like you to turn it up. That is all she ever says."],
-  labels:["dot",{},"My best friend Dot Matrix prints the labels. Slowly, loudly and with great affection."],
-  adlab:["viv",{},"Viv G. Adapter does our graphics. She says 256 colors is plenty and 16 is a lifestyle."],
-  follow:["mo",{},"This is Mo Dem. She will connect you at 2400 baud. Please do not pick up the phone."],
-  trophies:["nibble",{},"Nibble, our hamster, runs the wheel in the hallway. That is where the tickets come from. (It is not, but he believes it.)"],
-  prizes:["nibble",{},"Nibble keeps the tickets safe. He says. We counted. Please count again."],
-  gate:["rhoda",{},"My mom, Rhoda, on the door. She is read-only. You can look, but you cannot edit."],
-  search:["mat",{},"This is Mat, our pet mouse. He clicks on everything, which is how this page got so many results."],
-  report:["toner",{},"Toner, our puppy, signs every printout with a pawprint. That smudge is not a bug. It is a signature."],
-  nf:["zack",{},"That was Zack. Nobody invited him, and he turns up on every page that does not exist."],
-  about:["winnie",{},"My Grandma Winnie is the family historian. She has 40 megabytes of stories and says she will never run out. Please do not test her."],
-  timeline:["floyd",{},"Grandpa Floyd Dysk remembers all of this, mostly the disk swapping. Ask him about disk 7 of 14. Actually, do not."],
-  wanted:["mo",{},"Mo Dem has been waiting for a better connection since 1979. She keeps a wanted list too."],
-  stats:["emma",{},"Emma 386 counted all of this twice. She would like to explain her method. Please say no."],
-  changes:["augusta",{},"Auntie Autoexec reads the change log every morning, out loud, from the top. She always starts at the top."],
-  quotes:["rhoda",{},"My mom, Rhoda, has a quote for every occasion. They are read-only, so you cannot argue with her."],
-  check:["conrad",{outfit:"lab"},"Uncle Conrad checks everything twice, and then checks the check. If he says nothing, it is worse."],
-  mem:["hiram",{},"My brother Hiram lives up in the High Memory Area. He says the rent is nothing and the view is great."],
-  random:["mat",{},"Mat the Mouse picked this one. He clicks at random. It is how he gets anywhere."],
-  play:["zack",{},"Zack Zip is the neighbor kid. Nobody invited him, and he has already started without you. He is winning."],
-  build:["viv",{},"Viv G. Adapter says the video card matters most. Sandy says the sound card. They have been at it since 1989."],
-  higher:["dot",{},"Dot Matrix says higher. She also says lower. She prints both, loudly, in triplicate."],
-  sort:["augusta",{},"Auntie Autoexec would like these in order. Any order will do. Just in order."],
-  mystery:["tess",{},"Tessie R. Resident has been in the hallway since 1983, and she has no idea what that photo is either."],
-  bingo:["nibble",{},"Nibble keeps the bingo balls in his cheeks. Please do not ask which ones."],
-  hangman:["floyd",{},"Grandpa Floyd Dysk plays hangman against himself and always loses. He says that is how he knows the game is fair."],
-  more:["conrad",{outfit:"desk"},"Uncle Conrad keeps the site map in CONFIG.SYS order, which is almost alphabetical."],
-  hub:["ram",{},"Dad, Raymond, says to read the signs first. They are on the doors. Read them."],
-  hunt:["zack",{},"Zack Zip turns up at every swap meet, folded small, holding something he found for a dollar. Do not ask what."],
-  rigs:["sandy",{},"Sandy Blaster says the sound card is the most important part. She says so loudly, on IRQ 5, to anyone who will listen."],
-  bench:["conrad",{},"Uncle Conrad runs the benchmarks. He says they are not a competition. He is winning."],
-  walk:["emma",{},"Emma 386 will walk you through the year and explain every page frame on the way. Please walk faster."],
-  wish:["nibble",{},"Nibble has a wish list too. It is seeds. It has always been seeds."],
-  maker:["rhoda",{},"Mom, Rhoda, says every maker started somewhere. Usually a garage. Dad agrees. He has a garage."],
-  scan:["dot",{},"Dot Matrix reads every label, slowly and out loud, and prints a copy for the family."],
-  t:["hiram",{},"Hiram tags everything in the loft. Nobody has ever seen the loft."],
-  tag:["hiram",{},"Hiram tags everything in the loft. Nobody has ever seen the loft."],
-  start:["rhoda",{},"Mom, Rhoda, says to start at the beginning. She wrote the beginning. It is read-only."],
-  tours:["floyd",{},"Grandpa Floyd Dysk takes every tour at floppy drive speed. We will wait."],
-  tour:["floyd",{},"Grandpa Floyd Dysk takes every tour at floppy drive speed. We will wait."],
-  explore:["zack",{},"Zack Zip says he has already explored this. He has not. He folds up when asked."],
-  era:["winnie",{},"Grandma Winnie remembers every era. She says the best one is whichever has more room. Currently hers."],
-  zoom:["hiram",{},"Hiram says the best view is from the loft. He is not coming down to zoom in."],
-  day:["augusta",{},"Auntie Autoexec knows exactly what happened on this day, in order. She wrote it down at boot."],
-  mine:["ram",{outfit:"garage"},"Dad, Raymond, says your collection is yours. Do not let anyone make you sort it. He has not sorted his since 1981."],
-  community:["mo",{},"Mo Dem runs the community board. She will connect you at 2400 baud. Please be kind to the phone line."],
-  theater:["viv",{},"Viv G. Adapter handles the picture. She says 256 colors is plenty and the plot is optional."],
-  shorts:["toner",{},"Toner, our puppy, watches every short with his ears up. He thinks he is in them. He is not."],
-  styleguide:["viv",{},"Viv G. Adapter keeps the style guide. She says 16 colors is a lifestyle."],
-  disclosure:["ram",{outfit:"desk"},"Dad, Raymond, read the fine print. All of it, twice. His ruling: a link, a small commission, no cost to you."],
+  manuals:["ram",{holds:"book"},"That is my dad, Raymond. He reads the manual first. Always. He is reading this one right now.",{lay:"bubble",cap:"Reading page 1 of 412. Again."}],
+  workbench:["ram",{outfit:"garage",holds:"iron"},"My dad, Raymond, in his garage clothes. It is technically his workbench. He lent it to the museum and counts the screwdrivers.",{lay:"sign",cap:"Soldering. Please do not touch."}],
+  journal:["ram",{outfit:"desk",holds:"pencil"},"Raymond again. He keeps a repair journal too. It is mostly what he paid for each screw.",{lay:"note",cap:"Logging every screw he ever bought."}],
+  runs:["conrad",{outfit:"lab",holds:"clipboard"},"My Uncle Conrad. He has tuned his CONFIG.SYS since 1983 and has never called it finished. Ask him about jumpers. Only jumpers.",{lay:"screen",cap:"Testing jumper settings."}],
+  advisor:["conrad",{outfit:"desk"},"Uncle Conrad, our unofficial compatibility department. Mug in hand, he will tell you what fits. With a sigh, he will tell you what does not.",{lay:"peek",cap:"Mug in hand, advice incoming."}],
+  compare:["emma",{holds:"magnifier"},"My sister Emma 386. She can borrow more room than I can, and she compares everything. Including me. I lose.",{lay:"bubble",flip:1,cap:"Comparing. Mostly Connie."}],
+  scale:["hiram",{},"My little brother Hiram lives above the 640K line, which is why this scale stops here. He says the view is great. He will not come down to prove it.",{lay:"peek",cap:"Calling from the loft."}],
+  backup:["floyd",{holds:"floppy"},"Grandpa Floyd Dysk backs up everything to disk. Disk 7 of 14 is around here somewhere. It is always disk 7.",{lay:"sign",cap:"Holding disk 7. Or is it 8?"}],
+  install:["winnie",{holds:"laptop"},"Grandma Winnie Chester lives on the hard drive. She says installing a program is just a guest moving in. She checks references.",{lay:"screen",cap:"Checking the installer's references."}],
+  daily:["augusta",{holds:"pencil"},"My Aunt Augusta, known as Auntie Autoexec. She runs the same list every morning whether anyone asked or not. Nobody has ever asked.",{lay:"note",cap:"Same list, same order, every morning."}],
+  today:["augusta",{holds:"clipboard"},"Auntie Autoexec starts the day at boot, loudly, in the same order. Ask her to change it. Go on.",{lay:"box",cap:"Reading out the boot list."}],
+  kiosk:["tess",{},"This is Tessie, our TSR. She stays resident. We tried to evict her in 1983 and now she runs the demo.",{lay:"screen",cap:"Staying resident."}],
+  jukebox:["sandy",{holds:"walkman"},"Sandy Blaster does the sound for the family. She would like you to turn it up. That is all she ever says.",{lay:"bubble",cap:"Listening on IRQ 5, at full volume."}],
+  labels:["dot",{holds:"clipboard"},"My best friend Dot Matrix prints the labels. Slowly, loudly and with great affection.",{lay:"note",cap:"Printing the labels, loudly."}],
+  adlab:["viv",{holds:"camera"},"Viv G. Adapter does our graphics. She says 256 colors is plenty and 16 is a lifestyle.",{lay:"bubble",flip:1,cap:"Framing the shot in 256 colors."}],
+  follow:["mo",{holds:"phone"},"This is Mo Dem. She will connect you at 2400 baud. Please do not pick up the phone.",{lay:"screen",cap:"On the line at 2400 baud."}],
+  trophies:["nibble",{holds:"flag"},"Nibble, our hamster, runs the wheel in the hallway. That is where the tickets come from. (It is not, but he believes it.)",{lay:"peek",cap:"Guarding the wheel."}],
+  prizes:["nibble",{holds:"pizza"},"Nibble keeps the tickets safe. He says. We counted. Please count again.",{lay:"box",cap:"Counting tickets. Also snacking."}],
+  gate:["rhoda",{holds:"clipboard"},"My mom, Rhoda, on the door. She is read-only. You can look, but you cannot edit.",{lay:"sign",cap:"On the door. Read-only."}],
+  search:["mat",{holds:"magnifier"},"This is Mat, our pet mouse. He clicks on everything, which is how this page got so many results.",{lay:"bubble",flip:1,cap:"Clicking on everything, searching for himself."}],
+  report:["toner",{holds:"pencil"},"Toner, our puppy, signs every printout with a pawprint. That smudge is not a bug. It is a signature.",{lay:"note",cap:"Signing the printout."}],
+  nf:["zack",{holds:"magnifier"},"That was Zack. Nobody invited him, and he turns up on every page that does not exist.",{lay:"bubble",cap:"Looking for the page. Not finding it."}],
+  about:["winnie",{holds:"book"},"My Grandma Winnie is the family historian. She has 40 megabytes of stories and says she will never run out. Please do not test her.",{lay:"box",cap:"Reading from the family archives."}],
+  timeline:["floyd",{holds:"floppy"},"Grandpa Floyd Dysk remembers all of this, mostly the disk swapping. Ask him about disk 7 of 14. Actually, do not.",{lay:"peek",cap:"Swapping disks, slowly."}],
+  wanted:["mo",{holds:"flag"},"Mo Dem has been waiting for a better connection since 1979. She keeps a wanted list too.",{lay:"sign",cap:"Wanted, any condition, any baud."}],
+  stats:["emma",{holds:"clipboard"},"Emma 386 counted all of this twice. She would like to explain her method. Please say no.",{lay:"screen",cap:"Counting twice."}],
+  changes:["augusta",{holds:"clipboard"},"Auntie Autoexec reads the change log every morning, out loud, from the top. She always starts at the top.",{lay:"note",cap:"Reading the log, from the top."}],
+  quotes:["rhoda",{holds:"book"},"My mom, Rhoda, has a quote for every occasion. They are read-only, so you cannot argue with her.",{lay:"bubble",flip:1,cap:"Has a quote for this."}],
+  check:["conrad",{outfit:"lab",holds:"magnifier"},"Uncle Conrad checks everything twice, and then checks the check. If he says nothing, it is worse.",{lay:"box",cap:"Checking the check."}],
+  mem:["hiram",{holds:"laptop"},"My brother Hiram lives up in the High Memory Area. He says the rent is nothing and the view is great.",{lay:"peek",cap:"Online from the High Memory Area."}],
+  random:["mat",{holds:"controller"},"Mat the Mouse picked this one. He clicks at random. It is how he gets anywhere.",{lay:"bubble",cap:"Mouse clicks, console hands."}],
+  play:["zack",{holds:"controller",acc:"shades"},"Zack Zip is the neighbor kid. Nobody invited him, and he has already started without you. He is winning.",{lay:"bubble",flip:1,cap:"Already winning, nobody invited."}],
+  build:["viv",{holds:"controller"},"Viv G. Adapter says the video card matters most. Sandy says the sound card. They have been at it since 1989.",{lay:"note",cap:"Wiring up the winning rig."}],
+  higher:["dot",{holds:"pencil"},"Dot Matrix says higher. She also says lower. She prints both, loudly, in triplicate.",{lay:"sign",cap:"Printing higher. And lower."}],
+  sort:["augusta",{holds:"clipboard"},"Auntie Autoexec would like these in order. Any order will do. Just in order.",{lay:"box",cap:"Putting things in order, any order."}],
+  mystery:["tess",{holds:"magnifier"},"Tessie R. Resident has been in the hallway since 1983, and she has no idea what that photo is either.",{lay:"bubble",cap:"Who is in that photo?"}],
+  bingo:["nibble",{holds:"pencil"},"Nibble keeps the bingo balls in his cheeks. Please do not ask which ones.",{lay:"note",cap:"Dabbing the card."}],
+  hangman:["floyd",{holds:"pencil"},"Grandpa Floyd Dysk plays hangman against himself and always loses. He says that is how he knows the game is fair.",{lay:"box",cap:"Playing against himself."}],
+  more:["conrad",{outfit:"desk",holds:"clipboard"},"Uncle Conrad keeps the site map in CONFIG.SYS order, which is almost alphabetical.",{lay:"screen",cap:"Keeping the list in CONFIG.SYS order."}],
+  hub:["ram",{holds:"flag"},"Dad, Raymond, says to read the signs first. They are on the doors. Read them.",{lay:"sign",cap:"Read the signs first."}],
+  hunt:["zack",{holds:"magnifier",acc:"shades"},"Zack Zip turns up at every swap meet, folded small, holding something he found for a dollar. Do not ask what.",{lay:"peek",cap:"Hunting for a dollar bargain."}],
+  rigs:["sandy",{holds:"tape"},"Sandy Blaster says the sound card is the most important part. She says so loudly, on IRQ 5, to anyone who will listen.",{lay:"peek",cap:"Selecting the sound card."}],
+  bench:["conrad",{holds:"clipboard",acc:"shades"},"Uncle Conrad runs the benchmarks. He says they are not a competition. He is winning.",{lay:"bubble",cap:"Timing it. Not a competition."}],
+  walk:["emma",{holds:"flag"},"Emma 386 will walk you through the year and explain every page frame on the way. Please walk faster.",{lay:"sign",cap:"Follow the flag, one page frame at a time."}],
+  wish:["nibble",{holds:"pencil"},"Nibble has a wish list too. It is seeds. It has always been seeds.",{lay:"note",cap:"Writing the list. Seeds."}],
+  maker:["rhoda",{holds:"iron"},"Mom, Rhoda, says every maker started somewhere. Usually a garage. Dad agrees. He has a garage.",{lay:"bubble",cap:"Mom, soldering. It runs in the family."}],
+  scan:["dot",{holds:"camera"},"Dot Matrix reads every label, slowly and out loud, and prints a copy for the family.",{lay:"screen",cap:"Scanning every label."}],
+  t:["hiram",{holds:"clipboard"},"Hiram tags everything in the loft. Nobody has ever seen the loft.",{lay:"peek",cap:"Tagging from the loft."}],
+  tag:["hiram",{holds:"clipboard"},"Hiram tags everything in the loft. Nobody has ever seen the loft.",{lay:"peek",cap:"Tagging from the loft."}],
+  start:["rhoda",{holds:"flag"},"Mom, Rhoda, says to start at the beginning. She wrote the beginning. It is read-only.",{lay:"sign",cap:"Start here."}],
+  tours:["floyd",{holds:"flag"},"Grandpa Floyd Dysk takes every tour at floppy drive speed. We will wait.",{lay:"bubble",flip:1,cap:"Leading the tour at floppy speed."}],
+  tour:["floyd",{holds:"flag"},"Grandpa Floyd Dysk takes every tour at floppy drive speed. We will wait.",{lay:"bubble",flip:1,cap:"Leading the tour at floppy speed."}],
+  explore:["zack",{holds:"camera"},"Zack Zip says he has already explored this. He has not. He folds up when asked.",{lay:"box",cap:"Documenting what he already knows."}],
+  era:["winnie",{holds:"book"},"Grandma Winnie remembers every era. She says the best one is whichever has more room. Currently hers.",{lay:"bubble",flip:1,cap:"Remembering every era."}],
+  zoom:["hiram",{holds:"magnifier"},"Hiram says the best view is from the loft. He is not coming down to zoom in.",{lay:"bubble",cap:"Zooming from the loft."}],
+  day:["augusta",{holds:"pencil"},"Auntie Autoexec knows exactly what happened on this day, in order. She wrote it down at boot.",{lay:"note",cap:"Written down at boot."}],
+  mine:["ram",{outfit:"garage",holds:"clipboard"},"Dad, Raymond, says your collection is yours. Do not let anyone make you sort it. He has not sorted his since 1981.",{lay:"box",cap:"Your collection. Not sorted. His neither."}],
+  community:["mo",{holds:"phone"},"Mo Dem runs the community board. She will connect you at 2400 baud. Please be kind to the phone line.",{lay:"bubble",flip:1,cap:"Answering the board."}],
+  theater:["viv",{holds:"pizza"},"Viv G. Adapter handles the picture. She says 256 colors is plenty and the plot is optional.",{lay:"bubble",cap:"Snacks and 256 colors."}],
+  shorts:["toner",{},"Toner, our puppy, watches every short with his ears up. He thinks he is in them. He is not.",{lay:"peek",cap:"Ears up for every short."}],
+  styleguide:["viv",{holds:"pencil"},"Viv G. Adapter keeps the style guide. She says 16 colors is a lifestyle.",{lay:"note",cap:"Sixteen colors. A lifestyle."}],
+  disclosure:["ram",{outfit:"desk",holds:"magnifier"},"Dad, Raymond, read the fine print. All of it, twice. His ruling: a link, a small commission, no cost to you.",{lay:"bubble",flip:1,cap:"Reading the fine print. Twice."}],
   item:{pool:[
-   ["ram",{outfit:"garage"},"Dad, Raymond, would like to see the receipt for this one. And the manual. And the box."],
-   ["conrad",{outfit:"lab"},"Uncle Conrad wants to know the jumper settings. He always wants to know the jumper settings."],
-   ["winnie",{},"Grandma Winnie says this would fit on her hard drive with room to spare. She says that about everything."],
-   ["emma",{},"Emma 386 has read the specs twice and would like to tell you about the page frames. Please say no."],
-   ["sandy",{},"Sandy Blaster wants to know if it has a sound card. If it does, she is already on IRQ 5."],
-   ["dot",{},"Dot Matrix will print the spec sheet, slowly and loudly, in triplicate."],
-   ["mat",{},"Mat the Mouse has already clicked on every part of this page. He takes no responsibility."],
-   ["floyd",{},"Grandpa Floyd Dysk says it came on 14 disks. He does not remember where disk 7 went."]]}};
+   ["ram",{outfit:"garage",holds:"book"},"Dad, Raymond, would like to see the receipt for this one. And the manual. And the box.",{lay:"bubble",cap:"Checking the manual, for the typos."}],
+   ["conrad",{outfit:"lab",holds:"iron"},"Uncle Conrad wants to know the jumper settings. He always wants to know the jumper settings.",{lay:"screen",cap:"Reflowing a jumper, just in case."}],
+   ["winnie",{holds:"laptop"},"Grandma Winnie says this would fit on her hard drive with room to spare. She says that about everything.",{lay:"peek",cap:"Checking the free space."}],
+   ["emma",{holds:"magnifier"},"Emma 386 has read the specs twice and would like to tell you about the page frames. Please say no.",{lay:"note",cap:"Reading the small print on the spec sheet."}],
+   ["sandy",{holds:"walkman"},"Sandy Blaster wants to know if it has a sound card. If it does, she is already on IRQ 5.",{lay:"box",cap:"Listening for the sound card."}],
+   ["dot",{holds:"clipboard"},"Dot Matrix will print the spec sheet, slowly and loudly, in triplicate.",{lay:"sign",cap:"Printing the spec sheet."}],
+   ["mat",{holds:"mouse"},"Mat the Mouse has already clicked on every part of this page. He takes no responsibility.",{lay:"bubble",flip:1,cap:"Clicking everything."}],
+   ["floyd",{holds:"floppy"},"Grandpa Floyd Dysk says it came on 14 disks. He does not remember where disk 7 went.",{lay:"peek",cap:"Looking for disk 7."}]]}};
  var FAMILY=[
   {id:"connie",n:"Connie Ventional",born:1981,role:"Our heroine",bio:"A memory module with a bow, born the same day as the IBM PC. She lives in the first 640K and shares what she has."},
   {id:"emma",n:"Emma 386 Ventional",born:1985,role:"Little sister",bio:"Born the year of the 386, so she can borrow more room than anyone in the house. Will explain page frames if you let her. Do not let her."},
@@ -456,5 +503,5 @@ var CMCast=(function(){
  function play(el,names,ms){if(!el||!names)return;stopAnim(el);var c=(el.getAttribute("class")||"").split(/\s+/).filter(Boolean),once=0;
   names.split(" ").forEach(function(n){c.push("an-"+n);var a=ANIMS.filter(function(x){return x.k===n})[0];if(a&&a.once)once=Math.max(once,a.once)});
   el.setAttribute("class",c.join(" "));ms=ms||once;if(ms)el._ant=setTimeout(function(){stopAnim(el)},ms)}
- return{CAMEO:CAMEO,OUTFITS:OUTFITS,OUTFIT_ORDER:OUTFIT_ORDER,OUTFIT_FOR:OUTFIT_FOR,famGet:famGet,famSet:famSet,famOpts:famOpts,COLORS:COLORS,LOOKS:LOOKS,LOOK_ORDER:LOOK_ORDER,ACCS:ACCS,ACC_ORDER:ACC_ORDER,COLOR_PRIZE:COLOR_PRIZE,COLOR_ORDER:COLOR_ORDER,FUN_TOTAL:FUN_TOTAL,LEVELS:LEVELS,CAST:CAST,CAST_ORDER:CAST_ORDER,FAMILY:FAMILY,
+ return{cameoHtml:cameoHtml,LAYOUTS:LAYOUTS,PROPS:PROPS,PROP_ORDER:PROP_ORDER,CAMEO:CAMEO,OUTFITS:OUTFITS,OUTFIT_ORDER:OUTFIT_ORDER,OUTFIT_FOR:OUTFIT_FOR,famGet:famGet,famSet:famSet,famOpts:famOpts,COLORS:COLORS,LOOKS:LOOKS,LOOK_ORDER:LOOK_ORDER,ACCS:ACCS,ACC_ORDER:ACC_ORDER,COLOR_PRIZE:COLOR_PRIZE,COLOR_ORDER:COLOR_ORDER,FUN_TOTAL:FUN_TOTAL,LEVELS:LEVELS,CAST:CAST,CAST_ORDER:CAST_ORDER,FAMILY:FAMILY,
   card:card,ANIMS:ANIMS,play:play,stopAnim:stopAnim,folk:folk,inner:inner,rects:rects,connieCfg:connieCfg,castSvg:castSvg,svg:svgOf,cur:cur,save:save,unlocked:unlocked,state:conState,stars:stars,cleared:cleared,readCount:readCount,GL:GL}})();

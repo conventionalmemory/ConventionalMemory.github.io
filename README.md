@@ -192,7 +192,7 @@ Photo Safari (items and timeline) now searches Wikipedia article images and Comm
 ### Round 11: catalog front and navigation
 - Pro catalog front (`catfront.js`, shown when nothing is searched or filtered): a MEM /C panel (one clickable bar segment per department), hanging-sign department tiles, Exhibit of the day, a Mystery crate, scrollable aisles (Just in, Hall of fame, Time capsule by decade, Found in the wild; hidden when under 3 items) and Other ways to browse (shelf, time machine, next up, DIR). Any search, filter, department or view leaves the front; "Back to the aisles" returns. The tag browser now lives in Filters.
 - `#/catalog/cat/<Category>` opens a department directly.
-- Navigation: Catalog, Timeline, Explore, Play, Theater, My stuff, Community, Search. Each of the middle five is a hub (`#/hub/explore|play|watch|stuff|community`) defined once in `SITE` (more.js). `#/more` is now the Site map. The old Wanted, Follow and More links moved into Community and the Site map; old URLs still work. The current section is highlighted and a DOS-style breadcrumb sits above each page. The footer and `C:\>` prompt commands were updated (`explore` = hub, `spec` = Spec Explorer, `map` = site map).
+- Navigation (reworked in round 39): Catalog, Timeline, Explore, Read, Play, Connie, My stuff, Community, Search. The six sections are hubs (`#/hub/explore|read|play|connie|stuff|community`) defined once in `SITE` (pages.js); the old `watch` hub is an alias for Play. `#/more` is now the Site map. The old Wanted, Follow and More links moved into Community and the Site map; old URLs still work. The current section is highlighted and a DOS-style breadcrumb sits above each page. The footer and `C:\>` prompt commands were updated (`explore` = hub, `spec` = Spec Explorer, `map` = site map).
 
 ### Round 12: item page rebuild
 - The folder is now full width with seven tabs: About, Specs, My copy, Era, The ad, History, Links (keys 1 to 7, pixel icon on each). The photo and gallery moved into About beside the text. The top banner ad, the bottom flyer shelf and the two collapsed sections at the bottom are gone.
@@ -410,3 +410,10 @@ Photo Safari (items and timeline) now searches Wikipedia article images and Comm
 - **Connie and the family on static pages.** `tools/build-seo.js` loads `cast.js`, writes the sprites it needs as shared SVG files in `cast/`, and adds a cameo to every generated page (entries by kind, year and decade hubs, exhibits, guides, books, 404). Interactive pages use the `CAMEO` table in cast.js, which now covers every route, plus a pool for item pages.
 - **Menus.** Tab and chip rows wrap on wide screens and swipe without scrollbars on phones.
 - Service worker cache is `cm-v53`.
+
+### Round 39: one list of pages, a drop-down menu, procedural scenes
+- `pages.js` is the single list of every visitor page, by section. The top menu drop-downs (`menu.js`), the section pages, the All pages finder (`#/more`), Search ("Pages and features") and the `C:\>` prompt (which suggests pages for words it does not know) all read it. Adding a page means adding one tile line there; `tests/menu.js` fails if a route in `ROUTE_NAMES` is not findable.
+- `menu.js` adds an icon to each tab and a drop-down (hover or the small arrow on a computer, tap on a phone, ArrowDown and Esc from the keyboard). The All pages button is top right.
+- Books: cover and spine markup is shared by the SPA and the static `/books/` page (`bkCard`, `bkSpine`, `bkIcon` in books.js). Book links search the Books department on Amazon (`&i=stripbooks`) by ISBN where valid.
+- Family cameos can hold props and use six layouts (box, bubble, peek, sign, screen, note); see `PROPS` and `CMCast.cameoHtml` in cast.js.
+- The Stage has a procedural director (`CMStage.compose`): any timeline entry becomes a short scene, so the kiosk, the Funnies strip and the Animations composer stay fresh as content is added. `tests/director.js` covers it.
