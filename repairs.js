@@ -18,7 +18,7 @@ function av(id,sz,o){o=o||{};if(typeof CMCast==="undefined")return"";
  var opt={tall:!PET[id]};if(typeof CMCast.famOpts==="function"){var f=CMCast.famOpts(id);for(var k in f)opt[k]=f[k]}
  if(o.holds)opt.holds=o.holds;if(o.mood)opt.mood=o.mood;
  try{return CMCast.svg(id,sz,opt)}catch(e){return""}}
-function crew(id,line,holds,cls){return'<div class="rc-crew'+(cls?" "+cls:"")+'"><span class="rc-av" aria-hidden="true">'+av(id,48,{holds:holds||HOLD[id]})+'</span><p><b>'+E(NAME[id]||id)+':</b> '+E(line)+'</p></div>'}
+function crew(id,line,holds,cls){if(window.CMBub)return CMBub.html(id,NAME[id]||id,line,av(id,48,{holds:holds||HOLD[id]}),{cls:"rc-crew"+(cls?" "+cls:"")});return'<div class="rc-crew'+(cls?" "+cls:"")+'"><span class="rc-av" aria-hidden="true">'+av(id,48,{holds:holds||HOLD[id]})+'</span><p><b>'+E(NAME[id]||id)+':</b> '+E(line)+'</p></div>'}
 /* who looks after which kind of repair, and what they say about it */
 var KIND_CREW={
  Battery:["rhoda","Batteries leak. Gloves, goggles, and a window open. Then you tell me when you are done."],

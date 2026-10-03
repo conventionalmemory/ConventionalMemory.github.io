@@ -13,7 +13,7 @@ function $$(s,r){return Array.prototype.slice.call((r||app).querySelectorAll(s))
 function load(){var o=null;try{o=JSON.parse(localStorage.getItem(KEY)||"null")}catch(e){}if(!o||typeof o!=="object"||Array.isArray(o)||typeof o.s!=="object"||!o.s)o={s:{}};return o}
 var saved=true;function write(){try{localStorage.setItem(KEY,JSON.stringify(st));saved=true}catch(e){saved=false}}
 function av(id,sz,o){if(typeof CMCast==="undefined")return"";var opt={tall:true};if(typeof CMCast.famOpts==="function"){var f=CMCast.famOpts(id);for(var k in f)opt[k]=f[k]}if(o)for(var j in o)opt[j]=o[j];try{return CMCast.svg(id,sz,opt)}catch(e){return""}}
-function crew(id,name,line,holds){return'<div class="rc-crew"><span class="rc-av" aria-hidden="true">'+av(id,48,{holds:holds||"book"})+'</span><p><b>'+E(name)+':</b> '+E(line)+'</p></div>'}
+function crew(id,name,line,holds){if(window.CMBub)return CMBub.html(id,name,line,av(id,48,{holds:holds||"book"}),{cls:"rc-crew"});return'<div class="rc-crew"><span class="rc-av" aria-hidden="true">'+av(id,48,{holds:holds||"book"})+'</span><p><b>'+E(name)+':</b> '+E(line)+'</p></div>'}
 
 var DOCS=LIB.d.map(function(r,i){return{i:i,t:r[0],k:r[1],kb:r[2],u:r[3],pg:r[4]?r[4].split("|"):[],m:r[5]?r[5].split(","):[],q:(r[0]+" "+r[4]+" "+r[5]).toLowerCase()}});
 function href(d){return"https://drive.google.com/file/d/"+d.u+"/view"}
