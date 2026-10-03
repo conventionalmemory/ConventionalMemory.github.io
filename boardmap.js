@@ -28,7 +28,8 @@ function place(items,obst){var boxes=obst.slice(),out=[];
  return out}
 /* a board we have mapped: caps go where the real ones are */
 function mapped(map,rows,ms){var placed=[],tray=[],h=map.h,out="";
- rows.forEach(function(r){var p=r.ref&&map.c[r.ref];if(p)placed.push([r,p]);else tray.push(r)});
+ var vn={};/* when a map only shows the value of each part (colour-coded, or no printed refs), caps of one value are interchangeable, so each takes the next spot of its value (map.v) and carries no ref label */
+ rows.forEach(function(r){var p=r.ref&&map.c[r.ref];if(!p&&map.v){var k=fmt(r.uf)+"|"+fmt(r.v),a=map.v[k],i=vn[k]||0;if(a&&a[i]){p=a[i];vn[k]=i+1;var q={},z;for(z in r)q[z]=r[z];q.ref="";r=q}}if(p)placed.push([r,p]);else tray.push(r)});
  (map.b||[]).forEach(function(b){var cl="bm-pcb"+(b.s?" bm-sub":"");
   out+=(b.p?'<path class="'+cl+'" d="M'+b.p.map(function(q){return q[0]+" "+q[1]}).join("L")+'Z"/>':'<rect class="'+cl+'" x="'+b.x+'" y="'+b.y+'" width="'+b.w+'" height="'+b.h+'" rx="2"/>')
    +'<text class="bm-bn" x="'+r1(b.nx!=null?b.nx:b.x+2)+'" y="'+r1(b.ny!=null?b.ny:(b.s?b.y+b.h-2:b.y+(b.p?b.h-1.6:4.2)))+'">'+E(b.n)+"</text>"});
@@ -38,8 +39,9 @@ function mapped(map,rows,ms){var placed=[],tray=[],h=map.h,out="";
  items.forEach(function(a){var dm=99;items.forEach(function(b){if(a!==b){var d=Math.sqrt((a.x-b.x)*(a.x-b.x)+(a.y-b.y)*(a.y-b.y));if(d<dm)dm=d}});a.R=Math.max(0.9,Math.min(rad(a.row.uf),dm*0.47))});
  var lps=place(items,(map.lm||[]).concat(map.ic||[]).map(function(m){return[m[0],m[1],m[0]+m[2],m[1]+m[3]]}));
  placed.forEach(function(q,i){out+=cap(q[0],q[1][0],q[1][1],i,!!ms.d[q[0].id],lps[i],items[i].R)});
- if(tray.length){var y=h+7,x=6;out+='<text class="bm-bn" x="2" y="'+(h+3.6)+'">Not placed on the map</text>';
-  tray.forEach(function(r,i){if(x>94){x=6;y+=11}out+=cap(r,x,y,i,!!ms.d[r.id]);x+=11});h=y+7}
+ if(tray.length){var y=h+10.5,x=6,ty=h+1,body="";
+  tray.forEach(function(r,i){if(x>94){x=6;y+=11}body+=cap(r,x,y,i,!!ms.d[r.id]);x+=11});
+  out+='<rect class="bm-pcb bm-sub bm-tray" x="0" y="'+r1(ty)+'" width="100" height="'+r1(y+5.5-ty)+'" rx="2"/><text class="bm-bn" x="2" y="'+r1(h+5)+'">Not placed on the map</text>'+body;h=y+7.5}
  return{svg:out,h:h}}
 
 /* a board we have not mapped yet: grouped by value, and it says so */
@@ -54,7 +56,7 @@ function grouped(rows,ms){var g={},keys=[];rows.forEach(function(r){var k=r.v+"|
 
 function html(b,rows,ms,o){o=o||{};var map=MAPS[b.id],m=map?mapped(map,rows,ms):grouped(rows,ms),H=r1(m.h+(map?0:0)),leg="";
  [["v1","6 to 10 V"],["v2","16 to 25 V"],["v3","35 to 63 V"],["v4","100 to 250 V"],["v5","350 V up"]].forEach(function(x){leg+='<span><i class="bm-sw bm-'+x[0]+'" aria-hidden="true"></i>'+x[1]+"</span>"});
- var note=map?(map.e?"Positions estimated by eye for this board, so treat them as approximate and check yours before you trust a spot.":"Positions measured from a cap map of this board and redrawn by us in our own style. Close, but boards vary, so check yours before you trust a spot."):"We have not mapped this board's layout yet. The parts are grouped by value, so do not read this as where they sit.";
+ var note=map?(map.e?"Positions estimated by eye for this board, so treat them as approximate and check yours before you trust a spot.":"Positions measured from a cap map of this board and redrawn by us in our own style. Close, but boards vary, so check yours before you trust a spot."+(map.v?" This map shows where each value sits, not which reference number is which, so parts of one value are interchangeable here. Any we could not place are listed under the board.":"")):"We have not mapped this board's layout yet. The parts are grouped by value, so do not read this as where they sit.";
  return'<figure class="bm'+(map?"":" bm-g")+'" data-b="'+E(b.id)+'"><figcaption class="bm-plate"><b>'+(map?"Board map":"Parts chart")+'</b> '+E(b.n)+'</figcaption>'
   +'<svg class="bm-svg" viewBox="0 0 100 '+H+'" role="group" aria-label="'+E((map?"Board map of ":"Parts chart for ")+b.n+". "+rows.length+" capacitors. Each one is a button that marks it replaced. The checklist below has the same parts.")+'">'+m.svg+"</svg>"
   +'<div class="bm-say" aria-live="polite"><span class="bm-av" aria-hidden="true">'+(o.av?o.av("connie",44,{holds:"clipboard"}):"")+'</span><div class="cb-t cb-s-speech"><p><b>Connie:</b> <span class="bm-msg">'+(map?"Point at a capacitor and I will read it out. Tap it to mark it replaced.":"Point at a capacitor and I will read it out. I have not drawn this board yet, so these are grouped by value.")+"</span></p></div></div>"
