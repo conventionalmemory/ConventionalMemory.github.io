@@ -1,0 +1,72 @@
+/* The Repair Bench: data, the saving checklist, cautions, parts, tools, tips, sources, backup and web pages.   Run: node tests/repairs.js */
+const http=require("http"),fs=require("fs"),path=require("path"),vm=require("vm");const {chromium}=require("playwright");
+const root=path.join(__dirname,"..");const types={".html":"text/html",".js":"text/javascript",".css":"text/css",".json":"application/json",".png":"image/png",".svg":"image/svg+xml"};
+const srv=http.createServer((q,r)=>{let f=path.join(root,decodeURIComponent(q.url.split("?")[0]));if(f.endsWith("/"))f+="index.html";fs.readFile(f,(e,d)=>{if(e){r.writeHead(404);r.end();return}r.writeHead(200,{"content-type":types[path.extname(f)]||"application/octet-stream"});r.end(d)})});
+const fails=[],errs=[];const ok=(c,m)=>{console.log((c?"ok   ":"FAIL ")+m);if(!c)fails.push(m)};
+(async()=>{
+ const ctx={};vm.createContext(ctx);["timeline-data.js","timeline-extra.js","timeline-edits.js","repairs-data.js"].forEach(f=>{try{vm.runInContext(fs.readFileSync(path.join(root,f),"utf8"),ctx)}catch(e){if(f==="repairs-data.js")throw e}});
+ const R=vm.runInContext("REPAIRS",ctx),TL=vm.runInContext("TL",ctx);
+ ok(R.length>=60&&new Set(R.map(g=>g.id)).size===R.length&&R.every(g=>/^[a-z0-9-]{2,24}$/.test(g.id)),"every repair guide has a unique id ("+R.length+" guides)");
+ ok(R.every(g=>g.machines.length&&g.machines.every(n=>TL.some(r=>r[2]===n))),"every machine named in a repair guide is on the timeline"+R.map(g=>g.machines.filter(n=>!TL.some(r=>r[2]===n)).map(n=>" MISSING "+n)).flat().join(""));
+ ok(R.every(g=>g.steps.length>=5&&g.steps.every(s=>s.t&&s.d)&&g.title&&g.blurb&&g.symptom&&g.minutes>0),"every guide has a title, blurb, symptom, time and at least five complete steps");
+ ok(R.every(g=>g.sources.every(s=>/^https:\/\//.test(s.u)&&s.t&&s.by)&&g.tips.every(t=>!t.src||/^https:\/\//.test(t.src))),"every source and tip link is https");
+ ok(R.every(g=>g.cautions.length>=1),"every guide has at least one caution");
+ ok(R.filter(g=>/crt|lcd|power|mains|psu/i.test(g.id)).every(g=>g.cautions.some(c=>/professional|stop|never|lethal|danger|voltage/i.test(c))),"the CRT, LCD and power guides tell people when to stop");
+ ok(!/\bhand-?coded\b/i.test(fs.readFileSync(path.join(root,"repairs.js"),"utf8")+fs.readFileSync(path.join(root,"repairs-data.js"),"utf8")),"no hand-coded badge wording");
+ ok(!/[;(]\s*$|\bper\s*[;.)]|were not covered|researcher/i.test(R.map(g=>g.blurb+g.tips.map(t=>t.t).join(" ")).join(" ")),"no researcher-note fragments in the text");
+ const rel=fs.readFileSync(path.join(root,"related.js"),"utf8").match(/var REPAIRLIST=(\[.*?\]);\n/);
+ ok(!!rel&&JSON.stringify(JSON.parse(rel[1]))===JSON.stringify(R.map(g=>[g.id,g.title,g.machines])),"related.js knows the same repair guides as repairs-data.js");
+ const nosrc=R.filter(g=>!g.sources.length);
+
+ await new Promise(r=>srv.listen(0,r));const port=srv.address().port,base="http://localhost:"+port+"/index.html#/";
+ const b=await chromium.launch({executablePath:process.env.PLAYWRIGHT_CHROMIUM||undefined});
+ const mk=async o=>{const c=await b.newContext(o);await c.addInitScript(()=>{try{localStorage.setItem("cm-boot","1");sessionStorage.setItem("cm-boot","1")}catch(e){}});const p=await c.newPage();p.on("pageerror",e=>errs.push(e.message));p.on("console",m=>{if(m.type()==="error"&&!/Content Security Policy|avantlink|ERR_TUNNEL|ERR_NAME|ERR_INTERNET/.test(m.text()))errs.push(m.text())});return p};
+ const p=await mk({viewport:{width:1280,height:900}});
+ const go=async h=>{await p.goto(base+h);await p.waitForTimeout(900)};
+ await go("repairs");
+ ok(await p.evaluate(()=>/Repair Bench/.test(document.querySelector("#app h2").textContent)&&document.querySelectorAll("#app .rc-card").length>=60),"#/repairs lists the guides");
+ ok(await p.evaluate(()=>document.querySelectorAll("#app .rc-cat").length===2),"the index groups them into two categories");
+ await p.fill("#rp-q","dreamcast");await p.waitForTimeout(200);
+ ok(await p.evaluate(()=>{const v=[...document.querySelectorAll("#app .rc-card:not([hidden])")];return v.length>=2&&v.some(a=>/dc-laser-tune/.test(a.getAttribute("href")))&&/found/.test(document.getElementById("rp-qn").textContent)}),"search narrows the list to Dreamcast repairs");
+ await p.fill("#rp-q","");await p.click('button[data-kk="Battery"]');await p.waitForTimeout(200);
+ ok(await p.evaluate(()=>{const v=[...document.querySelectorAll("#app .rc-card:not([hidden])")];return v.length>=6&&v.every(a=>a.getAttribute("data-kind")==="Battery")}),"the Battery filter shows only battery repairs");
+ await p.fill("#rp-q","zzzzzz");await p.waitForTimeout(200);
+ ok(await p.evaluate(()=>/Nothing found/.test(document.getElementById("rp-qn").textContent)),"a search with no match says so");
+ await go("repairs/amiga-clock-battery");
+ ok(await p.evaluate(()=>/Amiga clock battery/.test(document.querySelector("#app h2").textContent)&&document.querySelectorAll("#app input[data-s]").length>=6&&document.querySelectorAll("#app input[data-c]").length>=1&&document.querySelectorAll("#app .rc-crew").length>=6),"the Amiga battery guide has steps, cautions and family tips");
+ ok(await p.evaluate(()=>!!document.querySelector("#app .rc-guides a")&&/Guides we used/.test(document.getElementById("rp-src").textContent)),"the guide credits its sources");
+ ok(await p.evaluate(()=>[...document.querySelectorAll("#app a.rc-buy")].length>=2&&[...document.querySelectorAll("#app a.rc-buy")].every(a=>/sponsored/.test(a.rel)&&/noopener/.test(a.rel)&&/^https:\/\/www\.(amazon|ebay)\.com\//.test(a.href))),"parts and tools have sponsored Amazon and eBay links");
+ ok(await p.evaluate(()=>/amiga/i.test([...document.querySelectorAll("#app a")].map(a=>a.getAttribute("href")).join(" "))&&!!document.querySelector('#app a[href^="#/recap/"]')),"the guide links the matching Recap Bench page and the timeline");
+ await p.click('#app input[data-c="c0"]');await p.click('#app input[data-s="s0"]');await p.click('#app input[data-s="s1"]');await p.click('#app input[data-t="t0"]');await p.waitForTimeout(200);
+ ok(await p.evaluate(()=>/<b>2<\/b> of/.test(document.getElementById("rc-count").innerHTML)&&document.querySelector('#app input[data-c="c0"]').checked),"ticking steps updates the progress");
+ await p.fill("#rc-notes","Rev 6A, battery was leaking");await p.waitForTimeout(200);
+ await go("repairs/amiga-clock-battery");
+ ok(await p.evaluate(()=>/<b>2<\/b> of/.test(document.getElementById("rc-count").innerHTML)&&document.querySelector('#app input[data-c="c0"]').checked&&document.querySelector('#app input[data-t="t0"]').checked&&document.getElementById("rc-notes").value==="Rev 6A, battery was leaking"),"progress, cautions, tools and notes are still there after a reload");
+ ok(await p.evaluate(()=>{const s=JSON.parse(localStorage.getItem("cm-repair"));return s.m["amiga-clock-battery"]&&Object.keys(s.m["amiga-clock-battery"].s).length===2}),"the save is in localStorage under cm-repair");
+ await p.evaluate(()=>{document.querySelectorAll('#app input[data-s]').forEach(i=>{if(!i.checked)i.click()})});await p.waitForTimeout(300);
+ ok(await p.evaluate(()=>/Repair complete/.test(document.getElementById("rc-done").textContent)&&JSON.parse(localStorage.getItem("cm-repair")).sum.done===1),"finishing every step shows the win banner and counts the repair");
+ await p.click('button[data-tk="warning"]').catch(()=>{});await p.waitForTimeout(150);
+ ok(await p.evaluate(()=>{const v=[...document.querySelectorAll("#app .rc-tl2 li")];return v.length===0||v.filter(l=>!l.hidden).every(l=>l.getAttribute("data-k")==="warning")}),"the tips filter shows one kind at a time");
+ if(nosrc.length){await go("repairs/"+nosrc[0].id);ok(await p.evaluate(()=>/No source to credit yet/.test(document.getElementById("rp-src").parentElement.textContent)),"a guide with no source says so plainly ("+nosrc[0].id+")")}
+ for(const id of R.filter((g,i)=>i%6===0).map(g=>g.id)){await go("repairs/"+id);ok(await p.evaluate(()=>!!document.querySelector("#app .rc-head")&&document.querySelectorAll("#app input[data-s]").length>=5&&document.querySelectorAll("#app svg.cc").length>=4),"the "+id+" page renders with the family")}
+ await go("repairs/nope");ok(await p.evaluate(()=>/Repair Bench/.test(document.querySelector("#app h2").textContent)),"an unknown guide falls back to the list");
+ await go("backup");ok(await p.evaluate(()=>/Repair Bench projects/.test(document.getElementById("app").textContent)),"Back up my stuff includes the Repair Bench");
+ await go("more");ok(await p.evaluate(()=>!!document.querySelector('#app a[href="#/repairs"]')),"the Repair Bench is on the All pages list");
+ await go("hub/repair");ok(await p.evaluate(()=>/Recap Bench/.test(document.getElementById("app").textContent)&&/Repair Bench/.test(document.getElementById("app").textContent)),"the Repair hub lists both benches");
+ await go("timeline");ok(await p.evaluate(()=>/Repair/.test(document.querySelector("header.top nav").textContent)),"Repair is in the top menu");
+ const m=await mk({viewport:{width:375,height:700},hasTouch:true,isMobile:true});await m.goto(base+"repairs/dc-laser-tune");await m.waitForTimeout(1000);
+ ok(await m.evaluate(()=>document.documentElement.scrollWidth<=document.documentElement.clientWidth+1),"the guide does not scroll sideways on a phone");
+ const sp=await mk({viewport:{width:1280,height:900}});
+ await sp.addInitScript(()=>{try{Storage.prototype.setItem=function(){throw new Error("full")}}catch(e){}});await sp.goto(base+"repairs/amiga-clock-battery");await sp.waitForTimeout(900);await sp.click('#app input[data-s="s0"]').catch(()=>{});
+ ok(await sp.evaluate(()=>!!document.querySelector("#app .rc-head")),"the guide still works when the browser will not save");
+ /* the plain pages */
+ const rd=f=>fs.readFileSync(path.join(root,f),"utf8");
+ ok(R.every(g=>fs.existsSync(path.join(root,"repairs/"+g.id+"/index.html")))&&fs.existsSync(path.join(root,"repairs/index.html")),"every repair guide has a plain web page, plus an index");
+ const sm=rd("sitemap.xml");ok(R.every(g=>sm.indexOf("/repairs/"+g.id+"/")>0)&&sm.indexOf("/repairs/</loc>")>0,"the repair pages are in the sitemap");
+ ok(R.every(g=>{const h=rd("repairs/"+g.id+"/index.html");return/rel="canonical"/.test(h)&&/"@type":"HowTo"/.test(h)&&/Open the interactive checklist/.test(h)&&/<h1>/.test(h)&&(h.match(/<a href="https:\/\/www\.(amazon|ebay)\.com[^>]*>/g)||[]).every(a=>/rel="sponsored noopener noreferrer"/.test(a))}),"each plain page has a canonical, HowTo data, the checklist link, and only sponsored store links");
+ ok(/data-s="repair"/.test(rd("repairs/index.html")),"the plain pages have Repair in the menu");
+ await go("repairs/dc-clock-battery");await p.waitForTimeout(1200);
+ ok(await p.evaluate(()=>{const l=document.querySelector("#app .tle-lib");return!!l&&l.querySelectorAll('a[href^="https://drive.google.com/file/d/"]').length>=3&&!!l.querySelector('a[href="#/library/dreamcast"]')}),"a repair guide lists the machine's manuals from our Drive folder");
+ ok(/drive\.google\.com\/file\/d\//.test(rd("repairs/dc-clock-battery/index.html")),"and so does its plain page");
+ ok(errs.length===0,"no page errors"+(errs.length?": "+errs[0]:""));
+ await b.close();srv.close();if(fails.length){console.error("FAILED "+fails.length);process.exit(1)}console.log("OK repairs")})();

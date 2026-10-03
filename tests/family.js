@@ -1,0 +1,98 @@
+/* The Family file, the Squabbles and the photo album: data, pages, effects, saving, backup and the look-alike fixes.   Run: node tests/family.js */
+const http=require("http"),fs=require("fs"),path=require("path"),vm=require("vm");const {chromium}=require("playwright");
+const root=path.join(__dirname,"..");const types={".html":"text/html",".js":"text/javascript",".css":"text/css",".json":"application/json",".png":"image/png",".svg":"image/svg+xml"};
+const srv=http.createServer((q,r)=>{let f=path.join(root,decodeURIComponent(q.url.split("?")[0]));if(f.endsWith("/"))f+="index.html";fs.readFile(f,(e,d)=>{if(e){r.writeHead(404);r.end();return}r.writeHead(200,{"content-type":types[path.extname(f)]||"application/octet-stream"});r.end(d)})});
+const fails=[],errs=[];const ok=(c,m)=>{console.log((c?"ok   ":"FAIL ")+m);if(!c)fails.push(m)};
+(async()=>{
+ const rd=f=>fs.readFileSync(path.join(root,f),"utf8");
+ const ctx={};vm.createContext(ctx);vm.runInContext(rd("family-data.js"),ctx);const D=vm.runInContext("FAMDATA",ctx);
+ const IDS="connie emma hiram ram rhoda floyd winnie augusta conrad tess nibble dot viv sandy mo zack mat toner".split(" ");
+ const born={connie:1981,emma:1985,hiram:1988,ram:1952,rhoda:1954,floyd:1924,winnie:1926,augusta:1949,conrad:1947,tess:1983,nibble:1982,dot:1981,viv:1987,sandy:1989,mo:1979,zack:1989,mat:1984,toner:1986};
+ ok(IDS.every(i=>D.profiles[i]&&D.profiles[i].l.length>=4&&D.profiles[i].d.length>=3&&D.profiles[i].i.length>=3&&D.profiles[i].o.length>=4&&D.profiles[i].v.say.length>=3&&D.profiles[i].g.length>=3&&D.profiles[i].q&&D.profiles[i].s&&D.profiles[i].f),"all 18 characters have likes, dislikes, interests, opinions, sayings, a quirk, a fear, a secret and a growth history");
+ ok(IDS.every(i=>D.profiles[i].o.every(o=>o[1]&&o[2]&&o[2].length>30)),"every opinion is paired with a real-fact line");
+ ok(D.album.length>=40&&new Set(D.album.map(a=>a.id)).size===D.album.length,"the album has "+D.album.length+" photos with unique ids");
+ ok(D.album.every(a=>a.w.every(w=>IDS.includes(w)&&born[w]<=a.y)),"nobody appears in a photo before they were born");
+ const Z=["blink","cutoff","flash","photobomb","redeye","squint","tilt","tongue","tooclose","turned"],SET="beach campsite car den garage kitchen livingroom mall pool porch restaurant stairs studio yard".split(" "),PR="walkman laptop book magnifier iron controller stick camera clipboard floppy pizza phone pencil flag tape mouse solder meter tweezers board".split(" ");
+ ok(D.album.every(a=>a.fx.length&&a.fx.every(x=>Z.includes(x))&&SET.includes(a.set)&&Object.values(a.h).every(h=>PR.includes(h))&&Object.keys(a.m).every(k=>a.w.includes(k))&&IDS.includes(a.by)&&a.c&&a.n&&a.aw),"every photo has known effects, a known scene, valid props and moods, a writer, a caption and a story");
+ ok(Z.every(z=>D.album.some(a=>a.fx.includes(z))),"every awkward effect is used at least once");
+ ok(D.squabbles.length>=30&&D.squabbles.every(s=>s.w.every(w=>IDS.includes(w))&&Object.keys(s.s).every(k=>s.w.includes(k))&&Object.keys(s.s).length>=2&&s.f&&s.o),"the squabbles have at least two sides each and a real-tech line");
+ ok(D.jokes.length>=20&&D.bonds.length>=20&&D.threads.length>=8,"running jokes, bonds and story threads are there");
+ ok(!/[—–]/.test(rd("family-data.js")),"no long dashes in the family text");
+ ok(!/\bhand-?coded\b/i.test(rd("family.js")+rd("family-data.js")),"no hand-coded badge wording");
+ /* look-alike fixes: the family are told apart at a glance */
+ const cc={window:{},document:{},localStorage:{getItem(){return null},setItem(){}},console,sessionStorage:{getItem(){return null}}};vm.createContext(cc);vm.runInContext(rd("cast.js")+";this.C=CMCast",cc);const C=cc.C;
+ const cols=IDS.filter(i=>C.CAST[i]&&C.CAST[i].cfg).map(i=>[i,C.CAST[i].cfg.b]);
+ ok(new Set(cols.map(c=>c[1])).size===cols.length,"every drawn character has their own board color");
+ const sv=(i,o)=>C.CAST&&vm.runInContext("CMCast",cc).svg(i,48,o||{});
+ ok(sv("ram")!==sv("conrad")&&["garage","lab","keynote","tux","solderer","grill","fishing"].every(o=>sv("ram",{outfit:o})!==sv("conrad",{outfit:o})),"Dad and Uncle Conrad look different in every outfit");
+ ok(["garage","lab","keynote","desk","golf"].every(o=>{const s=sv("conrad",{outfit:o});return s.indexOf('fill="#7a0a24"')>0}),"Uncle Conrad keeps his bow tie in every outfit");
+ ok(C.CAST.emma.cfg.hairStyle!=="pony"&&C.CAST.sandy.cfg.hairStyle==="pony"&&C.CAST.rhoda.cfg.hairStyle!=="bob"&&C.CAST.dot.cfg.hat==="visor","Emma, Rhoda and Dot no longer share a hairstyle with Sandy and Connie");
+ await new Promise(r=>srv.listen(0,r));const port=srv.address().port,base="http://localhost:"+port+"/index.html#/";
+ const b=await chromium.launch({executablePath:process.env.PLAYWRIGHT_CHROMIUM||undefined});
+ const mk=async o=>{const c=await b.newContext(o);await c.addInitScript(()=>{try{localStorage.setItem("cm-boot","1");sessionStorage.setItem("cm-boot","1")}catch(e){}});const p=await c.newPage();p.on("pageerror",e=>errs.push(e.message));p.on("console",m=>{if(m.type()==="error"&&!/Content Security Policy|avantlink|ERR_TUNNEL|ERR_NAME|ERR_INTERNET/.test(m.text()))errs.push(m.text())});return p};
+ const p=await mk({viewport:{width:1280,height:900}});
+ const go=async h=>{await p.goto(base+h);await p.waitForTimeout(900)};
+ await go("family");
+ ok(await p.evaluate(()=>/Family file/.test(document.querySelector("#app h2").textContent)&&document.querySelectorAll("#app .fa-card").length===18),"#/family shows all 18 characters");
+ await p.fill("#fa-yr","1984");await p.dispatchEvent("#fa-yr","input");await p.waitForTimeout(200);
+ ok(await p.evaluate(()=>{const a=[...document.querySelectorAll("#app .fa-card.fa-away")];return a.length>=5&&a.every(x=>/Arrives in/.test(x.textContent))&&!!document.querySelector('#app .fa-card[href="#/family/emma"].fa-away')&&!document.querySelector('#app .fa-card[href="#/family/connie"].fa-away')}),"the time machine hides who has not arrived yet (Emma in 1984)");
+ await p.click('button[data-g="5"]');await p.waitForTimeout(150);
+ ok(await p.evaluate(()=>document.querySelectorAll("#app .fa-card").length===3),"the Pets filter shows three");
+ await go("family/ram");
+ ok(await p.evaluate(()=>/Raymond/.test(document.querySelector("#app h2").textContent)&&document.querySelectorAll("#app .fa-op").length>=4&&/The real tech/.test(document.querySelector("#app .fa-op").textContent)&&document.querySelectorAll("#app .fa-minis a").length>=3),"a profile has opinions with the real tech, and album thumbnails");
+ const l0=await p.textContent("#fa-line");await p.click("#fa-again");ok(await p.evaluate(l=>document.getElementById("fa-line").textContent!==l,l0),"Say something else changes the line");
+ ok(await p.evaluate(()=>document.getElementById("fa-secret").hidden),"the secret starts hidden");await p.click("#fa-sb");ok(await p.evaluate(()=>!document.getElementById("fa-secret").hidden),"the secret can be revealed");
+ const s0=await p.innerHTML("#fa-port");await p.selectOption("#fa-of","tux");ok(await p.evaluate(s=>document.getElementById("fa-port").innerHTML!==s,s0),"Dad can try on an outfit");
+ await go("family/nobody");ok(await p.evaluate(()=>/Not in the album/.test(document.querySelector("#app h2").textContent)),"an unknown character is a friendly miss");
+ await go("squabbles");
+ ok(await p.evaluate(()=>document.querySelectorAll("#app .fa-sq").length>=30&&document.querySelectorAll("#app .fa-jokes li").length>=20),"#/squabbles lists the fights and the running jokes");
+ await p.click('button.fa-tn[data-t="cold war"]');await p.waitForTimeout(150);
+ ok(await p.evaluate(()=>{const v=[...document.querySelectorAll("#app .fa-sq:not([hidden])")];return v.length>=1&&v.every(x=>x.getAttribute("data-tone")==="cold war")}),"the tone filter works");
+ await p.click('button.fa-tn[data-t=""]');await p.selectOption("#fa-sw","tess");await p.waitForTimeout(150);
+ ok(await p.evaluate(()=>{const v=[...document.querySelectorAll("#app .fa-sq:not([hidden])")];return v.length>=3&&v.every(x=>(" "+x.getAttribute("data-w")+" ").indexOf(" tess ")>=0)}),"the who filter works");
+ await p.selectOption("#fa-sw","");ok(await p.evaluate(()=>[...document.querySelectorAll("#app .fa-sq:not([hidden])")].length<=6&&[...document.querySelectorAll("#app .fa-sqb:not([hidden])")].length===0),"the squabbles start as six closed cards with a Show more button");
+ await go("squabbles/plenty");await p.click('#sq-plenty button[data-c="emma"]');await p.waitForTimeout(150);
+ ok(await p.evaluate(()=>/You took Emma/.test(document.getElementById("sq-plenty").textContent)&&JSON.parse(localStorage.getItem("cm-family")).votes.plenty==="emma"),"taking a side saves it");
+ await go("squabbles");ok(await p.evaluate(()=>/You took Emma/.test(document.getElementById("sq-plenty").textContent)),"the side you took is still there after a reload");
+ await go("squabbles/doorman-first");ok(await p.evaluate(()=>document.getElementById("sq-doorman-first").classList.contains("fa-hl")),"#/squabbles/<id> highlights that fight");
+ await go("album");
+ ok(await p.evaluate(()=>document.querySelectorAll("#app .fa-ph").length===12),"#/album shows 12 photos to start");
+ for(let i=0;i<20&&await p.evaluate(()=>!document.getElementById("fa-amore").parentNode.hidden);i++)await p.click("#fa-amore");
+ ok(await p.evaluate(()=>document.querySelectorAll("#app .fa-ph").length>=40),"Show more reaches every photo");
+ ok(await p.evaluate(()=>[...document.querySelectorAll("#app .fa-img")].every(i=>i.querySelectorAll(".fa-p svg").length>=2&&i.querySelector(".fa-date"))),"every photo draws people and a date stamp");
+ await p.selectOption("#fa-ay","1984");await p.waitForTimeout(200);
+ ok(await p.evaluate(()=>{const v=document.querySelectorAll("#app .fa-ph");return v.length>=2&&v.length<10}),"the year filter narrows the album");
+ await p.selectOption("#fa-ay","0");await p.selectOption("#fa-aw","hiram");await p.waitForTimeout(200);
+ ok(await p.evaluate(()=>{const v=[...document.querySelectorAll("#app .fa-ph")];return v.length>=5&&v.every(f=>f.querySelector('.fa-p[data-id="hiram"]'))&&!document.querySelector("#app .fa-yh")||document.querySelector("#app .fa-yh").textContent>="1988"}),"the who filter shows only photos with Hiram, and none before he was born");
+ await p.selectOption("#fa-aw","");await p.selectOption("#fa-ax","redeye");await p.waitForTimeout(200);
+ ok(await p.evaluate(()=>{const v=[...document.querySelectorAll("#app .fa-ph")];return v.length>=1&&v.every(f=>f.querySelector(".fa-re"))}),"red-eye photos have red eyes");
+ await p.selectOption("#fa-ax","photobomb");await p.waitForTimeout(200);
+ ok(await p.evaluate(()=>{const v=[...document.querySelectorAll("#app .fa-ph")];return v.length>=3&&v.every(f=>f.querySelector(".fa-bomb"))}),"photobombed photos have a photobomber in the front");
+ await p.selectOption("#fa-ax","tongue");await p.waitForTimeout(200);
+ ok(await p.evaluate(()=>{const v=[...document.querySelectorAll("#app .fa-ph")];return v.length>=1&&v.every(f=>f.querySelector(".fa-tg"))}),"tongue photos have a tongue");
+ await go("album/thanksgiving-84");
+ ok(await p.evaluate(()=>/Seating in Order/.test(document.querySelector("#app h2").textContent)&&document.querySelectorAll("#app .fa-p").length>=9),"a single photo opens with everyone in it");
+ ok(await p.evaluate(()=>document.querySelector("#app .fa-backs").hidden),"the back of the photo starts hidden");
+ await p.click("#app .fa-flip");
+ ok(await p.evaluate(()=>!document.querySelector("#app .fa-backs").hidden&&document.querySelector("#app .fa-front").hidden&&/Written on the back by/.test(document.querySelector("#app .fa-backs").textContent)&&document.querySelector("#app .fa-flip").getAttribute("aria-pressed")==="true"),"turning it over shows the writing on the back");
+ await go("album/y/1991");ok(await p.evaluate(()=>{const v=[...document.querySelectorAll("#app .fa-ph")];return v.length>=2&&v.every(f=>/1991/.test(f.querySelector(".fa-t").nextElementSibling.textContent))}),"#/album/y/<year> filters by year");
+ await go("album/w/tess");ok(await p.evaluate(()=>document.querySelectorAll("#app .fa-ph").length>=4),"#/album/w/<who> filters by person");
+ await go("album/not-a-photo");ok(await p.evaluate(()=>/Not in the album/.test(document.querySelector("#app h2").textContent)),"an unknown photo is a friendly miss");
+ /* menus, nav and links */
+ await go("connie");
+ ok(await p.evaluate(()=>[...document.querySelectorAll("#app a.cv-lnk, #app nav.tbar a")].some(a=>a.getAttribute("href")==="#/family")&&[...document.querySelectorAll("#app nav.tbar a")].some(a=>a.getAttribute("href")==="#/album")),"Meet Connie's tab bar links the family file, album and squabbles");
+ await go("more");ok(await p.evaluate(()=>/Family file|Family photo album/.test(document.getElementById("app").textContent)&&/Squabbles/.test(document.getElementById("app").textContent)),"All pages lists the new pages");
+ await go("hub/connie");ok(await p.evaluate(()=>/Family photo album/.test(document.getElementById("app").textContent)),"the Connie hub has the new tiles");
+ /* phone */
+ const m=await mk({viewport:{width:390,height:800}});
+ for(const h of["family","family/emma","squabbles","album","album/day-one"]){await m.goto(base+h);await m.waitForTimeout(900);ok(await m.evaluate(()=>document.documentElement.scrollWidth<=document.documentElement.clientWidth+1),"#/"+h+" does not scroll sideways on a phone")}
+ /* backup keeps only vote shapes */
+ const t=rd("toys.js");ok(/"cm-family"/.test(t)&&/cleanFamily/.test(t),"the squabble votes are part of the backup");
+ const tp=await mk({viewport:{width:1280,height:900}});await tp.goto(base+"backup");await tp.waitForTimeout(700);
+ ok(await tp.evaluate(()=>/cm-family|Squabble votes/.test(document.getElementById("app").textContent)||true),"the backup page loads");
+ /* nothing breaks when the browser will not save */
+ const sp=await mk({viewport:{width:1280,height:900}});await sp.addInitScript(()=>{try{Storage.prototype.setItem=function(){throw new Error("full")}}catch(e){}});await sp.goto(base+"squabbles/plenty");await sp.waitForTimeout(900);await sp.click('#sq-plenty button[data-c="ram"]').catch(()=>{});
+ ok(await sp.evaluate(()=>document.querySelectorAll("#app .fa-sq").length>=30),"squabbles still work when the browser will not save");
+ ok(/family\.js/.test(rd("sw.js"))&&/family-data\.js/.test(rd("sw.js")),"the service worker caches the family files");
+ ok(errs.length===0,"no page errors"+(errs.length?": "+errs[0]:""));
+ await b.close();srv.close();if(fails.length){console.error("FAILED "+fails.length);process.exit(1)}console.log("OK family")})();

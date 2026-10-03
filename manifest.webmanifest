@@ -1,0 +1,11 @@
+{
+  "name": "Conventional Memory",
+  "short_name": "ConvMem",
+  "description": "A museum of vintage computers, a timeline, and retro games.",
+  "start_url": "./index.html#/",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#000080",
+  "theme_color": "#000080",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}

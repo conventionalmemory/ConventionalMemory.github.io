@@ -1,0 +1,97 @@
+/* Search palette, breadcrumbs, the menu on plain pages, and the phone bottom bar.   Run: node tests/nav2.js */
+const http=require("http"),fs=require("fs"),path=require("path");const {chromium}=require("playwright");
+const root=path.join(__dirname,"..");const types={".html":"text/html",".js":"text/javascript",".css":"text/css",".json":"application/json",".png":"image/png",".svg":"image/svg+xml"};
+const srv=http.createServer((q,r)=>{let f=path.join(root,decodeURIComponent(q.url.split("?")[0]));if(f.endsWith("/"))f+="index.html";fs.readFile(f,(e,d)=>{if(e){r.writeHead(404);r.end();return}r.writeHead(200,{"content-type":types[path.extname(f)]||"application/octet-stream"});r.end(d)})});
+(async()=>{await new Promise(r=>srv.listen(0,r));const port=srv.address().port,base="http://localhost:"+port+"/index.html#/",site="http://localhost:"+port+"/";
+ const b=await chromium.launch({executablePath:process.env.PLAYWRIGHT_CHROMIUM||undefined});
+ const fails=[],errs=[];const ok=(c,m)=>{console.log((c?"ok   ":"FAIL ")+m);if(!c)fails.push(m)};
+ const mk=async o=>{const c=await b.newContext(o);await c.addInitScript(()=>{try{localStorage.setItem("cm-boot","1");sessionStorage.setItem("cm-boot","1")}catch(e){}});const p=await c.newPage();p.on("pageerror",e=>errs.push(e.message));return p};
+ const p=await mk({viewport:{width:1280,height:800}});
+ const go=async h=>{await p.goto(base+h);await p.waitForTimeout(900)};
+ // ---- palette
+ await go("");await p.keyboard.press("/");await p.waitForTimeout(250);
+ ok(await p.evaluate(()=>!document.getElementById("pal").hidden&&document.activeElement.id==="pal-in"),"/ opens the search palette with the cursor in the box");
+ await p.keyboard.type("doom");await p.waitForTimeout(300);
+ const r=await p.evaluate(()=>({h:[...document.querySelectorAll("#pal .pal-h")].map(e=>e.textContent),n:document.querySelectorAll("#pal .pal-r").length}));
+ ok(r.h.indexOf("Timeline")>=0&&r.n>=3,"typing doom lists timeline entries and more ("+r.h.join(",")+", "+r.n+" rows)");
+ await p.keyboard.press("ArrowDown");await p.keyboard.press("Enter");await p.waitForTimeout(500);
+ ok(await p.evaluate(()=>document.getElementById("pal").hidden&&/^#\/(timeline|item)\//.test(location.hash)),"Enter opens the chosen result and closes the palette");
+ await p.keyboard.press("Control+k");await p.keyboard.type("kiosk");await p.waitForTimeout(300);
+ ok(await p.evaluate(()=>!!document.querySelector('#pal a[href="#/kiosk"]')),"Ctrl+K opens it, and kiosk finds the Demo kiosk page");
+ await p.keyboard.press("Escape");ok(await p.evaluate(()=>document.getElementById("pal").hidden),"Esc closes the palette");
+ await p.click('header.top nav a[data-s="search"]');await p.waitForTimeout(200);await p.keyboard.type("zzzzqq");await p.waitForTimeout(250);
+ ok(await p.evaluate(()=>!document.getElementById("pal").hidden&&/could not find/.test(document.querySelector(".pal-none").innerText)),"the Search tab opens it, and an unknown word gets a friendly answer");
+ await p.keyboard.press("Escape");
+ // ---- breadcrumbs
+ const crumb=async h=>{await go(h);return p.evaluate(()=>{const c=document.getElementById("crumb");return c&&!c.hidden?c.innerText.toLowerCase():""})};
+ const it=await p.evaluate(()=>ITEMS[0]);
+ let t=await crumb("item/"+it.id);ok(t.indexOf(it.name.toLowerCase())>=0&&t.indexOf(it.cat.toLowerCase())>=0,"an item page shows the path: "+t.replace(/\n/g," "));
+ t=await crumb("timeline/1995");ok(/timeline/.test(t)&&/1995/.test(t),"a timeline year shows Timeline > 1995");
+ t=await crumb("catalog/cat/"+encodeURIComponent(it.cat));ok(/catalog/.test(t)&&t.indexOf(it.cat.toLowerCase())>=0,"a catalog department shows Catalog > department");
+ t=await crumb("hub/play");ok(/play/.test(t),"a section page shows its own name");
+ // ---- the menu on plain pages
+ const q=await mk({viewport:{width:1280,height:800}});
+ await q.goto(site+"books/index.html");await q.waitForTimeout(900);
+ ok(await q.evaluate(()=>document.querySelectorAll("header.top nav a[data-s] .mn-i svg").length===10),"plain pages get the same icon menu");
+ await q.hover('header.top nav a[data-s="play"]');await q.waitForTimeout(500);
+ ok(await q.evaluate(()=>{const m=document.getElementById("mnp");return !m.hidden&&[...m.querySelectorAll("a")].every(a=>/^(\/|https?:)/.test(a.getAttribute("href")))&&!!m.querySelector('a[href="/#/kiosk"]')}),"its drop-downs point into the app with real addresses");
+ ok(await q.evaluate(()=>document.getElementById("allp").getAttribute("href")==="/#/more"&&document.querySelector('header.top nav [aria-current]').dataset.s==="read"&&!!document.querySelector("a.skip")),"All pages button, lit Read tab and skip link are there");
+ await q.goto(site+"history/masters-of-doom-2003/index.html");await q.waitForTimeout(700);
+ ok(await q.evaluate(()=>document.querySelector('header.top nav [aria-current]').dataset.s==="timeline"),"a timeline page lights the Timeline tab");
+ // ---- phone bottom bar
+ const m=await mk({viewport:{width:375,height:700},hasTouch:true,isMobile:true});
+ await m.goto(base);await m.waitForTimeout(1300);
+ ok(await m.evaluate(()=>{const e=document.getElementById("bnav"),R=e.getBoundingClientRect();return getComputedStyle(e).display==="flex"&&e.querySelectorAll("[data-b]").length===5&&Math.abs(R.bottom-innerHeight)<2}),"a phone shows a five-button bar fixed to the bottom");
+ await m.tap('#bnav [data-b="menu"]');await m.waitForTimeout(350);
+ ok(await m.evaluate(()=>!document.getElementById("bsheet").hidden&&document.querySelectorAll("#bsheet .bsh-s").length===7),"Menu opens a sheet with the seven sections");
+ await m.tap('.bsh-s[data-sec="play"]');await m.waitForTimeout(300);
+ ok(await m.evaluate(()=>/Retro Bingo/.test(document.getElementById("bsheet").innerText)&&!!document.querySelector('#bsheet a[href="#/kiosk"]')),"a section shows its pages, including the Demo kiosk");
+ await m.tap('#bsheet a[href="#/kiosk"]');await m.waitForTimeout(600);
+ ok(await m.evaluate(()=>location.hash==="#/kiosk"&&document.getElementById("bsheet").hidden),"choosing a page goes there and closes the sheet");
+ await m.tap('#bnav [data-b="search"]');await m.waitForTimeout(300);ok(await m.evaluate(()=>!document.getElementById("pal").hidden),"the Search button opens the palette");
+ await m.keyboard.press("Escape");await m.waitForTimeout(150);
+ await m.tap('#bnav [data-b="catalog"]');await m.waitForTimeout(500);ok(await m.evaluate(()=>location.hash.indexOf("#/catalog")===0&&document.querySelector('#bnav [data-b="catalog"]').getAttribute("aria-current")==="page"),"the Catalog button goes there and lights up");
+ ok(await m.evaluate(()=>document.documentElement.scrollWidth<=376),"no sideways scrolling with the bar");
+ const d=await mk({viewport:{width:1280,height:800}});await d.goto(base);await d.waitForTimeout(900);
+ ok(await d.evaluate(()=>getComputedStyle(document.getElementById("bnav")).display==="none"),"the bottom bar is hidden on a computer");
+ // ---- round 2: related links, recently viewed, mood door
+ const rp=await mk({viewport:{width:1280,height:800}});
+ await rp.goto(base);await rp.waitForTimeout(900);
+ ok(await rp.evaluate(()=>document.querySelectorAll(".mood-t").length===4&&document.getElementById("mood-a").hidden),"home shows four mood buttons with the answers closed");
+ await rp.click('.mood-t[data-mood="fix"]');await rp.waitForTimeout(150);
+ ok(await rp.evaluate(()=>!document.getElementById("mood-a").hidden&&document.querySelectorAll("#mood-a a").length>=3&&document.querySelector('.mood-t[data-mood="fix"]').getAttribute("aria-expanded")==="true"),"choosing a mood shows its page links");
+ await rp.click('.mood-t[data-mood="fix"]');ok(await rp.evaluate(()=>document.getElementById("mood-a").hidden),"choosing it again closes it");
+ const bad=await rp.evaluate(()=>{const out=[];CMRel.moods.forEach(m=>m.a.forEach(a=>{const hb=a[0].match(/^#\/hub\/(\w+)$/);if(hb?!SITE.some(s=>s.id===hb[1]):!allPages().some(p=>p.h===a[0]))out.push(a[0])}));return out});
+ ok(bad.length===0,"every mood link goes to a real page"+(bad.length?": "+bad.join(", "):""));
+ ok(await rp.evaluate(()=>!document.querySelector(".cont")),"no recently viewed list before anything was viewed");
+ await rp.goto(base+"timeline/1995");await rp.waitForTimeout(1200);
+ await rp.goto(base+"hub/play");await rp.waitForTimeout(1200);
+ await rp.goto(base+"staff");await rp.waitForTimeout(1200);
+ const rl=await rp.evaluate(()=>CMRecent.list().map(z=>z.h));
+ ok(rl.indexOf("#/hub/play")===0&&rl.indexOf("#/timeline/1995")>0&&rl.indexOf("#/staff")<0,"recent pages are remembered, newest first, and staff pages are not ("+rl.join(" ")+")");
+ await rp.goto(base);await rp.waitForTimeout(900);
+ ok(await rp.evaluate(()=>document.querySelectorAll(".cont a.btn").length>=2),"home offers Continue where you left off");
+ await rp.click("#cont-x");ok(await rp.evaluate(()=>!document.querySelector(".cont")&&CMRecent.list().length===0),"Clear this list empties it");
+ const rg=await rp.evaluate(()=>{const row=TL.filter(z=>TLX[z[2]]&&TLX[z[2]].maker&&TL.filter(w=>TLX[w[2]]&&TLX[w[2]].maker===TLX[z[2]].maker).length>3)[0];return{n:row[2],g:CMRel.groups(row[2]).map(s=>s.k)}});
+ ok(rg.g.indexOf("maker")>=0,"a timeline entry gets a More from <maker> group ("+rg.n+")");
+ const dm=await rp.evaluate(()=>{const g=CMRel.groups("Doom");return g.map(s=>s.k).join(",")});
+ ok(/book/.test(dm),"Doom links to books about it ("+dm+")");
+ await rp.goto(base+"timeline/2003/"+encodeURIComponent("Masters of Doom"));await rp.waitForTimeout(1200);
+ ok(await rp.evaluate(()=>!!document.querySelector(".tle.open .rel-box a")),"an open timeline card shows related links");
+ {const h=fs.readFileSync(path.join(root,"history/doom-1993/index.html"),"utf8");ok(/<h2>More from /.test(h)&&/<h2>Books about it<\/h2>/.test(h),"static timeline pages carry More from <maker> and Books about it")}
+ // ---- round 3: announce, focus, shortcuts
+ const kp=await mk({viewport:{width:1280,height:800}});
+ await kp.goto(base);await kp.waitForTimeout(900);
+ await kp.click('header.top nav a[data-s="catalog"]');await kp.waitForTimeout(900);
+ ok(await kp.evaluate(()=>/Now showing/.test(document.getElementById("cm-live").textContent)),"moving to a page announces it to screen readers");
+ ok(await kp.evaluate(()=>{const a=document.activeElement;return a&&/^H[12]$/.test(a.tagName)&&document.getElementById("app").contains(a)}),"focus moves to the page heading after a menu click");
+ await kp.goto(base+"catalog");await kp.waitForTimeout(900);await kp.click("#q");await kp.keyboard.type("amiga");await kp.waitForTimeout(700);
+ ok(await kp.evaluate(()=>document.activeElement.id==="q"),"typing in the catalog search keeps the cursor in the box");
+ await kp.keyboard.press("Escape");await kp.evaluate(()=>document.activeElement.blur());
+ await kp.keyboard.press("?");await kp.waitForTimeout(200);
+ ok(await kp.evaluate(()=>!document.getElementById("kb").hidden&&document.activeElement.className==="kb-x"),"? opens the shortcuts list and focuses Close");
+ await kp.keyboard.press("Escape");ok(await kp.evaluate(()=>document.getElementById("kb").hidden),"Esc closes the shortcuts list");
+ await kp.click("#q");await kp.keyboard.type("?");ok(await kp.evaluate(()=>document.getElementById("kb").hidden&&document.getElementById("q").value.slice(-1)==="?"),"? typed in a box is just a question mark");
+ await kp.click("#kbbtn");ok(await kp.evaluate(()=>!document.getElementById("kb").hidden),"the footer link opens the shortcuts list");
+ ok(errs.length===0,"no page errors"+(errs.length?": "+errs[0]:""));
+ await b.close();srv.close();if(fails.length){console.error("FAILED "+fails.length);process.exit(1)}console.log("OK nav2")})();

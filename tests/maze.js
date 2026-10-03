@@ -1,0 +1,52 @@
+/* Memory Maze: character select, Connie and Zack in the house, talking, and run-code replay.   Run: node tests/maze.js */
+const http=require("http"),fs=require("fs"),path=require("path");const {chromium}=require("playwright");
+const root=path.join(__dirname,"..");const types={".html":"text/html",".js":"text/javascript",".css":"text/css",".json":"application/json",".png":"image/png",".svg":"image/svg+xml"};
+const srv=http.createServer((q,r)=>{let f=path.join(root,decodeURIComponent(q.url.split("?")[0]));if(f.endsWith("/"))f+="index.html";fs.readFile(f,(e,d)=>{if(e){r.writeHead(404);r.end();return}r.writeHead(200,{"content-type":types[path.extname(f)]||"application/octet-stream"});r.end(d)})});
+(async()=>{await new Promise(r=>srv.listen(0,r));const base="http://localhost:"+srv.address().port+"/index.html#/";
+ const b=await chromium.launch({executablePath:process.env.PLAYWRIGHT_CHROMIUM||undefined});const p=await (await b.newContext({viewport:{width:1000,height:900}})).newPage();
+ const fails=[],errs=[];p.on("pageerror",e=>errs.push(e.message));const ok=(c,m)=>{console.log((c?"ok   ":"FAIL ")+m);if(!c)fails.push(m)};
+ // expose internals for the test only
+ const src=fs.readFileSync(path.join(root,"game.js"),"utf8").replace("window.CMGame=Object.freeze({","window.CMGame=Object.freeze({dbg:function(){return {S:S,enter:enter,room:room,talk:talk,makeCode:makeCode,verify:verify,tryDoor:tryDoor,answer:answer,take:take,bfs:bfs}},");
+ await p.route("**/game.js*",r=>r.fulfill({contentType:"application/javascript",body:src}));
+ await p.addInitScript(()=>{sessionStorage.setItem("cm-boot","1")});
+ await p.goto(base+"maze");await p.waitForTimeout(900);
+ ok(await p.evaluate(()=>document.querySelectorAll(".gchar").length===2&&document.querySelectorAll(".gcast canvas").length===3&&!!document.querySelector(".gsel svg.mascot")),"select screen has Matt, Tony, Connie, Auntie and Zack");
+ ok(await p.evaluate(()=>[...document.querySelectorAll("canvas[data-p]")].every(c=>{const d=c.getContext("2d").getImageData(0,0,60,90).data;let n=0;for(let i=0;i<d.length;i+=4)if(d[i]||d[i+1]||d[i+2]>0xaa)n++;return n>200})),"every character sprite is drawn");
+ await p.click('[data-w="matt"]');await p.waitForTimeout(400);
+ const kinds=await p.evaluate(()=>{const S=CMGame.dbg().S;return Object.values(S.npcs).sort().join(",")});
+ ok(kinds==="aunt,aunt,connie,connie,connie,tony,tony,zack","house has two Auntie, three Connie, Zack and Tony ("+kinds+")");
+ for(const who of ["connie","zack","tony","aunt"]){
+  await p.evaluate(w=>{const d=CMGame.dbg(),S=d.S;const e=Object.entries(S.npcs).find(x=>x[1]===w);S.gr.room=-1;d.enter(+e[0]);S.mem=500},who);await p.waitForTimeout(150);
+  await p.keyboard.press("t");await p.waitForTimeout(100);
+  const m=await p.evaluate(()=>CMGame.dbg().S.log.slice(-4).join(" ")),mem=await p.evaluate(()=>CMGame.dbg().S.mem);
+  ok(new RegExp({connie:"Connie",zack:"Zack",tony:"Tony",aunt:"Auntie"}[who]).test(m),who+" talks");
+  if(who==="connie")ok(mem>=508&&mem<=516&&/\+16K/.test(m),"Connie restores 16K of memory");
+ }
+ // play a whole game perfectly, then the run code must verify
+ for(const who of ["matt","tony"]){
+  await p.goto(base+"about");await p.waitForTimeout(200);await p.goto(base+"maze");await p.waitForTimeout(600);await p.click('[data-w="'+who+'"]');await p.waitForTimeout(300);
+  const res=await p.evaluate(()=>{localStorage.removeItem("cm-maze-code");const d=CMGame.dbg(),S=d.S;let n=0;
+   while(S.mode!=="over"&&n++<3000){
+    if(S.mode==="q"){d.answer(S.q.c);continue}
+    if(d.room().i===S.goal){d.take();continue}
+    const st=d.bfs(d.room().i,S.goal);d.tryDoor(st[0].k)}
+   const code=localStorage.getItem("cm-maze-code");return {win:!!S.win,mem:S.mem,code,v:code?d.verify(code):null,n}});
+  ok(res.win&&res.code&&res.v&&res.v.ok&&res.v.who===who,who+" can win and the run code replays ("+(res.v&&(res.v.ok?res.v.mem+"K":res.v.why))+")");
+ }
+ // movement keys must never answer a question that pops up mid-walk
+ {await p.goto(base+"about");await p.waitForTimeout(200);await p.goto(base+"maze");await p.waitForTimeout(500);await p.click('[data-w="matt"]');await p.waitForTimeout(300);
+  const dir=await p.evaluate(()=>{const d=CMGame.dbg(),S=d.S,rm=d.room();const k=Object.keys(rm.d).find(k=>rm.d[k].locked);if(!k)return null;d.tryDoor(k);return k});
+  if(!dir)ok(true,"(start room has no locked door in this seed; key test skipped)");else{
+   await p.keyboard.press("ArrowLeft");await p.keyboard.press("ArrowDown");await p.keyboard.press("d");await p.keyboard.press("a");await p.waitForTimeout(100);
+   ok(await p.evaluate(()=>CMGame.dbg().S.mode==="q"),"arrow keys and a/d right after a question opens do not answer it");
+   await p.waitForTimeout(600);await p.keyboard.press("ArrowRight");await p.keyboard.press("s");
+   ok(await p.evaluate(()=>CMGame.dbg().S.mode==="q"),"arrow keys and WASD never answer a question");
+   await p.keyboard.down("b");await p.keyboard.up("b");await p.waitForTimeout(100);
+   ok(await p.evaluate(()=>CMGame.dbg().S.mode!=="q"||CMGame.dbg().S.acts.length>0),"a deliberate answer key still works")}
+  ok(await p.evaluate(()=>{const q={q:'Who made the "IBM Model M Keyboard"?',o:["IBM","Apple","Sega","Atari"],c:0,tag:"maker"};const f=CMGame.fix(q);return CMGame.leaks(q)&&!CMGame.leaks({q:'Who made the "Sound Blaster 16"?',o:["Creative Labs","Apple","Sega","Atari"],c:0})&&f&&f.q==='Who made the "____ Model M Keyboard"?'&&f.o[f.c]==="IBM"}),"a question that gives itself away is rewritten with the giveaway blanked, not thrown out")}
+ // questions are generated from the live site data: many kinds, always valid, and a brand-new item shows up with no code changes
+ {const g=await p.evaluate(()=>{const d={quotes:QUOTES,items:ITEMS.concat([{id:"zz-test",name:"Zorblax Quantum Deck 9000",cat:"Zorblax gear",year:1991,maker:"Zorblax Labs",text:"A made-up test machine that exists only to prove the maze reads the catalog.",specs:{Zing:"11 zings"},sample:false}]),tl:TL,tlx:TLX,gx:GX,tier:tier,scale:SCALE};const pr=CMGame.probe(d,900),r=pr.list;const tags={};r.forEach(q=>tags[q.tag]=1);
+   return {rej:pr.stats.rej,fx:pr.stats.fixed,n:r.length,bad:r.filter(q=>!q.q||q.o.length<4||new Set(q.o).size!==q.o.length||q.c<0||q.c>=q.o.length).length,kinds:Object.keys(tags).length,fixed:r.filter(q=>q.fixed).length,seen:r.some(q=>(q.q+q.o.join("|")).indexOf("Zorblax Quantum Deck 9000")>=0)}});
+  ok(g.n===900&&g.bad===0,"900 generated questions are all valid (bad="+g.bad+")");ok(g.kinds>=9,"questions come in at least 9 kinds ("+g.kinds+")");ok(g.fx>0&&g.rej<=g.fx*0.1,"give-away questions are scrubbed, not skipped (scrubbed "+g.fx+", dropped "+g.rej+")");ok(g.seen,"a newly added catalog item appears in generated questions")}
+ ok(errs.length===0,"no script errors"+(errs.length?": "+errs.join("|"):""));
+ await b.close();srv.close();if(fails.length){console.error("FAILED "+fails.length);process.exit(1)}console.log("OK maze")})();

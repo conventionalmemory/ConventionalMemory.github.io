@@ -1,0 +1,24 @@
+/* The Quotes page: roulette, browse and search with topic chips, and the Who said it? game.   Run: node tests/quotes.js */
+const http=require("http"),fs=require("fs"),path=require("path");const {chromium}=require("playwright");
+const root=path.join(__dirname,"..");const types={".html":"text/html",".js":"text/javascript",".css":"text/css",".json":"application/json",".png":"image/png",".svg":"image/svg+xml"};
+const srv=http.createServer((q,r)=>{let f=path.join(root,decodeURIComponent(q.url.split("?")[0]));if(f.endsWith("/"))f+="index.html";fs.readFile(f,(e,d)=>{if(e){r.writeHead(404);r.end();return}r.writeHead(200,{"content-type":types[path.extname(f)]||"application/octet-stream"});r.end(d)})});
+const fails=[],errs=[];const ok=(c,m)=>{console.log((c?"ok   ":"FAIL ")+m);if(!c)fails.push(m)};
+(async()=>{await new Promise(r=>srv.listen(0,r));const base="http://localhost:"+srv.address().port+"/index.html#/";const b=await chromium.launch();
+ const c=await b.newContext({viewport:{width:1280,height:900}});await c.addInitScript(()=>{try{localStorage.setItem("cm-boot","1");sessionStorage.setItem("cm-boot","1")}catch(e){}});const p=await c.newPage();p.on("pageerror",e=>errs.push(e.message));
+ await p.goto(base+"quotes");await p.waitForTimeout(900);
+ ok(await p.evaluate(()=>document.documentElement.scrollHeight<3000),"the page is short now ("+await p.evaluate(()=>document.documentElement.scrollHeight)+"px)");
+ const q0=await p.evaluate(()=>document.querySelector("#qrb .qt p").textContent);await p.click("#qr-n");
+ ok(await p.evaluate(q=>document.querySelector("#qrb .qt p").textContent!==q,q0),"Another quote changes the quote");
+ await p.click("#qt-b");await p.waitForTimeout(100);
+ ok(await p.evaluate(()=>document.querySelectorAll("#ql .qt").length===12&&!document.getElementById("qp-b").classList.contains("rc-off")&&/quotes/.test(document.getElementById("qc").textContent)),"Browse shows 12 at a time");
+ await p.click("#qmore");ok(await p.evaluate(()=>document.querySelectorAll("#ql .qt").length===24),"Show more adds 12");
+ await p.click('[data-qtp="1"]');await p.waitForTimeout(100);
+ const n1=await p.evaluate(()=>+document.getElementById("qc").textContent.split(" ")[0]);
+ await p.fill("#qs","knuth");await p.waitForTimeout(100);
+ ok(await p.evaluate(n=>+document.getElementById("qc").textContent.split(" ")[0]<=n&&document.querySelectorAll("#ql .qt").length>=1&&/Knuth/.test(document.getElementById("ql").textContent),n1),"a topic chip and a search combine");
+ await p.click("#qt-g");await p.waitForTimeout(100);
+ ok(await p.evaluate(()=>document.querySelectorAll("#qgo button").length===4),"the game offers four names");
+ await p.click("#qgo button >> nth=0");await p.waitForTimeout(100);
+ ok(await p.evaluate(()=>document.querySelectorAll("#qgo button[disabled]").length===4&&!document.getElementById("qg-n").hidden&&document.getElementById("qgf").textContent.length>5),"answering shows the result and offers the next quote");
+ ok(errs.length===0,"no page errors"+(errs.length?": "+errs[0]:""));
+ await b.close();srv.close();if(fails.length){console.error("FAILED "+fails.length);process.exit(1)}console.log("OK quotes")})();
