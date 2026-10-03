@@ -128,10 +128,10 @@ function sbub(id,t,noav,cls){return window.CMBub?CMBub.html(id,CMBub.names[id]||
   {id:"flash",g:"Storage",n:"Flash storage swap (SD card adapter)",d:"Out with the spinning disk, in with a memory card. Silent, cooler, faster to wake up, and holds a lot more.",p:3900,fits:["g4","mini","video","classic"],opts:[["128GB",0],["256GB",2000],["512GB",5000],["1TB",11000]]},
   {id:"batt",g:"Power",n:"New battery",d:"A fresh cell. Gets you back to a full day of music.",p:1800,fits:ALL},
   {id:"batx",g:"Power",n:"Extended battery and thick back",d:"A bigger cell in a slightly thicker case. Roughly double the listening.",p:3400,fits:["classic","video"]},
-  {id:"usbc",g:"Power",n:"USB-C charging port",d:"A modern port, so the old cable can retire.",p:3500,fits:["classic","video","g4"]},
+  {id:"usbc",g:"Power",n:"USB-C charging port",d:"A modern port, so the old cable can retire.",p:3500,fits:["classic","video"]},
   {id:"bt",g:"Sound",n:"Bluetooth audio (internal board)",d:"Pair it to wireless headphones or a car, no cable.",p:4500,fits:["classic","video"]},
-  {id:"amp",g:"Sound",n:"Audiophile op-amp and capacitor upgrade",d:"Better parts on the output stage. Cleaner highs, tighter low end.",p:5500,fits:["classic","video"]},
-  {id:"jack",g:"Sound",n:"New headphone jack and hold switch",d:"Fixes crackling, a loose plug and a stuck hold slider.",p:1800,fits:["g4","mini","video","classic","nano"]},
+  {id:"amp",g:"Sound",n:"Audiophile capacitor upgrade",d:"Better capacitors on the output stage of the Wolfson-chip video models. A tidier signal and a fuller low end.",p:5500,fits:["video"]},
+  {id:"jack",g:"Sound",n:"New headphone jack and hold switch",d:"Fixes crackling, a loose plug and a stuck hold slider.",p:1800,fits:["g4","mini","video"]},
   {id:"plate",g:"Looks",n:"Custom back plate",d:"Polished mirror steel or an anodized color, fitted over a fresh seal.",p:2500,fits:ALL,opts:COL},
   {id:"face",g:"Looks",n:"Colored faceplate and matching click wheel",d:"A color the factory never made, wheel to match.",p:3000,fits:["g4","video","classic"],opts:COL},
   {id:"eng",g:"Looks",n:"Laser engraving (two lines)",d:"On the back plate. Names, a date, a very small joke.",p:1500,fits:ALL,text:"Engraving text"},
@@ -165,7 +165,7 @@ function sbub(id,t,noav,cls){return window.CMBub?CMBub.html(id,CMBub.names[id]||
   +'<div class="ip-desk"><div class="ip-menu" aria-hidden="true"><span class="ip-pe">'+pear(14)+'</span><b>File</b><b>Edit</b><b>View</b><b>Specials</b><span class="ip-mt">Tony’s iPod Works</span></div>'
   +'<div class="ip-store"><div class="ip-hero"><div class="ip-sign"><div class="ip-lg">'+pear(54)+'</div><div><h2>Tony’s iPod Works</h2><p class="ip-sub">Authorized by nobody. Built by Tony.</p></div></div>'
   +'<div class="ip-cast"><div class="ip-cs">'+sp("conrad",92,{tall:1,outfit:"keynote",mood:"happy"})+''+sbub("conrad","One more thing...",1,"ip-cb")+'</div><div class="ip-cc">'+sp("connie",150,{tall:1,look:"explorer",mood:"wink"})+''+sbub("connie","I greet. Uncle Conrad presents. Please do not ask him to stop.",1,"ip-cb")+'</div><div class="ip-cm">'+sp("mat",54,{})+'<small>the cursor</small></div></div></div>'
-  +'<p class="ip-note">Pick the iPod you like, pick what goes in it, and watch the price add up. This is a mock-up: stock, prices and what fits what are placeholders, and Tony will confirm every build by email before anything happens.</p>'
+  +'<p class="ip-note">Pick the iPod you like, pick what goes in it, and watch the price add up. This is a mock-up: stock, prices and what fits what are placeholders, and Tony will confirm every build by email before anything happens. Want to see what is inside first? <a href="#/ipods/bench">Open Tony’s iPod Bench</a>.</p>'
   +'<div class="ip-win"><div class="ip-tb"><i class="ip-cb"></i><span>1. Pick your iPod</span></div><div class="ip-bd" id="ipm"></div></div>'
   +'<div class="ip-win" id="ipw2"><div class="ip-tb"><i class="ip-cb"></i><span>2. Pick your mods</span></div><div class="ip-bd" id="ipo"></div></div>'
   +'<div class="ip-win" id="ipw3"><div class="ip-tb"><i class="ip-cb"></i><span>3. Your build</span></div><div class="ip-bd" id="ips"></div></div>'

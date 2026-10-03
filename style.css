@@ -1663,3 +1663,23 @@ html[data-motion="on"] .bm-cap.pop .bm-in{animation:bmpop .6s ease-out}
 .mc-bubble[data-sh]{background:color-mix(in srgb,var(--hh) 15%,var(--panel));color:var(--ink);border-color:var(--hh);box-shadow:3px 3px 0 color-mix(in srgb,var(--hh) 45%,transparent)}.mc-bubble[data-sh]::after{background:color-mix(in srgb,var(--hh) 15%,var(--panel));border-color:var(--hh)}
 .mc-bubble[data-sh=speech]{border-radius:18px}.mc-bubble[data-sh=cloud]{border-style:dashed;border-radius:26px}.mc-bubble[data-sh=burst]{border-width:3px;border-radius:8px;font-weight:700}
 .mc-bubble[data-sh] .mc-nm{color:var(--hh)}
+
+/* ---- Tony's iPod Bench (#/ipods/bench) ---- */
+.ipb-pick{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:6px}
+.ipb-pk{display:grid;grid-template-columns:30px 1fr;grid-template-rows:auto auto;column-gap:8px;align-items:center;border:2px solid #000;background:#fff;color:#000;padding:4px 8px;text-decoration:none}
+.ipb-pk .ipb-pi{grid-row:1/3;display:flex;justify-content:center;line-height:0}.ipb-pk b{font-size:13px;line-height:1.2}.ipb-pk small{font-size:12px;color:#333}
+.ipb-pk:hover,.ipb-pk:focus-visible{background:#fff6c8;outline:3px solid #000;outline-offset:1px}.ipb-pk.on{background:#000;color:#fff}.ipb-pk.on small{color:#ddd}
+.ipb-cbw{max-width:860px;margin:0 auto 14px}.ipb-cbw .cb{margin:0}
+.ipb-cols{display:grid;grid-template-columns:minmax(260px,330px) 1fr;gap:16px;align-items:start}
+.ipb-fig{background:#fff;border:2px solid #000;padding:6px}.ipb-svg{width:100%;height:auto;display:block}
+.ipb-pl{outline:none;cursor:default}.ipb-pl.on,.ipb-pl:focus{filter:drop-shadow(0 0 0 #000) drop-shadow(3px 0 0 #f7d31e) drop-shadow(-3px 0 0 #f7d31e)}
+.ipb-leg{list-style:none;margin:0;padding:0;display:grid;gap:6px;counter-reset:none}.ipb-leg li{display:grid;grid-template-columns:28px 1fr;gap:8px;align-items:start;border:2px solid #000;background:#fff;padding:6px 8px;outline:none}
+.ipb-leg li.on,.ipb-leg li:focus{background:#fff6c8;outline:3px solid #000;outline-offset:1px}
+.ipb-no{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border:2px solid #000;border-radius:50%;font-weight:700;font-size:13px;background:#fff}.ipb-leg li small{display:block;font-size:13px;color:#222;margin-top:2px}
+.ipb-tab{width:100%;border-collapse:collapse;font-size:14px}.ipb-tab th,.ipb-tab td{border:1px solid #888;padding:4px 8px;text-align:left;vertical-align:top}.ipb-tab tbody th{width:28%;background:#ececec}.ipb-tab thead th{background:#dcdcdc}
+.ipb-ul{margin:0;padding-left:20px}.ipb-ul li{margin:4px 0}.ipb-ol{margin:0;padding-left:22px}.ipb-ol li{margin:4px 0}
+.ipb-mod{padding:6px 0;border-bottom:1px dotted #999}.ipb-mod:last-of-type{border-bottom:0}.ipb-mod p{margin:2px 0 4px}.ipb-mod small a,.ipb-src a{color:#003a99}
+.ipb-st a{color:#003a99}.ipb-gap .ip-bd{background:#fff6c8}.ipb-note{margin-top:14px}.ipb-nav{max-width:860px;margin:0 auto}
+@media(max-width:640px){.ipb-cols{grid-template-columns:1fr}}
+@media print{.ipb-pick{display:none}}
+.ipb-tab td:last-child{text-align:left;white-space:normal}.ipb-tab{min-width:0;table-layout:auto}

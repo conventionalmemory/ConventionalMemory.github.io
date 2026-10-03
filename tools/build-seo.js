@@ -381,12 +381,40 @@ const REPAIR_URLS=[];
    +["Computers and gear","Consoles and handhelds"].map(c=>"<h2>"+H(c)+"</h2>"+kinds.map(k=>{const gs=RP.filter(g=>g.cat===c&&g.kind===k);return gs.length?"<h3>"+H(k)+"</h3><ul>"+gs.map(g=>'<li><a href="/repairs/'+H(g.id)+'/"><b>'+H(g.title)+"</b></a> ("+H(g.level)+", about "+g.minutes+" minutes). "+H(g.blurb)+"</li>").join("")+"</ul>":""}).join("")).join("")
    +cameo(null,"Read the cautions first, then take your time.")+"</article>";
   put(path_+"index.html",shell({path:path_,title,desc,crumbs,body,og:"website",ld:[{"@context":"https://schema.org","@type":"CollectionPage",name:"Repair guides",description:desc,url:abs(path_)},crumbLD(crumbs)]}));REPAIR_URLS.unshift(path_)}}
+
+/* ---- /ipod/: Tony's iPod Bench as plain pages (built from ipod-data.js, with the same drawing the museum page uses) ---- */
+const IPOD_URLS=[];
+{const ic={window:{}};vm.createContext(ic);vm.runInContext(fs.readFileSync(path.join(root,"ipod-data.js"),"utf8")+";this.IPOD=IPOD",ic,{filename:"ipod-data.js"});vm.runInContext(fs.readFileSync(path.join(root,"ipodbench.js"),"utf8"),ic,{filename:"ipodbench.js"});
+ const IP=ic.IPOD,DRAW=ic.window.CMIpodBench.draw;
+ const lk=(s)=>'<a href="'+H(s[1])+'" target="_blank" rel="noopener noreferrer">'+H(s[0])+"</a>";
+ const two3=q=>{const a=affUrl("amazon",q),e=affUrl("ebay",q),L=(u,t)=>u?'<a href="'+H(u)+'" target="_blank" rel="sponsored noopener noreferrer">'+t+"</a>":"";return[L(a,"Amazon"),L(e,"eBay")].filter(Boolean).join(" &middot; ")};
+ IP.m.forEach(m=>{const path_="/ipod/"+m.id+"/",crumbs=[["Home","/"],["iPod Bench","/ipod/"],[m.n,path_]];
+  const title=(t=>t.length>80?m.n+" | "+NAME:t)(m.n+": inside, battery, storage and mods | "+NAME),desc=clip(m.blurb+" "+m.yrs+". Drawn layers, battery, flash upgrades, Rockbox, common faults and mods.",158);
+  const mods=IP.mods.filter(x=>x.fits.indexOf(m.id)>=0);
+  const body='<article class="sp-art"><p class="sp-kicker">iPod Bench</p><h1>'+H(m.n)+'</h1><p class="sp-lead">'+H(m.blurb)+"</p>"
+   +'<p><a class="btn pri" href="/#/ipods/bench/'+m.id+'">Open the interactive page</a> <a class="btn" href="/ipod/">All iPods</a></p>'
+   +(m.layers.length?"<h2>What is inside</h2>"+DRAW(m)+"<ol>"+m.layers.map(l=>"<li><b>"+H(l.t)+".</b> "+H(l.d||"")+"</li>").join("")+'</ol><p class="tn">'+(m.layers.some(l=>l.n>=1)?"Numbers follow the order a repairer meets the parts in a published teardown. A square means we have not confirmed the order. ":"We have not confirmed an order for this model, so read the list as parts, not steps. ")+"Drawn by us, not to scale.</p>":'<h2>What is inside</h2><p>We could not find a teardown for this model that we trust, so we have not drawn it.</p>')
+   +"<h2>Quick facts</h2><ul>"+m.facts.map(f=>"<li><b>"+H(f[0])+":</b> "+H(f[1])+"</li>").join("")+"</ul>"
+   +(m.open.length?"<h2>How it opens</h2><ol>"+m.open.map(x=>"<li>"+H(x)+"</li>").join("")+"</ol>"+(m.tools?"<p>Tools named in the guides: "+H(m.tools)+".</p>":""):"")
+   +"<h2>Change the storage</h2><ul>"+m.flash.map(x=>"<li>"+H(x)+"</li>").join("")+"</ul>"
+   +"<h2>Rockbox</h2><p><b>"+H(m.rbx[0])+".</b> "+H(m.rbx[1])+"</p>"
+   +"<h2>What goes wrong</h2><ul>"+m.fail.map(f=>"<li><b>"+H(f[0])+"</b>"+(f[1]?": "+H(f[1]):"")+"</li>").join("")+"</ul>"
+   +"<h2>Mods that are documented for it</h2>"+(mods.length?"<ul>"+mods.map(x=>"<li><b>"+H(x.n)+".</b> "+H(x.d)+" ("+x.src.map(lk).join(", ")+")</li>").join("")+"</ul>":"<p>None found.</p>")
+   +(affOn()?"<h2>Parts to search for</h2><ul>"+m.parts.map(q=>"<li>"+H(q)+": "+two3(q)+"</li>").join("")+'</ul><p class="tn">'+H(AFF_SHORT)+' These links only search by name. Match your exact model before you buy. <a href="/#/disclosure">Disclosure</a></p>':"")
+   +"<h2>What we have not confirmed</h2><ul>"+m.gaps.map(x=>"<li>"+H(x)+"</li>").join("")+"</ul>"
+   +"<h2>Where this came from</h2><ul>"+m.src.map(s=>"<li>"+lk(s)+"</li>").join("")+"</ul>"
+   +'<p class="tn">Written in our own words from the pages above. Opening an iPod can break it, and a lithium battery that is bent, punctured or shorted can burn, so wear eye protection and stop if one is swollen. Boards and batteries vary, so check your own. Not affiliated with Apple.</p></article>';
+  put(path_+"index.html",shell({path:path_,title,desc,crumbs,body,og:"article",ld:[crumbLD(crumbs)]}));IPOD_URLS.push(path_)});
+ {const path_="/ipod/",crumbs=[["Home","/"],["iPod Bench",path_]],title="iPod Bench: inside every iPod | "+NAME,desc=clip("Drawn layers, batteries, flash upgrades, Rockbox, common faults and mods for the iPod 1st to 4th generation, photo, mini, video, nano 2nd generation and classic.",158);
+  const body='<article class="sp-art"><p class="sp-kicker">iPod Bench</p><h1>Inside every iPod</h1><p class="sp-lead">Pick an iPod for a drawing of what is inside, the battery and storage facts, the usual faults and the mods that are documented for it. Where we could not confirm something, the page says so.</p>'
+   +'<p><a class="btn pri" href="/#/ipods/bench">Open the interactive iPod Bench</a></p><ul>'+IP.m.map(m=>'<li><a href="/ipod/'+m.id+'/"><b>'+H(m.n)+"</b></a> ("+H(m.yrs)+"). "+H(m.blurb)+"</li>").join("")+"</ul></article>";
+  put(path_+"index.html",shell({path:path_,title,desc,crumbs,body,og:"website",ld:[{"@context":"https://schema.org","@type":"CollectionPage",name:"iPod Bench",description:desc,url:abs(path_)},crumbLD(crumbs)]}));IPOD_URLS.unshift(path_)}}
 put("/robots.txt","User-agent: *\nAllow: /\n\nSitemap: "+abs("/sitemap.xml")+"\n");
-{const urls=["/","/history/","/museum/","/guides/","/books/"].concat(FEAT,RECAP_URLS,REPAIR_URLS,GUIDES.map(g=>"/guides/"+g.slug+"/"),[]).concat(decades.map(d=>"/decade/"+d+"/"),years.map(y=>"/year/"+y+"/"),ITEMS.map(i=>"/museum/"+i.id+"/"),sorted.map(e=>"/history/"+e.slug+"/"));
- put("/sitemap.xml",'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+urls.map(u=>"<url><loc>"+H(abs(u))+"</loc>"+(u==="/"?"<changefreq>weekly</changefreq><priority>1.0</priority>":/^\/(guides|books|recap|repairs)\//.test(u)?"<priority>0.8</priority>":/^\/(history|museum|decade|features)\/$|^\/decade\/|^\/features\//.test(u)?"<priority>0.7</priority>":"")+"</url>").join("\n")+"\n</urlset>\n")}
+{const urls=["/","/history/","/museum/","/guides/","/books/"].concat(FEAT,RECAP_URLS,REPAIR_URLS,IPOD_URLS,GUIDES.map(g=>"/guides/"+g.slug+"/"),[]).concat(decades.map(d=>"/decade/"+d+"/"),years.map(y=>"/year/"+y+"/"),ITEMS.map(i=>"/museum/"+i.id+"/"),sorted.map(e=>"/history/"+e.slug+"/"));
+ put("/sitemap.xml",'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+urls.map(u=>"<url><loc>"+H(abs(u))+"</loc>"+(u==="/"?"<changefreq>weekly</changefreq><priority>1.0</priority>":/^\/(guides|books|recap|repairs|ipod)\//.test(u)?"<priority>0.8</priority>":/^\/(history|museum|decade|features)\/$|^\/decade\/|^\/features\//.test(u)?"<priority>0.7</priority>":"")+"</url>").join("\n")+"\n</urlset>\n")}
 
 /* ---- write or check ---- */
-const GEN=["history","year","decade","museum","guides","books","cast","features","recap","repairs"],FILES=["sitemap.xml","robots.txt","404.html"];
+const GEN=["history","year","decade","museum","guides","books","cast","features","recap","repairs","ipod"],FILES=["sitemap.xml","robots.txt","404.html"];
 function walk(d){const o=[];if(!fs.existsSync(d))return o;fs.readdirSync(d,{withFileTypes:true}).forEach(e=>{const p=path.join(d,e.name);if(e.isDirectory())o.push(...walk(p));else o.push(p)});return o}
 if(CHECK){const want=Object.keys(out),have=new Set([].concat(...GEN.map(g=>walk(path.join(root,g))),FILES.map(f=>path.join(root,f)).filter(f=>fs.existsSync(f))).map(f=>"/"+path.relative(root,f).split(path.sep).join("/")));
  const miss=want.filter(p=>!have.has(p)),extra=[...have].filter(p=>!out[p]),diff=want.filter(p=>have.has(p)&&fs.readFileSync(path.join(root,p),"utf8")!==out[p]);
