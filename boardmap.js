@@ -31,7 +31,7 @@ function mapped(map,rows,ms){var placed=[],tray=[],h=map.h,out="";
  rows.forEach(function(r){var p=r.ref&&map.c[r.ref];if(p)placed.push([r,p]);else tray.push(r)});
  (map.b||[]).forEach(function(b){var cl="bm-pcb"+(b.s?" bm-sub":"");
   out+=(b.p?'<path class="'+cl+'" d="M'+b.p.map(function(q){return q[0]+" "+q[1]}).join("L")+'Z"/>':'<rect class="'+cl+'" x="'+b.x+'" y="'+b.y+'" width="'+b.w+'" height="'+b.h+'" rx="2"/>')
-   +'<text class="bm-bn" x="'+r1(b.x+2)+'" y="'+r1(b.s?b.y+b.h-2:b.y+(b.p?b.h-1.6:4.2))+'">'+E(b.n)+"</text>"});
+   +'<text class="bm-bn" x="'+r1(b.nx!=null?b.nx:b.x+2)+'" y="'+r1(b.ny!=null?b.ny:(b.s?b.y+b.h-2:b.y+(b.p?b.h-1.6:4.2)))+'">'+E(b.n)+"</text>"});
  (map.ic||[]).forEach(function(m){out+='<rect class="bm-lm" x="'+m[0]+'" y="'+m[1]+'" width="'+m[2]+'" height="'+m[3]+'" rx="0.5"/>'+(m[4]?'<text class="bm-lt" x="'+r1(m[0]+m[2]/2)+'" y="'+r1(m[1]+m[3]/2+0.9)+'">'+E(m[4])+"</text>":"")});
  (map.lm||[]).forEach(function(m){out+='<rect class="bm-lm" x="'+m[0]+'" y="'+m[1]+'" width="'+m[2]+'" height="'+m[3]+'" rx="0.8"/><text class="bm-lt" x="'+r1(m[0]+m[2]/2)+'" y="'+r1(m[1]+m[3]/2+0.9)+'">'+E(m[4])+"</text>"});
  var items=placed.map(function(q){return{row:q[0],x:q[1][0],y:q[1][1]}});
