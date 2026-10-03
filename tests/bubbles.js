@@ -20,6 +20,23 @@ const fails=[],errs=[];const ok=(c,m)=>{console.log((c?"ok   ":"FAIL ")+m);if(!c
    ok(r.over,"stacked boxes overlap");
    ok(r.tail.join()==="cloud,burst,speech","a question becomes a thought cloud, a shout a burst");
   }
+  if(vw===1280){
+   const has=async(route,sel,what)=>{await p.goto(base+route);await p.waitForTimeout(900);ok(await p.evaluate(sel=>{const e=document.querySelector(sel);return !!e&&/cb-s-/.test(e.className)},sel),what)};
+   await has("recap/nes","#rc-say .cb-t","the recap bench shows Connie in her own box");
+   await has("repairs/amiga-clock-battery","#rc-say .cb-t","the repair guide shows Connie in her own box");
+   await has("repairs",".rc-two .cb-t.cb-s-clip","Mom's caution on the repairs page is in her clipboard box");
+   await has("family/emma","#fa-line .cb-t","a family profile line is in a character box");
+   await p.evaluate(()=>document.querySelector("#fa-again").click());
+   ok(await p.evaluate(()=>!!document.querySelector("#fa-line .cb-t")),"saying something else keeps the box");
+   await has("memman",".mm-say .cb-t","the memory manager game shows Connie in her own box");
+   await has("shop/connie",".sh-greet .cb-t","the mall shows Connie in her own box");
+   await has("about",".cm-cameo .cb-t","a family cameo speaks in Connie's own box");
+   await p.goto(base+"animations");await p.waitForTimeout(1000);
+   await p.evaluate(()=>document.querySelector('[data-scene="kitchen"]').click());await p.waitForTimeout(800);
+   ok(await p.evaluate(()=>!!document.querySelector("#anstage .stg-a")),"the stage scenes still run");
+   await p.waitForTimeout(6500);
+   ok(await p.evaluate(()=>{const b=[...document.querySelectorAll(".stg-b[data-sh]")];return b.length>0&&b.every(x=>x.style.getPropertyValue("--hh"))}),"stage speech bubbles take their character's box shape and color");
+  }
   await c.close()}
  ok(errs.length===0,"no page errors"+(errs.length?": "+errs[0]:""));
  await b.close();srv.close();if(fails.length){console.error("FAILED "+fails.length);process.exit(1)}console.log("OK bubbles")})();

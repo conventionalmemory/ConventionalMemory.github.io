@@ -18,6 +18,7 @@ function av(id,sz,o){o=o||{};if(typeof CMCast==="undefined")return"";
  var opt={tall:!PET[id]};if(typeof CMCast.famOpts==="function"){var f=CMCast.famOpts(id);for(var k in f)opt[k]=f[k]}
  if(o.holds)opt.holds=o.holds;if(o.mood)opt.mood=o.mood;
  try{return CMCast.svg(id,sz,opt)}catch(e){return""}}
+function csay(t){return window.CMBub?CMBub.say("connie",t,{noav:1}):"<b>Connie:</b> "+E(t)}
 function crew(id,line,holds,cls){if(window.CMBub)return CMBub.html(id,NAME[id]||id,line,av(id,48,{holds:holds||HOLD[id]}),{cls:"rc-crew"+(cls?" "+cls:"")});return'<div class="rc-crew'+(cls?" "+cls:"")+'"><span class="rc-av" aria-hidden="true">'+av(id,48,{holds:holds||HOLD[id]})+'</span><p><b>'+E(NAME[id]||id)+':</b> '+E(line)+'</p></div>'}
 /* who looks after which kind of repair, and what they say about it */
 var KIND_CREW={
@@ -83,7 +84,7 @@ function index(){
  h+='<h3 class="sub">Find a repair</h3><p class="rc-find noprint"><label for="rp-q">Search</label> <input id="rp-q" type="search" maxlength="40" placeholder="battery, Dreamcast, belt, Amiga" autocomplete="off"> <button class="btn" type="button" id="rp-sur">Surprise me</button> <span class="tn" id="rp-qn" role="status"></span></p>'
   +'<p class="rc-chips noprint" role="group" aria-label="Kind of repair"><button type="button" class="rc-chip2 on" data-kk="">All <small>'+REPAIRS.length+'</small></button>'+kinds.map(function(k){return'<button type="button" class="rc-chip2" data-kk="'+E(k)+'">'+E(k)+' <small>'+REPAIRS.filter(function(g){return g.kind===k}).length+'</small></button>'}).join("")+'</p>'
   +CATS.map(function(c){var gs=REPAIRS.filter(function(g){return g.cat===c});return gs.length?'<section class="rc-cat" data-cat="'+E(c)+'"><h4 class="rc-cath">'+E(c)+' <small>'+gs.length+'</small></h4><div class="rc-grid">'+gs.map(card).join("")+'</div><p class="rc-mp noprint"><button type="button" class="btn" data-more></button></p></section>':""}).join("")
-  +'<div class="rc-two noprint"><div class="rc-crew"><span class="rc-av" aria-hidden="true">'+av("rhoda",56,{holds:"clipboard"})+'</span><p><b>Mom:</b> The cautions are read-only. If a guide says stop and ask a professional, stop. Anything with a tube or a mains supply is not a weekend project.</p></div></div>'
+  +'<div class="rc-two noprint">'+crew("rhoda","The cautions are read-only. If a guide says stop and ask a professional, stop. Anything with a tube or a mains supply is not a weekend project.","clipboard")+'</div>'
   +'<h3 class="sub">Not on the list?</h3><p>Tell us what you are fixing. <a class="btn" href="#/follow">Ask us to add one</a> <a class="btn" href="#/recap">The Recap Bench</a> <a class="btn" href="#/journal">Repair journal</a> <a class="btn" href="#/backup">Back up my bench</a></p>'
   +discl()+'<p class="tn">Steps are written from the sources linked on each guide, and a few from general technique, and they say which. Boards and models vary. Work safely, and at your own risk.</p></section>';
  app.innerHTML=h;wireIndex()}
@@ -102,7 +103,7 @@ function wireIndex(){var q=$("#rp-q"),kind="",LIM=8,open={},secs=$$(".rc-cat");
 
 /* ---------- a guide ---------- */
 function head(g,s){var done=s.done===s.n&&s.n>0;
- return'<div class="rc-top"><div class="rc-ci" id="rc-ci">'+av("connie",96,{holds:"meter",mood:done?"love":"wink"})+'</div><div class="rc-prog"><h3 class="rc-pn">'+E(g.title)+'</h3><div id="rc-bar">'+bar(s.pct,"Steps done")+'</div><p id="rc-count" class="rc-ct"><b>'+s.done+'</b> of '+s.n+' steps done ('+s.pct+'%)</p><p id="rc-say" class="rc-say" role="status"><b>Connie:</b> '+E(cheer(s.pct,s.done))+'</p></div></div>'}
+ return'<div class="rc-top"><div class="rc-ci" id="rc-ci">'+av("connie",96,{holds:"meter",mood:done?"love":"wink"})+'</div><div class="rc-prog"><h3 class="rc-pn">'+E(g.title)+'</h3><div id="rc-bar">'+bar(s.pct,"Steps done")+'</div><p id="rc-count" class="rc-ct"><b>'+s.done+'</b> of '+s.n+' steps done ('+s.pct+'%)</p><div id="rc-say" class="rc-say" role="status">'+csay(cheer(s.pct,s.done))+'</div></div></div>'}
 function listHtml(items,key,ms,kind){return'<ul class="rc-tl">'+items.map(function(x,i){var id=key+i,on=!!ms[kind][id];
  return'<li class="'+(on?"done":"")+'"><label><input type="checkbox" data-'+kind+'="'+id+'"'+(on?" checked":"")+'> <b>'+E(x.n)+'</b></label>'+(x.why?'<small>'+E(x.why)+'</small>':"")+(aff()&&x.q?'<span class="rc-tiers noprint">'+stores(x.q,"Amazon")+'</span>':"")+'</li>'}).join("")+'</ul>'}
 function cautionHtml(g,ms){var cs=g.cautions;if(!cs.length)return"";
@@ -136,7 +137,7 @@ function guide(g){var s=stats(g),ms=s.ms,tl=tlLinks(g),rc=recapLinks(g),ot=other
   +'<p class="noprint"><a class="btn" href="#/repairs">All repairs</a> <a class="btn" href="#/backup">Back up my bench</a> <a class="btn" href="/repairs/'+E(g.id)+'/">Web version for sharing</a> <button class="btn" type="button" id="rc-print">Print the checklist</button></p></section>';
  app.innerHTML=h;wireGuide(g)}
 function refresh(g,msg){var s=stats(g);var b=$("#rc-bar");if(b)b.innerHTML=bar(s.pct,"Steps done");var c=$("#rc-count");if(c)c.innerHTML="<b>"+s.done+"</b> of "+s.n+" steps done ("+s.pct+"%)";
- var say=$("#rc-say");if(say)say.innerHTML="<b>Connie:</b> "+E(msg||cheer(s.pct,s.done));var ci=$("#rc-ci");if(ci)ci.innerHTML=av("connie",96,{holds:"meter",mood:s.done===s.n&&s.n?"love":"wink"});
+ var say=$("#rc-say");if(say)say.innerHTML=csay(msg||cheer(s.pct,s.done));var ci=$("#rc-ci");if(ci)ci.innerHTML=av("connie",96,{holds:"meter",mood:s.done===s.n&&s.n?"love":"wink"});
  var dn=$("#rc-done");if(dn){if(s.done===s.n&&s.n>0){var ms=s.ms;if(!ms.t1)ms.t1=today();write();dn.innerHTML='<div class="rc-win" role="status">'+crew("hiram","It is done! Can I try it now? I called it before anyone else.","controller")+'<p><b>Repair complete.</b> Power it up, test it, and write down what you found in the bench notes. Then <a href="#/journal">log it in the repair journal</a>.</p></div>'}else dn.innerHTML=""}}
 function wireGuide(g){var ms=gst(g.id);
  var onChange=function(e){var el=e.target;if(!el||!app.contains(el))return;

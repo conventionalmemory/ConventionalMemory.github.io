@@ -47,7 +47,7 @@ window.CMStage=(function(){
    if(r.top<br.top+2){bub.className="stg-b stgside "+(A.x>50?"stgl":"stgr");r=bub.getBoundingClientRect();if(r.right>br.right-3){bub.className="stg-b stgside stgl"}else if(r.left<br.left+3){bub.className="stg-b stgside stgr"}return}
    if(r.left<br.left+3)dx=br.left+3-r.left;else if(r.right>br.right-3)dx=br.right-3-r.right;
    if(dx){bub.style.transform="translateX(calc(-50% + "+dx+"px))";bub.style.setProperty("--tx",(-dx)+"px")}};
-  A.say=function(t,ms){bub.textContent=t;bub.hidden=false;el.style.zIndex=30;A.fit();if(ms)T(function(){A.hush()},ms)};
+  A.say=function(t,ms){bub.textContent=t;if(window.CMBub){var sk=CMBub.skin(id,t);bub.setAttribute("data-sh",sk.shape);bub.style.setProperty("--hh",sk.hue)}bub.hidden=false;el.style.zIndex=30;A.fit();if(ms)T(function(){A.hush()},ms)};
   A.hush=function(){bub.hidden=true;el.style.zIndex=z};
   /* little pixel effects: puff, spark, heart, note, star */
   A.fx=function(kind,dx,dy){if(!mo())return;var f=document.createElement("i");f.className="stg-fx fx-"+kind;f.style.left=(50+(dx||0))+"%";f.style.top=(dy==null?8:dy)+"%";el.appendChild(f);setTimeout(function(){if(f.parentNode)f.parentNode.removeChild(f)},1300)};

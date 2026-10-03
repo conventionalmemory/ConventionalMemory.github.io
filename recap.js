@@ -229,7 +229,7 @@ function addHtml(mach,ms){return'<section class="rc-add noprint" aria-labelledby
 function notesHtml(ms){return'<section class="rc-nt" aria-labelledby="rc-nth"><h3 class="sub" id="rc-nth">Bench notes</h3>'+crew("tess","I live in the hallway and remember everything. Write it down.","")+'<p><label for="rc-notes" class="sr">Bench notes</label><textarea id="rc-notes" rows="4" maxlength="4000" placeholder="Board number, what you ordered, what went wrong, what to do next time.">'+E(ms.n)+'</textarea></p>'+(saved?"":'<p class="msg err">This browser would not save. Your progress will be lost when you close the page. Check that cookies and site data are allowed.</p>')+'</section>'}
 
 function head(mach,s){var ms=s.ms,done=s.done===s.total&&s.total>0;
- return'<div class="rc-top"><div class="rc-ci" id="rc-ci">'+av("connie",96,{holds:"iron",mood:done?"love":"wink"})+'</div><div class="rc-prog"><h3 class="rc-pn">'+E(mach.n)+' <small>'+(mach.yr||"")+'</small></h3><div id="rc-bar">'+bar(s.pct,"Capacitors replaced")+'</div><p id="rc-count" class="rc-ct"><b>'+s.done+'</b> of '+s.total+' replaced ('+s.pct+'%)</p><p id="rc-say" class="rc-say" role="status"><b>Connie:</b> '+E(cheer(s.pct,s.done))+'</p></div></div><div id="rc-crew">'+crewStrip(s.pct)+'</div>'}
+ return'<div class="rc-top"><div class="rc-ci" id="rc-ci">'+av("connie",96,{holds:"iron",mood:done?"love":"wink"})+'</div><div class="rc-prog"><h3 class="rc-pn">'+E(mach.n)+' <small>'+(mach.yr||"")+'</small></h3><div id="rc-bar">'+bar(s.pct,"Capacitors replaced")+'</div><p id="rc-count" class="rc-ct"><b>'+s.done+'</b> of '+s.total+' replaced ('+s.pct+'%)</p><div id="rc-say" class="rc-say" role="status">'+csay(cheer(s.pct,s.done))+'</div></div></div><div id="rc-crew">'+crewStrip(s.pct)+'</div>'}
 var TABS=[["caps","Capacitors"],["shop","Shopping list"],["know","Know first"],["do","Do it"],["docs","Docs"],["notes","Notes and checks"]];
 var DKIND={s:"Service manual",d:"Schematic",g:"Guide",o:"Operating guide",c:"Datasheet"},DORD="sdgoc";
 function manualsHtml(mach){if(typeof LIB==="undefined")return"";
@@ -272,7 +272,8 @@ function machine(mach){var s=stats(mach),ms=s.ms,rows=s.rows,tl=mach.tl.filter(f
  app.innerHTML=h;wireMachine(mach);if(window.CMBoard)CMBoard.wire(app);refreshBoards(mach)}
 
 /* ---------- live updates ---------- */
-function say(t){var el=$("#rc-say");if(el)el.innerHTML='<b>Connie:</b> '+E(t)}
+function csay(t){return window.CMBub?CMBub.say("connie",t,{noav:1}):'<b>Connie:</b> '+E(t)}
+function say(t){var el=$("#rc-say");if(el)el.innerHTML=csay(t)}
 function refresh(mach,msg){var s=stats(mach),ms=s.ms;
  var hd=$("#rc-bar");if(hd)hd.innerHTML=bar(s.pct,"Capacitors replaced");
  var ct=$("#rc-count");if(ct)ct.innerHTML='<b>'+s.done+'</b> of '+s.total+' replaced ('+s.pct+'%)';

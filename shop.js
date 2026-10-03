@@ -11,6 +11,7 @@ window.CMShop=(function(){
  function $(q,r){return(r||app).querySelector(q)}function $$(q,r){return Array.prototype.slice.call((r||app).querySelectorAll(q))}
  function $m(c){return"$"+(c/100).toFixed(2)}
  function sp(id,w,o){return CMCast.svg(id,w,o||{})}
+function sbub(id,t,noav,cls){return window.CMBub?CMBub.html(id,CMBub.names[id]||id,t,noav?"":sp(id,48,{tall:1,look:id==="connie"?"explorer":undefined}),{noav:noav,cls:cls}):"<p><b>"+id+":</b> "+t+"</p>"}
 
  /* ------------------------------------------------------------------ the cart */
  function ld(){var c={};try{c=JSON.parse(localStorage.getItem("cm-cart")||"{}")||{}}catch(e){}return{items:c.items||[],want:c.want||{}}}
@@ -87,7 +88,7 @@ window.CMShop=(function(){
  /* ------------------------------------------------------------------ the mall */
  function mall(){var pa=PA[Math.floor(Math.random()*PA.length)];
   var h=bar("")+'<section class="ml">'+banner()
-   +'<div class="ml-top"><div class="ml-hero">'+sp("connie",150,{tall:1,look:"explorer",mood:"happy"})+'</div><div class="ml-sign"><small>Grand opening: soon</small><h2>Conventional Memory Mall</h2><p class="ml-s2">Six stores. One anchor. Zero parking.</p><p class="ml-say"><b>Connie:</b> “Welcome! Every window in here has me in it, which is only fair. Pick a store from the directory, or just walk down the hall.”</p></div></div>'
+   +'<div class="ml-top"><div class="ml-hero">'+sp("connie",150,{tall:1,look:"explorer",mood:"happy"})+'</div><div class="ml-sign"><small>Grand opening: soon</small><h2>Conventional Memory Mall</h2><p class="ml-s2">Six stores. One anchor. Zero parking.</p><div class="ml-say">'+sbub("connie","Welcome! Every window in here has me in it, which is only fair. Pick a store from the directory, or just walk down the hall.",1)+'</div></div></div>'
    +'<div class="ml-dir"><h3>Mall directory</h3><p class="ml-here"><span>★ YOU ARE HERE</span> Main concourse, next to the fountain (closed).</p><ol>'+STORES.map(function(s){return'<li><a href="#/shop/'+s.k+'"><i>'+s.no+"</i><b>"+E(s.n)+"</b><span>"+E(s.tag)+"</span></a></li>"}).join("")+'</ol><p class="ml-cart"><a class="btn" href="#/shop/cart">Your cart ('+count()+")</a></p></div>"
    +'<h3 class="sub">The concourse</h3><div class="ml-floor">'+STORES.map(function(s){return'<a class="ml-st ml-'+s.k+'" href="#/shop/'+s.k+'" style="--c1:'+s.col+";--c2:"+s.col2+'" aria-label="'+E(s.n+": "+s.tag)+'"><i class="ml-awn" aria-hidden="true"></i><b class="ml-sg">'+E(s.sign)+'</b><span class="ml-win" aria-hidden="true">'+s.win.map(function(x){return sp(x,x==="connie"?58:46,x==="connie"?{tall:1,mood:"wink"}:{})}).join("")+'</span><small>'+E(s.tag)+"</small></a>"}).join("")
    +'<div class="ml-fc" aria-hidden="true"><b>FOOD COURT</b><span>Closed for construction. Free kilobytes will be served.</span></div></div>'
@@ -101,7 +102,7 @@ window.CMShop=(function(){
  function shelf(k){var s=store(k),list=PROD[k]||[];
   var h=bar(k)+'<section class="sh sh-'+k+'" style="--c1:'+s.col+";--c2:"+s.col2+'">'+banner()
    +'<header class="sh-hd"><div class="sh-sg"><small>Store '+s.no+" of "+STORES.length+"</small><h2>"+E(s.n)+"</h2><p>"+E(s.tag)+'</p></div><div class="sh-keep">'+sp(s.who,84,{tall:1})+'<p class="sh-bub">'+E(s.say)+"</p></div></header>"
-   +'<p class="sh-greet"><span>'+sp("connie",48,{tall:1,look:"explorer"})+"</span><b>Connie:</b> “"+(k==="connie"?"Welcome to my corner. Everything in here has my face on it.":"I am in the window of every store. I checked.")+"”</p>"
+   +'<div class="sh-greet cbw">'+sbub("connie",(k==="connie"?"Welcome to my corner. Everything in here has my face on it.":"I am in the window of every store. I checked."),0)+"</div>"
    +'<div class="sh-grid">'+list.map(function(p){return prodCard(p,s)}).join("")+"</div>"
    +'<p class="cv-note">Mock-up prices. Items marked <b>Mock-up</b> can go in the cart. The rest are ideas: tell us which you want and we will build those first.</p>'+nextprev(k)+"</section>";
   app.innerHTML=h;
@@ -163,7 +164,7 @@ window.CMShop=(function(){
  function ipods(){var h=bar("ipods")+'<section class="ip">'+banner()
   +'<div class="ip-desk"><div class="ip-menu" aria-hidden="true"><span class="ip-pe">'+pear(14)+'</span><b>File</b><b>Edit</b><b>View</b><b>Specials</b><span class="ip-mt">Tony’s iPod Works</span></div>'
   +'<div class="ip-store"><div class="ip-hero"><div class="ip-sign"><div class="ip-lg">'+pear(54)+'</div><div><h2>Tony’s iPod Works</h2><p class="ip-sub">Authorized by nobody. Built by Tony.</p></div></div>'
-  +'<div class="ip-cast"><div class="ip-cs">'+sp("conrad",92,{tall:1,outfit:"keynote",mood:"happy"})+'<p class="ip-bub">One more thing...</p></div><div class="ip-cc">'+sp("connie",150,{tall:1,look:"explorer",mood:"wink"})+'<p class="ip-bub"><b>Connie:</b> I greet. Uncle Conrad presents. Please do not ask him to stop.</p></div><div class="ip-cm">'+sp("mat",54,{})+'<small>the cursor</small></div></div></div>'
+  +'<div class="ip-cast"><div class="ip-cs">'+sp("conrad",92,{tall:1,outfit:"keynote",mood:"happy"})+''+sbub("conrad","One more thing...",1,"ip-cb")+'</div><div class="ip-cc">'+sp("connie",150,{tall:1,look:"explorer",mood:"wink"})+''+sbub("connie","I greet. Uncle Conrad presents. Please do not ask him to stop.",1,"ip-cb")+'</div><div class="ip-cm">'+sp("mat",54,{})+'<small>the cursor</small></div></div></div>'
   +'<p class="ip-note">Pick the iPod you like, pick what goes in it, and watch the price add up. This is a mock-up: stock, prices and what fits what are placeholders, and Tony will confirm every build by email before anything happens.</p>'
   +'<div class="ip-win"><div class="ip-tb"><i class="ip-cb"></i><span>1. Pick your iPod</span></div><div class="ip-bd" id="ipm"></div></div>'
   +'<div class="ip-win" id="ipw2"><div class="ip-tb"><i class="ip-cb"></i><span>2. Pick your mods</span></div><div class="ip-bd" id="ipo"></div></div>'
@@ -199,7 +200,7 @@ window.CMShop=(function(){
   else h+='<table class="sh-ct"><thead><tr><th>Item</th><th>Qty</th><th>Each</th><th>Total</th><th></th></tr></thead><tbody>'+c.items.map(function(i,n){return"<tr><td><b>"+E(i.n)+"</b>"+(i.d?"<small>"+E(i.d)+"</small>":"")+'</td><td class="q"><button type="button" data-q="'+n+'" data-d="-1" aria-label="One fewer">-</button> '+i.q+' <button type="button" data-q="'+n+'" data-d="1" aria-label="One more">+</button></td><td>'+$m(i.u)+"</td><td>"+$m(i.u*i.q)+'</td><td><button type="button" class="btn" data-rm="'+n+'">Remove</button></td></tr>'}).join("")+'</tbody><tfoot><tr><td colspan="3">Subtotal (mock, before shipping and tax)</td><td>'+$m(t)+"</td><td></td></tr></tfoot></table>";
   var ot=orderText(c);
   h+='<div class="sh-order"><h3>Send us your list</h3><p>There is no checkout yet: no card number, no account and no payment of any kind. This sheet is just a request. Send it by email, copy it or print it, and we will write back when the doors open.</p><pre class="sh-pre" id="shpre">'+E(ot)+'</pre><p class="noprint"><a class="btn pri" id="shmail" href="mailto:'+EMAIL+"?subject="+encodeURIComponent("Mall order request")+"&body="+encodeURIComponent(ot)+'">Email this to Conventional Memory</a> <button class="btn" type="button" id="shcopy">Copy</button> <button class="btn" type="button" id="shprint">Print</button> <button class="btn" type="button" id="shclear">Empty the cart</button></p><p class="ip-ok" id="shok" role="status"></p></div>'
-   +'<div class="sh-greet"><span>'+sp("connie",48,{tall:1,look:"explorer"})+'</span><b>Connie:</b> “Please note that I am not the cashier. I am the mannequin.”</div>'+nextprev("")+"</section>";
+   +'<div class="sh-greet cbw">'+sbub("connie","Please note that I am not the cashier. I am the mannequin.",0)+'</div>'+nextprev("")+"</section>";
   app.innerHTML=h;
   $$("[data-q]").forEach(function(b){b.onclick=function(){var c2=ld(),i=c2.items[+b.dataset.q];i.q=Math.max(1,i.q+(+b.dataset.d));sv(c2);cart()}});
   $$("[data-rm]").forEach(function(b){b.onclick=function(){var c2=ld();c2.items.splice(+b.dataset.rm,1);sv(c2);cart()}});

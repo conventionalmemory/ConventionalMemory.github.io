@@ -13,8 +13,15 @@ function shapeFor(id,line){var base=SHAPE[id]||"speech",t=String(line||"");
  if(/!\s*$/.test(t)&&t.length<=58&&base!=="mini"&&base!=="lcd")return"burst";
  if((/\?\s*$/.test(t)||/(\.\.\.|…)\s*$/.test(t))&&base!=="cloud"&&base!=="mini"&&base!=="lcd")return"cloud";
  return base}
+var NAME={connie:"Connie",emma:"Emma",hiram:"Hiram",ram:"Dad",rhoda:"Mom",floyd:"Grandpa Floyd",winnie:"Grandma Winnie",augusta:"Aunt Gussie",conrad:"Uncle Conrad",tess:"Tessie",nibble:"Nibble",dot:"Dot",viv:"Viv",sandy:"Sandy",mo:"Mo",zack:"Zack",mat:"Mat",toner:"Toner"};
+/* a character's picture, with their family look when they have one */
+function av(id,sz,o){if(typeof CMCast==="undefined")return"";var opt={tall:true},k,f;if(typeof CMCast.famOpts==="function"){f=CMCast.famOpts(id);for(k in f)opt[k]=f[k]}if(o)for(k in o)opt[k]=o[k];try{return CMCast.svg(id,sz,opt)}catch(e){return""}}
 function html(id,name,line,av,o){o=o||{};var s=shapeFor(id,line);
- return'<div class="cb cb-'+E(id)+(o.cls?" "+E(o.cls):"")+'" style="--h:'+(HUE[id]||"#3fae6b")+'"><span class="cb-av" aria-hidden="true">'+(av||"")+'</span><div class="cb-t cb-s-'+s+'"><p><b>'+E(name)+':</b> '+E(line)+'</p></div></div>'}
+ return'<div class="cb cb-'+E(id)+(o.cls?" "+E(o.cls):"")+'" style="--h:'+(HUE[id]||"#3fae6b")+'">'+(o.noav?"":'<span class="cb-av" aria-hidden="true">'+(av||"")+'</span>')+'<div class="cb-t cb-s-'+s+'"><p><b>'+E(name)+':</b> '+E(line)+'</p></div></div>'}
+/* say(id,line,opts): the whole thing with their own picture. opts: noav, sz, av (picture options), cls */
+function say(id,line,o){o=o||{};return html(id,NAME[id]||id,line,o.noav?"":av(id,o.sz||48,o.av),o)}
+/* the box class and color for places that draw their own bubble (the stage, the mascot) */
+function skin(id,line){return{shape:shapeFor(id,line),hue:HUE[id]||"#3fae6b"}}
 /* list: [[id,name,line,avatarSvg],...] */
 function stack(list){return'<div class="cb-stack">'+list.map(function(x,i){return html(x[0],x[1],x[2],x[3],{cls:i%2?"cb-fl":""})}).join("")+'</div>'}
-return{html:html,stack:stack,shape:shapeFor,shapes:SHAPE,hue:HUE}})();
+return{html:html,say:say,av:av,skin:skin,stack:stack,shape:shapeFor,shapes:SHAPE,hue:HUE,names:NAME}})();

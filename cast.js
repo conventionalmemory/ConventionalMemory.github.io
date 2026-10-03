@@ -260,12 +260,13 @@ var CMCast=(function(){
   var big=lay==="bubble"||lay==="sign"||lay==="note",cs=draw("connie",co,lay==="peek"?64:big?64:72,"cm-cs"),cg=draw(c[0],fo,lay==="peek"?64:big?96:64,"cm-cg"),
    q=function(t){return String(t==null?"":t).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})},
    cap=x.cap?'<small class="cm-cap">'+q(x.cap)+'</small>':"",
-   t='<p><b>Connie:</b> \u201c'+q(line)+'\u201d</p>'+cap,btn='<a class="btn" href="'+(href||"#/connie")+'">Meet the family</a>',body;
-  if(lay==="bubble")body=cg+'<div class="cm-ct cm-bub">'+t+btn+'</div>'+cs;
-  else if(lay==="peek")body='<div class="cm-ct">'+t+btn+'</div><div class="cm-pk">'+cs+cg+'</div>';
-  else if(lay==="sign")body=cg+'<div class="cm-ct cm-signb">'+t+'</div><div class="cm-sgc">'+cs+btn+'</div>';
-  else if(lay==="screen")body=cs+'<div class="cm-ct cm-scr">'+t.replace("<b>Connie:</b>","<b>C:\\&gt;</b>")+btn+'</div>'+cg;
-  else if(lay==="note")body='<div class="cm-ct cm-note">'+t+btn+'</div><div class="cm-nc">'+cg+cs+'</div>';
+   sh=/!\s*$/.test(line)&&String(line).length<=58?"burst":(/\?\s*$/.test(line)||/(\.\.\.|\u2026)\s*$/.test(line))?"cloud":"speech",
+   t='<div class="cb-t cb-s-'+sh+'" style="--hh:#3fae6b"><p><b>Connie:</b> '+q(line)+'</p>'+cap+'</div>',btn='<a class="btn" href="'+(href||"#/connie")+'">Meet the family</a>',body;
+  if(lay==="bubble")body=cg+'<div class="cm-ct cb-fl">'+t+btn+'</div>'+cs;
+  else if(lay==="peek")body='<div class="cm-ct cb-fl">'+t+btn+'</div><div class="cm-pk">'+cs+cg+'</div>';
+  else if(lay==="sign")body=cg+'<div class="cm-ct cb-fl">'+t+'</div><div class="cm-sgc">'+cs+btn+'</div>';
+  else if(lay==="screen")body=cs+'<div class="cm-ct">'+t+btn+'</div>'+cg;
+  else if(lay==="note")body='<div class="cm-ct cb-fl">'+t+btn+'</div><div class="cm-nc">'+cg+cs+'</div>';
   else body=cs+cg+'<div class="cm-ct">'+t+btn+'</div>';
   return'<aside class="cm-cameo cm-L-'+lay+(extra?" "+extra:"")+' noprint" aria-label="A cameo from Connie\u2019s family">'+body+'</aside>'}
 
