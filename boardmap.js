@@ -29,7 +29,8 @@ function place(items,obst){var boxes=obst.slice(),out=[];
 /* a board we have mapped: caps go where the real ones are */
 function mapped(map,rows,ms){var placed=[],tray=[],h=map.h,out="";
  var vn={};/* when a map only shows the value of each part (colour-coded, or no printed refs), caps of one value are interchangeable, so each takes the next spot of its value (map.v) and carries no ref label */
- rows.forEach(function(r){var p=r.ref&&map.c[r.ref];if(!p&&map.v){var k=fmt(r.uf)+"|"+fmt(r.v),a=map.v[k];if(!a){k=fmt(r.uf)+"|*";a=map.v[k]}var i=vn[k]||0;if(a&&a[i]){p=a[i];vn[k]=i+1;var q={},z;for(z in r)q[z]=r[z];q.ref="";r=q}}if(p)placed.push([r,p]);else tray.push(r)});
+ var nn=0;/* map.n: spots for parts that carry no printed reference, taken in list order */
+ rows.forEach(function(r){var p=r.ref&&map.c[r.ref];if(!p&&!r.ref&&map.n&&map.n[nn])p=map.n[nn++];if(!p&&map.v){var k=fmt(r.uf)+"|"+fmt(r.v),a=map.v[k];if(!a){k=fmt(r.uf)+"|*";a=map.v[k]}var i=vn[k]||0;if(a&&a[i]){p=a[i];vn[k]=i+1;var q={},z;for(z in r)q[z]=r[z];q.ref="";r=q}}if(p)placed.push([r,p]);else tray.push(r)});
  (map.b||[]).forEach(function(b){var cl="bm-pcb"+(b.s?" bm-sub":"");
   out+=(b.p?'<path class="'+cl+'" d="M'+b.p.map(function(q){return q[0]+" "+q[1]}).join("L")+'Z"/>':'<rect class="'+cl+'" x="'+b.x+'" y="'+b.y+'" width="'+b.w+'" height="'+b.h+'" rx="2"/>')
    +'<text class="bm-bn" x="'+r1(b.nx!=null?b.nx:b.x+2)+'" y="'+r1(b.ny!=null?b.ny:(b.s?b.y+b.h-2:b.y+(b.p?b.h-1.6:4.2)))+'">'+E(b.n)+"</text>"});
