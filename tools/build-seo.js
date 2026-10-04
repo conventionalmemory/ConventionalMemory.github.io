@@ -293,6 +293,8 @@ put("/404.html",shell({path:"/404.html",title:"Page not found | "+NAME,desc:"Tha
 
 /* ---- /recap/: the Recap Bench as plain pages (built from recap-data.js; the interactive checklist lives in the museum) ---- */
 const RECAP_URLS=[];
+const schx={window:{}};vm.createContext(schx);vm.runInContext(fs.readFileSync(path.join(root,"schematic-data.js"),"utf8"),schx,{filename:"schematic-data.js"});vm.runInContext(fs.readFileSync(path.join(root,"schematic.js"),"utf8"),schx,{filename:"schematic.js"});
+const schHtml=id=>vm.runInContext("window.CMSch.html("+JSON.stringify(id)+")",schx);
 {const rc={window:{},console};vm.createContext(rc);vm.runInContext(fs.readFileSync(path.join(root,"recap-data.js"),"utf8"),rc,{filename:"recap-data.js"});
  const RC=vm.runInContext("RECAP",rc),RG=vm.runInContext("RECAP_GENERIC",rc),fmt=n=>String(+n),UF="µF";
  const KITS=(()=>{const kc={};vm.createContext(kc);vm.runInContext(fs.readFileSync(path.join(root,"kits-data.js"),"utf8")+";this.K=KITS",kc,{filename:"kits-data.js"});return kc.K||{}})();
@@ -322,7 +324,7 @@ const RECAP_URLS=[];
    +'<p class="tn">'+(m.worth?H(WTH[m.worth]):"Difficulty: "+H(m.lvl))+"</p>"
    +cameo(m.cam,m.cam[2])
    +revsLi(m)+hintsLi(m)+tipsLiS(m)+'<h2>Before you start</h2><ul>'+m.warn.map(w=>"<li>"+H(w)+"</li>").join("")+"</ul>"
-   +libSecIds([m.id])
+   +libSecIds([m.id])+schHtml(m.id)
    +(m.guides.length?"<h2>Guides we used</h2><p>This page and the interactive bench are built from these. They have the photos and the full detail, so please read them and support their authors.</p><ul>"+m.guides.map(guideLi).join("")+"</ul>"+m.guides.filter(g=>g.credit).map(g=>'<p class="tn">'+H(g.credit)+"</p>").join(""):"")
    +(m.boards.length?m.boards.map(b=>"<h2>"+H(b.n)+"</h2><p>"+H(b.tip||"")+"</p>"+'<table class="rc-t"><thead><tr><th scope="col">Part</th><th scope="col">Value</th><th scope="col">Volts</th><th scope="col">Type</th></tr></thead><tbody>'+b.rows.map(r=>"<tr><th scope=\"row\">"+H(r.ref||(fmt(r.uf)+" "+UF+" x "+(r.n||1)))+(r.note?"<small> "+H(r.note)+"</small>":"")+"</th><td>"+fmt(r.uf)+" "+UF+"</td><td>"+fmt(r.v)+" V</td><td>"+H(tyW(r.ty))+"</td></tr>").join("")+"</tbody></table>").join("")
     :"<h2>The capacitor list</h2><p>We have not checked a capacitor list for this machine yet, so none is shown. Follow the guide above for your board, then add the capacitors in the interactive checklist and it builds a shopping list for you.</p>")

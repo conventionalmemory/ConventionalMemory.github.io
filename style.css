@@ -1684,3 +1684,17 @@ html[data-motion="on"] .bm-cap.pop .bm-in{animation:bmpop .6s ease-out}
 @media(max-width:640px){.ipb-cols{grid-template-columns:1fr}}
 @media print{.ipb-pick{display:none}}
 .ipb-tab td:last-child{text-align:left;white-space:normal}.ipb-tab{min-width:0;table-layout:auto}
+
+/* circuit drawings (schematic.js) */
+.sch{margin:12px 0 18px;border:3px solid var(--line);background:var(--panel)}
+.sch-plate{margin:0;padding:6px 12px;background:var(--ink);color:var(--bg);font-family:"VT323",monospace;font-size:21px;line-height:1.2;letter-spacing:.02em}.sch-plate b{color:inherit;margin-right:8px;text-transform:uppercase;font-weight:400}
+.sch-scroll{overflow-x:auto}.sch-svg{display:block;width:100%;min-width:560px;height:auto;background:repeating-linear-gradient(0deg,transparent 0 11px,color-mix(in srgb,var(--line) 9%,transparent) 11px 12px),var(--bg);color:var(--ink)}
+.sch-svg .sc-s{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.sch-svg .sc-fl{fill:var(--bg)}.sch-svg .sc-f{fill:currentColor;stroke:none}
+.sch-svg .sc-w{fill:none;stroke:#2f8f5b;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.sch-svg .sc-d{fill:#2f8f5b}
+.sch-svg .sc-l{font:12.5px "IBM Plex Sans",system-ui,sans-serif;fill:var(--ink)}.sch-svg .sc-t{font:11px "IBM Plex Sans",system-ui,sans-serif;fill:var(--mute)}
+.sch-svg .sc-box{fill:color-mix(in srgb,var(--line) 14%,transparent);stroke:var(--mute);stroke-width:1;stroke-dasharray:4 3}
+.sch-svg .sc-p.hl .sc-s,.sch-svg .sc-p.hl .sc-d{stroke:#e0952b;stroke-width:3.2}.sch-svg .sc-p.hl .sc-f{fill:#e0952b}
+.sch-body{padding:10px 14px 12px}.sch-how{margin:0 0 10px}
+.sch-parts{border-collapse:collapse;width:100%;margin:6px 0}.sch-parts th,.sch-parts td{text-align:left;padding:5px 8px;border-bottom:1px solid color-mix(in srgb,var(--line) 30%,transparent);vertical-align:top}.sch-parts th:first-child,.sch-parts td:first-child{width:3.2em;white-space:nowrap}
+.sch-parts tr.hl td{background:color-mix(in srgb,#e0952b 24%,transparent)}
+.sch-hint{display:none;margin:6px 12px 0}@media (max-width:620px){.sch-hint{display:block}}

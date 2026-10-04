@@ -2,7 +2,7 @@ name: Rebuild search pages
 on:
   push:
     branches: [main]
-    paths: [timeline-data.js, timeline-extra.js, timeline-edits.js, items.js, affiliate.js, gear.js, draftfilter.js, books.js, cast.js, pages.js, recap-data.js, ipod-data.js, ipodbench.js, kits-data.js, library-data.js, libmap-data.js, repairs-data.js, tools/build-seo.js, tools/guides.js, CNAME]
+    paths: [timeline-data.js, timeline-extra.js, timeline-edits.js, items.js, affiliate.js, gear.js, draftfilter.js, books.js, cast.js, pages.js, recap-data.js, schematic.js, schematic-data.js, ipod-data.js, ipodbench.js, kits-data.js, library-data.js, libmap-data.js, repairs-data.js, tools/build-seo.js, tools/guides.js, CNAME]
   workflow_dispatch:
 permissions:
   contents: write

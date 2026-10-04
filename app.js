@@ -581,7 +581,7 @@ function loadLibrary(args){if(window.CMLibrary){CMLibrary.mount(app,args);return
 function loadRecap(args){if(window.CMRecap&&typeof RECAP!=="undefined"){CMRecap.mount(app,args);return}
  app.innerHTML='<section><h2>Loading</h2><p>One moment.</p></section>';function oops(){app.innerHTML='<section><h2>Oops</h2><p class="empty">That page could not be loaded. Try again in a moment.</p></section>'}
  function add(src,cb){var sc=document.createElement("script");sc.src=src;sc.onload=cb;sc.onerror=oops;document.head.appendChild(sc)}
- var go=function(){add("boardmap-data.js",function(){add("boardmap.js",function(){add("library-data.js",function(){add("kits-data.js",function(){add("recap.js",function(){route()})})})})})};if(typeof RECAP!=="undefined")go();else add("recap-data.js",go)}
+ var go=function(){add("boardmap-data.js",function(){add("boardmap.js",function(){add("schematic-data.js",function(){add("schematic.js",function(){add("library-data.js",function(){add("kits-data.js",function(){add("recap.js",function(){route()})})})})})})})};if(typeof RECAP!=="undefined")go();else add("recap-data.js",go)}
 function loadRepairs(args){if(window.CMRepair&&typeof REPAIRS!=="undefined"){CMRepair.mount(app,args);return}
  app.innerHTML='<section><h2>Loading</h2><p>One moment.</p></section>';function oops(){app.innerHTML='<section><h2>Oops</h2><p class="empty">That page could not be loaded. Try again in a moment.</p></section>'}
  function add(src,cb){var sc=document.createElement("script");sc.src=src;sc.onload=cb;sc.onerror=oops;document.head.appendChild(sc)}

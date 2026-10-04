@@ -265,11 +265,11 @@ function machine(mach){var s=stats(mach),ms=s.ms,rows=s.rows,tl=mach.tl.filter(f
  h+=pn("do",'<details class="rc-sec" open><summary><h3 class="sub" id="rc-safe">Safety</h3></summary>'+crew("rhoda","These rules are read-only. Check every one before the iron goes on.","clipboard")+safetyHtml(ms)+'</details>'
   +'<details class="rc-sec" open><summary><h3 class="sub" id="rc-steps">Step by step</h3></summary>'+crew("augusta","Everything on the list, in order, and no questions until you are done.","clipboard")+stepsHtml(mach,ms)+'</details>'
   +'<details class="rc-sec"><summary><h3 class="sub" id="rc-tools">Your tools</h3></summary><p class="tn">Tick what you already have. For anything over about $100, the top, middle and budget picks are shown.</p>'+toolsHtml(mach,ms)+'</details>');
- h+=pn("docs",(mach.guides.length?'<h3 class="sub">Guides we used</h3><p class="tn">We built this bench from these guides. They have the photos and the full detail, so please read them and support their authors.</p>'+guidesHtml(mach):"")+manualsHtml(mach));
+ h+=pn("docs",(mach.guides.length?'<h3 class="sub">Guides we used</h3><p class="tn">We built this bench from these guides. They have the photos and the full detail, so please read them and support their authors.</p>'+guidesHtml(mach):"")+manualsHtml(mach)+(window.CMSch?CMSch.html(mach.id):""));
  h+=pn("notes",'<div class="rc-two">'+checkerHtml()+rewardsHtml()+'</div>'+notesHtml(ms));
  h+='<p class="tn">Values are shown as published in the guides in the Docs tab, and boards changed during production. Check the board in front of you and the guide for your board number. A recap involves hot tools and, on some machines, dangerous voltages. You do it at your own risk.</p>'+discl()
   +'<p class="noprint"><a class="btn" href="#/recap">All machines</a> <a class="btn" href="#/backup">Back up my bench</a> <a class="btn" href="/recap/'+E(mach.id)+'/">Web version for sharing</a></p></section>';
- app.innerHTML=h;wireMachine(mach);if(window.CMBoard)CMBoard.wire(app);refreshBoards(mach)}
+ app.innerHTML=h;wireMachine(mach);if(window.CMBoard)CMBoard.wire(app);if(window.CMSch)CMSch.wire(app);refreshBoards(mach)}
 
 /* ---------- live updates ---------- */
 function csay(t){return window.CMBub?CMBub.say("connie",t,{noav:1}):'<b>Connie:</b> '+E(t)}
